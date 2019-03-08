@@ -11,7 +11,7 @@
 ```sh
 nvm install
 nvm use
-(cd wordpress/wp-content/themes/kcnb1 && yarn)
+(cd wordpress/wp-content/themes/kcnb1 && composer install && yarn)
 docker-compose up
 ```
 
@@ -20,6 +20,13 @@ Then:
 
 ## Database seed
 TODO
+
+## Deploy
+
+1. Export DB
+2. Replace all url occurences in DB backup
+3. Copy code to OVH
+4. Import DB backup
 
 ## If something goes wrong
 
