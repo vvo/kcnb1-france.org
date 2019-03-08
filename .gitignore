@@ -1,3 +1,4 @@
 .DS_Store
 db/
 wordpress/wp-config.php
+wordpress/wp-content/uploads/cache
