@@ -3,20 +3,23 @@
 ## Requirements
 
 - [Docker](https://docs.docker.com/install/)
+- [nvm](https://github.com/creationix/nvm#installation-and-update)
+- [Yarn](https://yarnpkg.com/en/docs/install#alternatives-stable)
 
 ## How to use
 
 ```sh
+nvm install
+nvm use
+(cd wordpress/wp-content/themes/kcnb1 && yarn)
 docker-compose up
 ```
 
 Then:
 - open http://localhost:44000/
-- At the database configuration step, just change `localhost` to `db`:
 
-![Database step](/additional-configurations/database-step.png)
-
-Then follow the WordPress installation instructions.
+## Database seed
+TODO
 
 ## If something goes wrong
 
@@ -26,15 +29,3 @@ docker-compose stop
 docker-compose rm
 docker-compose up
 ```
-
-## Credentials
-
-You can connect to the database by using:
-- http://localhost:44100
-- *System*: MySQL
-- *Server*: db
-- *Username*: username
-- *Password*: password
-- Leave *Database* empty
-
-Or any other GUI client, like [TablePlus](https://tableplus.io/).
