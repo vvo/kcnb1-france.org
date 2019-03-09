@@ -11,6 +11,11 @@
  */
 // @import "~some-node-module";
 
+/*! purgecss start ignore */
+// note the exclamation mark, which makes this comment "important"!
+// everything above this line will be purged!
+// everything below it will land in dist/main.css!
+
 /** Import theme styles */
 @import "common/global";
 @import "components/buttons";

@@ -4,3 +4,4 @@ wordpress/wp-config.php
 wordpress/wp-content/uploads/cache
 wordpress/wp-content/cache
 wordpress/wp-content/wp-cache-config.php
+backup.sql

@@ -18,8 +18,10 @@ docker-compose up
 Then:
 - open http://localhost:44000/
 
-## Database seed
-TODO
+TODO:
+====
+- script to sync db data from production to here
+- force remove of www and addition of https
 
 ## Deploy
 

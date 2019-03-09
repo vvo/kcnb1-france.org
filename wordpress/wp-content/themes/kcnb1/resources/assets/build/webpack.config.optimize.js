@@ -3,6 +3,8 @@
 const { default: ImageminPlugin } = require('imagemin-webpack-plugin');
 const imageminMozjpeg = require('imagemin-mozjpeg');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const glob = require('glob-all');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 const config = require('./config');
 
@@ -30,6 +32,13 @@ module.exports = {
           drop_console: true,
         },
       },
+    }),
+    new PurgecssPlugin({
+      paths: glob.sync([
+        'app/**/*.php',
+        'resources/views/**/*.php',
+        'resources/assets/scripts/**/*.js',
+      ]),
     }),
   ],
 };
