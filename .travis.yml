@@ -1,0 +1,12 @@
+language: node_js
+before_install:
+- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.15.2
+- export PATH=$HOME/.yarn/bin:$PATH
+branches:
+  only: master
+cache:
+  yarn: true
+  directories:
+    - ".eslintcache"
+script:
+  - cd wordpress/wp-content/themes/kcnb1 && composer install && yarn && yarn build:production
