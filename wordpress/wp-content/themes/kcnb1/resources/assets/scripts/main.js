@@ -1,14 +1,16 @@
 // import external dependencies
 import 'jquery';
-
-// Import everything from autoload
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import './autoload/**/*'
 
-// import local dependencies
 import Router from './util/Router';
 import common from './routes/common';
 import home from './routes/home';
 import aboutUs from './routes/about';
+
+library.add(faFacebook, faInstagram);
+dom.watch();
 
 /** Populate Router instance with DOM routes */
 const routes = new Router({

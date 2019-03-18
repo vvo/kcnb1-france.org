@@ -2,6 +2,25 @@
 # yarn lockfile v1
 
 
+"@fortawesome/fontawesome-common-types@^0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.15.tgz#16af950653083d1e3064061de9f8e5e3b579f688"
+  integrity sha512-ATBRyKJw1d2ko+0DWN9+BXau0EK3I/Q6pPzPv3LhJD7r052YFAkAdfb1Bd7ZqhBsJrdse/S7jKxWUOZ61qBD4g==
+
+"@fortawesome/fontawesome-svg-core@^1.2.15":
+  version "1.2.15"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.15.tgz#368f9fc7e8e8d8636495dc7483f97510f920ba97"
+  integrity sha512-M/sHyl4g2VBtKYkay1Z+XImMyTVcaBPmehYtPw4HKD9zg2E7eovB7Yx98aUfZjPbroGqa+IL4/+KhWBMOGlHIQ==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.15"
+
+"@fortawesome/free-brands-svg-icons@^5.7.2":
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-brands-svg-icons/-/free-brands-svg-icons-5.7.2.tgz#80ea37f12d22a281a5eadcd0cd3c870683e5dec1"
+  integrity sha512-91rIjo00vy7PNrXg5auDsPOSTjmgzc+UUqMyUZHmIrXG5OXMHgjAYMTgEIgs91Lm5XcJtggFZCQz1u5fGFnj2A==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.15"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -119,6 +138,11 @@ acorn-dynamic-import@^2.0.0:
   dependencies:
     acorn "^4.0.3"
 
+acorn-dynamic-import@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-4.0.0.tgz#482210140582a36b83c3e342e1cfebcaa9240948"
+  integrity sha512-d3OEjQV4ROpoflsnUA8HozoIR504TFxNivYEUi6uwz0IYhBkTDXGuWlNdMtybRt3nqVx/L6XqMt0FxkXuWKZhw==
+
 acorn-globals@^1.0.4:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/acorn-globals/-/acorn-globals-1.0.9.tgz#55bb5e98691507b74579d0513413217c380c54cf"
@@ -132,6 +156,11 @@ acorn-jsx@^3.0.0:
   integrity sha1-r9+UiPsezvyDSPb7IvRk4ypYs2s=
   dependencies:
     acorn "^3.0.4"
+
+acorn-jsx@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.1.tgz#32a064fd925429216a09b141102bfdd185fae40e"
+  integrity sha512-HJ7CfNHrfJLlNTzIEUTj43LNWGkqpRLxm3YjAlcD0ACydk9XynzYsCBHxut+iqt+1aBXkx9UP/w/ZqMr13XIzg==
 
 acorn@^2.1.0, acorn@^2.4.0:
   version "2.7.0"
@@ -152,6 +181,11 @@ acorn@^5.0.0, acorn@^5.5.0:
   version "5.7.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.3.tgz#67aa231bf8812974b85235a96771eb6bd07ea279"
   integrity sha512-T/zvzYRfbVojPWahDsE5evJdHb3oJoQfFbsrKM7w5Zcs++Tr257tia3BmMP8XYVjp1S9RZXQMh7gao96BlqZOw==
+
+acorn@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.1.1.tgz#7d25ae05bb8ad1f9b699108e1094ecd7884adc1f"
+  integrity sha512-jPTiwtOxaHNaAPg/dmrJ/beuzLRnXtB0kQPQ8JpotKJgTB6rX6c8mlf315941pyjBSaPg8NHXS9fhP4u17DpGA==
 
 adjust-sourcemap-loader@^1.1.0:
   version "1.2.0"
@@ -999,17 +1033,19 @@ buble-loader@0.5.1:
   dependencies:
     loader-utils "^1.1.0"
 
-buble@0.19.6:
-  version "0.19.6"
-  resolved "https://registry.yarnpkg.com/buble/-/buble-0.19.6.tgz#915909b6bd5b11ee03b1c885ec914a8b974d34d3"
-  integrity sha512-9kViM6nJA1Q548Jrd06x0geh+BG2ru2+RMDkIHHgJY/8AcyCs34lTHwra9BX7YdPrZXd5aarkpr/SY8bmPgPdg==
+buble@0.19.7:
+  version "0.19.7"
+  resolved "https://registry.yarnpkg.com/buble/-/buble-0.19.7.tgz#1dfd080ab688101aad5388d3304bc82601a244fd"
+  integrity sha512-YLgWxX/l+NnfotydBlxqCMPR4FREE4ubuHphALz0FxQ7u2hp3BzxTKQ4nKpapOaRJfEm1gukC68KnT2OymRK0g==
   dependencies:
-    chalk "^2.4.1"
-    magic-string "^0.25.1"
+    acorn "^6.1.1"
+    acorn-dynamic-import "^4.0.0"
+    acorn-jsx "^5.0.1"
+    chalk "^2.4.2"
+    magic-string "^0.25.2"
     minimist "^1.2.0"
     os-homedir "^1.0.1"
-    regexpu-core "^4.2.0"
-    vlq "^1.0.0"
+    regexpu-core "^4.5.4"
 
 buffer-alloc-unsafe@^1.1.0:
   version "1.1.0"
@@ -5575,7 +5611,7 @@ lru-cache@^4.0.1, lru-cache@^4.1.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-magic-string@^0.25.1:
+magic-string@^0.25.2:
   version "0.25.2"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.2.tgz#139c3a729515ec55e96e69e82a11fe890a293ad9"
   integrity sha512-iLs9mPjh9IuTtRsqqhNGYcZXGei0Nh/A4xirrsqW7c+QhKVFL2vm7U09ru6cHRD22azaP/wMDgI+HCqbETMTtg==
@@ -7854,10 +7890,10 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-regenerate-unicode-properties@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.0.1.tgz#58a4a74e736380a7ab3c5f7e03f303a941b31289"
-  integrity sha512-HTjMafphaH5d5QDHuwW8Me6Hbc/GhXg8luNqTkPVwZ/oCZhnoifjWhGYsu2BzepMELTlbnoVcXvV0f+2uDDvoQ==
+regenerate-unicode-properties@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.0.2.tgz#7b38faa296252376d363558cfbda90c9ce709662"
+  integrity sha512-SbA/iNrBUf6Pv2zU8Ekv1Qbhv92yxL4hiDa2siuxs4KKn4oOoMDHXjAf7+Nz9qinUQ46B1LcWEi/PhJfPWpZWQ==
   dependencies:
     regenerate "^1.4.0"
 
@@ -7905,13 +7941,13 @@ regexpu-core@^1.0.0:
     regjsgen "^0.2.0"
     regjsparser "^0.1.4"
 
-regexpu-core@^4.2.0:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-4.5.3.tgz#72f572e03bb8b9f4f4d895a0ccc57e707f4af2e4"
-  integrity sha512-LON8666bTAlViVEPXMv65ZqiaR3rMNLz36PIaQ7D+er5snu93k0peR7FSvO0QteYbZ3GOkvfHKbGr/B1xDu9FA==
+regexpu-core@^4.5.4:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-4.5.4.tgz#080d9d02289aa87fe1667a4f5136bc98a6aebaae"
+  integrity sha512-BtizvGtFQKGPUcTy56o3nk1bGRp4SZOTYrDtGNlqCQufptV5IkkLN6Emw+yunAJjzf+C9FQFtvq7IoA3+oMYHQ==
   dependencies:
     regenerate "^1.4.0"
-    regenerate-unicode-properties "^8.0.1"
+    regenerate-unicode-properties "^8.0.2"
     regjsgen "^0.5.0"
     regjsparser "^0.6.0"
     unicode-match-property-ecmascript "^1.0.4"
@@ -9899,11 +9935,6 @@ vinyl@^1.0.0:
     clone "^1.0.0"
     clone-stats "^0.0.1"
     replace-ext "0.0.1"
-
-vlq@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/vlq/-/vlq-1.0.0.tgz#8101be90843422954c2b13eb27f2f3122bdcc806"
-  integrity sha512-o3WmXySo+oI5thgqr7Qy8uBkT/v9Zr+sRyrh1lr8aWPUkgDWdWt4Nae2WKBrLsocgE8BuWWD0jLc+VW8LeU+2g==
 
 vm-browserify@0.0.4:
   version "0.0.4"

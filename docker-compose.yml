@@ -21,6 +21,7 @@ services:
     volumes:
       - ./wordpress:/wordpress
       - ./additional-configurations/site.conf:/etc/nginx/conf.d/default.conf
+      - ./additional-configurations/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - php
   php:

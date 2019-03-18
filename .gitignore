@@ -3,5 +3,7 @@ db/
 wordpress/wp-config.php
 wordpress/wp-content/uploads
 wordpress/wp-content/cache
+wordpress/wp-content/upgrade
+wordpress/wp-content/debug.log
 wordpress/wp-content/wp-cache-config.php
 backup.sql

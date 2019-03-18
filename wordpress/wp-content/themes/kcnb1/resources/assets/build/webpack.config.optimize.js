@@ -5,9 +5,9 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const glob = require('glob-all');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
+const path = require('path');
 
 const config = require('./config');
-
 module.exports = {
   plugins: [
     new ImageminPlugin({
@@ -35,10 +35,11 @@ module.exports = {
     }),
     new PurgecssPlugin({
       paths: glob.sync([
-        'app/**/*.php',
-        'resources/views/**/*.php',
-        'resources/assets/scripts/**/*.js',
+        `${path.join(__dirname, '../../..')}/app/**/*.php`,
+        `${path.join(__dirname, '../../..')}/resources/views/**/*.php`,
+        `${path.join(__dirname, '../../..')}/resources/assets/scripts/**/*.js`,
       ]),
+      whitelistPatterns: [/^nav/],
     }),
   ],
 };

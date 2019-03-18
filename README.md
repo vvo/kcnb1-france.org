@@ -13,6 +13,8 @@ nvm install
 nvm use
 (cd wordpress/wp-content/themes/kcnb1 && composer install && yarn)
 docker-compose up
+# in another tab:
+(cd wordpress/wp-content/themes/kcnb1 && yarn start)
 ```
 
 Then:
@@ -21,7 +23,7 @@ Then:
 TODO:
 ====
 - script to sync db data from production to here
-- force remove of www and addition of https
+- force remove of www and addition of https (test it with HEAD requests)
 
 ## Deploy
 
