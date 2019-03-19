@@ -1,5 +1,10 @@
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
 RewriteEngine On
-
-RewriteCond %{HTTP_HOST} ^(www\.)?kcnb1-france.org$
-RewriteCond %{HTTPS} off
-RewriteRule (.*) https://%{SERVER_NAME}/$1 [R,L]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
