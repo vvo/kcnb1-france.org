@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4c9e374d6e10bdcfb1492e4943b223fc",
+    "content-hash": "bb4d4a5b46a78c08341a040de608dbde",
     "packages": [
         {
             "name": "brain/hierarchy",
@@ -1664,7 +1664,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
