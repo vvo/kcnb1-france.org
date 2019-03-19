@@ -45,4 +45,32 @@ class App extends Controller
         );
         return $args;
     }
+
+    /**
+     * Primary Nav Menu arguments
+     * @return array
+     */
+    public function get_posts_temoignages()
+    {
+        return get_posts(array(
+            'posts_per_page'   => 5,
+            'offset'           => 0,
+            'cat'         => '',
+            'category_name'    => '',
+            'orderby'          => 'date',
+            'order'            => 'DESC',
+            'include'          => '',
+            'exclude'          => '',
+            'meta_key'         => '',
+            'meta_value'       => '',
+            'post_type'        => 'temoignage',
+            'post_mime_type'   => '',
+            'post_parent'      => '',
+            'author'	   => '',
+            'author_name'	   => '',
+            'post_status'      => 'publish',
+            'suppress_filters' => true,
+            'fields'           => '',
+        ));
+    }
 }
