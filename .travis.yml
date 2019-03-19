@@ -2,9 +2,10 @@ language: php
 php:
   - '7.2.15'
 before_install:
-- nvm install && nvm use
-- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.15.2
-- export PATH=$HOME/.yarn/bin:$PATH
+  - sudo apt-get install -y libpng16-dev
+  - nvm install && nvm use
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.15.2
+  - export PATH=$HOME/.yarn/bin:$PATH
 branches:
   only: master
 cache:
@@ -12,4 +13,4 @@ cache:
   directories:
     - ".eslintcache"
 script:
-  - cd wordpress/wp-content/themes/kcnb1 && composer install && yarn && yarn build:production
+  - (cd wordpress/wp-content/themes/kcnb1 && composer install && yarn && yarn build:production)
