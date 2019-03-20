@@ -78,6 +78,9 @@
     "webpack-merge": "4.2.1",
     "yargs": "11.1.0"
   },
+  "stylelint": {
+    "rules": {}
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.16",
     "@fortawesome/free-brands-svg-icons": "5.8.0",

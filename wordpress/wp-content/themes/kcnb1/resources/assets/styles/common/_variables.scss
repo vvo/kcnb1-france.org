@@ -1,7 +1,22 @@
 @import "~bootstrap/scss/functions";
+$enable-responsive-font-sizes: true;
+
+// colors
+$cblackm: #463833;
+$cred: rgba(255, 16, 71, 1);
+$cpinky: rgba(255, 77, 132, 1);
+$clinks: #acb879;
+$cgray: #f6f5f5;
+$crougie: #e37949;
+
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+$font-weight-base: $font-weight-light;
 
 $theme-colors: (
-  primary: #525ddc
+  red: $cred,
+  gray: $cgray
 );
 
 $new-navbar-dark-color: str-replace(str-replace(#{$navbar-dark-color}, "(", "%28"), ")", "%29");
@@ -10,7 +25,31 @@ $new-navbar-light-color: str-replace(str-replace(#{$navbar-light-color}, "(", "%
 $navbar-dark-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 $navbar-light-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 
+// 1rem = 16px
+$font-size-base: 1.125rem;
 $navbar-light-color: #000;
 $navbar-light-hover-color: #000;
 $grid-columns: 8;
 $grid-gutter-width: 24px;
+$font-family-base: "Montserrat", sans-serif;
+$headings-font-weight: $font-weight-bold;
+$h1-font-size: 3.75rem;
+$h2-font-size: 2.5rem;
+$btn-font-size-lg: 1rem;
+$btn-font-weight: $font-weight-normal;
+$btn-padding-y-lg: 1.7rem;
+$btn-padding-x-lg: 5.8rem;
+$btn-border-radius-lg: 3rem;
+$link-color: $clinks;
+$link-hover-color: darken($link-color, 15%);
+$body-color: $cblackm;
+$spacers: map-merge(
+  (
+    6: ($spacer * 4.5),
+    7: ($spacer * 7),
+    8: ($spacer * 11)
+  ),
+  $spacers
+);
+$lead-font-size: $font-size-base;
+$lead-font-weight: $font-weight-normal;
