@@ -82,9 +82,9 @@
     "rules": {}
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.2.16",
-    "@fortawesome/free-brands-svg-icons": "5.8.0",
-    "@fortawesome/free-regular-svg-icons": "5.8.0",
+    "@fortawesome/fontawesome-svg-core": "1.2.17",
+    "@fortawesome/free-brands-svg-icons": "5.8.1",
+    "@fortawesome/free-regular-svg-icons": "5.8.1",
     "@fortawesome/free-solid-svg-icons": "5.8.1",
     "bootstrap": "v4.3.1",
     "jquery": "3.3.1",
