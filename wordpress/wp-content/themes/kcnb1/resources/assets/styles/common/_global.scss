@@ -1,6 +1,10 @@
+.fs-18 {
+  font-size: $font-size-18px;
+}
+
 .socialLinksContainer {
   background-color: #f6f5f5;
-  font-size: 0.75rem;
+  font-size: $font-size-12px;
 }
 
 .socialLinksContainer,
@@ -29,7 +33,7 @@
 }
 
 .nav-link {
-  font-size: 0.875rem;
+  font-size: $font-size-14px;
 }
 
 .nav-link:hover {
@@ -49,6 +53,33 @@
   background: linear-gradient(90deg, $cpinky 0%, $cpinky 100%);
 }
 
+.card-container {
+  @extend .col-lg-2;
+  min-width: 20.25rem;
+  max-width: 20.25rem;
+}
+
+.btn-white {
+  border-radius: 0;
+  text-align: left;
+  border: 0;
+  border-top: 1px solid $cgray;
+  color: $cblu;
+  text-transform: uppercase;
+  font-size: $font-size-14px;
+  @extend .px-3;
+  @extend .py-2;
+  @extend .d-flex;
+  @extend .justify-content-between;
+  @extend .align-items-center;
+}
+
+.btn-white:hover {
+  background: $cblu;
+  color: $cwhite;
+  border-color: $cblu;
+}
+
 .lead {
   @extend .col-md-5;
   @extend .mx-auto;
@@ -57,8 +88,28 @@
   color: $crougie;
 }
 
-.card-subtitle {
+.icon-text {
   font-size: 0.875rem;
-  font-weight: $font-weight-bold;
   color: $cpinky;
+  font-weight: $font-weight-bold;
+  @extend .mb-2;
+}
+
+.icon-text svg {
+  vertical-align: bottom;
+  @extend .mr-2;
+}
+
+.card-subtitle {
+  @extend .icon-text;
+  @extend .mt-0;
+  @extend .mb-2;
+}
+
+.card-title {
+  font-size: 1.875rem;
+}
+
+.card-text {
+  font-size: 0.875rem;
 }

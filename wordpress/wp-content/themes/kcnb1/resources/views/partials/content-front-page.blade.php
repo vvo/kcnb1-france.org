@@ -5,18 +5,18 @@
 </nav>']) !!}
 
 <div class="container">
-  <div class="row no-gutters">
-    <div class="col offset-md-1">
-      <img src="@asset('images/front-page/visuel.jpg')" alt="Photo de Soline a 8 ans" width="433" height="661" />
+  <div class="row">
+    <div class="col-md text-center">
+      <img src="@asset('images/front-page/visuel.jpg')" alt="Photo de Soline a 8 ans" class="img-fluid" />
     </div>
-    <div class="col pt-4">
+    <div class="col-md pt-4">
       <h1>La mutation du gène KCNB1 est une maladie génétique rare.</h1>
-      <p class="mt-4">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Léonard, Mathéo.L, Vincent et Mathéo LB.
+      <p class="mt-4 fs-18">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Léonard, Mathéo.L, Vincent et Mathéo LB.
         Nous avons été diagnostiqués avec une mutation du gène KCNB1. D’autres enfants souffrants d’épilepsie ont peut-être
         aussi cette mutation.
       </p>
       <a href="test" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
-      <p class="mt-4">
+      <p class="mt-4 fs-18">
         <a href="test">Comprendre le gène KCNB1 et sa mutation →</a>
       </p>
     </div>
@@ -29,52 +29,86 @@
     <p class="lead">En octobre 2018, 14 patients âgés de 3 à 34 ans ont été diagnostiqués avec la mutation du gène KCNB1 en France. Voici
       leur histoire.</p>
     <div class="row justify-content-center">
-      <div class="col-lg-2" style="min-width: 20.25rem; max-width: 20.25rem">
+      <div class="card-container">
         <div class="card">
-          <img src="@asset('images/témoignages/soline-card.jpg')"" alt="Portrait de Soline, 8 ans">
           <div class="card-body">
-            <h6 class="card-subtitle"><i class="far fa-comment fa-2x align-middle mr-2"></i> L'histoire de :</h5>
-            <h5 class="card-title">Soline, 8 ans</h5>
-            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe sans crier garde...</p>
-            <a href="test" class="btn btn-blu">Go somewhere</a>
+            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
+            <h3 class="card-title">Soline, 8 ans</h3>
           </div>
+          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
+          <div class="card-body">
+            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
+              sans crier garde...</p>
+          </div>
+          <a href="test" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
         </div>
       </div>
-      <div class="col-lg-2 d-none d-sm-block" style="min-width: 20.25rem; max-width: 20.25rem">
+      <div class="card-container d-none d-sm-block">
         <div class="card">
-          <img src="..." class="card-img-top" alt="...">
           <div class="card-body">
-            <h6 class="card-subtitle"><i class="far fa-comments"></i> L'histoire de :</h5>
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-blu">Go somewhere</a>
+            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
+            <h3 class="card-title">Soline, 8 ans</h3>
           </div>
+          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
+          <div class="card-body">
+            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
+              sans crier garde...</p>
+          </div>
+          <a href="test" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
         </div>
       </div>
-      <div class="col-lg-2 d-none d-sm-block" style="min-width: 20.25rem; max-width: 20.25rem">
+      <div class="card-container d-none d-sm-block">
         <div class="card">
-          <img src="..." class="card-img-top" alt="...">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-blu">Go somewhere</a>
+            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
+            <h3 class="card-title">Soline, 8 ans</h3>
           </div>
+          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
+          <div class="card-body">
+            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
+              sans crier garde...</p>
+          </div>
+          <a href="test" class="btn btn-white">Lire la témoignage <i class="fas fa-stream fa-lg"></i></a>
         </div>
       </div>
     </div>
-
     <p class="py-4 text-center mt-3">
       <a href="test">Découvrir tous les témoignages →</a>
     </p>
   </div>
 </div>
 
-<div class="container bg-white mt-n7 pt-7">
+<div class="container bg-white mt-n7 pt-7 pb-5">
   <h2 class="text-center">Agir pour la recherche sur le gène KCNB1</h2>
-  <p>JEY</p>
-  <p>JEY</p>
-  <p>JEY</p>
-  <p>JEY</p>
-  <p>JEY</p>
-  <p>JEY</p>
+  <p class="lead">Grâce aux progrès récents dans le domaine de la génétique,de nouveaux gènes impliqués dans des troubles du développement cérébral de l’enfant ont été mis en évidence.</p>
+  <div class="row">
+    <div class="offset-md-1 col-md-3">
+      <p>La régulation du passage du Potassium (K+) est indispensable au bon fonctionnement des neurones. <strong>En 2014, une équipe aux États-Unis a ainsi identifié des mutations dans le gène KCNB1 chez des enfants présentant un trouble précoce du développement associé à une épilepsie sévère</strong>. Ce gène code pour une protéine, qui est une composante principale d’un complexe protéique qui forme un canal perméable au Potassium.</p>
+    </div>
+    <div class="col-md-3">
+      <p>Une trentaine de patients porteurs d’une mutation du gène KCNB1 ont été rapportées dans la littérature médicale. D’autres sont en train d’être reconnus.
+          <strong>Tous les patients rapportés présentent une « encéphalopathie développementale »</strong> c’est-à-dire une anomalie dans le fonctionnement cérébral entraînant un retard global des acquisitions, avec une épilepsie sévère chez la majorité d’entre eux.</p>
+    </div>
+  </div>
+  <p class="py-4 text-center">
+    <a href="test">Découvrez le programme de recherche sur la mutation du gène KCNB1 →</a>
+  </p>
+</div>
+
+<div class="bg-gray pt-6">
+  <div class="container">
+      <div class="row">
+        <div class="offset-md-1 col-md-3">
+            <img src="@asset('images/front-page/evenement.jpg')" alt="Photo exemple evenement KCNB1" />
+        </div>
+        <div class="col-md-3">
+          <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Événement à venir :</div>
+          <h2>Organisation de la 1<sup>ère</sup> journée de rencontre 🇪🇺 Européene KCNB1</h2>
+          <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l’Hôpital Necker Enfants Malades à Paris</strong>.
+              Pour la première fois en Europe, une équipe de médecins, de chercheurs et de patients vont se réunir pour échanger sur les avancées du premier programme de recherche français sur la mutation du gène KCNB1.</p>
+          <div class="icon-text text-blue"><i class="far fa-sticky-note"></i> Samedi 30 Mars 2019</div>
+          <div class="icon-text text-blue"><i class="fas map-marker-alt"></i> Samedi 30 Mars 2019</div>
+        </div>
+      </div>
+  </div>
 </div>
