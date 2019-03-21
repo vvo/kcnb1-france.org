@@ -3,11 +3,13 @@ $enable-responsive-font-sizes: true;
 
 // colors
 $cblackm: #463833;
-$cred: rgba(255, 16, 71, 1);
-$cpinky: rgba(255, 77, 132, 1);
+$cred: #ff1148;
+$cpinky: #ff4f86;
 $clinks: #acb879;
 $cgray: #f6f5f5;
 $crougie: #e37949;
+$cblu: #474b99;
+
 
 $font-weight-light: 300;
 $font-weight-normal: 400;
@@ -16,7 +18,8 @@ $font-weight-base: $font-weight-light;
 
 $theme-colors: (
   red: $cred,
-  gray: $cgray
+  gray: $cgray,
+  blu: $cblu
 );
 
 $new-navbar-dark-color: str-replace(str-replace(#{$navbar-dark-color}, "(", "%28"), ")", "%29");

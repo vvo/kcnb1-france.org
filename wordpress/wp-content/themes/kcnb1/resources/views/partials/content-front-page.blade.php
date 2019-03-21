@@ -31,11 +31,23 @@
     <div class="row justify-content-center">
       <div class="col-lg-2" style="min-width: 20.25rem; max-width: 20.25rem">
         <div class="card">
+          <img src="@asset('images/témoignages/soline-card.jpg')"" alt="Portrait de Soline, 8 ans">
+          <div class="card-body">
+            <h6 class="card-subtitle"><i class="far fa-comment fa-2x align-middle mr-2"></i> L'histoire de :</h5>
+            <h5 class="card-title">Soline, 8 ans</h5>
+            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe sans crier garde...</p>
+            <a href="test" class="btn btn-blu">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 d-none d-sm-block" style="min-width: 20.25rem; max-width: 20.25rem">
+        <div class="card">
           <img src="..." class="card-img-top" alt="...">
           <div class="card-body">
+            <h6 class="card-subtitle"><i class="far fa-comments"></i> L'histoire de :</h5>
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="#" class="btn btn-blu">Go somewhere</a>
           </div>
         </div>
       </div>
@@ -45,17 +57,7 @@
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-2 d-none d-sm-block" style="min-width: 20.25rem; max-width: 20.25rem">
-        <div class="card">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="#" class="btn btn-blu">Go somewhere</a>
           </div>
         </div>
       </div>

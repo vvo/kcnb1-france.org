@@ -56,3 +56,9 @@
   @extend .py-5;
   color: $crougie;
 }
+
+.card-subtitle {
+  font-size: 0.875rem;
+  font-weight: $font-weight-bold;
+  color: $cpinky;
+}
