@@ -89,7 +89,7 @@
 }
 
 .icon-text {
-  font-size: 0.875rem;
+  font-size: $font-size-14px;
   color: $cpinky;
   font-weight: $font-weight-bold;
   @extend .mb-2;
@@ -106,10 +106,6 @@
   @extend .mb-2;
 }
 
-.card-title {
-  font-size: 1.875rem;
-}
-
 .card-text {
-  font-size: 0.875rem;
+  font-size: $font-size-14px;
 }

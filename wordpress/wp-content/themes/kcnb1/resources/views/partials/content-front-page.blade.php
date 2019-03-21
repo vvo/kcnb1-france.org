@@ -95,20 +95,46 @@
   </p>
 </div>
 
-<div class="bg-gray pt-6">
+<div class="bg-gray pt-6 pb-3">
   <div class="container">
       <div class="row">
-        <div class="offset-md-1 col-md-3">
-            <img src="@asset('images/front-page/evenement.jpg')" alt="Photo exemple evenement KCNB1" />
+        <div class="offset-md-1 col-md-3 align-self-center">
+            <img src="@asset('images/front-page/evenement.jpg')" class="img-fluid" alt="Photo exemple evenement KCNB1" />
         </div>
         <div class="col-md-3">
           <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Événement à venir :</div>
-          <h2>Organisation de la 1<sup>ère</sup> journée de rencontre 🇪🇺 Européene KCNB1</h2>
+          <h3 class="mt-3">1<sup>ère</sup> journée de rencontres 🇪🇺 Européenes KCNB1</h3>
           <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l’Hôpital Necker Enfants Malades à Paris</strong>.
-              Pour la première fois en Europe, une équipe de médecins, de chercheurs et de patients vont se réunir pour échanger sur les avancées du premier programme de recherche français sur la mutation du gène KCNB1.</p>
-          <div class="icon-text text-blue"><i class="far fa-sticky-note"></i> Samedi 30 Mars 2019</div>
-          <div class="icon-text text-blue"><i class="fas map-marker-alt"></i> Samedi 30 Mars 2019</div>
+              Pour la première fois en Europe, une équipe de médecins, de chercheurs...</p>
+          <p>
+            <a href="test">Lire la suite →</a>
+          </p>
+          <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i> Samedi 30 Mars 2019</div>
+          <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i> Institut Imagine, Hôpital Necker Enfants Malades, Paris, France</div>
         </div>
       </div>
+      <p class="py-4 mb-0 text-center">
+        <a href="test">Découvrez tous les événements et actualités →</a>
+      </p>
   </div>
 </div>
+
+<div class="bg-blue pt-6 text-white">
+    <div class="container">
+        <h2>L'association KCNB1 France en quelques chiffres</h2>
+        <div class="row">
+          <div class="col">
+            a
+          </div>
+          <div class="col">
+            a
+          </div>
+          <div class="col">
+            a
+          </div>
+          <div class="col">
+            a
+          </div>
+        </div>
+    </div>
+  </div>
