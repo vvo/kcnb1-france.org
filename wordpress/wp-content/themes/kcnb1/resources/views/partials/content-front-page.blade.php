@@ -78,7 +78,7 @@
   </div>
 </div>
 
-<div class="container bg-white mt-n7 pt-7 pb-5">
+<div class="container bg-white mt-n7 pt-7 pb-3">
   <h2 class="text-center">Agir pour la recherche sur le gène KCNB1</h2>
   <p class="lead">Grâce aux progrès récents dans le domaine de la génétique,de nouveaux gènes impliqués dans des troubles du développement cérébral de l’enfant ont été mis en évidence.</p>
   <div class="row">
@@ -95,20 +95,17 @@
   </p>
 </div>
 
-<div class="bg-gray pt-6 pb-3">
+<div class="bg-gray pb-3 pt-4">
   <div class="container">
       <div class="row">
-        <div class="offset-md-1 col-md-3 align-self-center">
+        <div class="offset-md-1 col-md-3 align-self-center mt-4">
             <img src="@asset('images/front-page/evenement.jpg')" class="img-fluid" alt="Photo exemple evenement KCNB1" />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mt-4">
           <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Événement à venir :</div>
           <h3 class="mt-3">1<sup>ère</sup> journée de rencontres 🇪🇺 Européenes KCNB1</h3>
           <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l’Hôpital Necker Enfants Malades à Paris</strong>.
-              Pour la première fois en Europe, une équipe de médecins, de chercheurs...</p>
-          <p>
-            <a href="test">Lire la suite →</a>
-          </p>
+              Pour la première fois en Europe, une équipe de médecins, de chercheurs... <a href="test">Lire la suite →</a></p>
           <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i> Samedi 30 Mars 2019</div>
           <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i> Institut Imagine, Hôpital Necker Enfants Malades, Paris, France</div>
         </div>
@@ -119,22 +116,45 @@
   </div>
 </div>
 
-<div class="bg-blue pt-6 text-white">
-    <div class="container">
-        <h2>L'association KCNB1 France en quelques chiffres</h2>
-        <div class="row">
-          <div class="col">
-            a
-          </div>
-          <div class="col">
-            a
-          </div>
-          <div class="col">
-            a
-          </div>
-          <div class="col">
-            a
+<div class="bg-blue pt-5 text-white pb-5">
+  <div class="container">
+      <h2 class="text-center">L'association KCNB1 France en quelques chiffres</h2>
+      <div class="row">
+        <div class="col mt-5">
+          <div class="mx-auto number d-flex align-items-center justify-content-center">
+            <div>
+              <div class="numberTitle">14</div>
+              <div class="numberSubtitle">Patients diagnostiqués</div>
+            </div>
           </div>
         </div>
-    </div>
+        <div class="col mt-5">
+          <div class="mx-auto number d-flex align-items-center justify-content-center">
+            <div>
+              <div class="numberTitle">50</div>
+              <div class="numberSubtitle">50 000 euros de dons</div>
+            </div>
+          </div>
+        </div>
+        <div class="col mt-5">
+          <div class="mx-auto number d-flex align-items-center justify-content-center">
+            <div>
+              <div class="numberTitle">305</div>
+              <div class="numberSubtitle">Donateurs</div>
+            </div>
+          </div>
+        </div>
+        <div class="col mt-5">
+          <div class="mx-auto number d-flex align-items-center justify-content-center">
+            <div>
+              <div class="numberTitle">45</div>
+              <div class="numberSubtitle">Bénévoles</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center mt-5">
+          <a href="test" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
+      </p>
   </div>
+</div>

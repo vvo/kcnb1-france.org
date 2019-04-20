@@ -3,6 +3,7 @@ $enable-responsive-font-sizes: true;
 
 // colors
 $cblackm: #463833;
+$cgrazy: #2c221e;
 $cred: #ff1148;
 $cpinky: #ff4f86;
 $clinks: #acb879;
@@ -10,6 +11,7 @@ $cgray: #f6f5f5;
 $crougie: #e37949;
 $cwhite: #fff;
 $cblu: #474b99;
+$clorage: #abbf3b;
 
 $font-weight-light: 300;
 $font-weight-normal: 500;
@@ -20,7 +22,10 @@ $theme-colors: (
   red: $cred,
   gray: $cgray,
   white: $cwhite,
-  blue: $cblu
+  blue: $cblu,
+  pink: $cpinky,
+  black: $cblackm,
+  grazy: $cgrazy
 );
 
 $new-navbar-dark-color: str-replace(str-replace(#{$navbar-dark-color}, "(", "%28"), ")", "%29");
@@ -29,7 +34,11 @@ $new-navbar-light-color: str-replace(str-replace(#{$navbar-light-color}, "(", "%
 $navbar-dark-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 $navbar-light-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 
-// 1rem = 16px
+// 1rem = 16px - default browser font size usually
+$font-size-90px: 5.625rem;
+$font-size-60px: 3.75rem;
+$font-size-40px: 2.5rem;
+$font-size-30px: 1.875rem;
 $font-size-18px: 1.125rem;
 $font-size-16px: 1rem;
 $font-size-14px: 0.875rem;
@@ -40,9 +49,9 @@ $grid-columns: 8;
 $grid-gutter-width: 24px;
 $font-family-base: "Montserrat", sans-serif;
 $headings-font-weight: $font-weight-bold;
-$h1-font-size: 3.75rem;
-$h2-font-size: 2.5rem;
-$h3-font-size: 1.875rem;
+$h1-font-size: $font-size-60px;
+$h2-font-size: $font-size-40px;
+$h3-font-size: $font-size-30px;
 $btn-font-size-lg: $font-size-18px;
 $btn-font-weight: $font-weight-normal;
 $btn-padding-y-lg: 1.5rem;
