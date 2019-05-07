@@ -58,7 +58,7 @@
     "imagemin-mozjpeg": "8.0.0",
     "imagemin-webpack-plugin": "2.4.2",
     "import-glob": "1.5.0",
-    "node-sass": "4.11.0",
+    "node-sass": "4.12.0",
     "postcss-loader": "2.1.6",
     "postcss-safe-parser": "3.0.1",
     "purgecss-webpack-plugin": "1.5.0",
