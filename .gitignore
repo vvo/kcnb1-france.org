@@ -7,3 +7,4 @@ wordpress/wp-content/upgrade
 wordpress/wp-content/debug.log
 wordpress/wp-content/wp-cache-config.php
 backup.sql
+yarn-error.log
