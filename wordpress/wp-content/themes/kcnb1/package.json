@@ -19,7 +19,6 @@
   ],
   "browserslist": [
     "last 1 version",
-    "not dead",
     "> 0.2%"
   ],
   "scripts": {
