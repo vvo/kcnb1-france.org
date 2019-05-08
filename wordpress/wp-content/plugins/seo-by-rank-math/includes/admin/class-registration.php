@@ -71,7 +71,7 @@ class Registration {
 			$this->action( 'admin_menu', 'admin_menu' );
 			$this->action( 'admin_init', 'redirect_to_welcome' );
 			$this->action( 'cmb2_admin_init', 'registration_form' );
-			$this->action( 'admin_post_rank_math_save_wizard', 'save_wizard' );
+			$this->action( 'admin_post_rank_math_save_registration', 'save_registration' );
 			$this->action( 'admin_post_rank_math_skip_wizard', 'skip_wizard' );
 			$this->action( 'admin_init', 'render_page', 30 );
 		}
@@ -244,7 +244,7 @@ class Registration {
 	/**
 	 * Execute save handler for current step.
 	 */
-	public function save_wizard() {
+	public function save_registration() {
 
 		// If no form submission, bail.
 		if ( empty( $_POST ) || 'register' !== $_POST['step'] ) {
@@ -318,12 +318,11 @@ class Registration {
 	 * @return string
 	 */
 	private function get_view( $view ) {
-
 		if ( 'navigation' === $view ) {
-			return Admin_Helper::get_view( 'wizard/no-navigation' );
+			$view = 'no-navigation';
 		}
 
-		return Admin_Helper::get_view( "wizard/{$view}" );
+		return rank_math()->admin_dir() . "wizard/views/{$view}.php";
 	}
 
 	/**

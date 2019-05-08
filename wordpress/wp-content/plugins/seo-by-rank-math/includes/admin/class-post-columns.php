@@ -70,7 +70,7 @@ class Post_Columns implements Runner {
 			}
 
 			// Set it to hidden by default.
-			$columns_hidden = array_unique( array_merge( $columns_hidden, array( 'rank_math_title', 'rank_math_description' ) ) );
+			$columns_hidden = array_unique( array_merge( $columns_hidden, [ 'rank_math_title', 'rank_math_description' ] ) );
 			update_user_meta( $user_id, "manageedit-{$post_type}columnshidden", $columns_hidden );
 			update_user_meta( $user_id, "manageedit-{$post_type}columnshidden_default", '1' );
 		}
@@ -108,12 +108,12 @@ class Post_Columns implements Runner {
 		}
 
 		wp_enqueue_script( 'rank-math-post-bulk-edit', rank_math()->plugin_url() . 'assets/admin/js/post-list.js', null, rank_math()->version, true );
-		wp_localize_script( 'rank-math-post-bulk-edit', 'rankMath', array(
+		wp_localize_script( 'rank-math-post-bulk-edit', 'rankMath', [
 			'security'      => wp_create_nonce( 'rank-math-ajax-nonce' ),
 			'bulkEditTitle' => esc_attr__( 'Bulk Edit This Field', 'rank-math' ),
 			'buttonSaveAll' => esc_attr__( 'Save All Edits', 'rank-math' ),
 			'buttonCancel'  => esc_attr__( 'Cancel', 'rank-math' ),
-		) );
+		]);
 	}
 
 	/**
@@ -126,14 +126,14 @@ class Post_Columns implements Runner {
 			return;
 		}
 
-		$options  = array(
+		$options  = [
 			''          => esc_html__( 'All Posts', 'rank-math' ),
 			'great-seo' => esc_html__( 'SEO Score: Great', 'rank-math' ),
 			'good-seo'  => esc_html__( 'SEO Score: Good', 'rank-math' ),
 			'bad-seo'   => esc_html__( 'SEO Score: Bad', 'rank-math' ),
 			'empty-fk'  => esc_html__( 'Focus Keyword Not Set', 'rank-math' ),
 			'noindexed' => esc_html__( 'Articles noindexed', 'rank-math' ),
-		);
+		];
 		$selected = isset( $_GET['seo-filter'] ) ? $_GET['seo-filter'] : '';
 		?>
 		<select name="seo-filter">
@@ -337,24 +337,24 @@ class Post_Columns implements Runner {
 		if ( $fk_in_title ) {
 			global $wpdb;
 
-			$meta_query = new \WP_Meta_Query( array(
-				array(
+			$meta_query = new \WP_Meta_Query([
+				[
 					'key'     => 'rank_math_focus_keyword',
 					'compare' => 'EXISTS',
-				),
-				array(
+				],
+				[
 					'relation' => 'OR',
-					array(
+					[
 						'key'     => 'rank_math_robots',
 						'value'   => 'noindex',
 						'compare' => 'NOT LIKE',
-					),
-					array(
+					],
+					[
 						'key'     => 'rank_math_robots',
 						'compare' => 'NOT EXISTS',
-					),
-				),
-			));
+					],
+				],
+			]);
 
 			$mq_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
 			$rows   = $wpdb->get_col( "SELECT {$wpdb->posts}.ID FROM $wpdb->posts {$mq_sql['join']} WHERE 1=1 {$mq_sql['where']} AND {$wpdb->posts}.post_type = '$screen->post_type' AND ({$wpdb->posts}.post_status = 'publish') AND {$wpdb->posts}.post_title NOT REGEXP REPLACE({$wpdb->postmeta}.meta_value, ',', '|')" ); // phpcs:ignore
@@ -363,36 +363,51 @@ class Post_Columns implements Runner {
 		}
 
 		$focus_keyword = isset( $_GET['focus_keyword'] ) ? $_GET['focus_keyword'] : '';
-
 		if ( 1 == $focus_keyword ) {
-
-			$meta_args = array(
-				'relation' => 'AND',
-				array(
-					'key'     => 'rank_math_focus_keyword',
-					'compare' => 'NOT EXISTS',
-				),
-				array(
-					'relation' => 'OR',
-					array(
-						'key'     => 'rank_math_robots',
-						'value'   => 'noindex',
-						'compare' => 'NOT LIKE',
-					),
-					array(
-						'key'     => 'rank_math_robots',
+			$query->set(
+				'meta_query',
+				[
+					'relation' => 'AND',
+					[
+						'key'     => 'rank_math_focus_keyword',
 						'compare' => 'NOT EXISTS',
-					),
-				),
+					],
+					[
+						'relation' => 'OR',
+						[
+							'key'     => 'rank_math_robots',
+							'value'   => 'noindex',
+							'compare' => 'NOT LIKE',
+						],
+						[
+							'key'     => 'rank_math_robots',
+							'compare' => 'NOT EXISTS',
+						],
+					],
+				]
 			);
-			$query->set( 'meta_query', $meta_args );
 			return;
 		}
 
-		$query->set( 'meta_key', 'rank_math_focus_keyword' );
-		$query->set( 'meta_value', $focus_keyword );
-		$query->set( 'meta_compare', 'LIKE' );
 		$query->set( 'post_type', 'any' );
+		$query->set(
+			'meta_query',
+			[
+				[
+					'relation' => 'OR',
+					[
+						'key'     => 'rank_math_focus_keyword',
+						'value'   => $focus_keyword,
+						'compare' => 'LIKE',
+					],
+					[
+						'key'     => 'rank_math_focus_keyword',
+						'value'   => $focus_keyword . ',',
+						'compare' => 'LIKE',
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -404,20 +419,20 @@ class Post_Columns implements Runner {
 		global $typenow;
 
 		$current = empty( $_GET['pillar_content'] ) ? '' : ' class="current" aria-current="page"';
-		$pillars = get_posts( array(
+		$pillars = get_posts([
 			'post_type'      => $typenow,
 			'fields'         => 'ids',
 			'posts_per_page' => -1,
 			'meta_key'       => 'rank_math_pillar_content',
 			'meta_value'     => 'on',
-		) );
+		]);
 
 		$views['pillar_content'] = sprintf(
 			'<a href="%1$s"%2$s>%3$s <span class="count">(%4$s)</span></a>',
-			add_query_arg( array(
+			add_query_arg([
 				'post_type'      => $typenow,
 				'pillar_content' => 1,
-			)),
+			]),
 			$current,
 			esc_html__( 'Pillar Content', 'rank-math' ),
 			number_format_i18n( count( $pillars ) )
@@ -451,46 +466,46 @@ class Post_Columns implements Runner {
 			return;
 		}
 
-		$meta_query = array();
+		$meta_query = [];
 
 		// Check for pillar content filter.
 		if ( ! empty( $_GET['pillar_content'] ) ) {
-			$meta_query[] = array(
+			$meta_query[] = [
 				'key'   => 'rank_math_pillar_content',
 				'value' => 'on',
-			);
+			];
 		}
 
 		// Check for pillar seo filter.
 		if ( ! empty( $_GET['seo-filter'] ) ) {
 			$filter = $_GET['seo-filter'];
-			$hash   = array(
-				'empty-fk'  => array(
+			$hash   = [
+				'empty-fk'  => [
 					'key'     => 'rank_math_focus_keyword',
 					'compare' => 'NOT EXISTS',
-				),
-				'bad-seo'   => array(
+				],
+				'bad-seo'   => [
 					'key'     => 'rank_math_seo_score',
 					'value'   => 50,
 					'compare' => '<=',
 					'type'    => 'numeric',
-				),
-				'good-seo'  => array(
+				],
+				'good-seo'  => [
 					'key'     => 'rank_math_seo_score',
-					'value'   => array( 51, 80 ),
+					'value'   => [ 51, 80 ],
 					'compare' => 'BETWEEN',
-				),
-				'great-seo' => array(
+				],
+				'great-seo' => [
 					'key'     => 'rank_math_seo_score',
 					'value'   => 80,
 					'compare' => '>',
-				),
-				'noindexed' => array(
+				],
+				'noindexed' => [
 					'key'     => 'rank_math_robots',
 					'value'   => 'noindex',
 					'compare' => 'LIKE',
-				),
-			);
+				],
+			];
 
 			if ( isset( $hash[ $filter ] ) ) {
 				$meta_query[] = $hash[ $filter ];
@@ -522,15 +537,15 @@ class Post_Columns implements Runner {
 
 			foreach ( $data as $key => $value ) {
 
-				if ( ! in_array( $key, array( 'focus_keyword', 'title', 'description', 'image_alt', 'image_title' ) ) ) {
+				if ( ! in_array( $key, [ 'focus_keyword', 'title', 'description', 'image_alt', 'image_title' ] ) ) {
 					continue;
 				}
 
 				if ( 'image_title' === $key ) {
-					wp_update_post( array(
+					wp_update_post([
 						'ID'         => $post_id,
 						'post_title' => $value,
-					) );
+					]);
 					continue;
 				}
 

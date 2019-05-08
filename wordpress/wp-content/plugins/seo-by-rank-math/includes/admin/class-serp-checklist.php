@@ -209,9 +209,9 @@ class Serp_Checklist {
 			'content-readability' => array(
 				'contentHasTOC'             => array(
 					/* translators: link to kb article */
-					'ok'      => sprintf( esc_html__( 'You seem to be using a %s to break-down your text.', 'rank-math' ), '<a href="' . KB::get( 'toc' ) . '" target="_blank">Table of Contents plugin</a>' ),
+					'ok'      => sprintf( __( 'You seem to be using a <a href="%s" target="_blank">Table of Contents plugin</a> to break-down your text.', 'rank-math' ), KB::get( 'toc' ) ),
 					/* translators: link to kb article */
-					'fail'    => sprintf( esc_html__( 'You don\'t seem to be using a %s.', 'rank-math' ), '<a href="' . KB::get( 'toc' ) . '" target="_blank">Table of Contents plugin</a>' ),
+					'fail'    => sprintf( __( 'You don\'t seem to be using a <a href="%s" target="_blank">Table of Contents plugin</a>.', 'rank-math' ), KB::get( 'toc' ) ),
 					'empty'   => esc_html__( 'Use Table of Content to break-down your text.', 'rank-math' ),
 					'tooltip' => esc_html__( ' Table of Contents help break down content into smaller, digestible chunks. It makes reading easier which in turn results in better rankings.', 'rank-math' ),
 					'score'   => 2,

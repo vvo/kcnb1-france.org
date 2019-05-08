@@ -8,9 +8,10 @@
  * @author     Rank Math <support@rankmath.com>
  */
 
-namespace RankMath;
+namespace RankMath\Frontend;
 
 use RankMath\Post;
+use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Sitemap\Router;
 
@@ -41,6 +42,7 @@ class Head {
 			$this->action( 'amphtml_template_head', 'head', 1 );
 			$this->action( 'weeblramp_print_meta_data', 'head', 1 );
 			$this->action( 'better-amp/template/head', 'head', 99 );
+			$this->action( 'amp_post_template_head', 'head', 9 );
 			remove_action( 'better-amp/template/head', 'better_amp_print_rel_canonical' );
 		}
 
@@ -52,7 +54,6 @@ class Head {
 		$this->action( 'rank_math/head', 'robots', 10 );
 		$this->action( 'rank_math/head', 'canonical', 20 );
 		$this->action( 'rank_math/head', 'adjacent_rel_links', 21 );
-		$this->action( 'rank_math/head', 'publisher', 22 );
 
 		$this->filter( 'wp_title', 'title', 15 );
 		$this->filter( 'thematic_doctitle', 'title', 15 );
@@ -143,6 +144,11 @@ class Head {
 		remove_action( 'wp_head', 'start_post_rel_link' );
 		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' );
 		remove_action( 'wp_head', 'noindex', 1 );
+
+		if ( Helper::is_module_active( 'amp' ) ) {
+			remove_action( 'amp_post_template_head', 'amp_post_template_add_title' );
+			remove_action( 'amp_post_template_head', 'amp_post_template_add_canonical' );
+		}
 
 		/**
 		 * Allow other plugins to output inside the Rank Math section of the head tag.
@@ -236,15 +242,6 @@ class Head {
 		}
 
 		return $canonical;
-	}
-
-	/**
-	 * Output the rel=publisher code on every page of the site.
-	 */
-	public function publisher() {
-		if ( $publisher = Helper::get_settings( 'titles.social_url_gplus' ) ) { // phpcs:ignore
-			echo '<link rel="publisher" href="', esc_url( $publisher ), '"/>', "\n";
-		}
 	}
 
 	/**

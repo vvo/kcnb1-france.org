@@ -152,7 +152,7 @@ class Installer {
 		$watcher->check_activated_plugin();
 
 		$this->clear_rewrite_rules( true );
-		$this->clear_cache();
+		Helper::clear_cache();
 		$this->do_action( 'activate' );
 	}
 
@@ -162,7 +162,7 @@ class Installer {
 	private function deactivate() {
 		$this->clear_rewrite_rules( false );
 		$this->remove_cron_jobs();
-		$this->clear_cache();
+		Helper::clear_cache();
 		$this->do_action( 'deactivate' );
 	}
 
@@ -295,6 +295,11 @@ class Installer {
 			$modules[] = 'amp';
 		}
 
+		// If 404-monitor is active as plugin.
+		if ( false !== get_option( 'rank_math_monitor_version', false ) ) {
+			$modules[] = '404-monitor';
+		}
+
 		add_option( 'rank_math_modules', $modules );
 	}
 
@@ -340,6 +345,7 @@ class Installer {
 			'rss_after_content'                   => '',
 			'usage_tracking'                      => 'on',
 			'wc_remove_generator'                 => 'on',
+			'remove_shop_snippet_data'            => 'on',
 		]));
 	}
 
@@ -596,18 +602,6 @@ class Installer {
 	}
 
 	/**
-	 * Clears the WP or W3TC cache depending on which is used.
-	 */
-	private function clear_cache() {
-		if ( function_exists( 'w3tc_pgcache_flush' ) ) {
-			w3tc_pgcache_flush();
-		}
-		if ( function_exists( 'wp_cache_clear_cache' ) ) {
-			wp_cache_clear_cache();
-		}
-	}
-
-	/**
 	 * Clear rewrite rules.
 	 *
 	 * @param bool $activate True for plugin activation, false for de-activation.
@@ -615,6 +609,7 @@ class Installer {
 	private function clear_rewrite_rules( $activate ) {
 		if ( is_multisite() && ms_is_switched() ) {
 			delete_option( 'rewrite_rules' );
+			Helper::schedule_flush_rewrite();
 			return;
 		}
 

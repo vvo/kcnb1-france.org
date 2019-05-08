@@ -38,7 +38,8 @@ class Sitemaps_List extends List_Table {
 	public function prepare_items() {
 
 		$this->set_column_headers();
-		$this->items = Helper::search_console()->sitemaps->get_sitemaps( true );
+		$with_index  = ! Helper::search_console()->sitemaps->selected_site_is_domain_property();
+		$this->items = Helper::search_console()->sitemaps->get_sitemaps( $with_index );
 
 		$this->set_pagination_args( array(
 			'total_items' => count( $this->items ),

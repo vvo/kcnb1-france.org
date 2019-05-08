@@ -140,21 +140,17 @@ class Search_Console extends Module {
 			'render'     => $dir . 'main.php',
 			'classes'    => array( 'rank-math-page' ),
 			'help'       => array(
-				'search-console-overview'     => array(
+				'search-console-overview'  => array(
 					'title'   => esc_html__( 'Overview', 'rank-math' ),
 					'content' => '<p>' . esc_html__( 'Connect Rank Math with Google Search Console to see the most important information from Google directly in your WordPress dashboard.', 'rank-math' ) . '</p>',
 				),
-				'search-console-analytics'    => array(
+				'search-console-analytics' => array(
 					'title'   => esc_html__( 'Screen Content', 'rank-math' ),
 					'content' => '<p>' . esc_html__( 'The Search Analytics tab will give you insights about how your site performs in search engines: you can see the top search queries to find your site and your most popular landing pages.', 'rank-math' ) . '</p>',
 				),
-				'search-console-sitemaps'     => array(
+				'search-console-sitemaps'  => array(
 					'title'   => esc_html__( 'Available Actions', 'rank-math' ),
 					'content' => '<p>' . esc_html__( 'The Sitemaps tab gives you an overview of the sitemaps submitted to the Search Console.', 'rank-math' ) . '</p>',
-				),
-				'search-console-crawl-errors' => array(
-					'title'   => esc_html__( 'Bulk Actions', 'rank-math' ),
-					'content' => '<p>' . esc_html__( 'The Crawl Errors tab informs you about any error the Google bot encountered while indexing your site. Desktop and mobile issues can be listed separately.', 'rank-math' ) . '</p>',
 				),
 			),
 			'assets'     => array(
@@ -204,9 +200,16 @@ class Search_Console extends Module {
 			'overview'  => esc_html__( 'Overview', 'rank-math' ),
 			'analytics' => esc_html__( 'Search Analytics', 'rank-math' ),
 			'sitemaps'  => esc_html__( 'Sitemaps', 'rank-math' ),
-			'errors'    => esc_html__( 'Crawl Errors', 'rank-math' ),
 			'tracker'   => esc_html__( 'Keyword Tracker', 'rank-math' ),
 		);
+
+		// Sitemaps not available for Domain Property.
+		if ( $this->client->is_authorized ) {
+			$this->sitemaps = new Sitemaps( $this->client );
+			if ( $this->sitemaps->selected_site_is_domain_property() ) {
+				unset( $tabs['sitemaps'] );
+			}
+		}
 
 		$filters = $this->get_filters();
 		?>
@@ -283,6 +286,10 @@ class Search_Console extends Module {
 		$profiles = $this->client->fetch_profiles();
 		if ( empty( $profiles ) ) {
 			$this->error( 'No profiles found.' );
+		}
+
+		foreach ( $profiles as $key => $value ) {
+			$profiles[ $key ] = str_replace( 'sc-domain:', __( 'Domain Property: ', 'rank-math' ), $value );
 		}
 
 		$this->success( array(

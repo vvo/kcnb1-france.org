@@ -110,7 +110,6 @@
 
 				$( '[name=header_code]' ).on( 'change', function() {
 					var value = $( this ).val()
-					console.log( value )
 					if ( 410 == value || 451 == value ) {
 						$( '#url_to' ).addClass( 'exclude' )
 					} else {
@@ -143,8 +142,8 @@
 						input.closest( '.cmb-field-list' ).find( 'select' ).val( comparisonValue )
 						if ( index < items.length - 1 ) {
 
-							// Process 100 items max.
-							if ( 99 <= index ) {
+							// Number of items to process.
+							if ( ( rankMath.redirectionPastedContent - 1 ) <= index ) {
 								return false
 							}
 

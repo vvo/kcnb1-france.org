@@ -39,32 +39,47 @@ class Detector {
 		if ( ! is_null( self::$plugins ) ) {
 			return self::$plugins;
 		}
-		self::$plugins = array();
+		self::$plugins = [];
 
 		$plugins = $this->get();
 		foreach ( $plugins as $slug => $plugin ) {
-
-			// Check if parent is set.
-			if ( isset( $plugin['parent'] ) && isset( self::$plugins[ $plugin['parent'] ] ) ) {
-				continue;
-			}
-
-			// Check if plugin has premium and it is active.
-			if ( isset( $plugin['premium'] ) && is_plugin_active( $plugins[ $plugin['premium'] ]['file'] ) ) {
+			if ( $this->is_plugin_detectable( $plugin, $plugins ) ) {
 				continue;
 			}
 
 			$importer = new $plugin['class']( $plugin['file'] );
 			if ( $this->run( $importer, 'detect' ) ) {
-				self::$plugins[ $slug ] = array(
+				self::$plugins[ $slug ] = [
 					'name'    => $importer->get_plugin_name(),
 					'file'    => $importer->get_plugin_file(),
 					'choices' => $importer->get_choices(),
-				);
+				];
 			}
 		}
 
 		return self::$plugins;
+	}
+
+	/**
+	 * Check if plugin is detectable.
+	 *
+	 * @param array $check   Plugin to check.
+	 * @param array $plugins Plugins data.
+	 *
+	 * @return bool
+	 */
+	private function is_plugin_detectable( $check, $plugins ) {
+		// Check if parent is set.
+		if ( isset( $check['parent'] ) && isset( self::$plugins[ $check['parent'] ] ) ) {
+			return true;
+		}
+
+		// Check if plugin has premium and it is active.
+		if ( isset( $check['premium'] ) && is_plugin_active( $plugins[ $check['premium'] ]['file'] ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -73,7 +88,7 @@ class Detector {
 	 * @return array
 	 */
 	public function active_plugins() {
-		$plugins = array();
+		$plugins = [];
 		if ( is_null( self::$plugins ) ) {
 			foreach ( $this->get() as $slug => $data ) {
 				if ( is_plugin_active( $data['file'] ) ) {
@@ -129,33 +144,33 @@ class Detector {
 	 * @return array Available importers
 	 */
 	public function get() {
-		return $this->do_filter( 'importers/detect_plugins', array(
-			'yoast'            => array(
+		return $this->do_filter( 'importers/detect_plugins', [
+			'yoast'            => [
 				'class'   => '\\RankMath\\Admin\\Importers\\Yoast',
 				'file'    => 'wordpress-seo/wp-seo.php',
 				'premium' => 'yoast-premium',
-			),
-			'yoast-premium'    => array(
+			],
+			'yoast-premium'    => [
 				'class'  => '\\RankMath\\Admin\\Importers\\Yoast',
 				'file'   => 'wordpress-seo-premium/wp-seo-premium.php',
 				'parent' => 'yoast',
-			),
-			'aioseo'           => array(
+			],
+			'aioseo'           => [
 				'class' => '\\RankMath\\Admin\\Importers\\AIOSEO',
 				'file'  => 'all-in-one-seo-pack/all_in_one_seo_pack.php',
-			),
-			'aio-rich-snippet' => array(
+			],
+			'aio-rich-snippet' => [
 				'class' => '\\RankMath\\Admin\\Importers\\AIO_Rich_Snippet',
 				'file'  => 'all-in-one-schemaorg-rich-snippets/index.php',
-			),
-			'wp-schema-pro'    => array(
+			],
+			'wp-schema-pro'    => [
 				'class' => '\\RankMath\\Admin\\Importers\\WP_Schema_Pro',
 				'file'  => 'wp-schema-pro/wp-schema-pro.php',
-			),
-			'redirections'     => array(
+			],
+			'redirections'     => [
 				'class' => '\\RankMath\\Admin\\Importers\\Redirections',
 				'file'  => 'redirection/redirection.php',
-			),
-		));
+			],
+		]);
 	}
 }

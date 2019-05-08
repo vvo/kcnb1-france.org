@@ -100,6 +100,7 @@ class SEO_Analyzer {
 		if ( ! $this->run_api_tests() ) {
 			\error_log( $this->api_error );
 			Rollbar::log( Level::WARNING, $this->api_error );
+			/* translators: API error */
 			echo '<div class="notice notice-error is-dismissible"><p>' . sprintf( __( '<strong>API Error:</strong> %s', 'rank-math' ), $this->api_error ) . '</p></div>';
 		}
 
@@ -191,10 +192,6 @@ class SEO_Analyzer {
 			'facebook'  => array(
 				'name'  => esc_html__( 'Facebook', 'rank-math' ),
 				'title' => esc_html__( 'Facebook Connected', 'rank-math' ),
-			),
-			'gplus'     => array(
-				'name'  => esc_html__( 'Google Plus', 'rank-math' ),
-				'title' => esc_html__( 'Google Plus Connected', 'rank-math' ),
 			),
 			'instagram' => array(
 				'name'  => esc_html__( 'Instagram', 'rank-math' ),
@@ -621,7 +618,6 @@ class SEO_Analyzer {
 			'ssl'                 => 7,
 			// Social SEO.
 			'facebook_connected'  => 1,
-			'gplus_connected'     => 1,
 			'instagram_connected' => 1,
 			'linkedin_connected'  => 1,
 			'twitter_connected'   => 1,

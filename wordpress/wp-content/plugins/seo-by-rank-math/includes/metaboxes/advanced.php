@@ -7,13 +7,19 @@
  */
 
 use RankMath\Helper;
+use RankMath\Admin\Admin_Helper;
+
+$robot_index = [
+	'index' => esc_html__( 'Index', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Instructs search engines to index and show these pages in the search results.', 'rank-math' ) ),
+];
 
 $cmb->add_field( array(
 	'id'                => 'rank_math_robots',
 	'type'              => 'multicheck',
 	'name'              => esc_html__( 'Robots Meta', 'rank-math' ),
 	'desc'              => esc_html__( 'Custom values for robots meta tag.', 'rank-math' ),
-	'options'           => Helper::choices_robots(),
+	'options'           => $robot_index + Helper::choices_robots(),
+	'default_cb'        => '\\RankMath\\Helper::get_robots_defaults',
 	'select_all_button' => false,
 ) );
 

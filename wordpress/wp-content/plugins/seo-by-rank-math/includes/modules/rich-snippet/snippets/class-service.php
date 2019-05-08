@@ -28,6 +28,7 @@ class Service implements Snippet {
 	 * @return array
 	 */
 	public function process( $data, $jsonld ) {
+		$price  = Helper::get_post_meta( 'snippet_service_price' );
 		$entity = [
 			'@context'        => 'https://schema.org',
 			'@type'           => 'Service',
@@ -36,7 +37,7 @@ class Service implements Snippet {
 			'serviceType'     => Helper::get_post_meta( 'snippet_service_type' ),
 			'offers'          => [
 				'@type'         => 'Offer',
-				'price'         => Helper::get_post_meta( 'snippet_service_price' ),
+				'price'         => $price ? $price : '0',
 				'priceCurrency' => Helper::get_post_meta( 'snippet_service_price_currency' ),
 			],
 			'aggregateRating' => [

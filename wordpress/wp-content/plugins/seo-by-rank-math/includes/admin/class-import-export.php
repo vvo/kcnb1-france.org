@@ -113,7 +113,7 @@ class Import_Export implements Runner {
 
 		$this->has_cap_ajax( 'general' );
 
-		$perform = isset( $_POST['perform'] ) ? $_POST['perform'] : false;
+		$perform = isset( $_POST['perform'] ) ? filter_input( INPUT_POST, 'perform' ) : false;
 		if ( ! $perform || ! in_array( $perform, [ 'settings', 'postmeta', 'termmeta', 'usermeta', 'redirections', 'deactivate' ] ) ) {
 			$this->error( esc_html__( 'Action not allowed.', 'rank-math' ) );
 		}

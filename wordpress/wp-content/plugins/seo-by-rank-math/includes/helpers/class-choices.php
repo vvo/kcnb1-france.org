@@ -125,7 +125,7 @@ trait Choices {
 		$post_types = self::choices_post_types();
 		unset( $post_types['attachment'] );
 
-		return array( 'any' => esc_html__( 'Any', 'rank-math' ) ) + $post_types + array( 'comments' => esc_html__( 'Comments' ) ); // phpcs:ignore
+		return array( 'any' => esc_html__( 'Any', 'rank-math' ) ) + $post_types + array( 'comments' => esc_html( translate( 'Comments' ) ) ); // phpcs:ignore
 	}
 
 	/**

@@ -24,18 +24,27 @@ $cmb->add_field( array(
 	'after_field' => $primary . $secondary,
 ) );
 
-$profile = Helper::get_settings( 'general.console_profile' );
+$profile       = Helper::get_settings( 'general.console_profile' );
+$profile_label = str_replace( 'sc-domain:', __( 'Domain Property: ', 'rank-math' ), $profile );
+foreach ( $data['profiles'] as $key => $value ) {
+	$data['profiles'][ $key ] = str_replace( 'sc-domain:', __( 'Domain Property: ', 'rank-math' ), $value );
+}
+
 $cmb->add_field( array(
 	'id'          => 'console_profile',
 	'type'        => 'select',
 	'name'        => esc_html__( 'Search Console Profile', 'rank-math' ),
 	'desc'        => esc_html__( 'After authenticating with Google Search Console, select the site from the dropdown list.', 'rank-math' ) .
+		' <span id="gsc-dp-info" class="hidden">' . __( 'Please note that the Sitemaps overview in the Search Console module will not be available when using a Domain Property.', 'rank-math' ) . '</span>' .
 		/* translators: setting url */
 		'<br><br><span style="color: orange;">' . sprintf( __( 'Is your site not listed? <a href="%1$s" target="_blank">Click here</a> to get your website verified.', 'rank-math' ), Helper::get_admin_url( 'options-general#setting-panel-webmaster' ) ) . '</span>',
-	'options'     => $profile ? array( $profile => $profile ) : $data['profiles'],
+	'options'     => $profile ? array( $profile => $profile_label ) : $data['profiles'],
 	'default'     => $profile,
 	'after_field' => '<button class="button button-primary hidden" ' . ( $data['authorized'] ? '' : 'disabled="disabled"' ) . '>' . esc_html__( 'Refresh Sites', 'rank-math' ) . '</button>',
-	'attributes'  => $data['authorized'] ? array() : array( 'disabled' => 'disabled' ),
+	'attributes'  => $data['authorized'] ? array( 'data-s2' => '' ) : array(
+		'disabled' => 'disabled',
+		'data-s2'  => '',
+	),
 ) );
 
 if ( $is_empty ) {

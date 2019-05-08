@@ -25,7 +25,15 @@ TODO:
 - script to sync db data from production to here
 - force remove of www and addition of https (test it with HEAD requests)
 
-## Deploy
+## Deploy changes to theme only
+
+```sh
+(cd wordpress/wp-content/themes/kcnb1 && yarn build:production)
+```
+
+Then copy the folder over OVH.
+
+## Deploy changes to wordpress
 
 1. Export DB
 2. Replace all url occurences in DB backup

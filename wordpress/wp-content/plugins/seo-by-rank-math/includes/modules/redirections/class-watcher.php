@@ -133,7 +133,7 @@ class Watcher {
 			]);
 		}
 
-		$redirection->set_cache( true );
+		$redirection->set_nocache( true );
 		$redirection->add_source( $from_url, 'exact' );
 		$redirection->save();
 
@@ -141,6 +141,7 @@ class Watcher {
 		Cache::purge_by_object_id( $object->ID, 'post' );
 		if ( $from_url ) {
 			$from_url = parse_url( $from_url, PHP_URL_PATH );
+			$from_url = Redirection::strip_subdirectory( $from_url );
 			Cache::add([
 				'from_url'       => $from_url,
 				'redirection_id' => $redirection->get_id(),

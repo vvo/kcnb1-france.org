@@ -63,6 +63,7 @@ class Admin extends WP_REST_Controller {
 
 		Helper::update_modules( [ $module => $state ] );
 
+		do_action( 'rank_math/module_changed', $module, $state );
 		return true;
 	}
 

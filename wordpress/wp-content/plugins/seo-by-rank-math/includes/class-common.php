@@ -31,7 +31,6 @@ class Common {
 	 */
 	public function __construct() {
 		$this->action( 'admin_bar_menu', 'admin_bar_menu', 100 );
-		$this->action( 'after_setup_theme', 'add_image_sizes' );
 		$this->action( 'loginout', 'nofollow_link' );
 		$this->filter( 'register', 'nofollow_link' );
 		$this->filter( 'rank_math/excluded_taxonomies', 'default_excluded_taxonomies' );
@@ -189,14 +188,6 @@ class Common {
 		unset( $taxonomies['product_shipping_class'] );
 
 		return $taxonomies;
-	}
-
-	/**.
-	 * Add image size for Facebook thumbnails
-	 */
-	public function add_image_sizes() {
-		add_image_size( 'rank-math-facebook-thumbnail', 560, 292, true );
-		add_image_size( 'rank-math-knowledgegraph-logo', null, 60, true );
 	}
 
 	/**
@@ -523,9 +514,7 @@ class Common {
 		$thumbnail_id  = ! empty( $_REQUEST['id'] ) ? (int) $_REQUEST['id'] : 0;
 		$type          = $_REQUEST['type'] ? $_REQUEST['type'] : 'play';
 		$overlay_image = Helper::choices_overlay_images()[ $type ]['url'];
-		if ( ! $image = wp_get_attachment_image_src( $thumbnail_id, 'rank-math-facebook-thumbnail' ) ) { // phpcs:ignore
-			$image = wp_get_attachment_image_src( $thumbnail_id, 'full' );
-		}
+		$image         = wp_get_attachment_image_src( $thumbnail_id, 'full' );
 
 		if ( ! empty( $image ) ) {
 			$this->create_overlay_image( $image[0], $overlay_image );

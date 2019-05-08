@@ -18,9 +18,9 @@
     }
   ],
   "browserslist": [
-    "last 2 versions",
-    "android 4",
-    "opera 12"
+    "last 1 version",
+    "not dead",
+    "> 0.2%"
   ],
   "scripts": {
     "build": "webpack --progress --config resources/assets/build/webpack.config.js",
@@ -37,7 +37,12 @@
     "node": ">= 8.0.0"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "1.2.18",
+    "@fortawesome/free-brands-svg-icons": "5.8.2",
+    "@fortawesome/free-regular-svg-icons": "5.8.2",
+    "@fortawesome/free-solid-svg-icons": "5.8.2",
     "autoprefixer": "9.5.1",
+    "bootstrap": "v4.3.1",
     "browser-sync": "2.26.5",
     "browsersync-webpack-plugin": "0.6.0",
     "bs-html-injector": "3.0.3",
@@ -58,7 +63,9 @@
     "imagemin-mozjpeg": "8.0.0",
     "imagemin-webpack-plugin": "2.4.2",
     "import-glob": "1.5.0",
+    "jquery": "3.4.1",
     "node-sass": "4.12.0",
+    "popper.js": "1.15.0",
     "postcss-loader": "2.1.6",
     "postcss-safe-parser": "3.0.1",
     "purgecss-webpack-plugin": "1.5.0",
@@ -80,14 +87,5 @@
   },
   "stylelint": {
     "rules": {}
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.2.18",
-    "@fortawesome/free-brands-svg-icons": "5.8.2",
-    "@fortawesome/free-regular-svg-icons": "5.8.2",
-    "@fortawesome/free-solid-svg-icons": "5.8.2",
-    "bootstrap": "v4.3.1",
-    "jquery": "3.4.1",
-    "popper.js": "1.15.0"
   }
 }

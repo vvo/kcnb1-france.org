@@ -75,8 +75,6 @@ class Admin_Menu implements Runner {
 
 	/**
 	 * Fix first submenu name.
-	 *
-	 * @TODO Why are we unsetting [0] and why we are saving transient.
 	 */
 	public function fix_first_submenu() {
 		global $submenu;

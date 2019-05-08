@@ -49,7 +49,7 @@ class Search_Console_Common extends Module {
 			'title'     => esc_html__( 'Search Console', 'rank-math' ),
 			'href'      => Helper::get_admin_url( 'search-console' ),
 			'parent'    => 'rank-math',
-			'meta'      => array( 'title' => esc_html__( 'Review analytics, sitemaps and crawl errors', 'rank-math' ) ),
+			'meta'      => array( 'title' => esc_html__( 'Review analytics and sitemaps', 'rank-math' ) ),
 			'_priority' => 50,
 		);
 

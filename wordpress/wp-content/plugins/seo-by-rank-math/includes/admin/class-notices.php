@@ -52,6 +52,10 @@ class Notices implements Runner {
 
 		$current = get_post_types( array( 'public' => true ) );
 		update_option( 'rank_math_known_post_types', $current );
+
+		if ( Helper::is_module_active( 'sitemap' ) ) {
+			\RankMath\Sitemap\Cache::invalidate_storage();
+		}
 	}
 
 	/**

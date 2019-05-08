@@ -137,6 +137,13 @@ class Admin extends Module {
 	 */
 	public function add_settings( $tabs ) {
 
+		/**
+		 * Allow developers to change number of redirections to process at once.
+		 *
+		 * @param int $number
+		 */
+		Helper::add_json( 'redirectionPastedContent', $this->do_filter( 'redirections/pastedContent', 100 ) );
+
 		Arr::insert( $tabs, [
 			'redirections' => [
 				'icon'  => 'dashicons dashicons-controls-forward',
@@ -186,7 +193,7 @@ class Admin extends Module {
 
 		check_admin_referer( 'bulk-redirections' );
 
-		$ids = (array) $_REQUEST['redirection'];
+		$ids = (array) wp_parse_id_list( $_REQUEST['redirection'] );
 		if ( empty( $ids ) ) {
 			Helper::add_notification( 'No valid id found.' );
 			return;

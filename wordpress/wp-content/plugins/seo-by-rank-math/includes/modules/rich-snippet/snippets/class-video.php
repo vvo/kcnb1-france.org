@@ -34,8 +34,11 @@ class Video implements Snippet {
 			'name'        => $jsonld->parts['title'],
 			'description' => $jsonld->parts['desc'],
 			'uploadDate'  => $jsonld->parts['published'],
-			'duration'    => 'PT' . Helper::get_post_meta( 'snippet_video_duration' ),
 		];
+
+		if ( $duration = Helper::get_post_meta( 'snippet_video_duration' ) ) { // phpcs:ignore
+			$entity['duration'] = Helper::get_formatted_duration( $duration );
+		}
 
 		$jsonld->set_data([
 			'snippet_video_url'       => 'contentUrl',

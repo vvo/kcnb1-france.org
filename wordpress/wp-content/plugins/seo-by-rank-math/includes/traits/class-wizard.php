@@ -27,6 +27,11 @@ trait Wizard {
 			return;
 		}
 
+		if ( ! is_null( $this->wizard_step ) ) {
+			$this->wizard_step->render( $this );
+			return;
+		}
+
 		if ( is_callable( $this->steps[ $this->step ]['view'] ) ) {
 			call_user_func( $this->steps[ $this->step ]['view'], $this );
 			return;

@@ -53,6 +53,7 @@ class Module_Manager {
 
 		$this->action( 'plugins_loaded', 'setup_modules' );
 		$this->action( 'plugins_loaded', 'load_modules', 11 );
+		add_action( 'rank_math/module_changed', [ '\RankMath\Admin\Watcher', 'module_changed' ], 10, 2 );
 	}
 
 	/**
@@ -223,7 +224,7 @@ class Module_Manager {
 
 		$is_disabled = isset( $module['disabled'] ) && $module['disabled'];
 		$can_skip    = isset( $module['only'] ) && 'skip' === $module['only'];
-		$inactive    = ! in_array( $module_id, $this->active );
+		$inactive    = ! is_array( $this->active ) || ! in_array( $module_id, $this->active );
 		if ( $is_disabled || $can_skip || $inactive ) {
 			return false;
 		}

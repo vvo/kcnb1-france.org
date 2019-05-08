@@ -11,9 +11,9 @@ use RankMath\Admin\System_Info;
 
 $is_network_admin  = is_network_admin();
 $is_network_active = RankMath\Helper::is_plugin_active_for_network();
-$current_tab       = $is_network_active && $is_network_admin ? 'help' : ( isset( $_GET['view'] ) ? $_GET['view'] : 'modules' );
+$current_tab       = $is_network_active && $is_network_admin ? 'help' : ( isset( $_GET['view'] ) ? filter_input( INPUT_GET, 'view' ) : 'modules' );
 ?>
-<div class="wrap rank-math-wrap limit-wrap">
+<div class="wrap rank-math-wrap">
 
 	<span class="wp-header-end"></span>
 

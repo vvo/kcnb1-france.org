@@ -296,7 +296,6 @@ class Local_Seo {
 		$services = array(
 			'facebook',
 			'twitter',
-			'gplus',
 			'google_places',
 			'yelp',
 			'foursquare',

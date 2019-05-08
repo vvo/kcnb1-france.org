@@ -115,7 +115,7 @@ class Post_Type implements Provider {
 			if ( $max_pages > 1 ) {
 				$sql = "
 				SELECT post_modified_gmt
-					FROM ( SELECT @rownum:=@rownum+1 rownum, $wpdb->posts.post_modified_gmt
+					FROM ( SELECT @rownum:=@rownum rownum, $wpdb->posts.post_modified_gmt
 					FROM ( SELECT @rownum:=0 ) r, $wpdb->posts
 						WHERE post_status IN ( 'publish', 'inherit' )
 						AND post_type = %s

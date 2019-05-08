@@ -279,8 +279,8 @@ class Options {
 	 * @return bool
 	 */
 	public function is_current_page() {
-		$page   = isset( $_REQUEST['page'] ) && ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : false;
-		$action = isset( $_REQUEST['action'] ) && ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : false;
+		$page   = isset( $_REQUEST['page'] ) && ! empty( $_REQUEST['page'] ) ? sanitize_text_field( $_REQUEST['page'] ) : false;
+		$action = isset( $_REQUEST['action'] ) && ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : false;
 
 		return $page === $this->key || $action === $this->key;
 	}

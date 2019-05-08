@@ -26,11 +26,8 @@ add_filter('body_class', function (array $classes) {
     return array_filter($classes);
 });
 
-/**
- * Add "… Continued" to the excerpt
- */
-add_filter('excerpt_more', function () {
-    return ' &hellip; <a href="' . get_permalink() . '">' . __('Continued', 'sage') . '</a>';
+add_filter('excerpt_length', function($length) {
+    return 19;
 });
 
 /**

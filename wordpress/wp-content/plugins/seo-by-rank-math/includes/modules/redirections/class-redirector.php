@@ -75,15 +75,7 @@ class Redirector {
 		$this->uri = str_replace( site_url( '/' ), '', $_SERVER['REQUEST_URI'] );
 		$this->uri = trim( $this->uri, '/' );
 		$this->uri = urldecode( $this->uri );
-
-		// Strip home directory when WP is installed in subdirectory.
-		$home_dir = ltrim( site_url( '', 'relative' ), '/' );
-		if ( $home_dir ) {
-			$home_dir  = trailingslashit( $home_dir );
-			$this->uri = str_replace( $home_dir, '', $this->uri );
-		}
-
-		$this->uri = trim( $this->uri, '/' );
+		$this->uri = trim( Redirection::strip_subdirectory( $this->uri ), '/' );
 	}
 
 	/**

@@ -30,7 +30,7 @@ class Rewrite {
 			$this->filter( 'query_vars', 'query_vars' );
 			$this->filter( 'request', 'request' );
 			$this->filter( 'category_rewrite_rules', 'category_rewrite_rules' );
-			$this->filter( 'category_link', 'no_category_base' );
+			$this->filter( 'term_link', 'no_category_base', 10, 3 );
 
 			add_action( 'created_category', 'RankMath\\Helper::schedule_flush_rewrite' );
 			add_action( 'delete_category', 'RankMath\\Helper::schedule_flush_rewrite' );
@@ -93,7 +93,7 @@ class Rewrite {
 		$this->remove_filter( 'query_vars', 'query_vars' );
 		$this->remove_filter( 'request', 'request' );
 		$this->remove_filter( 'category_rewrite_rules', 'category_rewrite_rules' );
-		$this->remove_filter( 'category_link', 'no_category_base' );
+		$this->remove_filter( 'term_link', 'no_category_base', 10 );
 
 		remove_action( 'init', 'RankMath\\Rewrite::change_author_base', 4 );
 	}
@@ -191,13 +191,20 @@ class Rewrite {
 	/**
 	 * Override the category link to remove the category base.
 	 *
-	 * @param  string $link Unused, overridden by the function.
+	 * @param  string $link     Term link.
+	 * @param  object $term     Current Term Object.
+	 * @param  string $taxonomy Current Taxonomy.
 	 * @return string
 	 */
-	public function no_category_base( $link ) {
+	public function no_category_base( $link, $term, $taxonomy ) {
+		if ( 'category' !== $taxonomy ) {
+			return $link;
+		}
+
 		$category_base = get_option( 'category_base' );
 		if ( empty( $category_base ) ) {
-			$category_base = 'category';
+			global $wp_rewrite;
+			$category_base = trim( str_replace( '%category%', '', $wp_rewrite->get_category_permastruct() ), '/' );
 		}
 
 		// Remove initial slash, if there is one (we remove the trailing slash in the regex replacement and don't want to end up short a slash).

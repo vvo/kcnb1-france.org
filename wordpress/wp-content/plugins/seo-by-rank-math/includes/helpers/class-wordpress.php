@@ -14,6 +14,7 @@ use RankMath\Post;
 use RankMath\Term;
 use RankMath\User;
 use RankMath\Helper;
+use MyThemeShop\Helpers\Str;
 use MyThemeShop\Helpers\WordPress as WP_Helper;
 
 defined( 'ABSPATH' ) || exit;
@@ -97,11 +98,11 @@ trait WordPress {
 	 * @param  array  $args Pass arguments to query string.
 	 * @return string
 	 */
-	public static function get_admin_url( $page = '', $args = array() ) {
+	public static function get_admin_url( $page = '', $args = [] ) {
 		$page = $page ? 'rank-math-' . $page : 'rank-math';
-		$args = wp_parse_args( $args, array( 'page' => $page ) );
+		$args = wp_parse_args( $args, [ 'page' => $page ] );
 
-		return add_query_arg( $args, network_admin_url( 'admin.php' ) );
+		return add_query_arg( $args, admin_url( 'admin.php' ) );
 	}
 
 	/**
@@ -111,10 +112,10 @@ trait WordPress {
 	 * @return string
 	 */
 	public static function get_connect_url() {
-		$args = array(
+		$args = [
 			'page' => 'rank-math',
 			'view' => 'help',
-		);
+		];
 		if ( ! is_multisite() ) {
 			return add_query_arg( $args, admin_url( 'admin.php' ) );
 		}
@@ -136,9 +137,9 @@ trait WordPress {
 	 */
 	public static function get_dashboard_url() {
 		$site_type     = get_transient( '_rank_math_site_type' );
-		$business_type = array( 'news', 'business', 'webshop', 'otherbusiness' );
+		$business_type = [ 'news', 'business', 'webshop', 'otherbusiness' ];
 
-		if ( in_array( $site_type, $business_type ) ) {
+		if ( in_array( $site_type, $business_type, true ) ) {
 			return self::get_admin_url( 'options-titles#setting-panel-local' );
 		}
 		return admin_url( 'admin.php?page=rank-math&view=modules' );
@@ -152,7 +153,7 @@ trait WordPress {
 	 * @return array
 	 */
 	public static function get_capabilities() {
-		$caps = array(
+		$caps = [
 			'rank_math_titles'          => esc_html__( 'Titles & Meta Settings', 'rank-math' ),
 			'rank_math_general'         => esc_html__( 'General Settings', 'rank-math' ),
 			'rank_math_sitemap'         => esc_html__( 'Sitemap Settings', 'rank-math' ),
@@ -168,7 +169,7 @@ trait WordPress {
 			'rank_math_onpage_snippet'  => esc_html__( 'On-Page Rich Snippet Settings', 'rank-math' ),
 			'rank_math_onpage_social'   => esc_html__( 'On-Page Social Settings', 'rank-math' ),
 			'rank_math_admin_bar'       => esc_html__( 'Top Admin Bar', 'rank-math' ),
-		);
+		];
 
 		if ( ! function_exists( 'rank_math_load_premium' ) ) {
 			unset( $caps['rank_math_link_builder'] );
@@ -185,7 +186,7 @@ trait WordPress {
 	 * @return array
 	 */
 	public static function get_roles_capabilities() {
-		$data = array();
+		$data = [];
 		$caps = array_keys( self::get_capabilities() );
 
 		foreach ( WP_Helper::get_roles() as $slug => $role ) {
@@ -221,7 +222,7 @@ trait WordPress {
 				continue;
 			}
 
-			$roles[ $slug ] = isset( $roles[ $slug ] ) && is_array( $roles[ $slug ] ) ? array_flip( $roles[ $slug ] ) : array();
+			$roles[ $slug ] = isset( $roles[ $slug ] ) && is_array( $roles[ $slug ] ) ? array_flip( $roles[ $slug ] ) : [];
 			foreach ( $caps as $cap ) {
 				if ( isset( $roles[ $slug ], $roles[ $slug ][ $cap ] ) ) {
 					$role->add_cap( $cap );
@@ -263,7 +264,7 @@ trait WordPress {
 		preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', get_the_content(), $matches );
 		$matches = array_filter( $matches );
 		if ( ! empty( $matches ) ) {
-			return array( $matches[1][0], 200, 200 );
+			return [ $matches[1][0], 200, 200 ];
 		}
 
 		$fb_image = Helper::get_post_meta( 'facebook_image_id', $post_id );
@@ -300,5 +301,47 @@ trait WordPress {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Helper function to validate & format ISO 8601 duration.
+	 *
+	 * @param  string $iso8601 Duration which need to be converted to seconds.
+	 * @return string
+	 *
+	 * @since 1.0.21
+	 */
+	public static function get_formatted_duration( $iso8601 ) {
+		$end = substr( $iso8601, -1 );
+		if ( ! in_array( $end, [ 'D', 'H', 'M', 'S' ], true ) ) {
+			return '';
+		}
+
+		// The format starts with the letter P, for "period".
+		return ( ! Str::starts_with( 'P', $iso8601 ) ) ? 'PT' . $iso8601 : $iso8601;
+	}
+
+	/**
+	 * Get robots default.
+	 *
+	 * @return array
+	 */
+	public static function get_robots_defaults() {
+		$robots = [];
+		$screen = get_current_screen();
+
+		if ( 'post' === $screen->base && Helper::get_settings( "titles.pt_{$screen->post_type}_custom_robots" ) ) {
+			$robots = Helper::get_settings( "titles.pt_{$screen->post_type}_robots", [] );
+		}
+
+		if ( 'term' === $screen->base && Helper::get_settings( "titles.tax_{$screen->taxonomy}_custom_robots" ) ) {
+			$robots = Helper::get_settings( "titles.tax_{$screen->taxonomy}_robots", [] );
+		}
+
+		if ( is_array( $robots ) && ! in_array( 'noindex', $robots, true ) ) {
+			$robots[] = 'index';
+		}
+
+		return $robots;
 	}
 }

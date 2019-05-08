@@ -61,9 +61,8 @@ class Admin implements Runner {
 	 * @return array $contactmethods with added contactmethods.
 	 */
 	public function update_contactmethods( $contactmethods ) {
-		$contactmethods['googleplus'] = esc_html__( 'Google+', 'rank-math' );
-		$contactmethods['twitter']    = esc_html__( 'Twitter username (without @)', 'rank-math' );
-		$contactmethods['facebook']   = esc_html__( 'Facebook profile URL', 'rank-math' );
+		$contactmethods['twitter']  = esc_html__( 'Twitter username (without @)', 'rank-math' );
+		$contactmethods['facebook'] = esc_html__( 'Facebook profile URL', 'rank-math' );
 
 		return $contactmethods;
 	}
@@ -90,7 +89,7 @@ class Admin implements Runner {
 	 * Display dashabord tabs.
 	 */
 	public function display_dashboard_nav() {
-		$current = isset( $_GET['view'] ) ? $_GET['view'] : 'modules';
+		$current = isset( $_GET['view'] ) ? filter_input( INPUT_GET, 'view' ) : 'modules';
 		?>
 		<h2 class="nav-tab-wrapper">
 			<?php
@@ -182,9 +181,9 @@ class Admin implements Runner {
 		if ( 'post' === $object_type ) {
 			$query .= sprintf( '%s.post_status = \'publish\' and ', $main );
 		}
-		$query .= sprintf( '%1$s.meta_key = \'rank_math_focus_keyword\' and %1$s.meta_value like %2$s and %1$s.%3$s_id != %4$d', $meta, '%s', $object_type, $object_id );
+		$query .= sprintf( '%1$s.meta_key = \'rank_math_focus_keyword\' and ( %1$s.meta_value = %2$s OR %1$s.meta_value like %3$s ) and %1$s.%4$s_id != %5$d', $meta, '%s', '%s', $object_type, $object_id );
 
-		$data = $wpdb->get_row( $wpdb->prepare( $query, '%' . $wpdb->esc_like( $keyword ) . '%' ) ); // phpcs:ignore
+		$data = $wpdb->get_row( $wpdb->prepare( $query, $keyword, $wpdb->esc_like( $keyword ) . ',%' ) ); // phpcs:ignore
 
 		$result['isNew'] = empty( $data );
 

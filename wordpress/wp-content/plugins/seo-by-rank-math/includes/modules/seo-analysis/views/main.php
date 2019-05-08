@@ -9,18 +9,19 @@
  * @copyright 2019 Rank Math
  */
 
+use RankMath\KB;
 use RankMath\Helper;
 
 $assets   = plugin_dir_url( dirname( __FILE__ ) );
 $analyzer = Helper::get_module( 'seo-analysis' )->admin->analyzer;
 ?>
-<div class="wrap rank-math-seo-analysis-wrap limit-wrap">
+<div class="wrap rank-math-seo-analysis-wrap">
 
 	<span class="wp-header-end"></span>
 
 	<h2>
 		<?php echo esc_html( get_admin_page_title() ); ?>
-		<a class="page-title-action" href="<?php echo \RankMath\KB::get( 'seo-analysis' ); ?>" target="_blank"><?php esc_html_e( 'What is this?', 'rank-math' ); ?></a>
+		<a class="page-title-action" href="<?php KB::the( 'seo-analysis' ); ?>" target="_blank"><?php esc_html_e( 'What is this?', 'rank-math' ); ?></a>
 	</h2>
 	<?php if ( Helper::is_mythemeshop_connected() ) : ?>
 	<div class="rank-math-seo-analysis-header rank-math-ui<?php echo empty( $analyzer->results ) ? '' : ' hidden'; ?>">
@@ -60,7 +61,7 @@ $analyzer = Helper::get_module( 'seo-analysis' )->admin->analyzer;
 	<?php endif; ?>
 <?php else : ?>
 	<div class="rank-math-seo-analysis-header rank-math-ui">
-		<h3>Analyze your site by <a href="<?php echo Helper::get_connect_url(); ?>" target="_blank">linking your Rank Math account</a>.</h3>
+		<h3><?php printf( __( 'Analyze your site by <a href="%1$s" target="_blank">linking your Rank Math account', 'rank-math' ), Helper::get_connect_url() ); ?></a>.</h3>
 	</div>
 	<?php // phpcs:enable ?>
 <?php endif; ?>

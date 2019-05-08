@@ -1,22 +1,22 @@
 .fs-14 {
-  font-size: $font-size-14px;
+  @include font-size($font-size-14px);
 }
 
 .fs-18 {
-  font-size: $font-size-18px;
+  @include font-size($font-size-18px);
 }
 
 .fs-40 {
-  font-size: $font-size-40px;
+  @include font-size($font-size-40px);
 }
 
 .fs-90 {
-  font-size: $font-size-90px;
+  @include font-size($font-size-90px);
 }
 
 .socialLinksContainer {
   background-color: #f6f5f5;
-  font-size: $font-size-12px;
+  @include font-size($font-size-12px);
 }
 
 .socialLinksContainer,
@@ -27,7 +27,7 @@
 }
 
 .socialLinks .svg-inline--fa {
-  font-size: 1.5rem;
+  @include font-size(1.5rem);
   position: relative;
   top: 0.25rem;
 }
@@ -45,7 +45,7 @@
 }
 
 .nav-link {
-  font-size: $font-size-14px;
+  @include font-size($font-size-14px);
 }
 
 .nav-link:hover {
@@ -78,7 +78,7 @@
   border-top: 1px solid $cgray;
   color: $cblu;
   text-transform: uppercase;
-  font-size: $font-size-14px;
+  @include font-size($font-size-14px);
   @extend .px-3;
   @extend .py-2;
   @extend .d-flex;
@@ -101,7 +101,7 @@
 }
 
 .icon-text {
-  font-size: $font-size-14px;
+  @include font-size($font-size-14px);
   color: $cpinky;
   font-weight: $font-weight-bold;
   @extend .mb-2;
@@ -119,19 +119,20 @@
 }
 
 .card-text {
-  font-size: $font-size-14px;
+  @include font-size($font-size-14px);
 }
 
 .number {
-  width: 18.875rem;
-  height: 18.875rem;
-  border: 6px solid $cpinky;
+  width: 17.875rem;
+  height: 17.875rem;
+  border: 0.375rem solid $cpinky;
   border-radius: 50%;
   text-align: center;
+  padding-top: 5rem;
 }
 
 .numberTitle {
-  font-size: $font-size-90px;
+  @include font-size($font-size-75px);
   font-weight: $font-weight-bold;
   color: #fff;
   position: relative;
@@ -159,4 +160,19 @@ footer ul {
 .navbar .active a {
   color: $clorage !important;
   text-decoration: none;
+}
+
+.temoignagne-container {
+  position: relative;
+  top: -7rem;
+}
+
+.template-temoignage .attachment-post-thumbnail {
+  @extend .img-fluid;
+}
+
+.magazine {
+  columns: 4 18.75rem;
+  column-gap: 1.5rem;
+  hyphens: auto;
 }

@@ -146,13 +146,10 @@ class AIOSEO extends Plugin_Importer {
 				$social_links = explode( "\n", $opengraph_settings['aiosp_opengraph_profile_links'] );
 				$social_links = array_filter( $social_links );
 				if ( ! empty( $social_links ) ) {
-					$services = array( 'facebook', 'twitter', 'google', 'linkedin', 'instagram', 'youtube', 'pinterest', 'soundcloud', 'tumblr', 'myspace' );
+					$services = array( 'facebook', 'twitter', 'linkedin', 'instagram', 'youtube', 'pinterest', 'soundcloud', 'tumblr', 'myspace' );
 					foreach ( $social_links as $social_link ) {
 						foreach ( $services as $service ) {
 							if ( Str::contains( $service, $social_link ) ) {
-								if ( 'google' === $service ) {
-									$service = 'gplus';
-								}
 								$titles[ 'social_url_' . $service ] = $social_link;
 							}
 						}

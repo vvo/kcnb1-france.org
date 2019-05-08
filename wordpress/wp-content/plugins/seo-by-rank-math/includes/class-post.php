@@ -11,6 +11,7 @@
 namespace RankMath;
 
 use WP_Post;
+use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -167,7 +168,7 @@ class Post extends Metadata {
 	 * @return bool Whether the current page is the WooCommerce Cart/Account/Checkout page.
 	 */
 	public static function is_woocommerce_page() {
-		if ( function_exists( 'is_cart' ) ) {
+		if ( Conditional::is_woocommerce_active() ) {
 			return is_cart() || is_checkout() || is_account_page();
 		}
 

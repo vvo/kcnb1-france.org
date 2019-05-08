@@ -179,8 +179,9 @@ class Admin_Helper {
 	 */
 	private static function authenticate_user( $username, $password ) {
 		$response = wp_remote_post( 'https://rankmath.com/wp-json/rankmath/v1/token', [
-			'timeout' => 10,
-			'body'    => [
+			'timeout'    => 10,
+			'user-agent' => 'RankMath/' . md5( esc_url( home_url( '/' ) ) ),
+			'body'       => [
 				'username' => $username,
 				'password' => $password,
 			],

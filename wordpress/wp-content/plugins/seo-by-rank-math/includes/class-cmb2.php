@@ -131,7 +131,7 @@ class CMB2 {
 	 */
 	public static function render_tab_container_open( $field_args, $field ) {
 
-		$active = ! empty( $_GET['rank-math-tab'] ) ? $_GET['rank-math-tab'] : 'general';
+		$active = ! empty( $_GET['rank-math-tab'] ) ? filter_input( INPUT_GET, 'rank-math-tab' ) : 'general';
 		echo '<div id="' . $field->prop( 'id' ) . '" class="rank-math-tabs">';
 		?>
 		<div class="rank-math-tabs-navigation wp-clearfix">

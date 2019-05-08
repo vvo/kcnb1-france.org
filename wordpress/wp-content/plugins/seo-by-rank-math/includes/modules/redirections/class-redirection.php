@@ -159,7 +159,7 @@ class Redirection {
 	 *
 	 * @param bool $nocache Can save cache or not.
 	 */
-	public function set_cache( $nocache ) {
+	public function set_nocache( $nocache ) {
 		$this->nocache = $nocache;
 	}
 
@@ -320,7 +320,7 @@ class Redirection {
 			return false;
 		}
 
-		return urldecode( untrailingslashit( $url ) );
+		return urldecode( untrailingslashit( Redirection::strip_subdirectory( $url ) ) );
 	}
 
 	/**
@@ -414,5 +414,21 @@ class Redirection {
 		$this->domain = Url::get_domain( site_url() );
 
 		return $this->domain;
+	}
+
+	/**
+	 * Strip home directory when WP is installed in subdirectory
+	 *
+	 * @param string $url Url to strip from.
+	 *
+	 * @return string
+	 */
+	public static function strip_subdirectory( $url ) {
+		$home_dir = ltrim( site_url( '', 'relative' ), '/' );
+		if ( $home_dir ) {
+			$url = str_replace( trailingslashit( $home_dir ), '', $url );
+		}
+
+		return $url;
 	}
 }

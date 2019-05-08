@@ -25,7 +25,7 @@ $backups = get_option( 'rank_math_backups', array() );
 							printf( esc_html__( 'Backup: %s', 'rank-math' ), date( 'M jS Y, H:i a', $key ) );
 							?>
 						</th>
-						<td>
+						<td style="width:195px;padding-left:0;">
 							<button type="button" class="button button-primary rank-math-action" data-action="restoreBackup" data-key="<?php echo esc_attr( $key ); ?>"><?php esc_html_e( 'Restore', 'rank-math' ); ?></button>
 							<button type="button" class="button button-link-delete rank-math-action" data-action="deleteBackup" data-key="<?php echo esc_attr( $key ); ?>"><?php esc_html_e( 'Delete', 'rank-math' ); ?></button>
 						</td>
@@ -35,7 +35,7 @@ $backups = get_option( 'rank_math_backups', array() );
 					<tr class="hidden">
 						<th>
 						</th>
-						<td>
+						<td style="width:195px;padding-left:0;">
 							<button type="button" class="button button-primary rank-math-action" data-action="restoreBackup" data-key=""><?php esc_html_e( 'Restore', 'rank-math' ); ?></button>
 							<button type="button" class="button button-link-delete rank-math-action" data-action="deleteBackup" data-key=""><?php esc_html_e( 'Delete', 'rank-math' ); ?></button>
 						</td>

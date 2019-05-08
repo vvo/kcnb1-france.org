@@ -231,6 +231,8 @@ class Image {
 			return;
 		}
 
+		$attachment['url'] = $image_url;
+
 		if ( ! $attachment['alt'] && is_singular() ) {
 			$attachment['alt'] = $this->get_attachment_alt();
 		}

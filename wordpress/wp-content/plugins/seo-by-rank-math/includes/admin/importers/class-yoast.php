@@ -225,15 +225,14 @@ class Yoast extends Plugin_Importer {
 
 		// Social.
 		$hash = [
-			'facebook_site'   => 'social_url_facebook',
-			'twitter_site'    => 'twitter_author_names',
-			'instagram_url'   => 'social_url_instagram',
-			'linkedin_url'    => 'social_url_linkedin',
-			'youtube_url'     => 'social_url_youtube',
-			'google_plus_url' => 'social_url_gplus',
-			'pinterest_url'   => 'social_url_pinterest',
-			'myspace_url'     => 'social_url_myspace',
-			'fbadminapp'      => 'facebook_app_id',
+			'facebook_site' => 'social_url_facebook',
+			'twitter_site'  => 'twitter_author_names',
+			'instagram_url' => 'social_url_instagram',
+			'linkedin_url'  => 'social_url_linkedin',
+			'youtube_url'   => 'social_url_youtube',
+			'pinterest_url' => 'social_url_pinterest',
+			'myspace_url'   => 'social_url_myspace',
+			'fbadminapp'    => 'facebook_app_id',
 		];
 		$this->replace( $hash, $yoast_social, $titles );
 

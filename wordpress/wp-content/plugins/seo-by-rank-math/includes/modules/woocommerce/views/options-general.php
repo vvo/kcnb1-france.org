@@ -40,3 +40,11 @@ $cmb->add_field( array(
 	'desc'    => esc_html__( 'Remove WooCommerce generator tag from the source code.', 'rank-math' ),
 	'default' => 'on',
 ) );
+
+$cmb->add_field( array(
+	'id'      => 'remove_shop_snippet_data',
+	'type'    => 'switch',
+	'name'    => esc_html__( 'Remove Snippet Data', 'rank-math' ),
+	'desc'    => esc_html__( 'Remove Snippet Data from WooCommerce Shop page.', 'rank-math' ),
+	'default' => 'on',
+) );

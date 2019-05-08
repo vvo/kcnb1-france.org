@@ -6,6 +6,7 @@
  * @subpackage RankMath\Redirections
  */
 
+use RankMath\KB;
 use RankMath\Helper;
 
 $is_new       = isset( $_GET['new'] );
@@ -19,7 +20,7 @@ $is_editing   = ! empty( $_GET['url'] ) || ! empty( $_REQUEST['log'] ) || ! empt
 		<a class="rank-math-add-new-redirection<?php echo $is_editing ? '-refresh' : ''; ?> page-title-action" href="<?php echo Helper::get_admin_url( 'redirections', 'new=1' ); ?>"><?php esc_html_e( 'Add New', 'rank-math' ); ?></a>
 		<a class="page-title-action" href="<?php echo Helper::get_admin_url( 'redirections', 'export=apache' ); ?>"><?php esc_html_e( 'Export to .htaccess', 'rank-math' ); ?></a>
 		<a class="page-title-action" href="<?php echo Helper::get_admin_url( 'redirections', 'export=nginx' ); ?>"><?php esc_html_e( 'Export to Nginx config file', 'rank-math' ); ?></a>
-		<a class="page-title-action" href="<?php echo \RankMath\KB::get( 'redirections' ); ?>" target="_blank"><?php esc_html_e( 'Learn More', 'rank-math' ); ?></a>
+		<a class="page-title-action" href="<?php KB::the( 'redirections' ); ?>" target="_blank"><?php esc_html_e( 'Learn More', 'rank-math' ); ?></a>
 		<a class="page-title-action" href="<?php echo Helper::get_admin_url( 'options-general#setting-panel-redirections' ); ?>"><?php esc_html_e( 'Settings', 'rank-math' ); ?></a>
 	</h1>
 

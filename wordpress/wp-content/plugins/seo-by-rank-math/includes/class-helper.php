@@ -216,4 +216,72 @@ class Helper {
 
 		update_option( 'rank_math_modules', array_unique( $stored ) );
 	}
+
+	/**
+	 * Clear cache from:
+	 *  - WordPress Total Cache
+	 *  - W3 Total Cache
+	 *  - WP Super Cache
+	 *  - SG CachePress
+	 *  - WPEngine
+	 *  - Varnish
+	 */
+	public static function clear_cache() {
+		// Clean WordPress cache.
+		if ( function_exists( 'wp_cache_clear_cache' ) ) {
+			wp_cache_clear_cache();
+		}
+
+		// If W3 Total Cache is being used, clear the cache.
+		if ( function_exists( 'w3tc_pgcache_flush' ) ) {
+			w3tc_pgcache_flush();
+		}
+
+		// If WP Super Cache is being used, clear the cache.
+		if ( function_exists( 'wp_cache_clean_cache' ) ) {
+			global $file_prefix;
+			wp_cache_clean_cache( $file_prefix );
+		}
+
+		// If SG CachePress is installed, rese its caches.
+		if ( class_exists( 'SG_CachePress_Supercacher' ) && is_callable( array( 'SG_CachePress_Supercacher', 'purge_cache' ) ) ) {
+			\SG_CachePress_Supercacher::purge_cache();
+		}
+
+		// Clear caches on WPEngine-hosted sites.
+		if ( class_exists( 'WpeCommon' ) ) {
+			\WpeCommon::purge_memcached();
+			\WpeCommon::clear_maxcdn_cache();
+			\WpeCommon::purge_varnish_cache();
+		}
+
+		// Clear Varnish caches.
+		self::clear_varnish_cache();
+	}
+
+	/**
+	 * Clear varnish cache for the dynamic files.
+	 */
+	private static function clear_varnish_cache() {
+		// Parse the URL for proxy proxies.
+		$parsed_url = wp_parse_url( home_url() );
+
+		// Build a varniship.
+		$varniship = get_option( 'vhp_varnish_ip' );
+		if ( defined( 'VHP_VARNISH_IP' ) && VHP_VARNISH_IP != false ) {
+			$varniship = VHP_VARNISH_IP;
+		}
+
+		// If we made varniship, let it sail.
+		$purgeme = ( isset( $varniship ) && null != $varniship ) ? $varniship : $parsed_url['host'];
+		wp_remote_request( 'http://' . $purgeme,
+			array(
+				'method'  => 'PURGE',
+				'headers' => array(
+					'host'           => $parsed_url['host'],
+					'X-Purge-Method' => 'default',
+				),
+			)
+		);
+	}
 }

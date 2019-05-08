@@ -8,11 +8,12 @@
  * @author     Rank Math <support@rankmath.com>
  */
 
-namespace RankMath;
+namespace RankMath\Frontend;
 
 use RankMath\Post;
 use RankMath\Term;
 use RankMath\User;
+use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Sitemap\Router;
 use MyThemeShop\Helpers\Url;

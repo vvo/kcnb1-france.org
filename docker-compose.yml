@@ -35,3 +35,5 @@ services:
       - db
     environment:
       APP_ENV: development
+    extra_hosts:
+      - "localhost:172.18.0.1"

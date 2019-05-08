@@ -156,7 +156,7 @@ function rank_math_has_default_tagline() {
 	$default_description = 'Just another WordPress site';
 
 	// We are checking against the WordPress internal translation.
-	$translated_description = __( 'Just another WordPress site', 'default' ); // phpcs:ignore
+	$translated_description = translate( 'Just another WordPress site' ); // phpcs:ignore
 
 	return $translated_description === $description || $default_description === $description;
 }

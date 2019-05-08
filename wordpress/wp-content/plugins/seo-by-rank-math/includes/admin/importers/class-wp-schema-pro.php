@@ -39,14 +39,14 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 *
 	 * @var array
 	 */
-	protected $option_keys = array( 'wp-schema-pro-general-settings', 'wp-schema-pro-social-profiles', 'wp-schema-pro-global-schemas' );
+	protected $option_keys = [ 'wp-schema-pro-general-settings', 'wp-schema-pro-social-profiles', 'wp-schema-pro-global-schemas' ];
 
 	/**
 	 * Array of choices keys to import
 	 *
 	 * @var array
 	 */
-	protected $choices = array( 'settings', 'postmeta' );
+	protected $choices = [ 'settings', 'postmeta' ];
 
 	/**
 	 * Import settings of plugin.
@@ -69,9 +69,7 @@ class WP_Schema_Pro extends Plugin_Importer {
 		}
 
 		// General.
-		$hash = array(
-			'site-represent' => 'knowledgegraph_type',
-		);
+		$hash = [ 'site-represent' => 'knowledgegraph_type' ];
 
 		$has_key          = 'person' === $schema_general['site-represent'] ? 'person-name' : 'site-name';
 		$hash[ $has_key ] = 'knowledgegraph_name';
@@ -80,22 +78,21 @@ class WP_Schema_Pro extends Plugin_Importer {
 		$titles['local_seo'] = isset( $schema_general['site-represent'] ) && ! empty( $yoast_titles['site-represent'] ) ? 'on' : 'off';
 
 		// Social.
-		$hash = array(
-			'facebook'    => 'social_url_facebook',
-			'twitter'     => 'twitter_author_names',
-			'instagram'   => 'social_url_instagram',
-			'linkedin'    => 'social_url_linkedin',
-			'youtube'     => 'social_url_youtube',
-			'google-plus' => 'social_url_gplus',
-			'pinterest'   => 'social_url_pinterest',
-		);
+		$hash = [
+			'facebook'  => 'social_url_facebook',
+			'twitter'   => 'twitter_author_names',
+			'instagram' => 'social_url_instagram',
+			'linkedin'  => 'social_url_linkedin',
+			'youtube'   => 'social_url_youtube',
+			'pinterest' => 'social_url_pinterest',
+		];
 		$this->replace( $hash, $schema_social, $titles );
 
 		// About & Contact Page.
-		$hash = array(
+		$hash = [
 			'about-page'   => 'local_seo_about_page',
 			'contact-page' => 'local_seo_contact_page',
-		);
+		];
 		$this->replace( $hash, $schema_global, $titles );
 
 		Helper::update_all_settings( '', $titles, '' );
@@ -170,11 +167,11 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 * @return string
 	 */
 	private function sanitize_schema_type( $type ) {
-		$hash = array(
+		$hash = [
 			'job-posting'          => 'jobposting',
 			'video-object'         => 'video',
 			'software-application' => 'software',
-		);
+		];
 
 		return isset( $hash[ $type ] ) ? $hash[ $type ] : $type;
 	}
@@ -206,15 +203,15 @@ class WP_Schema_Pro extends Plugin_Importer {
 			return false;
 		}
 
-		$current_page_data = array();
+		$current_page_data = [];
 		foreach ( $local_posts as $local_post ) {
 			$snippet_type = get_post_meta( $local_post, 'bsf-aiosrs-schema-type', true );
 
-			return array(
+			return [
 				'id'      => $local_post,
 				'type'    => $snippet_type,
 				'details' => get_post_meta( $local_post, 'bsf-aiosrs-' . $snippet_type, true ),
-			);
+			];
 		}
 	}
 
@@ -224,10 +221,10 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 * @return array
 	 */
 	public function get_choices() {
-		return array(
+		return [
 			'settings' => esc_html__( 'Import Settings', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Plugin settings and site-wide meta data.', 'rank-math' ) ),
 			'postmeta' => esc_html__( 'Import Rich Snippets', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import all Schema data for Posts, Pages, and custom post types.', 'rank-math' ) ),
-		);
+		];
 	}
 
 	/**
@@ -236,24 +233,24 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 * @return array
 	 */
 	private function get_schema_types() {
-		return array(
-			'article'              => array(
+		return [
+			'article'              => [
 				'name'        => 'name',
 				'description' => 'desc',
 				'schema-type' => 'article_type',
-			),
-			'book'                 => array(
+			],
+			'book'                 => [
 				'name'         => 'name',
 				'url'          => 'url',
 				'author'       => 'author',
 				'work-example' => 'book_editions',
-			),
-			'course'               => array(
+			],
+			'course'               => [
 				'name'             => 'name',
 				'description'      => 'desc',
 				'orgnization-name' => 'provider',
-			),
-			'event'                => array(
+			],
+			'event'                => [
 				'name'           => 'name',
 				'description'    => 'desc',
 				'ticket-buy-url' => 'event_ticketurl',
@@ -263,8 +260,8 @@ class WP_Schema_Pro extends Plugin_Importer {
 				'price'          => 'event_price',
 				'currency'       => 'event_currency',
 				'avail'          => 'event_availability',
-			),
-			'job-posting'          => array(
+			],
+			'job-posting'          => [
 				'title'                   => 'name',
 				'description'             => 'desc',
 				'salary'                  => 'jobposting_salary',
@@ -273,15 +270,15 @@ class WP_Schema_Pro extends Plugin_Importer {
 				'job-type'                => 'jobposting_employment_type',
 				'jobposting_organization' => 'orgnization-name',
 				'jobposting_url'          => 'jobposting_url',
-			),
-			'product'              => array(
+			],
+			'product'              => [
 				'brand-name' => 'product_brand',
 				'name'       => 'name',
 				'price'      => 'product_currency',
 				'currency'   => 'product_price',
 				'avail'      => 'product_instock',
-			),
-			'recipe'               => array(
+			],
+			'recipe'               => [
 				'name'              => 'name',
 				'description'       => 'desc',
 				'recipe-category'   => 'recipe_type',
@@ -292,35 +289,35 @@ class WP_Schema_Pro extends Plugin_Importer {
 				'cook-time'         => 'recipe_cooktime',
 				'recipes_totaltime' => 'recipe_totaltime',
 				'ingredients'       => 'recipe_ingredients',
-			),
-			'video-object'         => array(
+			],
+			'video-object'         => [
 				'name'              => 'name',
 				'description'       => 'desc',
 				'content-url'       => 'video_url',
 				'embed-url'         => 'video_embed_url',
 				'duration'          => 'video_duration',
 				'interaction-count' => 'video_views',
-			),
-			'review'               => array(
+			],
+			'review'               => [
 				'item'        => 'name',
 				'description' => 'desc',
 				'rating'      => 'review_rating_value',
-			),
-			'person'               => array(
+			],
+			'person'               => [
 				'name'      => 'name',
 				'email'     => 'person_email',
 				'gender'    => 'person_gender',
 				'job-title' => 'job_title',
-			),
-			'service'              => array(
+			],
+			'service'              => [
 				'name'         => 'name',
 				'description'  => 'desc',
 				'type'         => 'service_type',
 				'price-range'  => 'price',
 				'rating'       => 'service_rating_value',
 				'review-count' => 'service_rating_count',
-			),
-			'software-application' => array(
+			],
+			'software-application' => [
 				'name'             => 'name',
 				'rating'           => 'software_rating_value',
 				'review-count'     => 'software_rating_count',
@@ -328,7 +325,7 @@ class WP_Schema_Pro extends Plugin_Importer {
 				'currency'         => 'software_price_currency',
 				'operating-system' => 'software_operating_system',
 				'category'         => 'software_application_category',
-			),
-		);
+			],
+		];
 	}
 }

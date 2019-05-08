@@ -2,10 +2,10 @@
 Contributors: rankmath
 Plugin link: https://s.rankmath.com/homepage
 Tags: seo, sitemap, google search console, schema.org, redirection
-Tested up to: 5.1
+Tested up to: 5.2
 Requires at least: 4.6.0
 Requires PHP: 5.6
-Stable tag: 1.0.20
+Stable tag: 1.0.23.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -19,7 +19,7 @@ Rank Math is a revolutionary SEO plugin that combines the features of many SEO t
 **SEO is the most consistent source of traffic for any website.** We created <a href="https://s.rankmath.com/seo" target="_blank">**Rank Math, a WordPress SEO plugin**</a>, to help every website owner get access to the SEO tools they need to improve their SEO and attract more traffic to their website.
 ## <center><a href="https://s.rankmath.com/demo" target="_blank">Try The Demo</a></center> ##
 
-[youtube https://www.youtube.com/watch?v=hJXzs0hRmOI]
+[youtube https://www.youtube.com/watch?v=NgeaqIy2OB0]
 
 <a href="https://s.rankmath.com/suitefeatures" target="_blank">Features</a> | <a href="https://s.rankmath.com/whyseosuite" target="_blank">Why Choose Rank Math?</a> | <a href="https://s.rankmath.com/compare" target="_blank">Compare</a> | <a href="https://s.rankmath.com/screenshots" target="_blank">Screenshots</a> | <a href="https://s.rankmath.com/benefits" target="_blank">Benefits</a>
 
@@ -219,7 +219,6 @@ Coming Soon!
 	* **Google Site Verification**
 	* Pinterest Site Verification
 	* Norton Safe Web Site Verification
-* **Fix Google Crawl Errors**
 * Advanced **Redirection Manager**
 	* **Smart & Automatic Post Redirects**
 	* 301 Redirection Type
@@ -448,8 +447,10 @@ We look forward to helping you.
 
 == Changelog ==
 
-= 1.0.20 [Mar 06, 2019] =
-* Enhanced the Role Manager to disallow any permissions by default to lesser used roles like contributor etc.
-* Fixed a fatal error happening when users were upgrading from a version lower than 1.0.18 to the latest version
+= 1.0.23.1 [May 4th, 2019] =
+* Fixed Unparsable structured data error. [Know more](https://support.google.com/webmasters/answer/9166415).
+
+= 1.0.23 [Apr 4th, 2019] =
+* Fixed a bug where the indexing of the posts was getting affected if someone previously selected any value in the custom tab of the general settings of the plugin but saved the settings using the default tab. Yep, it's confusing, and thus it skipped through our nose. The good thing is, it's caught and fixed. Hurray!
 
 Full changelog can be found here - **[Rank Math SEO changelog](https://rankmath.com/changelog)**

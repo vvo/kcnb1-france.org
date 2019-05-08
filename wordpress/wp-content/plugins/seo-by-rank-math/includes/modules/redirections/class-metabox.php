@@ -41,7 +41,7 @@ class Metabox {
 		$url = parse_url( get_permalink( $cmb->object_id ), PHP_URL_PATH );
 		$url = trim( $url, '/' );
 
-		$redirection = $redirection ? DB::get_redirection_by_id( $redirection->redirection_id ) : [
+		$redirection = $redirection ? DB::get_redirection_by_id( $redirection->redirection_id, 'active' ) : [
 			'id'          => '',
 			'url_to'      => '',
 			'header_code' => Helper::get_settings( 'general.redirections_header_code' ),

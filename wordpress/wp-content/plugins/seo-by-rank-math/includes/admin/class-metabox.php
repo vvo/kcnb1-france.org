@@ -11,6 +11,7 @@
 namespace RankMath\Admin;
 
 use CMB2_hookup;
+use RankMath\KB;
 use RankMath\CMB2;
 use RankMath\Runner;
 use RankMath\Replace_Vars;
@@ -193,10 +194,16 @@ class Metabox implements Runner {
 
 		$cmb = new_cmb2_box( array(
 			'id'           => $this->metabox_id . '_link_suggestions',
-			'title'        => esc_html__( 'Link Suggestions', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Click on the button to copy URL or insert link in content. You can also drag and drop links in the post content.', 'rank-math' ) ),
+			'title'        => esc_html__( 'Link Suggestions', 'rank-math' ),
 			'object_types' => $allowed_post_types,
 			'context'      => 'side',
 			'priority'     => 'default',
+		) );
+
+		$cmb->add_field( array(
+			'id'   => $this->metabox_id . '_link_suggestions_tooltip',
+			'type' => 'raw',
+			'content' => '<div id="rank-math-link-suggestions-tooltip" class="hidden">' . Admin_Helper::get_tooltip( esc_html__( 'Click on the button to copy URL or insert link in content. You can also drag and drop links in the post content.', 'rank-math' ) ) . '</div>',
 		) );
 
 		$cmb->add_field( array(
@@ -220,12 +227,17 @@ class Metabox implements Runner {
 			<th scope="row"><label for="description"><?php esc_html_e( 'Description', 'rank-math' ); ?></label></th>
 			<td>
 				<?php
-				wp_editor( html_entity_decode( $term->description, ENT_QUOTES, 'UTF-8' ), 'description', array(
+				wp_editor( html_entity_decode( $term->description, ENT_QUOTES, 'UTF-8' ), 'rank_math_description', array(
+					'textarea_name' => 'description',
 					'textarea_rows' => 5,
 					'quicktags'     => false,
 				) );
 				?>
 			</td>
+			<script>
+				// Remove the non-html field
+				jQuery('textarea#description').closest('.form-field').remove();
+			</script>
 		</tr>
 		<?php
 	}
@@ -395,12 +407,16 @@ class Metabox implements Runner {
 	 */
 	private function assessor() {
 		$data = array(
-			'powerWords'   => $this->power_words(),
-			'hasTOCPlugin' => $this->has_toc_plugin(),
-			'mtsConnected' => GlobalHelper::is_mythemeshop_connected(),
+			'powerWords'       => $this->power_words(),
+			'hasTOCPlugin'     => $this->has_toc_plugin(),
+			'mtsConnected'     => GlobalHelper::is_mythemeshop_connected(),
+			'tocKbLink'        => KB::get( 'toc' ),
+			'sentimentKbLink'  => KB::get( 'sentiments' ),
+			'focusKeywordLink' => admin_url( 'edit.php?focus_keyword=%focus_keyword%&post_type=%post_type%' ),
 		);
 
 		GlobalHelper::add_json( 'assessor', $data );
+		GlobalHelper::add_json( 'isUserRegistered', GlobalHelper::is_mythemeshop_connected() );
 	}
 
 	/**

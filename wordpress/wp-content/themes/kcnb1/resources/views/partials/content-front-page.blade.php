@@ -29,48 +29,35 @@
     <p class="lead">En octobre 2018, 14 patients âgés de 3 à 34 ans ont été diagnostiqués avec la mutation du gène KCNB1 en France. Voici
       leur histoire.</p>
     <div class="row justify-content-center">
-      <div class="card-container">
-        <div class="card">
-          <div class="card-body">
-            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
-            <h3 class="card-title">Soline, 8 ans</h3>
+      <?php
+
+      $args = array(
+          'post_type'      => 'page',
+          'posts_per_page' => 3,
+          'post_parent'    => 24,
+          'order'          => 'ASC',
+          'orderby'        => 'menu_order'
+        );
+
+      $parent = new WP_Query( $args );
+
+      if ( $parent->have_posts() ) : ?>
+        <?php while ( $parent->have_posts() ) : $parent->the_post(); ?>
+          <div class="card-container mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
+                <h3 class="card-title">{{ the_title() }}</h3>
+              </div>
+              {{ the_post_thumbnail('card') }}
+              <div class="card-body">
+                <p class="card-text">{!! get_the_excerpt() !!}</p>
+              </div>
+            <a href="{{ the_permalink() }}" title="{{ the_title() }}" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
+            </div>
           </div>
-          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
-          <div class="card-body">
-            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
-              sans crier garde...</p>
-          </div>
-          <a href="test" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
-        </div>
-      </div>
-      <div class="card-container d-none d-sm-block">
-        <div class="card">
-          <div class="card-body">
-            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
-            <h3 class="card-title">Soline, 8 ans</h3>
-          </div>
-          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
-          <div class="card-body">
-            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
-              sans crier garde...</p>
-          </div>
-          <a href="test" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
-        </div>
-      </div>
-      <div class="card-container d-none d-sm-block">
-        <div class="card">
-          <div class="card-body">
-            <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
-            <h3 class="card-title">Soline, 8 ans</h3>
-          </div>
-          <img src="@asset('images/temoignages/soline-card.jpg')" alt="Portrait de Soline, 8 ans" />
-          <div class="card-body">
-            <p class="card-text">Je n’avais pas prévu dans mes plans d’avoir une enfant particulière... oh non... le genre de drame qui tombe
-              sans crier garde...</p>
-          </div>
-          <a href="test" class="btn btn-white">Lire la témoignage <i class="fas fa-stream fa-lg"></i></a>
-        </div>
-      </div>
+        <?php endwhile; ?>
+      <?php endif; wp_reset_postdata(); ?>
     </div>
     <p class="py-4 text-center mt-3">
       <a href="test">Découvrir tous les témoignages →</a>

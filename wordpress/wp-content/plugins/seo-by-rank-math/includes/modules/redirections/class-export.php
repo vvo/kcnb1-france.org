@@ -32,7 +32,7 @@ class Export {
 	 * Export redirections.
 	 */
 	public function export() {
-		$server = isset( $_GET['export'] ) ? $_GET['export'] : false;
+		$server = isset( $_GET['export'] ) ? filter_input( INPUT_GET, 'export' ) : false;
 		if ( ! $server || ! in_array( $server, [ 'apache', 'nginx' ] ) ) {
 			return;
 		}

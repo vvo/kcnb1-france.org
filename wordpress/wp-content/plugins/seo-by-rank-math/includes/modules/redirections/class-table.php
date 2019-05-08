@@ -140,9 +140,9 @@ class Table extends List_Table {
 	 * @return string
 	 */
 	private function get_source_html( $source, $comparison_hash ) {
-		$html = '<span class="value-url_from"><strong><a href="' . home_url( $source['pattern'] ) . '" target="_blank">' . stripslashes( $source['pattern'] ) . '</a></strong></span>';
+		$html = '<span class="value-url_from"><strong><a href="' . esc_url( home_url( $source['pattern'] ) ) . '" target="_blank">' . esc_html( stripslashes( $source['pattern'] ) ) . '</a></strong></span>';
 		if ( 'exact' !== $source['comparison'] ) {
-			$html .= ' <span class="value-source-comparison">(' . $comparison_hash[ $source['comparison'] ] . ')</span>';
+			$html .= ' <span class="value-source-comparison">(' . esc_html( $comparison_hash[ $source['comparison'] ] ) . ')</span>';
 		}
 
 		return $html;

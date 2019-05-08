@@ -146,7 +146,7 @@ class Form {
 		if ( ! empty( $_REQUEST['log'] ) && is_array( $_REQUEST['log'] ) ) {
 			return [
 				'sources' => $this->get_sources_for_log(),
-				'url_to'  => home_url( '/' ),
+				'url_to'  => esc_url( home_url( '/' ) ),
 			];
 		}
 

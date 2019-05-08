@@ -50,13 +50,14 @@ class Watcher implements Runner {
 	/**
 	 * Function to run when new plugin is activated.
 	 */
-	public function check_activated_plugin() {
+	public static function check_activated_plugin() {
 		$set     = [];
 		$plugins = get_option( 'active_plugins', array() );
-		foreach ( $this->get_conflicting_plugins() as $plugin => $type ) {
+
+		foreach ( self::get_conflicting_plugins() as $plugin => $type ) {
 			if ( ! isset( $set[ $type ] ) && in_array( $plugin, $plugins ) ) {
 				$set[ $type ] = true;
-				$this->set_notification( $type );
+				self::set_notification( $type );
 			}
 		}
 	}
@@ -67,11 +68,30 @@ class Watcher implements Runner {
 	 * @param string $plugin Deactivated plugin path.
 	 */
 	public function check_deactivated_plugin( $plugin ) {
-		$plugins = $this->get_conflicting_plugins();
+		$plugins = self::get_conflicting_plugins();
 		if ( ! isset( $plugins[ $plugin ] ) ) {
 			return;
 		}
 		$this->remove_notification( $plugins[ $plugin ], $plugin );
+	}
+
+	/**
+	 * Function to run when Module is enabled/disabled.
+	 *
+	 * @param string $module Module.
+	 * @param string $state  Module state.
+	 */
+	public static function module_changed( $module, $state ) {
+		if ( ! in_array( $module, [ 'sitemap', 'redirections', 'rich-snippet' ] ) ) {
+			return;
+		}
+
+		if ( 'off' === $state ) {
+			$type = 'sitemap' === $module ? 'sitemap' : 'seo';
+			GlobalHelper::remove_notification( "conflicting_{$type}_plugins" );
+		}
+
+		self::check_activated_plugin();
 	}
 
 	/**
@@ -80,7 +100,7 @@ class Watcher implements Runner {
 	 * @param string $type Plugin type.
 	 */
 	private function deactivate_conflicting_plugins( $type ) {
-		foreach ( $this->get_conflicting_plugins() as $plugin => $plugin_type ) {
+		foreach ( self::get_conflicting_plugins() as $plugin => $plugin_type ) {
 			if ( $type === $plugin_type && is_plugin_active( $plugin ) ) {
 				deactivate_plugins( $plugin );
 			}
@@ -94,18 +114,18 @@ class Watcher implements Runner {
 	 *
 	 * @param string $type Plugin type.
 	 */
-	private function set_notification( $type ) {
+	private static function set_notification( $type ) {
 		$message = sprintf(
 			/* translators: deactivation link */
 			esc_html__( 'Please keep only one SEO plugin active, otherwise, you might lose your rankings and traffic. %s.', 'rank-math' ),
-			'<a href="' . add_query_arg( 'rank_math_deactivate_seo_plugins', '1', remove_query_arg( [ 'action', 'plugin' ] ) ) . '">Click here to Deactivate</a>'
+			'<a href="' . add_query_arg( 'rank_math_deactivate_seo_plugins', '1', admin_url( 'plugins.php' ) ) . '">Click here to Deactivate</a>'
 		);
 
 		if ( 'sitemap' === $type ) {
 			$message = sprintf(
 				/* translators: deactivation link */
 				esc_html__( 'Please keep only one Sitemap plugin active, otherwise, you might lose your rankings and traffic. %s.', 'rank-math' ),
-				'<a href="' . add_query_arg( 'rank_math_deactivate_sitemap_plugins', '1', remove_query_arg( [ 'action', 'plugin' ] ) ) . '">Click here to Deactivate</a>'
+				'<a href="' . add_query_arg( 'rank_math_deactivate_sitemap_plugins', '1', admin_url( 'plugins.php' ) ) . '">Click here to Deactivate</a>'
 			);
 		}
 
@@ -122,7 +142,7 @@ class Watcher implements Runner {
 	 * @param string $plugin Plugin name.
 	 */
 	private function remove_notification( $type, $plugin ) {
-		foreach ( $this->get_conflicting_plugins() as $file => $plugin_type ) {
+		foreach ( self::get_conflicting_plugins() as $file => $plugin_type ) {
 			if ( $plugin !== $file && $type === $plugin_type && is_plugin_active( $file ) ) {
 				return;
 			}
@@ -136,19 +156,23 @@ class Watcher implements Runner {
 	 *
 	 * @return array
 	 */
-	private function get_conflicting_plugins() {
+	private static function get_conflicting_plugins() {
 		$plugins = array(
-			'google-sitemap-generator/sitemap.php'         => 'sitemap',
-			'xml-sitemap-feed/xml-sitemap.php'             => 'sitemap',
-			'wordpress-seo/wp-seo.php'                     => 'seo',
-			'wordpress-seo-premium/wp-seo-premium.php'     => 'seo',
-			'all-in-one-seo-pack/all_in_one_seo_pack.php'  => 'seo',
-			'all-in-one-schemaorg-rich-snippets/index.php' => 'seo',
-			'wp-schema-pro/wp-schema-pro.php'              => 'seo',
+			'wordpress-seo/wp-seo.php'                    => 'seo',
+			'wordpress-seo-premium/wp-seo-premium.php'    => 'seo',
+			'all-in-one-seo-pack/all_in_one_seo_pack.php' => 'seo',
 		);
 
 		if ( GlobalHelper::is_module_active( 'redirections' ) ) {
 			$plugins['redirection/redirection.php'] = 'seo';
+		}
+		if ( GlobalHelper::is_module_active( 'sitemap' ) ) {
+			$plugins['google-sitemap-generator/sitemap.php'] = 'sitemap';
+			$plugins['xml-sitemap-feed/xml-sitemap.php']     = 'sitemap';
+		}
+		if ( GlobalHelper::is_module_active( 'rich-snippet' ) ) {
+			$plugins['wp-schema-pro/wp-schema-pro.php']              = 'seo';
+			$plugins['all-in-one-schemaorg-rich-snippets/index.php'] = 'seo';
 		}
 		return $plugins;
 	}

@@ -38,6 +38,7 @@ class Blog implements Snippet {
 			'description' => get_bloginfo( 'description' ),
 			'blogPost'    => $jsonld->get_post_collection( $data ),
 		];
+		unset( $data['schema'] );
 
 		return $data;
 	}

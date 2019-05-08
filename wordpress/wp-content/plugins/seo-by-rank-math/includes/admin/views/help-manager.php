@@ -26,7 +26,7 @@ $tabs = apply_filters( 'rank_math/help/tabs', array(
 	),
 ));
 ?>
-<div class="wrap rank-math-wrap limit-wrap">
+<div class="wrap rank-math-wrap">
 
 	<span class="wp-header-end"></span>
 

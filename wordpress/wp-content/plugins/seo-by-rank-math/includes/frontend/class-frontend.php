@@ -11,12 +11,14 @@
  * @author     Rank Math <support@rankmath.com>
  */
 
-namespace RankMath;
+namespace RankMath\Frontend;
 
 use RankMath\Post;
+use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\OpenGraph\Facebook;
 use RankMath\OpenGraph\Twitter;
+use RankMath\Frontend\Shortcodes;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -49,6 +51,12 @@ class Frontend {
 
 		if ( Helper::get_settings( 'general.breadcrumbs' ) ) {
 			rank_math()->breadcrumbs = new Breadcrumbs;
+
+			/**
+			 * If breadcrumbs are active (which they supposedly are if the users has enabled this settings,
+			 * there's no reason to have bbPress breadcrumbs as well.
+			 */
+			add_filter( 'bbp_get_breadcrumb', '__return_false' );
 		}
 
 		new Add_Attributes;
@@ -79,7 +87,7 @@ class Frontend {
 		}
 
 		// Custom robots text.
-		if ( Helper::get_settings( 'titles.robots_txt_content' ) ) {
+		if ( Helper::get_settings( 'general.robots_txt_content' ) ) {
 			$this->action( 'robots_txt', 'robots_txt', 10, 2 );
 		}
 	}
@@ -170,7 +178,7 @@ class Frontend {
 			return $content;
 		}
 
-		return '0' == $public ? $content : Helper::get_settings( 'titles.robots_txt_content' );
+		return '0' == $public ? $content : Helper::get_settings( 'general.robots_txt_content' );
 	}
 
 	/**
