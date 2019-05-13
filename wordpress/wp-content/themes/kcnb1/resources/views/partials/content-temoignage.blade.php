@@ -1,6 +1,6 @@
 <div class="bg-gray mt-8">
   <div class="container temoignagne-container">
-    {{ the_post_thumbnail() }}
+    {{ the_post_thumbnail('post-thumbnail', ['class' => 'img-fluid']) }}
     <div class="icon-text mt-5"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
     <h1 class="mt-2">{!! App::title() !!}</h1>
     <div class="magazine mt-5">@php the_content() @endphp</div>
