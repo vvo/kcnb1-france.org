@@ -41,7 +41,7 @@
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "2.9.2",
-    "roots/sage-installer": "1.6.2"
+    "roots/sage-installer": "1.6.3"
   },
   "scripts": {
     "test": ["phpcs"],
