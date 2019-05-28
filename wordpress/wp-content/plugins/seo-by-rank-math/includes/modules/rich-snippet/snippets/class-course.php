@@ -34,7 +34,7 @@ class Course implements Snippet {
 			'name'        => $jsonld->parts['title'],
 			'description' => $jsonld->parts['desc'],
 			'provider'    => [
-				'@type'  => 'Organization',
+				'@type'  => Helper::get_post_meta( 'snippet_course_provider_type' ) ? Helper::get_post_meta( 'snippet_course_provider_type' ) : 'Organization',
 				'name'   => Helper::get_post_meta( 'snippet_course_provider' ),
 				'sameAs' => Helper::get_post_meta( 'snippet_course_provider_url' ),
 			],

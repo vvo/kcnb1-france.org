@@ -15,6 +15,7 @@ use RankMath\Module;
 use MyThemeShop\Admin\Page;
 use MyThemeShop\Helpers\Str;
 use MyThemeShop\Helpers\Arr;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\WordPress;
 
 defined( 'ABSPATH' ) || exit;
@@ -30,21 +31,22 @@ class Admin extends Module {
 	 * @codeCoverageIgnore
 	 */
 	public function __construct() {
-
 		$directory = dirname( __FILE__ );
-		$this->config([
-			'id'             => '404-monitor',
-			'directory'      => $directory,
-			'table'          => 'RankMath\Monitor\Table',
-			'help'           => [
-				'title' => esc_html__( '404 Monitor', 'rank-math' ),
-				'view'  => $directory . '/views/help.php',
-			],
-			'screen_options' => [
-				'id'      => 'rank_math_404_monitor_per_page',
-				'default' => 100,
-			],
-		]);
+		$this->config(
+			[
+				'id'             => '404-monitor',
+				'directory'      => $directory,
+				'table'          => 'RankMath\Monitor\Table',
+				'help'           => [
+					'title' => esc_html__( '404 Monitor', 'rank-math' ),
+					'view'  => $directory . '/views/help.php',
+				],
+				'screen_options' => [
+					'id'      => 'rank_math_404_monitor_per_page',
+					'default' => 100,
+				],
+			]
+		);
 		parent::__construct();
 
 		if ( $this->page->is_current_page() ) {
@@ -70,24 +72,41 @@ class Admin extends Module {
 			check_admin_referer( '404_delete_log', 'security' );
 		}
 
-		if ( 'delete' === $action && ! empty( $_REQUEST['log'] ) ) {
-			$count = DB::delete_log( $_REQUEST['log'] );
-			if ( $count > 0 ) {
+		$action = 'do_' . $action;
+		$this->$action();
+	}
+
+	/**
+	 * Delete selected log.
+	 */
+	protected function do_delete() {
+		$log = Param::request( 'log' );
+		if ( empty( $log ) ) {
+			return;
+		}
+
+		$count = DB::delete_log( $log );
+		if ( $count > 0 ) {
+			Helper::add_notification(
 				/* translators: delete counter */
-				Helper::add_notification( sprintf( esc_html__( '%d log(s) deleted.', 'rank-math' ), $count ), [ 'type' => 'success' ] );
-			}
-			return;
+				sprintf( esc_html__( '%d log(s) deleted.', 'rank-math' ), $count ),
+				[ 'type' => 'success' ]
+			);
 		}
+	}
 
-		if ( 'clear_log' === $action ) {
+	/**
+	 * Clear logs.
+	 */
+	protected function do_clear_log() {
+		$count = DB::get_count();
+		DB::clear_logs();
 
-			$count = DB::get_count();
-			DB::clear_logs();
-
+		Helper::add_notification(
 			/* translators: delete counter */
-			Helper::add_notification( sprintf( esc_html__( 'Log cleared - %d items deleted.', 'rank-math' ), $count ), [ 'type' => 'success' ] );
-			return;
-		}
+			sprintf( esc_html__( 'Log cleared - %d items deleted.', 'rank-math' ), $count ),
+			[ 'type' => 'success' ]
+		);
 	}
 
 	/**

@@ -135,15 +135,6 @@ class Redirection {
 	}
 
 	/**
-	 * Convert to array.
-	 *
-	 * @return array
-	 */
-	public function to_array() {
-		return $this->data;
-	}
-
-	/**
 	 * Set item id.
 	 *
 	 * @param int $id Item ID.
@@ -362,6 +353,7 @@ class Redirection {
 				'object_id'   => $post_id,
 				'object_type' => 'post',
 			];
+			return;
 		}
 
 		// Check for term.
@@ -374,6 +366,7 @@ class Redirection {
 					'object_type' => 'term',
 				];
 			}
+			return;
 		}
 
 		// Check for user.
@@ -384,6 +377,7 @@ class Redirection {
 				'object_id'   => $user->ID,
 				'object_type' => 'user',
 			];
+			return;
 		}
 	}
 
@@ -425,10 +419,7 @@ class Redirection {
 	 */
 	public static function strip_subdirectory( $url ) {
 		$home_dir = ltrim( site_url( '', 'relative' ), '/' );
-		if ( $home_dir ) {
-			$url = str_replace( trailingslashit( $home_dir ), '', $url );
-		}
 
-		return $url;
+		return $home_dir ? str_replace( trailingslashit( $home_dir ), '', $url ) : $url;
 	}
 }

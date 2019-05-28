@@ -15,6 +15,7 @@ use RankMath\Helper;
 use RankMath\Traits\Hooker;
 use RankMath\Traits\Wizard;
 use RankMath\Admin\Importers\Detector;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -151,14 +152,16 @@ class Setup_Wizard {
 	 * Register CMB2 option page for setup wizard.
 	 */
 	public function register_cmb2() {
-		$this->cmb = new_cmb2_box( array(
-			'id'           => 'rank-math-wizard',
-			'object_types' => array( 'options-page' ),
-			'option_key'   => 'rank-math-wizard',
-			'hookup'       => false,
-			'save_fields'  => false,
-			'classes'      => 'wp-core-ui rank-math-ui',
-		) );
+		$this->cmb = new_cmb2_box(
+			[
+				'id'           => 'rank-math-wizard',
+				'object_types' => [ 'options-page' ],
+				'option_key'   => 'rank-math-wizard',
+				'hookup'       => false,
+				'save_fields'  => false,
+				'classes'      => 'wp-core-ui rank-math-ui',
+			]
+		);
 
 		$this->wizard_step->form( $this );
 		CMB2::pre_init( $this->cmb );
@@ -223,12 +226,12 @@ class Setup_Wizard {
 	 * Add the admin menu item, under Appearance.
 	 */
 	public function add_admin_menu() {
-		if ( empty( $_GET['page'] ) || $this->slug !== $_GET['page'] ) {
+		if ( Param::get( 'page' ) !== $this->slug ) {
 			return;
 		}
 
 		$this->hook_suffix = add_submenu_page(
-			null, esc_html__( 'Setup Wizard', 'rank-math' ), esc_html__( 'Setup Wizard', 'rank-math' ), 'manage_options', $this->slug, array( $this, 'admin_page' )
+			null, esc_html__( 'Setup Wizard', 'rank-math' ), esc_html__( 'Setup Wizard', 'rank-math' ), 'manage_options', $this->slug, [ $this, 'admin_page' ]
 		);
 	}
 
@@ -238,7 +241,7 @@ class Setup_Wizard {
 	public function admin_page() {
 
 		// Do not proceed, if we're not on the right page.
-		if ( empty( $_GET['page'] ) || $this->slug !== $_GET['page'] ) {
+		if ( Param::get( 'page' ) !== $this->slug ) {
 			return;
 		}
 
@@ -250,10 +253,10 @@ class Setup_Wizard {
 		\CMB2_hookup::enqueue_cmb_css();
 		\CMB2_hookup::enqueue_cmb_js();
 		rank_math()->admin_assets->register();
-		wp_enqueue_style( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/css/setup-wizard.css', array( 'wp-admin', 'buttons', 'cmb2-styles', 'select2-rm', 'rank-math-common', 'rank-math-cmb2' ), rank_math()->version );
+		wp_enqueue_style( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/css/setup-wizard.css', [ 'wp-admin', 'buttons', 'cmb2-styles', 'select2-rm', 'rank-math-common', 'rank-math-cmb2' ], rank_math()->version );
 
 		// Enqueue javascript.
-		wp_enqueue_script( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/js/wizard.js', array( 'media-editor', 'select2-rm', 'rank-math-common' ), rank_math()->version, true );
+		wp_enqueue_script( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/js/wizard.js', [ 'media-editor', 'select2-rm', 'rank-math-common', 'rank-math-validate' ], rank_math()->version, true );
 
 		Helper::add_json( 'currentStep', $this->step );
 		Helper::add_json( 'deactivated', esc_html__( 'Deactivated', 'rank-math' ) );
@@ -284,9 +287,9 @@ class Setup_Wizard {
 		}
 
 		$is_advanced   = $this->is_advance();
-		$advance_steps = array( 'role', 'redirection', 'misc' );
+		$advance_steps = [ 'role', 'redirection', 'misc' ];
 
-		return in_array( $slug, $advance_steps ) ? ! $is_advanced : $is_advanced;
+		return in_array( $slug, $advance_steps, true ) ? ! $is_advanced : $is_advanced;
 	}
 
 	/**
@@ -330,7 +333,7 @@ class Setup_Wizard {
 		}
 
 		$this->steps       = $this->do_filter( 'wizard/steps', $this->steps );
-		$this->step        = isset( $_REQUEST['step'] ) && ! empty( $_REQUEST['step'] ) ? sanitize_key( $_REQUEST['step'] ) : current( array_keys( $this->steps ) );
+		$this->step        = Param::request( 'step', current( array_keys( $this->steps ) ) );
 		$this->step_slug   = isset( $this->steps[ $this->step ]['slug'] ) ? $this->steps[ $this->step ]['slug'] : $this->step;
 		$this->wizard_step = new $this->steps[ $this->step ]['class'];
 	}
@@ -341,7 +344,8 @@ class Setup_Wizard {
 	 * @return bool
 	 */
 	private function is_advance() {
-		return isset( $_REQUEST['step'] ) && in_array( $_REQUEST['step'], array( 'role', 'redirection', 'misc' ) );
+		$step = Param::request( 'step' );
+		return $step && in_array( $step, [ 'role', 'redirection', 'misc' ], true );
 	}
 
 	/**

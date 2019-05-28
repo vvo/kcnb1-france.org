@@ -135,11 +135,12 @@ class Overview {
 	/**
 	 * Create difference label for display.
 	 *
-	 * @param  int  $current    Current value.
-	 * @param  int  $previous   Previous value to compare with.
-	 * @param  bool $human      Show number in human readable format.
-	 * @param  bool $percentage Show as percentage.
-	 * @param  bool $inverted   Invert the result.
+	 * @param int  $current    Current value.
+	 * @param int  $previous   Previous value to compare with.
+	 * @param bool $human      Show number in human readable format.
+	 * @param bool $percentage Show as percentage.
+	 * @param bool $inverted   Invert the result.
+	 *
 	 * @return string
 	 */
 	private function diff_label( $current, $previous = 0, $human = false, $percentage = false, $inverted = false ) {
@@ -149,13 +150,13 @@ class Overview {
 		}
 
 		$diff = Admin_Helper::compare_values( $previous, $current );
-		if ( 0 == $diff ) {
+		if ( 0 === $diff ) {
 			return '';
 		}
 
-		$down  = $inverted ? 'up' : 'down';
-		$up    = $inverted ? 'down' : 'up';
-		$class = $diff < 0 ? $down : $up;
+		$downward = $inverted ? 'up' : 'down';
+		$upward   = $inverted ? 'down' : 'up';
+		$class    = $diff < 0 ? $downward : $upward;
 
 		return sprintf(
 			'<span class="compare-value value-%1$s" title="%2$s"><small>%3$s%4$s</small><i class="dashicons dashicons-arrow-%1$s-alt"></i></span>',

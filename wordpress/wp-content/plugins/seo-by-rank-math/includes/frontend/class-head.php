@@ -12,8 +12,10 @@ namespace RankMath\Frontend;
 
 use RankMath\Post;
 use RankMath\Helper;
+use RankMath\Paper\Paper;
 use RankMath\Traits\Hooker;
 use RankMath\Sitemap\Router;
+use MyThemeShop\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,20 +27,13 @@ class Head {
 	use Hooker;
 
 	/**
-	 * Hold generate instance.
-	 *
-	 * @var Generate
-	 */
-	public $generate = null;
-
-	/**
 	 * The Constructor.
 	 */
 	public function __construct() {
 
 		$this->action( 'wp_head', 'head', 1 );
 
-		if ( Helper::is_module_active( 'amp' ) ) {
+		if ( Helper::is_amp_active() ) {
 			$this->action( 'amphtml_template_head', 'head', 1 );
 			$this->action( 'weeblramp_print_meta_data', 'head', 1 );
 			$this->action( 'better-amp/template/head', 'head', 99 );
@@ -63,14 +58,10 @@ class Head {
 		remove_action( 'wp_head', '_wp_render_title_tag', 1 );
 		add_action( 'rank_math/head', '_wp_render_title_tag', 1 );
 
-		// Initalize generate now.
-		$this->generate = new Generate;
-		add_action( 'wp', array( $this->generate, 'generate' ) );
-
 		// Force Rewrite title.
 		if ( Helper::get_settings( 'titles.rewrite_title' ) && ! current_theme_supports( 'title-tag' ) ) {
 			ob_start();
-			add_action( 'wp_head', array( $this, 'rewrite_title' ), 9999 );
+			add_action( 'wp_head', [ $this, 'rewrite_title' ], 9999 );
 		}
 	}
 
@@ -89,7 +80,7 @@ class Head {
 	 * Output Webmaster Tools authentication strings.
 	 */
 	public function webmaster_tools_authentication() {
-		$tools = array(
+		$tools = [
 			'google_verify'    => 'google-site-verification',
 			'bing_verify'      => 'msvalidate.01',
 			'baidu_verify'     => 'baidu-site-verification',
@@ -97,7 +88,7 @@ class Head {
 			'yandex_verify'    => 'yandex-verification',
 			'pinterest_verify' => 'p:domain_verify',
 			'norton_verify'    => 'norton-safeweb-site-verification',
-		);
+		];
 
 		foreach ( $tools as $id => $name ) {
 			$content = trim( Helper::get_settings( "general.{$id}" ) );
@@ -145,7 +136,7 @@ class Head {
 		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' );
 		remove_action( 'wp_head', 'noindex', 1 );
 
-		if ( Helper::is_module_active( 'amp' ) ) {
+		if ( Helper::is_amp_active() ) {
 			remove_action( 'amp_post_template_head', 'amp_post_template_add_title' );
 			remove_action( 'amp_post_template_head', 'amp_post_template_add_canonical' );
 		}
@@ -174,24 +165,17 @@ class Head {
 			return $title;
 		}
 
-		$generated = $this->generate->get( 'title' );
-		$generated = is_string( $generated ) && '' !== $generated ? $generated : $title;
-		return convert_smilies( $generated );
+		$generated = Paper::get()->get_title();
+		return Str::is_non_empty( $generated ) ? $generated : $title;
 	}
 
 	/**
 	 * Outputs the meta description element or returns the description text.
-	 *
-	 * @param  bool $echo Echo or return output flag.
-	 * @return string
 	 */
-	public function metadesc( $echo = true ) {
-		if ( ! $echo ) {
-			return $this->generate->get( 'desc' );
-		}
+	public function metadesc() {
+		$generated = Paper::get()->get_description();
 
-		$generated = $this->generate->get( 'desc' );
-		if ( is_string( $generated ) && '' !== $generated ) {
+		if ( Str::is_non_empty( $generated ) ) {
 			echo '<meta name="description" content="', $generated, '"/>', "\n";
 		} elseif ( Helper::has_cap( 'general' ) && is_singular() ) {
 			echo '<!-- ', \html_entity_decode( esc_html__( 'Admin only notice: this page has no meta description set. Please edit the page to add one, or setup a template in Rank Math -> Titles &amp; Metas.', 'rank-math' ) ), ' -->', "\n";
@@ -202,14 +186,14 @@ class Head {
 	 * Output the meta robots value.
 	 */
 	public function robots() {
-		$robots    = $this->generate->get( 'robots' );
+		$robots    = Paper::get()->get_robots();
 		$robotsstr = join( ',', $robots );
-		if ( is_string( $robotsstr ) && $robotsstr ) {
+		if ( Str::is_non_empty( $robotsstr ) ) {
 			echo '<meta name="robots" content="', esc_attr( $robotsstr ), '"/>', "\n";
 		}
 
 		// If a page has a noindex, it should _not_ have a canonical, as these are opposing indexing directives.
-		if ( 'noindex' === $robots['index'] ) {
+		if ( isset( $robots['index'] ) && 'noindex' === $robots['index'] ) {
 			$this->remove_action( 'rank_math/head', 'canonical', 20 );
 			$this->remove_action( 'rank_math/head', 'adjacent_rel_links', 21 );
 		}
@@ -218,30 +202,12 @@ class Head {
 	/**
 	 * This function normally outputs the canonical but is also used in other places to retrieve
 	 * the canonical URL for the current page.
-	 *
-	 * @param  bool $echo        Whether or not to output the canonical element.
-	 * @param  bool $un_paged    Whether or not to return the canonical with or without pagination added to the URL.
-	 * @param  bool $no_override Whether or not to return a manually overridden canonical.
-	 * @return string  $canonical
 	 */
-	public function canonical( $echo = true, $un_paged = false, $no_override = false ) {
-		$canonical = $this->generate->get( 'canonical' );
-		if ( '' === $canonical ) {
-			$this->generate->generate_canonical();
-			$canonical = $this->generate->get( 'canonical' );
-		}
-
-		if ( $un_paged ) {
-			$canonical = $this->generate->get( 'canonical_unpaged' );
-		} elseif ( $no_override ) {
-			$canonical = $this->generate->get( 'canonical_no_override' );
-		}
-
-		if ( is_string( $canonical ) && '' !== $canonical && $echo ) {
+	public function canonical() {
+		$canonical = Paper::get()->get_canonical();
+		if ( Str::is_non_empty( $canonical ) ) {
 			echo '<link rel="canonical" href="' . esc_url( $canonical, null, 'other' ) . '" />' . "\n";
 		}
-
-		return $canonical;
 	}
 
 	/**
@@ -309,7 +275,7 @@ class Head {
 	 * Output the rel next/prev links for an archive page.
 	 */
 	private function adjacent_rel_links_archive() {
-		$url = $this->canonical( false, true, true );
+		$url = Paper::get()->get_canonical( true, true );
 		if ( ! is_string( $url ) || '' === $url ) {
 			return;
 		}
@@ -354,7 +320,7 @@ class Head {
 		 * @param string $link The full `<link` element.
 		 */
 		$link = $this->do_filter( "frontend/{$rel}_rel_link", '<link rel="' . esc_attr( $rel ) . '" href="' . esc_url( $url ) . "\" />\n" );
-		if ( is_string( $link ) && '' !== $link ) {
+		if ( Str::is_non_empty( $link ) ) {
 			echo $link;
 		}
 	}
@@ -407,7 +373,7 @@ class Head {
 		}
 
 		$content = ob_get_clean();
-		$title   = $this->generate->get( 'title' );
+		$title   = Paper::get()->get_title();
 		if ( empty( $title ) ) {
 			echo $content;
 		}

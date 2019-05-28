@@ -28,7 +28,7 @@ class Blog implements Snippet {
 	 * @return array
 	 */
 	public function process( $data, $jsonld ) {
-		$is_front       = is_front_page() && is_home() || is_front_page();
+		$is_front       = is_front_page();
 		$data['schema'] = 'BlogPosting';
 		$data['Blog']   = [
 			'@context'    => 'https://schema.org/',

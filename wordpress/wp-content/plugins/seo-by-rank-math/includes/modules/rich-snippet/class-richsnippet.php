@@ -29,7 +29,9 @@ class RichSnippet {
 		if ( is_admin() ) {
 			new Admin;
 		}
-		$this->action( 'template_redirect', 'integrations' );
+		$this->action( 'wp', 'integrations' );
+
+		new Snippet_Shortcode;
 	}
 
 	/**

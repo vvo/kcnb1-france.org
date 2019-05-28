@@ -65,7 +65,9 @@ class Redirector {
 	public function __construct() {
 		$this->start();
 		$this->flow();
-		$this->redirect();
+		if ( is_array( $this->matched ) ) {
+			$this->redirect();
+		}
 	}
 
 	/**
@@ -96,12 +98,7 @@ class Redirector {
 	 * If we got a match redirect.
 	 */
 	private function redirect() {
-		// Early Bail!
-		if ( false === $this->matched ) {
-			return;
-		}
-
-		if ( is_array( $this->matched ) && isset( $this->matched['id'], $this->matched['url_to'] ) ) {
+		if ( isset( $this->matched['id'], $this->matched['url_to'] ) ) {
 			DB::update_access( $this->matched );
 		}
 
@@ -115,11 +112,12 @@ class Redirector {
 		$this->do_debugging();
 
 		// @codeCoverageIgnoreStart
+		$x_redirect_by = 'WordPress';
 		if ( true === $this->do_filter( 'redirection/add_redirect_header', true ) ) {
-			header( 'X-Redirect-By: Rank Math SEO' );
+			$x_redirect_by = 'Rank Math SEO';
 		}
 
-		if ( wp_redirect( $this->redirect_to, $header_code ) ) {
+		if ( wp_redirect( $this->redirect_to, $header_code, $x_redirect_by ) ) {
 			exit;
 		}
 		// @codeCoverageIgnoreEnd
@@ -294,14 +292,23 @@ class Redirector {
 	private function set_redirect_to() {
 		$this->redirect_to = $this->matched['url_to'];
 		foreach ( $this->matched['sources'] as $source ) {
-			if ( 'regex' !== $source['comparison'] ) {
-				continue;
-			}
+			$this->set_redirect_to_regex( $source );
+		}
+	}
 
-			$pattern = DB::get_clean_pattern( $source['pattern'], $source['comparison'] );
-			if ( Str::comparison( $pattern, $this->uri, $source['comparison'] ) ) {
-				$this->redirect_to = preg_replace( $pattern, $this->redirect_to, $this->uri );
-			}
+	/**
+	 * Set redirect to by replacing using regex.
+	 *
+	 * @param array $source Source to check.
+	 */
+	private function set_redirect_to_regex( $source ) {
+		if ( 'regex' !== $source['comparison'] ) {
+			return;
+		}
+
+		$pattern = DB::get_clean_pattern( $source['pattern'], $source['comparison'] );
+		if ( Str::comparison( $pattern, $this->uri, $source['comparison'] ) ) {
+			$this->redirect_to = preg_replace( $pattern, $this->redirect_to, $this->uri );
 		}
 	}
 
@@ -342,7 +349,8 @@ class Redirector {
 	 * @return int
 	 */
 	private function get_header_code() {
-		$header_code = is_array( $this->matched ) && isset( $this->matched['header_code'] ) ? $this->matched['header_code'] : Helper::get_settings( 'general.redirections_header_code' );
+		$header_code = isset( $this->matched['header_code'] ) ? $this->matched['header_code'] : Helper::get_settings( 'general.redirections_header_code' );
+
 		return absint( $header_code );
 	}
 }

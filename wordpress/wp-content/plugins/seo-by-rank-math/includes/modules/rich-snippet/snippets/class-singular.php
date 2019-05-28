@@ -75,8 +75,12 @@ class Singular implements Snippet {
 	 */
 	private function can_add_schema( $jsonld ) {
 		$schema = Helper::get_post_meta( 'rich_snippet' );
-		if ( ! $schema && Conditional::is_woocommerce_active() && is_product() && ! metadata_exists( 'post', $jsonld->post_id, 'rank_math_rich_snippet' ) ) {
-			$schema = Helper::get_settings( 'titles.pt_product_default_rich_snippet' );
+		if (
+			! $schema &&
+			! metadata_exists( 'post', $jsonld->post_id, 'rank_math_rich_snippet' ) &&
+			$schema = Helper::get_settings( "titles.pt_{$jsonld->post->post_type}_default_rich_snippet" ) // phpcs:ignore
+		) {
+			$schema = Conditional::is_woocommerce_active() && is_product() ? $schema : ( 'article' === $schema ? $schema : '' );
 		}
 
 		return $schema;

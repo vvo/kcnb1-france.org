@@ -5,10 +5,12 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Helpers
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Helpers;
+
+use MyThemeShop\Helpers\Param;
 
 /**
  * Conditional class.
@@ -70,11 +72,7 @@ class Conditional {
 	 * @return bool
 	 */
 	public static function is_heartbeat() {
-		if ( isset( $_POST ) && isset( $_POST['action'] ) && 'heartbeat' === $_POST['action'] ) {
-			return true;
-		}
-
-		return false;
+		return 'heartbeat' === Param::post( 'action' );
 	}
 
 	/**

@@ -33,21 +33,21 @@ class Replace_Vars {
 	 *
 	 * @var array
 	 */
-	protected static $replacements = array();
+	protected static $replacements = [];
 
 	/**
 	 * Additional variable replacements registered by other plugins/themes.
 	 *
 	 * @var array
 	 */
-	protected static $external_replacements = array();
+	protected static $external_replacements = [];
 
 	/**
 	 * Hold counter variable data.
 	 *
 	 * @var array
 	 */
-	protected static $counters = array();
+	protected static $counters = [];
 
 	/**
 	 * Default post/page/cpt information.
@@ -77,7 +77,7 @@ class Replace_Vars {
 	 * @param  array  $omit   Variables that should not be replaced by this function.
 	 * @return string
 	 */
-	public function replace( $string, $args = array(), $omit = array() ) {
+	public function replace( $string, $args = [], $omit = [] ) {
 		$string = strip_tags( $string );
 
 		// Let's see if we can bail super early.
@@ -96,7 +96,7 @@ class Replace_Vars {
 			$omit = array_map( array( __CLASS__, 'remove_var_delimiter' ), $omit );
 		}
 
-		$replacements = array();
+		$replacements = [];
 		if ( preg_match_all( '/%(([a-z0-9_-]+)\(([^)]*)\)|[^\s]+)%/iu', $string, $matches ) ) {
 			$replacements = $this->set_up_replacements( $matches, $omit );
 		}
@@ -109,7 +109,7 @@ class Replace_Vars {
 		$replacements = $this->do_filter( 'replacements', $replacements );
 
 		// Do the actual replacements.
-		if ( is_array( $replacements ) && array() !== $replacements ) {
+		if ( is_array( $replacements ) && [] !== $replacements ) {
 			$string = str_replace( array_keys( $replacements ), array_values( $replacements ), $string );
 		}
 
@@ -128,7 +128,7 @@ class Replace_Vars {
 		}
 
 		// Undouble separators which have nothing between them, i.e. where a non-replaced variable was removed.
-		if ( isset( $replacements['%sep%'] ) && ( is_string( $replacements['%sep%'] ) && '' !== $replacements['%sep%'] ) ) {
+		if ( isset( $replacements['%sep%'] ) && Str::is_non_empty( $replacements['%sep%'] ) ) {
 			$q_sep  = preg_quote( $replacements['%sep%'], '`' );
 			$string = preg_replace( '`' . $q_sep . '(?:\s*' . $q_sep . ')*`u', $replacements['%sep%'], $string );
 		}
@@ -145,7 +145,7 @@ class Replace_Vars {
 	 *               may not yield a replacement in certain contexts.
 	 */
 	private function set_up_replacements( $matches, $omit ) {
-		$replacements = array();
+		$replacements = [];
 
 		foreach ( $matches[1] as $k => $var ) {
 
@@ -154,7 +154,7 @@ class Replace_Vars {
 				continue;
 			}
 
-			$args   = array();
+			$args   = [];
 			$method = 'get_' . $var;
 
 			// Complex Tags.
@@ -190,10 +190,10 @@ class Replace_Vars {
 		$replacement = null;
 
 		// Get post type name as Title.
-		if ( is_post_type_archive() ) {
+		if ( is_post_type_archive() && ! Post::is_shop_page() ) {
 			$post_type   = $this->get_queried_post_type();
 			$replacement = get_post_type_object( $post_type )->labels->name;
-		} elseif ( is_string( $this->args->post_title ) && '' !== $this->args->post_title ) {
+		} elseif ( Str::is_non_empty( $this->args->post_title ) ) {
 			$replacement = stripslashes( $this->args->post_title );
 		}
 
@@ -388,7 +388,7 @@ class Replace_Vars {
 	 * @param array $args Arguments to get terms.
 	 * @return string|null
 	 */
-	private function get_tags( $args = array() ) {
+	private function get_tags( $args = [] ) {
 		$replacement = null;
 
 		if ( ! empty( $this->args->ID ) ) {
@@ -429,7 +429,7 @@ class Replace_Vars {
 	 * @param array $args Array of arguments.
 	 * @return string|null
 	 */
-	private function get_categories( $args = array() ) {
+	private function get_categories( $args = [] ) {
 		$replacement = null;
 
 		if ( ! empty( $this->args->ID ) ) {
@@ -761,7 +761,7 @@ class Replace_Vars {
 		global $post;
 		$replacement = null;
 
-		if ( is_string( $name ) && '' !== $name ) {
+		if ( Str::is_non_empty( $name ) ) {
 			if ( ( is_singular() || is_admin() ) && ( is_object( $post ) && isset( $post->ID ) ) ) {
 				$name = get_post_meta( $post->ID, $name, true );
 				if ( '' !== $name ) {
@@ -818,7 +818,7 @@ class Replace_Vars {
 	 * @param  array  $args      Array with title, desc and example values.
 	 * @return bool Whether the replacement function was succesfully registered.
 	 */
-	public static function register_replacement( $var, $callback, $args = array() ) {
+	public static function register_replacement( $var, $callback, $args = [] ) {
 		$success = false;
 
 		if ( ! is_string( $var ) || empty( $var ) ) {
@@ -867,11 +867,11 @@ class Replace_Vars {
 			self::$replacements['title']['example']        = get_the_title();
 			self::$replacements['date']['example']         = get_the_date();
 			self::$replacements['modified']['example']     = get_the_modified_date();
-			self::$replacements['excerpt']['example']      = WordPress::strip_shortcodes( get_the_excerpt( $post ) );
+			self::$replacements['excerpt']['example']      = WordPress::strip_shortcodes( self::get_safe_excerpt( $post ) );
 			self::$replacements['excerpt_only']['example'] = $post->post_excerpt;
 
 			// Custom Fields.
-			$json          = array();
+			$json          = [];
 			$custom_fields = get_post_custom( $post->ID );
 			if ( ! empty( $custom_fields ) ) {
 				foreach ( $custom_fields as $custom_field_name => $custom_field ) {
@@ -895,6 +895,23 @@ class Replace_Vars {
 			self::$replacements['term_description']['example'] = term_description( $term );
 		}
 		Helper::add_json( 'variables', apply_filters( 'rank_math/vars/replacements', array_merge( self::$replacements, self::$external_replacements ) ) );
+	}
+
+	/**
+	 * Get safe excerpt.
+	 *
+	 * @param WP_Post $post Post instance.
+	 *
+	 * @return string
+	 */
+	public static function get_safe_excerpt( $post ) {
+		if ( '' !== $post->post_excerpt ) {
+			return strip_tags( $post->post_excerpt );
+		} elseif ( '' !== $post->post_content ) {
+			return wp_html_excerpt( WordPress::strip_shortcodes( $post->post_content ), 155 );
+		}
+
+		return '';
 	}
 
 	/**
@@ -1185,7 +1202,7 @@ class Replace_Vars {
 			return $string;
 		}
 
-		return wp_parse_args( $string, array() );
+		return wp_parse_args( $string, [] );
 	}
 
 	/**
@@ -1197,7 +1214,7 @@ class Replace_Vars {
 	 * @param array  $args          Array of passed arguments.
 	 * @return string Either a single term or a comma delimited string of terms.
 	 */
-	private function get_terms( $id, $taxonomy, $return_single = false, $args = array() ) {
+	private function get_terms( $id, $taxonomy, $return_single = false, $args = [] ) {
 		$output = '';
 
 		// If we're on a specific tag, category or taxonomy page, use that.
@@ -1209,7 +1226,7 @@ class Replace_Vars {
 			$args = wp_parse_args( $args, array(
 				'limit'     => 99,
 				'separator' => ', ',
-				'exclude'   => array(),
+				'exclude'   => [],
 			) );
 
 			if ( ! empty( $args['exclude'] ) ) {
@@ -1219,7 +1236,7 @@ class Replace_Vars {
 			$terms = get_the_terms( $id, $taxonomy );
 			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 				$count  = 0;
-				$output = array();
+				$output = [];
 				foreach ( $terms as $term ) {
 
 					// Limit.
@@ -1229,7 +1246,7 @@ class Replace_Vars {
 					}
 
 					// Exclude.
-					if ( in_array( $term->term_id, $args['exclude'] ) ) {
+					if ( in_array( $term->term_id, $args['exclude'], true ) ) {
 						continue;
 					}
 

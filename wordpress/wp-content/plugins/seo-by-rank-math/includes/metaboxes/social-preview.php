@@ -75,13 +75,12 @@ $twitter_username = $twitter_username ? $twitter_username : esc_html( 'username'
 				<div class="social-profile-image"></div>
 				<div class="social-name"><?php echo $name; ?></div>
 				<div class="social-time"><span><?php esc_html_e( '2hrs', 'rank-math' ); ?></span><span class="dashicons dashicons-admin-site"></span></div>
-				<div class="social-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
 			</div>
 
 			<div class="rank-math-social-preview-social-meta twitter-meta">
 				<div class="social-profile-image"></div>
 				<div class="social-name"><?php echo $name; ?><span class="social-username">@<?php echo $twitter_username; ?></span><span class="social-time"><?php esc_html_e( '2h', 'rank-math' ); ?></span></div>
-				<div class="social-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+				<div class="social-text">The card for your website will look little something like this!</div>
 			</div>
 
 			<div class="rank-math-social-preview-item-wrapper">

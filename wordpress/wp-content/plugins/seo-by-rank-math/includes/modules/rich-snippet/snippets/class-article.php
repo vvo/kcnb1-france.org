@@ -28,9 +28,13 @@ class Article implements Snippet {
 	 * @return array
 	 */
 	public function process( $data, $jsonld ) {
+		if ( ! $type = Helper::get_post_meta( 'snippet_article_type' ) ) { // phpcs:ignore
+			$type = Helper::get_settings( "titles.pt_{$jsonld->post->post_type}_default_article_type" );
+		}
+
 		$entity = [
 			'@context'         => 'https://schema.org',
-			'@type'            => Helper::get_post_meta( 'snippet_article_type' ),
+			'@type'            => $type,
 			'headline'         => $jsonld->parts['title'],
 			'description'      => $jsonld->parts['desc'],
 			'datePublished'    => $jsonld->parts['published'],

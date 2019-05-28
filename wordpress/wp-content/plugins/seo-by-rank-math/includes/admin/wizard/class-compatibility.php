@@ -111,6 +111,8 @@ class Compatibility implements Wizard_Step {
 			'wordbooker/wordbooker.php'                    => 'Wordbooker.',
 			'wordpress-seo/wp-seo.php'                     => 'Yoast SEO',
 			'wordpress-seo-premium/wp-seo-premium.php'     => 'Yoast SEO Premium',
+			'wp-seopress/seopress.php'                     => 'SEOPress',
+			'wp-seopress-pro/seopress-pro.php'             => 'SEOPress Pro',
 			'wpsso/wpsso.php'                              => 'WordPress Social Sharing Optimization.',
 			'wp-caregiver/wp-caregiver.php'                => 'WP Caregiver.',
 			'wp-facebook-like-send-open-graph-meta/wp-facebook-like-send-open-graph-meta.php' => 'WP Facebook Like Send & Open Graph Meta.',

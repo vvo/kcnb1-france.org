@@ -13,8 +13,9 @@ namespace RankMath\Admin;
 use RankMath\KB;
 use RankMath\CMB2;
 use RankMath\Helper;
-use RankMath\Admin\Admin_Helper;
 use RankMath\Traits\Hooker;
+use RankMath\Admin\Admin_Helper;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -127,25 +128,23 @@ class Registration {
 			'id'         => 'username',
 			'type'       => 'text',
 			'name'       => esc_html__( 'Username/Email', 'rank-math' ),
-			'classes'    => 'nob nopb',
+			'classes'    => 'nob nopb rank-math-validate-field',
 			'attributes' => [
-				'required'     => '',
-				'autocomplete' => 'off',
+				'data-rule-required' => 'true',
+				'autocomplete'       => 'off',
 			],
-			'after'      => '<span class="validation-message">' . esc_html__( 'This field is required.', 'rank-math' ) . '</span>',
 		]);
 
 		$this->cmb->add_field([
 			'id'         => 'validation_code',
 			'type'       => 'text',
 			'name'       => esc_html__( 'Password', 'rank-math' ),
-			'classes'    => 'nob nopb',
+			'classes'    => 'nob nopb rank-math-validate-field',
 			'attributes' => [
-				'required'     => '',
-				'autocomplete' => 'off',
-				'type'         => 'password',
+				'data-rule-required' => 'true',
+				'autocomplete'       => 'off',
+				'type'               => 'password',
 			],
-			'after'      => '<span class="validation-message">' . esc_html__( 'This field is required.', 'rank-math' ) . '</span>',
 		]);
 
 		$this->cmb->add_field([
@@ -166,7 +165,7 @@ class Registration {
 	public function render_page() {
 
 		// Do not proceed, if we're not on the right page.
-		if ( empty( $_GET['page'] ) || $this->slug !== $_GET['page'] ) {
+		if ( Param::get( 'page' ) !== $this->slug ) {
 			return;
 		}
 
@@ -186,7 +185,7 @@ class Registration {
 
 		// Wizard.
 		wp_enqueue_style( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/css/setup-wizard.css', [ 'wp-admin', 'buttons', 'cmb2-styles', 'rank-math-common', 'rank-math-cmb2' ], rank_math()->version );
-		wp_enqueue_script( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/js/wizard.js', [ 'jquery', 'rank-math-common' ], rank_math()->version, true );
+		wp_enqueue_script( 'rank-math-wizard', rank_math()->plugin_url() . 'assets/admin/js/wizard.js', [ 'jquery', 'rank-math-common', 'rank-math-validate' ], rank_math()->version, true );
 		wp_localize_script( 'rank-math-wizard', 'wp', [] );
 
 		$logo_url = '<a href="' . KB::get( 'logo' ) . '" target="_blank"><img src="' . esc_url( rank_math()->plugin_url() . 'assets/admin/img/logo.svg' ) . '"></a>';
@@ -247,7 +246,7 @@ class Registration {
 	public function save_registration() {
 
 		// If no form submission, bail.
-		if ( empty( $_POST ) || 'register' !== $_POST['step'] ) {
+		if ( Param::post( 'step' ) !== 'register' ) {
 			return wp_safe_redirect( $_POST['_wp_http_referer'] );
 		}
 
@@ -284,10 +283,13 @@ class Registration {
 			return;
 		}
 
-		$values = wp_parse_args( $values, array(
-			'username'        => '',
-			'validation_code' => '',
-		) );
+		$values = wp_parse_args(
+			$values,
+			[
+				'username'        => '',
+				'validation_code' => '',
+			]
+		);
 
 		return Admin_Helper::register_product( $values['username'], $values['validation_code'] );
 	}
@@ -304,7 +306,7 @@ class Registration {
 
 		delete_transient( '_rank_math_activation_redirect' );
 
-		if ( ( ! empty( $_GET['page'] ) && in_array( $_GET['page'], [ 'rank-math-registration', 'rank-math-wizard' ] ) ) || ! current_user_can( 'manage_options' ) ) {
+		if ( ( ! empty( $_GET['page'] ) && in_array( $_GET['page'], [ 'rank-math-registration', 'rank-math-wizard' ], true ) ) || ! current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 

@@ -13,10 +13,11 @@ namespace RankMath\Admin;
 use WP_Http;
 use CMB2_hookup;
 use RankMath\CMB2;
+use RankMath\Helper;
 use RankMath\Replace_Vars;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Str;
-use RankMath\Helper as GlobalHelper;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -46,7 +47,7 @@ class Options {
 	 *
 	 * @var array
 	 */
-	public $tabs = array();
+	public $tabs = [];
 
 	/**
 	 * Hold folder name for tab files.
@@ -99,32 +100,35 @@ class Options {
 
 		$this->action( 'admin_enqueue_scripts', 'enqueue' );
 		$this->action( 'admin_body_class', 'body_class' );
-		add_action( 'admin_enqueue_scripts', array( 'CMB2_hookup', 'enqueue_cmb_css' ), 25 );
+		add_action( 'admin_enqueue_scripts', [ 'CMB2_hookup', 'enqueue_cmb_css' ], 25 );
 	}
 
 	/**
 	 * Create option object and add settings
 	 */
 	function register_option_page() {
-
-		$cmb = new_cmb2_box( array(
-			'id'           => $this->cmb_id,
-			'title'        => $this->title,
-			'menu_title'   => $this->menu_title,
-			'capability'   => $this->capability,
-			'object_types' => array( 'options-page' ),
-			'option_key'   => $this->key,
-			'parent_slug'  => 'rank-math',
-			'cmb_styles'   => false,
-			'display_cb'   => array( $this, 'display' ),
-		) );
+		$cmb = new_cmb2_box(
+			[
+				'id'           => $this->cmb_id,
+				'title'        => $this->title,
+				'menu_title'   => $this->menu_title,
+				'capability'   => $this->capability,
+				'object_types' => [ 'options-page' ],
+				'option_key'   => $this->key,
+				'parent_slug'  => 'rank-math',
+				'cmb_styles'   => false,
+				'display_cb'   => [ $this, 'display' ],
+			]
+		);
 
 		$tabs = $this->get_tabs();
-		$cmb->add_field( array(
-			'id'   => 'setting-panel-container-' . $this->cmb_id,
-			'type' => 'tab_container_open',
-			'tabs' => $tabs,
-		) );
+		$cmb->add_field(
+			[
+				'id'   => 'setting-panel-container-' . $this->cmb_id,
+				'type' => 'tab_container_open',
+				'tabs' => $tabs,
+			]
+		);
 
 		foreach ( $tabs as $id => $tab ) {
 			$located = $this->locate_file( $id, $tab );
@@ -132,33 +136,41 @@ class Options {
 				continue;
 			}
 
-			$cmb->add_field( array(
-				'name' => esc_html__( 'Panel', 'rank-math' ),
-				'id'   => 'setting-panel-' . $id,
-				'type' => 'tab_open',
-			) );
+			$cmb->add_field(
+				[
+					'name' => esc_html__( 'Panel', 'rank-math' ),
+					'id'   => 'setting-panel-' . $id,
+					'type' => 'tab_open',
+				]
+			);
 
-			$cmb->add_field( array(
-				'id'      => $id . '_section_title',
-				'type'    => 'title',
-				'name'    => isset( $tab['page_title'] ) ? $tab['page_title'] : ( isset( $tab['title'] ) ? $tab['title'] : '' ),
-				'desc'    => isset( $tab['desc'] ) ? $tab['desc'] : '',
-				'after'   => isset( $tab['after'] ) ? $tab['after'] : '',
-				'classes' => 'main',
-			) );
+			$cmb->add_field(
+				[
+					'id'      => $id . '_section_title',
+					'type'    => 'title',
+					'name'    => isset( $tab['page_title'] ) ? $tab['page_title'] : ( isset( $tab['title'] ) ? $tab['title'] : '' ),
+					'desc'    => isset( $tab['desc'] ) ? $tab['desc'] : '',
+					'after'   => isset( $tab['after'] ) ? $tab['after'] : '',
+					'classes' => 'main',
+				]
+			);
 
 			include $located;
 
-			$cmb->add_field( array(
-				'id'   => 'setting-panel-' . $id . '-close',
-				'type' => 'tab_close',
-			) );
+			$cmb->add_field(
+				[
+					'id'   => 'setting-panel-' . $id . '-close',
+					'type' => 'tab_close',
+				]
+			);
 		}
 
-		$cmb->add_field( array(
-			'id'   => 'setting-panel-container-close-' . $this->cmb_id,
-			'type' => 'tab_container_close',
-		) );
+		$cmb->add_field(
+			[
+				'id'   => 'setting-panel-container-close-' . $this->cmb_id,
+				'type' => 'tab_container_close',
+			]
+		);
 
 		CMB2::pre_init( $cmb );
 	}
@@ -191,7 +203,7 @@ class Options {
 			$url = admin_url();
 		}
 
-		if ( isset( $_POST['reset-cmb'], $_POST['action'] ) && $this->key === $_POST['action'] ) {
+		if ( isset( $_POST['reset-cmb'] ) && Param::post( 'action' ) === $this->key ) {
 			delete_option( $this->key );
 			wp_safe_redirect( esc_url_raw( $url ), WP_Http::SEE_OTHER );
 			exit;
@@ -211,12 +223,12 @@ class Options {
 		CMB2_hookup::enqueue_cmb_css();
 		Replace_Vars::setup_json();
 		wp_enqueue_style( 'font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', null, rank_math()->version );
-		wp_enqueue_style( 'rank-math-options', rank_math()->plugin_url() . 'assets/admin/css/option-panel.css', array( 'select2-rm', 'rank-math-common', 'rank-math-cmb2' ), rank_math()->version );
-		wp_enqueue_script( 'rank-math-options', rank_math()->plugin_url() . 'assets/admin/js/option-panel.js', array( 'underscore', 'select2-rm', 'rank-math-common' ), rank_math()->version, true );
+		wp_enqueue_style( 'rank-math-options', rank_math()->plugin_url() . 'assets/admin/css/option-panel.css', [ 'select2-rm', 'rank-math-common', 'rank-math-cmb2' ], rank_math()->version );
+		wp_enqueue_script( 'rank-math-options', rank_math()->plugin_url() . 'assets/admin/js/option-panel.js', [ 'underscore', 'select2-rm', 'rank-math-common', 'rank-math-validate' ], rank_math()->version, true );
 
 		// Add thank you.
-		GlobalHelper::add_json( 'indexUrl', rank_math()->plugin_url() . 'assets/admin/js/search-index/' );
-		GlobalHelper::add_json( 'optionPage', str_replace( 'rank-math-options-', '', $this->key ) );
+		Helper::add_json( 'indexUrl', rank_math()->plugin_url() . 'assets/admin/js/search-index/' );
+		Helper::add_json( 'optionPage', str_replace( 'rank-math-options-', '', $this->key ) );
 	}
 
 	/**
@@ -279,10 +291,7 @@ class Options {
 	 * @return bool
 	 */
 	public function is_current_page() {
-		$page   = isset( $_REQUEST['page'] ) && ! empty( $_REQUEST['page'] ) ? sanitize_text_field( $_REQUEST['page'] ) : false;
-		$action = isset( $_REQUEST['action'] ) && ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : false;
-
-		return $page === $this->key || $action === $this->key;
+		return Param::request( 'page' ) === $this->key || Param::request( 'action' ) === $this->key;
 	}
 
 	/**

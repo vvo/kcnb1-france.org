@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Helpers
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Helpers;
@@ -20,7 +20,8 @@ class Arr {
 	/**
 	 * Determine whether the given value is array accessible.
 	 *
-	 * @param  mixed $value Value to check.
+	 * @param mixed $value Value to check.
+	 *
 	 * @return bool
 	 */
 	public static function accessible( $value ) {
@@ -30,8 +31,9 @@ class Arr {
 	/**
 	 * Determine if the given key exists in the provided array.
 	 *
-	 * @param  \ArrayAccess|array $array Array to check key in.
-	 * @param  string|int         $key   Key to check for.
+	 * @param ArrayAccess|array $array Array to check key in.
+	 * @param string|int        $key   Key to check for.
+	 *
 	 * @return bool
 	 */
 	public static function exists( $array, $key ) {
@@ -42,6 +44,51 @@ class Arr {
 		}
 
 		return array_key_exists( $key, $array );
+	}
+
+	/**
+	 * Get an item from an array.
+	 * Supports dot notation:
+	 * e.g `Arr::get($array, 'section.subsection.item')`
+	 *
+	 * @param array      $array   Source array.
+	 * @param string     $key     Key to get value for.
+	 * @param mixed|null $default Default value if key not exists.
+	 *
+	 * @return mixed|null
+	 */
+	public static function get( array $array, $key, $default = null ) {
+		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
+	}
+
+	/**
+	 * Check whether an array or [[\Traversable]] contains an element.
+	 *
+	 * This method does the same as the PHP function [in_array()](https://secure.php.net/manual/en/function.in-array.php)
+	 * but additionally works for objects that implement the [[\Traversable]] interface.
+	 *
+	 * @throws \InvalidArgumentException If `$array` is neither traversable nor an array.
+	 *
+	 * @param array|\Traversable $array  The set of values to search.
+	 * @param mixed              $search The value to look for.
+	 * @param bool               $strict Whether to enable strict (`===`) comparison.
+	 *
+	 * @return bool `true` if `$search` was found in `$array`, `false` otherwise.
+	 */
+	public static function includes( $array, $search, $strict = true ) {
+		if ( $array instanceof \Traversable ) {
+			foreach ( $array as $value ) {
+				if ( ( $strict && $search === $value ) || $search == $value ) {
+					return true;
+				}
+			}
+		} elseif ( is_array( $array ) ) {
+			return in_array( $search, $array, $strict );
+		} else {
+			throw new \InvalidArgumentException( 'Argument $array must be an array or implement Traversable' );
+		}
+
+		return false;
 	}
 
 	/**
@@ -67,9 +114,10 @@ class Arr {
 	public static function prepend( &$array, $value, $key = null ) {
 		if ( is_null( $key ) ) {
 			array_unshift( $array, $value );
-		} else {
-			$array = [ $key => $value ] + $array;
+			return;
 		}
+
+		$array = [ $key => $value ] + $array;
 	}
 
 	/**

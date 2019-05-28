@@ -15,9 +15,10 @@ namespace RankMath\Frontend;
 
 use RankMath\Post;
 use RankMath\Helper;
+use RankMath\Paper\Paper;
 use RankMath\Traits\Hooker;
-use RankMath\OpenGraph\Facebook;
 use RankMath\OpenGraph\Twitter;
+use RankMath\OpenGraph\Facebook;
 use RankMath\Frontend\Shortcodes;
 
 defined( 'ABSPATH' ) || exit;
@@ -50,8 +51,6 @@ class Frontend {
 		rank_math()->shortcodes = new Shortcodes;
 
 		if ( Helper::get_settings( 'general.breadcrumbs' ) ) {
-			rank_math()->breadcrumbs = new Breadcrumbs;
-
 			/**
 			 * If breadcrumbs are active (which they supposedly are if the users has enabled this settings,
 			 * there's no reason to have bbPress breadcrumbs as well.
@@ -69,7 +68,7 @@ class Frontend {
 	private function hooks() {
 
 		$this->action( 'wp_enqueue_scripts', 'enqueue' );
-		$this->action( 'template_redirect', 'integrations' );
+		$this->action( 'wp', 'integrations' );
 		$this->filter( 'the_content_feed', 'embed_rssfooter' );
 		$this->filter( 'the_excerpt_rss', 'embed_rssfooter_excerpt' );
 
@@ -101,8 +100,11 @@ class Frontend {
 			return;
 		}
 
+		Paper::get();
 		new Facebook;
 		new Twitter;
+
+		// Leave this for backwards compatibility as AMP plugin uses head function. We can remove this in the future update.
 		rank_math()->head = new Head;
 	}
 
@@ -115,7 +117,7 @@ class Frontend {
 		}
 
 		wp_enqueue_style( 'rank-math', rank_math()->assets() . 'css/rank-math.css', null, rank_math()->version );
-		wp_enqueue_script( 'rank-math', rank_math()->assets() . 'js/rank-math.js', array( 'jquery' ), rank_math()->version, true );
+		wp_enqueue_script( 'rank-math', rank_math()->assets() . 'js/rank-math.js', [ 'jquery' ], rank_math()->version, true );
 
 		if ( is_singular() ) {
 			Helper::add_json( 'objectID', Post::get_simple_page_id() );
@@ -178,7 +180,7 @@ class Frontend {
 			return $content;
 		}
 
-		return '0' == $public ? $content : Helper::get_settings( 'general.robots_txt_content' );
+		return 0 === absint( $public ) ? $content : Helper::get_settings( 'general.robots_txt_content' );
 	}
 
 	/**
@@ -327,7 +329,7 @@ class Frontend {
 		}
 
 		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			return array( $primary );
+			return [ $primary ];
 		}
 
 		$primary_term = null;

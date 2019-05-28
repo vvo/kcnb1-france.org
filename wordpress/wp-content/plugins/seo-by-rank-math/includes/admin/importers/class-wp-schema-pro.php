@@ -54,10 +54,7 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 * @return bool
 	 */
 	protected function settings() {
-		$all_opts = rank_math()->settings->all_raw();
-		$settings = $all_opts['general'];
-		$titles   = $all_opts['titles'];
-		$sitemap  = $all_opts['sitemap'];
+		$this->get_settings();
 
 		$schema_general = get_option( 'wp-schema-pro-general-settings' );
 		$schema_social  = get_option( 'wp-schema-pro-social-profiles' );
@@ -65,7 +62,7 @@ class WP_Schema_Pro extends Plugin_Importer {
 
 		// Knowledge Graph Logo.
 		if ( isset( $schema_general['site-logo-custom'] ) ) {
-			$this->replace_image( $schema_general['site-logo-custom'], $titles, 'knowledgegraph_logo', 'knowledgegraph_logo_id' );
+			$this->replace_image( $schema_general['site-logo-custom'], $this->titles, 'knowledgegraph_logo', 'knowledgegraph_logo_id' );
 		}
 
 		// General.
@@ -73,9 +70,9 @@ class WP_Schema_Pro extends Plugin_Importer {
 
 		$has_key          = 'person' === $schema_general['site-represent'] ? 'person-name' : 'site-name';
 		$hash[ $has_key ] = 'knowledgegraph_name';
-		$this->replace( $hash, $schema_general, $titles );
+		$this->replace( $hash, $schema_general, $this->titles );
 
-		$titles['local_seo'] = isset( $schema_general['site-represent'] ) && ! empty( $yoast_titles['site-represent'] ) ? 'on' : 'off';
+		$this->titles['local_seo'] = isset( $schema_general['site-represent'] ) && ! empty( $yoast_titles['site-represent'] ) ? 'on' : 'off';
 
 		// Social.
 		$hash = [
@@ -86,16 +83,16 @@ class WP_Schema_Pro extends Plugin_Importer {
 			'youtube'   => 'social_url_youtube',
 			'pinterest' => 'social_url_pinterest',
 		];
-		$this->replace( $hash, $schema_social, $titles );
+		$this->replace( $hash, $schema_social, $this->titles );
 
 		// About & Contact Page.
 		$hash = [
 			'about-page'   => 'local_seo_about_page',
 			'contact-page' => 'local_seo_contact_page',
 		];
-		$this->replace( $hash, $schema_global, $titles );
+		$this->replace( $hash, $schema_global, $this->titles );
 
-		Helper::update_all_settings( '', $titles, '' );
+		$this->update_settings();
 
 		return true;
 	}
@@ -106,7 +103,6 @@ class WP_Schema_Pro extends Plugin_Importer {
 	 * @return array
 	 */
 	protected function postmeta() {
-		$hash = $this->get_schema_types();
 		$this->set_pagination( $this->get_post_ids( true ) );
 
 		foreach ( $this->get_post_ids() as $snippet_post ) {
@@ -116,22 +112,33 @@ class WP_Schema_Pro extends Plugin_Importer {
 				continue;
 			}
 
-			$type    = $snippet['type'];
-			$details = $snippet['details'];
-
-			if ( ! isset( $hash[ $type ] ) ) {
-				continue;
-			}
-
-			foreach ( $hash[ $type ] as $snippet_key => $snippet_value ) {
-				$value = $this->get_schema_meta( $details, $snippet_key, $post_id );
-				update_post_meta( $post_id, 'rank_math_snippet_' . $snippet_value, $value );
-			}
-
-			update_post_meta( $post_id, 'rank_math_rich_snippet', $this->sanitize_schema_type( $type ) );
+			$this->update_postmeta( $post_id, $snippet );
 		}
 
 		return $this->get_pagination_arg();
+	}
+
+	/**
+	 * Update post meta.
+	 *
+	 * @param int   $post_id Post id.
+	 * @param array $snippet Snippet data.
+	 */
+	private function update_postmeta( $post_id, $snippet ) {
+		$type    = $snippet['type'];
+		$details = $snippet['details'];
+		$hash    = $this->get_schema_types();
+
+		if ( ! isset( $hash[ $type ] ) ) {
+			return;
+		}
+
+		foreach ( $hash[ $type ] as $snippet_key => $snippet_value ) {
+			$value = $this->get_schema_meta( $details, $snippet_key, $post_id );
+			update_post_meta( $post_id, 'rank_math_snippet_' . $snippet_value, $value );
+		}
+
+		update_post_meta( $post_id, 'rank_math_rich_snippet', $this->sanitize_schema_type( $type ) );
 	}
 
 	/**

@@ -19,8 +19,9 @@ use RankMath\Admin\Admin_Helper;
 use MyThemeShop\Admin\Page;
 use MyThemeShop\Helpers\Arr;
 use MyThemeShop\Helpers\Str;
-use MyThemeShop\Helpers\Util;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\WordPress;
+use MyThemeShop\Helpers\Conditional;
 
 /**
  * Admin class.
@@ -35,7 +36,6 @@ class Admin extends Module {
 	 * @codeCoverageIgnore
 	 */
 	public function __construct() {
-
 		$directory = dirname( __FILE__ );
 		$this->config([
 			'id'             => 'redirect',
@@ -52,14 +52,13 @@ class Admin extends Module {
 		]);
 		parent::__construct();
 
+		$this->ajax_hooks();
+		$this->load_metabox();
+
 		$this->action( 'rank_math/dashboard/widget', 'dashboard_widget', 12 );
 		$this->filter( 'rank_math/settings/general', 'add_settings' );
 
-		if ( Admin_Helper::is_post_edit() || Admin_Helper::is_term_edit() ) {
-			new Metabox;
-		}
-
-		if ( $this->page->is_current_page() || 'rank_math_save_redirections' === Util::param_post( 'action' ) ) {
+		if ( $this->page->is_current_page() || 'rank_math_save_redirections' === Param::post( 'action' ) ) {
 			$this->form = new Form;
 			$this->form->hooks();
 		}
@@ -72,15 +71,31 @@ class Admin extends Module {
 			Helper::add_json( 'emptyError', __( 'This field must not be empty.', 'rank-math' ) );
 		}
 
-		if ( $this->is_ajax() ) {
-			$this->ajax( 'redirection_delete', 'handle_ajax' );
-			$this->ajax( 'redirection_activate', 'handle_ajax' );
-			$this->ajax( 'redirection_deactivate', 'handle_ajax' );
-			$this->ajax( 'redirection_trash', 'handle_ajax' );
-			$this->ajax( 'redirection_restore', 'handle_ajax' );
+		add_action( 'rank_math/redirection/clean_trashed', 'RankMath\\Redirections\\DB::periodic_clean_trash' );
+	}
+
+	/**
+	 * Load metabox.
+	 */
+	private function load_metabox() {
+		if ( Admin_Helper::is_post_edit() || Admin_Helper::is_term_edit() ) {
+			new Metabox;
+		}
+	}
+
+	/**
+	 * Hooks for ajax.
+	 */
+	private function ajax_hooks() {
+		if ( ! Conditional::is_ajax() ) {
+			return;
 		}
 
-		add_action( 'rank_math/redirection/clean_trashed', 'RankMath\\Redirections\\DB::periodic_clean_trash' );
+		$this->ajax( 'redirection_delete', 'handle_ajax' );
+		$this->ajax( 'redirection_activate', 'handle_ajax' );
+		$this->ajax( 'redirection_deactivate', 'handle_ajax' );
+		$this->ajax( 'redirection_trash', 'handle_ajax' );
+		$this->ajax( 'redirection_restore', 'handle_ajax' );
 	}
 
 	/**

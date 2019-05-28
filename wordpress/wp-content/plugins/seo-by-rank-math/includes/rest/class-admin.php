@@ -2,7 +2,7 @@
 /**
  * The Global functionality of the plugin.
  *
- * Defines the functionality loaded both on admin and frontend.
+ * Defines the functionality loaded on admin.
  *
  * @since      1.0.15
  * @package    RankMath

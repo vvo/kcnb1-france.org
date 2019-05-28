@@ -22,7 +22,8 @@ trait Taxonomy {
 	/**
 	 * Is term indexable.
 	 *
-	 * @param  WP_Term $term Term to check.
+	 * @param WP_Term $term Term to check.
+	 *
 	 * @return boolean
 	 */
 	public static function is_term_indexable( $term ) {
@@ -40,7 +41,8 @@ trait Taxonomy {
 	/**
 	 * Check if taxonomy is indexable.
 	 *
-	 * @param  string $taxonomy Taxonomy to check.
+	 * @param string $taxonomy Taxonomy to check.
+	 *
 	 * @return bool
 	 */
 	public static function is_taxonomy_indexable( $taxonomy ) {
@@ -69,12 +71,12 @@ trait Taxonomy {
 			return $accessible_taxonomies;
 		}
 
-		$accessible_taxonomies = get_taxonomies( array( 'public' => true ), 'objects' );
+		$accessible_taxonomies = get_taxonomies( [ 'public' => true ], 'objects' );
 		$accessible_taxonomies = self::filter_exclude_taxonomies( $accessible_taxonomies );
 
 		// When the array gets messed up somewhere.
 		if ( ! is_array( $accessible_taxonomies ) ) {
-			$accessible_taxonomies = array();
+			$accessible_taxonomies = [];
 		}
 
 		return $accessible_taxonomies;
@@ -94,7 +96,7 @@ trait Taxonomy {
 			return $rank_math_allowed_taxonomies;
 		}
 
-		$rank_math_allowed_taxonomies = array();
+		$rank_math_allowed_taxonomies = [];
 		foreach ( self::get_accessible_taxonomies() as $taxonomy => $object ) {
 			if ( false === Helper::get_settings( 'titles.tax_' . $taxonomy . '_add_meta_box' ) ) {
 				continue;
@@ -111,24 +113,26 @@ trait Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param string $post_type Post type to get taxonomy data for.
-	 * @param string $output    (Optional) Output type can be `names`, `objects`, `choices`.
+	 * @param string  $post_type Post type to get taxonomy data for.
+	 * @param string  $output    (Optional) Output type can be `names`, `objects`, `choices`.
+	 * @param boolean $filter    (Optional) Whether to filter taxonomies.
+	 *
 	 * @return boolean|array
 	 */
-	public static function get_object_taxonomies( $post_type, $output = 'choices' ) {
+	public static function get_object_taxonomies( $post_type, $output = 'choices', $filter = true ) {
 
 		if ( 'names' === $output ) {
 			return get_object_taxonomies( $post_type );
 		}
 
 		$taxonomies = get_object_taxonomies( $post_type, 'objects' );
-		$taxonomies = self::filter_exclude_taxonomies( $taxonomies );
+		$taxonomies = self::filter_exclude_taxonomies( $taxonomies, $filter );
 
 		if ( 'objects' === $output ) {
 			return $taxonomies;
 		}
 
-		return empty( $taxonomies ) ? false : array( 'off' => esc_html__( 'None', 'rank-math' ) ) + wp_list_pluck( $taxonomies, 'label', 'name' );
+		return empty( $taxonomies ) ? false : [ 'off' => esc_html__( 'None', 'rank-math' ) ] + wp_list_pluck( $taxonomies, 'label', 'name' );
 	}
 
 	/**
@@ -138,11 +142,13 @@ trait Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param  array|object $taxonomies Collection of taxonomies to filter.
+	 * @param array|object $taxonomies Collection of taxonomies to filter.
+	 * @param boolean      $filter     (Optional) Whether to filter taxonomies.
+	 *
 	 * @return array|object
 	 */
-	public static function filter_exclude_taxonomies( $taxonomies ) {
-		$taxonomies = array_filter( $taxonomies, array( __CLASS__, 'is_taxonomy_viewable' ) );
+	public static function filter_exclude_taxonomies( $taxonomies, $filter = true ) {
+		$taxonomies = $filter ? array_filter( $taxonomies, array( __CLASS__, 'is_taxonomy_viewable' ) ) : $taxonomies;
 
 		/**
 		 * Filter: 'rank_math_excluded_taxonomies' - Allow changing the accessible taxonomies.
@@ -162,7 +168,8 @@ trait Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param  string|WP_Taxonomy $taxonomy Taxonomy name or object.
+	 * @param string|WP_Taxonomy $taxonomy Taxonomy name or object.
+	 *
 	 * @return bool
 	 */
 	public static function is_taxonomy_viewable( $taxonomy ) {

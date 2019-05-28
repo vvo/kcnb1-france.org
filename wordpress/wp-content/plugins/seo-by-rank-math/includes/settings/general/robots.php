@@ -18,8 +18,9 @@ if ( $data['exists'] ) {
 }
 
 $cmb->add_field([
-	'id'         => 'robots_txt_content',
-	'type'       => 'textarea',
-	'desc'       => ! $data['exists'] ? '' : esc_html__( 'Contents are locked because robots.txt file is present in the root folder.', 'rank-math' ),
-	'attributes' => $attributes,
+	'id'              => 'robots_txt_content',
+	'type'            => 'textarea',
+	'desc'            => ! $data['exists'] ? '' : esc_html__( 'Contents are locked because robots.txt file is present in the root folder.', 'rank-math' ),
+	'attributes'      => $attributes,
+	'sanitization_cb' => false,
 ]);

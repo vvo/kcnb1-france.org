@@ -56,7 +56,7 @@ trait Post_Type {
 			$posts_to_exclude = apply_filters( 'rank_math/sitemap/posts_to_exclude', $posts_to_exclude );
 		}
 
-		return in_array( $post_id, $posts_to_exclude );
+		return in_array( $post_id, $posts_to_exclude, true );
 	}
 
 	/**
@@ -116,7 +116,7 @@ trait Post_Type {
 			return $accessible_post_types;
 		}
 
-		$accessible_post_types = get_post_types( array( 'public' => true ) );
+		$accessible_post_types = get_post_types( [ 'public' => true ] );
 		$accessible_post_types = array_filter( $accessible_post_types, 'is_post_type_viewable' );
 
 		/**
@@ -128,7 +128,7 @@ trait Post_Type {
 
 		// When the array gets messed up somewhere.
 		if ( ! is_array( $accessible_post_types ) ) {
-			$accessible_post_types = array();
+			$accessible_post_types = [];
 		}
 
 		return $accessible_post_types;
@@ -148,7 +148,7 @@ trait Post_Type {
 			return $rank_math_allowed_post_types;
 		}
 
-		$rank_math_allowed_post_types = array();
+		$rank_math_allowed_post_types = [];
 		foreach ( self::get_accessible_post_types() as $post_type ) {
 			if ( false === apply_filters( 'rank_math/metabox/add_seo_metabox', Helper::get_settings( 'titles.pt_' . $post_type . '_add_meta_box', true ) ) ) {
 				continue;

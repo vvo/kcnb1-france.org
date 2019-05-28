@@ -90,7 +90,7 @@ class WooCommerce {
 		$url = $wp->request;
 
 		if ( ! empty( $url ) ) {
-			$replace = array();
+			$replace = [];
 			$url     = explode( '/', $url );
 			$slug    = array_pop( $url );
 
@@ -176,13 +176,14 @@ class WooCommerce {
 		$category_base        = trailingslashit( $permalink_structure['category_rewrite_slug'] );
 		$remove_category_base = Helper::get_settings( 'general.wc_remove_category_base' );
 		$remove_parent_slugs  = Helper::get_settings( 'general.wc_remove_category_parent_slugs' );
+		$is_language_switcher = ( class_exists( 'Sitepress' ) && strpos( $original_link, 'lang=' ) );
 
 		if ( $remove_category_base ) {
 			$link          = str_replace( $category_base, '', $link );
 			$category_base = '';
 		}
 
-		if ( $remove_parent_slugs ) {
+		if ( $remove_parent_slugs && ! $is_language_switcher ) {
 			$link = home_url( trailingslashit( $category_base . $term->slug ) );
 		}
 
@@ -315,7 +316,7 @@ class WooCommerce {
 		if ( ! function_exists( 'is_product_category' ) || is_product_category() ) {
 			global $wp_query;
 			$cat          = $wp_query->get_queried_object();
-			$thumbnail_id = get_woocommerce_term_meta( $cat->term_id, 'thumbnail_id', true );
+			$thumbnail_id = get_term_meta( $cat->term_id, 'thumbnail_id', true );
 			$opengraph_image->add_image_by_id( $thumbnail_id );
 		}
 
@@ -340,7 +341,7 @@ class WooCommerce {
 	 * @return bool
 	 */
 	public function sitemap_exclude_post_type( $bool, $post_type ) {
-		if ( in_array( $post_type, array( 'product_variation', 'shop_coupon' ) ) ) {
+		if ( in_array( $post_type, array( 'product_variation', 'shop_coupon' ), true ) ) {
 			return true;
 		}
 
@@ -355,7 +356,7 @@ class WooCommerce {
 	 * @return bool
 	 */
 	public function sitemap_taxonomies( $bool, $taxonomy ) {
-		if ( in_array( $taxonomy, array( 'product_type', 'product_shipping_class', 'shop_order_status' ) ) ) {
+		if ( in_array( $taxonomy, array( 'product_type', 'product_shipping_class', 'shop_order_status' ), true ) ) {
 			return true;
 		}
 
@@ -611,20 +612,12 @@ class WooCommerce {
 	 * @return bool|array
 	 */
 	protected function get_brands( $product_id ) {
-		$brand_taxonomies = array( 'brand', 'product_brands', 'product_brand', 'product-brand', 'pwb-brand' );
-		$brand_taxonomies = array_filter( $brand_taxonomies, 'taxonomy_exists' );
-
-		if ( empty( $brand_taxonomies ) ) {
+		$taxonomy = Helper::get_settings( 'general.product_brand' );
+		if ( ! $taxonomy || ! taxonomy_exists( $taxonomy ) ) {
 			return false;
 		}
 
-		foreach ( $brand_taxonomies as $taxonomy ) {
-			$brands = wp_get_post_terms( $product_id, $taxonomy );
-			if ( ! is_a( $brands, 'WP_Error' ) ) {
-				return $brands;
-			}
-		}
-
-		return false;
+		$brands = wp_get_post_terms( $product_id, $taxonomy );
+		return empty( $brands ) || is_wp_error( $brands ) ? false : $brands;
 	}
 }

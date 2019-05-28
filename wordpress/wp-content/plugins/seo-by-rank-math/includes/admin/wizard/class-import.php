@@ -70,7 +70,7 @@ class Import implements Wizard_Step {
 			$multi_checked = 'multicheck-checked';
 			$choices       = array_keys( $plugin['choices'] );
 
-			if ( ( array_key_exists( 'yoast', $plugins ) || array_key_exists( 'yoast-premium', $plugins ) ) && 'aioseo' === $slug ) {
+			if ( ( array_key_exists( 'seopress', $plugins ) && ( in_array( $slug, [ 'yoast', 'yoast-premium', 'aioseo' ] ) ) ) || ( array_key_exists( 'yoast', $plugins ) || array_key_exists( 'yoast-premium', $plugins ) ) && 'aioseo' === $slug ) {
 				$checked       = '';
 				$multi_checked = '';
 				$choices       = [];
@@ -89,12 +89,7 @@ class Import implements Wizard_Step {
 				],
 			];
 
-			$group_id = $wizard->cmb->add_field( $field_args );
-
-			if ( ! function_exists( 'is_plugin_active' ) ) {
-				require_once ABSPATH . 'wp-admin/includes/plugin.php';
-			}
-
+			$group_id  = $wizard->cmb->add_field( $field_args );
 			$is_active = is_plugin_active( $plugin['file'] );
 			$wizard->cmb->add_group_field( $group_id, [
 				'id'         => $slug . '_meta',

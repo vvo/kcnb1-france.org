@@ -22,7 +22,7 @@ class Settings {
 	 *
 	 * @var array
 	 */
-	private $keys = array();
+	private $keys = [];
 
 	/**
 	 * Options holder.
@@ -65,7 +65,7 @@ class Settings {
 
 			// Lazy-Load options.
 			if ( ! is_null( $this->options ) ) {
-				$options = get_option( $key, array() );
+				$options = get_option( $key, [] );
 				$options = $this->normalize_it( $options );
 
 				$this->options[ $id ] = $options;
@@ -133,10 +133,10 @@ class Settings {
 	 * @return array
 	 */
 	public function all_raw() {
-		$options = array();
+		$options = [];
 		if ( ! empty( $this->keys ) ) {
 			foreach ( $this->keys as $id => $key ) {
-				$options[ $id ] = get_option( $key, array() );
+				$options[ $id ] = get_option( $key, [] );
 			}
 		}
 
@@ -152,9 +152,9 @@ class Settings {
 
 		if ( is_null( $this->options ) && ! empty( $this->keys ) ) {
 
-			$options = array();
+			$options = [];
 			foreach ( $this->keys as $id => $key ) {
-				$options[ $id ] = get_option( $key, array() );
+				$options[ $id ] = get_option( $key, [] );
 			}
 
 			$this->options = $this->normalize_it( $options );

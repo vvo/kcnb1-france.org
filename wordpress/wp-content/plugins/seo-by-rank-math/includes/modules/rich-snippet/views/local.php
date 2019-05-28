@@ -32,11 +32,16 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_local_price_range',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Price Range', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $local,
+	'id'         => 'rank_math_snippet_local_price_range',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Price Range', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^\${1,4}$',
+		'data-msg-regex'        => esc_html__( 'Insert $ / $$ / $$$ / $$$$.', 'rank-math' ),
+	],
+	'dep'        => $local,
 ]);
 
 $cmb->add_field([

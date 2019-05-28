@@ -23,7 +23,7 @@ $analyzer = Helper::get_module( 'seo-analysis' )->admin->analyzer;
 		<?php echo esc_html( get_admin_page_title() ); ?>
 		<a class="page-title-action" href="<?php KB::the( 'seo-analysis' ); ?>" target="_blank"><?php esc_html_e( 'What is this?', 'rank-math' ); ?></a>
 	</h2>
-	<?php if ( Helper::is_mythemeshop_connected() ) : ?>
+	<?php if ( Helper::is_site_connected() ) : ?>
 	<div class="rank-math-seo-analysis-header rank-math-ui<?php echo empty( $analyzer->results ) ? '' : ' hidden'; ?>">
 
 		<?php if ( $analyzer->analyse_subpage ) { ?>
@@ -53,10 +53,7 @@ $analyzer = Helper::get_module( 'seo-analysis' )->admin->analyzer;
 	<?php // phpcs:disable ?>
 	<?php if ( ! $analyzer->analyse_subpage ) : ?>
 	<div class="rank-math-results-wrapper">
-		<?php
-		$analyzer->display_graphs();
-		$analyzer->display_results();
-		?>
+		<?php $analyzer->display(); ?>
 	</div>
 	<?php endif; ?>
 <?php else : ?>

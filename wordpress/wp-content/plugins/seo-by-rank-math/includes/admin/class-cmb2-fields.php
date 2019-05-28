@@ -57,10 +57,10 @@ class CMB2_Fields implements Runner {
 	public function render_switch( $field, $escaped_value, $object_id, $object_type, $field_type_object ) {
 
 		if ( empty( $field->args['options'] ) ) {
-			$field->args['options'] = array(
+			$field->args['options'] = [
 				'off' => esc_html( $field->get_string( 'off', __( 'Off', 'rank-math' ) ) ),
 				'on'  => esc_html( $field->get_string( 'on', __( 'On', 'rank-math' ) ) ),
-			);
+			];
 		}
 		$field->set_options();
 
@@ -73,11 +73,11 @@ class CMB2_Fields implements Runner {
 	 * @param array $field The passed in `CMB2_Field` object.
 	 */
 	public function render_notice( $field ) {
-		$hash = array(
+		$hash = [
 			'error'   => 'notice notice-alt notice-error error inline',
 			'info'    => 'notice notice-alt notice-info info inline',
 			'warning' => 'notice notice-alt notice-warning warning inline',
-		);
+		];
 
 		echo '<div class="' . $hash[ $field->args( 'what' ) ] . '"><p>' . $field->args( 'content' ) . '</p></div>';
 	}
@@ -99,29 +99,32 @@ class CMB2_Fields implements Runner {
 	public function render_address( $field, $escaped_value, $object_id, $object_type, $field_type_object ) {
 
 		// Make sure we assign each part of the value we need.
-		$value = wp_parse_args( $escaped_value, array(
-			'streetAddress'   => '',
-			'addressLocality' => '',
-			'addressRegion'   => '',
-			'postalCode'      => '',
-			'addressCountry'  => '',
-		) );
+		$value = wp_parse_args(
+			$escaped_value,
+			[
+				'streetAddress'   => '',
+				'addressLocality' => '',
+				'addressRegion'   => '',
+				'postalCode'      => '',
+				'addressCountry'  => '',
+			]
+		);
 
-		$strings = array(
+		$strings = [
 			'streetAddress'   => 'Street Address',
 			'addressLocality' => 'Locality',
 			'addressRegion'   => 'Region',
 			'postalCode'      => 'Postal Code',
 			'addressCountry'  => 'Country',
-		);
+		];
 
 		foreach ( array_keys( $value ) as $id ) :
-			echo '<div class="cmb-address-field">' . $field_type_object->input( array(
+			echo '<div class="cmb-address-field">' . $field_type_object->input([
 				'name'        => $field_type_object->_name( '[' . $id . ']' ),
 				'id'          => $field_type_object->_id( '_' . $id ),
 				'value'       => $value[ $id ],
 				'placeholder' => esc_html( $field->get_string( $id . '_text', $strings[ $id ] ) ),
-			) ) . '</div>';
+			]) . '</div>';
 		endforeach;
 	}
 }

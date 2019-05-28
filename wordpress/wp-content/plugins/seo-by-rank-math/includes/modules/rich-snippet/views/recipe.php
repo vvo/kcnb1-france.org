@@ -48,43 +48,58 @@ $cmb->add_field([
 	'id'      => 'rank_math_snippet_recipe_calories',
 	'type'    => 'text',
 	'name'    => esc_html__( 'Calories', 'rank-math' ),
-	'desc'    => esc_html__( 'The number of calories in the recipe.', 'rank-math' ),
+	'desc'    => esc_html__( 'The number of calories in the recipe. Optional.', 'rank-math' ),
 	'classes' => 'cmb-row-33',
 	'dep'     => $recipe,
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_recipe_preptime',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Preparation Time', 'rank-math' ),
-	'desc'    => esc_html__( 'Example: 1H30M', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $recipe,
+	'id'         => 'rank_math_snippet_recipe_preptime',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Preparation Time', 'rank-math' ),
+	'desc'       => esc_html__( ' ISO 8601 duration format. Example: 1H30M', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^([0-9]+[A-Z])+$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: 1H30M', 'rank-math' ),
+	],
+	'dep'        => $recipe,
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_recipe_cooktime',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Cooking Time', 'rank-math' ),
-	'desc'    => esc_html__( 'Example: 1H30M', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $recipe,
+	'id'         => 'rank_math_snippet_recipe_cooktime',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Cooking Time', 'rank-math' ),
+	'desc'       => esc_html__( ' ISO 8601 duration format. Example: 1H30M', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^([0-9]+[A-Z])+$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: 1H30M', 'rank-math' ),
+	],
+	'dep'        => $recipe,
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_recipe_totaltime',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Total Time', 'rank-math' ),
-	'desc'    => esc_html__( 'Example: 1H30M', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $recipe,
+	'id'         => 'rank_math_snippet_recipe_totaltime',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Total Time', 'rank-math' ),
+	'desc'       => esc_html__( ' ISO 8601 duration format. Example: 1H30M', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^([0-9]+[A-Z])+$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: 1H30M', 'rank-math' ),
+	],
+	'dep'        => $recipe,
 ]);
 
 $cmb->add_field([
 	'id'      => 'rank_math_snippet_recipe_rating',
 	'type'    => 'text',
 	'name'    => esc_html__( 'Rating', 'rank-math' ),
-	'desc'    => esc_html__( 'Rating score of the recipe.', 'rank-math' ),
+	'desc'    => esc_html__( 'Rating score of the recipe. Optional.', 'rank-math' ),
 	'classes' => 'cmb-row-33',
 	'dep'     => $recipe,
 ]);
@@ -108,21 +123,27 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_recipe_video',
-	'type'    => 'text_url',
-	'name'    => esc_html__( 'Recipe Video', 'rank-math' ),
-	'desc'    => esc_html__( 'A recipe video URL.', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $recipe,
+	'id'         => 'rank_math_snippet_recipe_video',
+	'type'       => 'text_url',
+	'name'       => esc_html__( 'Recipe Video', 'rank-math' ),
+	'desc'       => esc_html__( 'A recipe video URL. Optional.', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-url' => true,
+	],
+	'dep'        => $recipe,
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_recipe_video_thumbnail',
-	'type'    => 'text_url',
-	'name'    => esc_html__( 'Recipe Video Thumbnail', 'rank-math' ),
-	'desc'    => esc_html__( 'A recipe video thumbnail URL.', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $recipe,
+	'id'         => 'rank_math_snippet_recipe_video_thumbnail',
+	'type'       => 'text_url',
+	'name'       => esc_html__( 'Recipe Video Thumbnail', 'rank-math' ),
+	'desc'       => esc_html__( 'A recipe video thumbnail URL.', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-url' => true,
+	],
+	'dep'        => $recipe,
 ]);
 
 $cmb->add_field([

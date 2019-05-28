@@ -40,18 +40,19 @@ class Search_Console_Common extends Module {
 	 * Add admin bar item.
 	 *
 	 * @param array $items Array of admin bar nodes.
+	 *
 	 * @return array
 	 */
 	public function admin_bar_items( $items ) {
 		// Add link only if connected?
-		$items['search-console'] = array(
+		$items['search-console'] = [
 			'id'        => 'rank-math-search-console',
 			'title'     => esc_html__( 'Search Console', 'rank-math' ),
 			'href'      => Helper::get_admin_url( 'search-console' ),
 			'parent'    => 'rank-math',
-			'meta'      => array( 'title' => esc_html__( 'Review analytics and sitemaps', 'rank-math' ) ),
+			'meta'      => [ 'title' => esc_html__( 'Review analytics and sitemaps', 'rank-math' ) ],
 			'_priority' => 50,
-		);
+		];
 
 		return $items;
 	}
@@ -60,11 +61,10 @@ class Search_Console_Common extends Module {
 	 * CRON Job.
 	 */
 	public function add_day_crawler() {
-		$client = new Client;
-		$client->maybe_refresh_token();
-
+		$client  = new Client;
 		$crawler = new Data_Fetcher;
 		$start   = Helper::get_midnight( time() - DAY_IN_SECONDS );
+
 		$crawler->push_to_queue( date( 'Y-m-d', $start - ( DAY_IN_SECONDS * 1 ) ) );
 		$crawler->save()->dispatch();
 	}

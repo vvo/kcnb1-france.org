@@ -9,8 +9,8 @@
  */
 
 use RankMath\Helper;
-use RankMath\Redirections\DB as Redirections_DB;
 use MyThemeShop\Helpers\DB;
+use RankMath\Redirections\DB as Redirections_DB;
 
 /**
  * Create and update table schema
@@ -22,8 +22,8 @@ function rank_math_0_9_8_update_tables() {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 	$max_index_length = 191;
+	$redirections     = [];
 	$charset_collate  = $wpdb->get_charset_collate();
-	$redirections     = array();
 
 	// Rename old tables.
 	if ( DB::check_table_exists( 'rank_math_redirections' ) ) {
@@ -65,13 +65,13 @@ function rank_math_0_9_8_update_tables() {
 	}
 
 	foreach ( $redirections as $redirection ) {
-		$sources                 = array();
+		$sources                 = [];
 		$redirection['url_from'] = maybe_unserialize( $redirection['url_from'] );
 		foreach ( $redirection['url_from'] as $url_from ) {
-			$sources[] = array(
+			$sources[] = [
 				'pattern'    => $url_from['url'],
 				'comparison' => $url_from['comparison'],
-			);
+			];
 		}
 
 		$status = 'active';
@@ -81,7 +81,7 @@ function rank_math_0_9_8_update_tables() {
 			$status = 'inactive';
 		}
 
-		$data = array(
+		$data = [
 			'url_to'                => $redirection['url_to'],
 			'header_code'           => $redirection['header_code'],
 			'times_accessed'        => '0',
@@ -92,7 +92,7 @@ function rank_math_0_9_8_update_tables() {
 			'author'                => 0,
 			'linked_object'         => '',
 			'sources'               => $sources,
-		);
+		];
 
 		Redirections_DB::add( $data );
 	}

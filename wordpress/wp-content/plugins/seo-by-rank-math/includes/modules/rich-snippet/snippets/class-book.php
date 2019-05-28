@@ -56,9 +56,9 @@ class Book implements Snippet {
 	private function get_work_entity( $edition ) {
 		$work = [
 			'@type'         => 'Book',
-			'bookEdition'   => $edition['book_edition'],
+			'bookEdition'   => isset( $edition['book_edition'] ) ? $edition['book_edition'] : '',
 			'bookFormat'    => 'https://schema.org/' . $edition['book_format'],
-			'datePublished' => $edition['date_published'],
+			'datePublished' => isset( $edition['date_published'] ) ? $edition['date_published'] : '',
 		];
 
 		$fields = [ 'isbn', 'name', 'author', 'url' ];

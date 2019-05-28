@@ -12,7 +12,7 @@ namespace RankMath\Redirections;
 
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
-use MyThemeShop\Helpers\Util;
+use MyThemeShop\Helpers\Param;
 use RankMath\Monitor\DB as Monitor_DB;
 
 /**
@@ -139,7 +139,7 @@ class Form {
 			return DB::get_redirection_by_id( $redirection_id );
 		}
 
-		if ( $url = Util::param_get( 'url' ) ) { // phpcs:ignore
+		if ( $url = Param::get( 'url' ) ) { // phpcs:ignore
 			return [ 'sources' => [ [ 'pattern' => $url ] ] ];
 		}
 

@@ -33,7 +33,7 @@ class Export {
 	 */
 	public function export() {
 		$server = isset( $_GET['export'] ) ? filter_input( INPUT_GET, 'export' ) : false;
-		if ( ! $server || ! in_array( $server, [ 'apache', 'nginx' ] ) ) {
+		if ( ! $server || ! in_array( $server, [ 'apache', 'nginx' ], true ) ) {
 			return;
 		}
 
@@ -71,60 +71,82 @@ class Export {
 	/**
 	 * Apache rewrite rules.
 	 *
-	 * @param  array $items Array of db items.
+	 * @param array $items Array of db items.
+	 *
 	 * @return string
 	 */
 	private function apache( $items ) {
-		$text[] = '<IfModule mod_rewrite.c>';
+		$output[] = '<IfModule mod_rewrite.c>';
 
 		foreach ( $items as $item ) {
-			$to = sprintf( '%s [R=%d,L]', $this->encode2nd( $item['url_to'] ), $item['header_code'] );
-
-			$sources = maybe_unserialize( $item['sources'] );
-			foreach ( $sources as $from ) {
-				$url = $from['pattern'];
-				if ( 'regex' !== $from['comparison'] && strpos( $url, '?' ) !== false || strpos( $url, '&' ) !== false ) {
-					$url_parts = parse_url( $url );
-					$url       = $url_parts['path'];
-					$text[]    = sprintf( 'RewriteCond %%{QUERY_STRING} ^%s$', preg_quote( $url_parts['query'] ) );
-				}
-
-				// Get rewrite string.
-				$text[] = sprintf( '%sRewriteRule %s %s', $this->is_valid_regex( $from ), $this->get_comparison( $url, $from ), $to );
-			}
+			$this->apache_item( $item, $output );
 		}
 
-		$text[] = '</IfModule>';
+		$output[] = '</IfModule>';
 
-		return $text;
+		return $output;
+	}
+
+	/**
+	 * Format apache single item.
+	 *
+	 * @param array $item   Single item.
+	 * @param array $output Output array.
+	 */
+	private function apache_item( $item, &$output ) {
+		$target  = sprintf( '%s [R=%d,L]', $this->encode2nd( $item['url_to'] ), $item['header_code'] );
+		$sources = maybe_unserialize( $item['sources'] );
+
+		foreach ( $sources as $from ) {
+			$url = $from['pattern'];
+			if ( 'regex' !== $from['comparison'] && strpos( $url, '?' ) !== false || strpos( $url, '&' ) !== false ) {
+				$url_parts = parse_url( $url );
+				$url       = $url_parts['path'];
+				$output[]  = sprintf( 'RewriteCond %%{QUERY_STRING} ^%s$', preg_quote( $url_parts['query'] ) );
+			}
+
+			// Get rewrite string.
+			$output[] = sprintf( '%sRewriteRule %s %s', $this->is_valid_regex( $from ), $this->get_comparison( $url, $from ), $target );
+		}
 	}
 
 	/**
 	 * NGINX rewrite rules.
 	 *
-	 * @param  array $items Array of db items.
+	 * @param array $items Array of db items.
+	 *
 	 * @return string
 	 */
 	private function nginx( $items ) {
-		$text[] = 'server {';
+		$output[] = 'server {';
 
 		foreach ( $items as $item ) {
-			$to   = $this->encode2nd( $item['url_to'] );
-			$code = '301' === $item['header_code'] ? 'permanent' : 'redirect';
-
-			$sources = maybe_unserialize( $item['sources'] );
-			foreach ( $sources as $from ) {
-				if ( '' !== $this->is_valid_regex( $from ) ) {
-					continue;
-				}
-
-				$text[] = $this->normalize_nginx_redirect( $this->get_comparison( $from['pattern'], $from ), $to, $code );
-			}
+			$this->nginx_item( $item, $output );
 		}
 
-		$text[] = '}';
+		$output[] = '}';
 
-		return $text;
+		return $output;
+	}
+
+	/**
+	 * Format nginx single item.
+	 *
+	 * @param array $item   Single item.
+	 * @param array $output Output array.
+	 */
+	private function nginx_item( $item, &$output ) {
+		$target      = $this->encode2nd( $item['url_to'] );
+		$sources     = maybe_unserialize( $item['sources'] );
+		$header_code = '301' === $item['header_code'] ? 'permanent' : 'redirect';
+
+		foreach ( $sources as $from ) {
+			if ( '' !== $this->is_valid_regex( $from ) ) {
+				continue;
+			}
+
+			$output[] = $this->normalize_nginx_redirect( $this->get_comparison( $from['pattern'], $from ), $target, $header_code );
+		}
 	}
 
 	/**
@@ -132,7 +154,8 @@ class Export {
 	 *
 	 * So we don't break the site when it's inserted in the .htaccess.
 	 *
-	 * @param  array $source Source array.
+	 * @param array $source Source array.
+	 *
 	 * @return string
 	 */
 	private function is_valid_regex( $source ) {
@@ -146,25 +169,27 @@ class Export {
 	/**
 	 * Normalize redirect data
 	 *
-	 * @param string $source Matching pattern.
-	 * @param string $target Target where to redirect.
-	 * @param string $code   Response header code.
+	 * @param string $source      Matching pattern.
+	 * @param string $target      Target where to redirect.
+	 * @param string $header_code Response header code.
+	 *
 	 * @return string
 	 */
-	private function normalize_nginx_redirect( $source, $target, $code ) {
+	private function normalize_nginx_redirect( $source, $target, $header_code ) {
 		$source = preg_replace( "/[\r\n\t].*?$/s", '', $source );
 		$source = preg_replace( '/[^\PC\s]/u', '', $source );
 		$target = preg_replace( "/[\r\n\t].*?$/s", '', $target );
 		$target = preg_replace( '/[^\PC\s]/u', '', $target );
 
-		return "    rewrite {$source} {$target} {$code};";
+		return "    rewrite {$source} {$target} {$header_code};";
 	}
 
 	/**
 	 * Get comparison pattern
 	 *
-	 * @param  string $url  Url for comparison.
-	 * @param  array  $from Comparison type and url.
+	 * @param string $url  Url for comparison.
+	 * @param array  $from Comparison type and url.
+	 *
 	 * @return string
 	 */
 	private function get_comparison( $url, $from ) {
@@ -187,7 +212,8 @@ class Export {
 	/**
 	 * Encode url
 	 *
-	 * @param  string $url Url to encode.
+	 * @param string $url Url to encode.
+	 *
 	 * @return string
 	 */
 	private function encode2nd( $url ) {
@@ -206,7 +232,8 @@ class Export {
 	/**
 	 * Encode regex
 	 *
-	 * @param  string $url Url to encode.
+	 * @param string $url Url to encode.
+	 *
 	 * @return string
 	 */
 	private function encode_regex( $url ) {

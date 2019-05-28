@@ -36,7 +36,7 @@ class Helper {
 	 * @param  array  $omit    Variables that should not be replaced by this function.
 	 * @return string
 	 */
-	public static function replace_vars( $content, $args = array(), $omit = array() ) {
+	public static function replace_vars( $content, $args = [], $omit = [] ) {
 		$replacer = new Replace_Vars();
 
 		return $replacer->replace( $content, $args, $omit );
@@ -56,7 +56,7 @@ class Helper {
 	 *
 	 * @return bool Whether the replacement function was succesfully registered.
 	 */
-	public static function register_var_replacement( $var, $callback, $args = array() ) {
+	public static function register_var_replacement( $var, $callback, $args = [] ) {
 		return Replace_Vars::register_replacement( $var, $callback, $args );
 	}
 
@@ -162,11 +162,11 @@ class Helper {
 			return false;
 		}
 
-		$saved = get_option( $key, array() );
+		$saved = get_option( $key, [] );
 		if ( is_null( $data ) ) {
 			return wp_parse_args( $saved, array(
 				'authorized' => false,
-				'profiles'   => array(),
+				'profiles'   => [],
 			) );
 		}
 

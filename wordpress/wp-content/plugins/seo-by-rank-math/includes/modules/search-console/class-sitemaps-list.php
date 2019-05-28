@@ -25,11 +25,13 @@ class Sitemaps_List extends List_Table {
 	 */
 	public function __construct() {
 
-		parent::__construct( array(
-			'singular' => esc_html__( 'sitemap', 'rank-math' ),
-			'plural'   => esc_html__( 'sitemaps', 'rank-math' ),
-			'no_items' => esc_html__( 'No sitemaps submitted.', 'rank-math' ),
-		) );
+		parent::__construct(
+			[
+				'singular' => esc_html__( 'sitemap', 'rank-math' ),
+				'plural'   => esc_html__( 'sitemaps', 'rank-math' ),
+				'no_items' => esc_html__( 'No sitemaps submitted.', 'rank-math' ),
+			]
+		);
 	}
 
 	/**
@@ -41,10 +43,82 @@ class Sitemaps_List extends List_Table {
 		$with_index  = ! Helper::search_console()->sitemaps->selected_site_is_domain_property();
 		$this->items = Helper::search_console()->sitemaps->get_sitemaps( $with_index );
 
-		$this->set_pagination_args( array(
-			'total_items' => count( $this->items ),
-			'per_page'    => 100,
-		) );
+		$this->set_pagination_args(
+			[
+				'total_items' => count( $this->items ),
+				'per_page'    => 100,
+			]
+		);
+	}
+
+	/**
+	 * Handle column path.
+	 *
+	 * @param object $item The current item.
+	 *
+	 * @return string
+	 */
+	protected function column_path( $item ) {
+		return ( empty( $item['isSitemapsIndex'] ) ? '' : '<span class="dashicons dashicons-category"></span>' ) . '<a href="' . $item['path'] . '" target="_blank">' . $item['path'] . '</a>';
+	}
+
+	/**
+	 * Handle column lastDownloaded.
+	 *
+	 * @param object $item The current item.
+	 *
+	 * @return string
+	 */
+	protected function column_lastDownloaded( $item ) {
+		if ( ! empty( $item['lastDownloaded'] ) ) {
+			$date = date_parse( $item['lastDownloaded'] );
+			$date = date( 'Y-m-d H:i:s', mktime( $date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year'] ) );
+			return $date;
+		}
+	}
+
+	/**
+	 * Handle column items.
+	 *
+	 * @param object $item The current item.
+	 *
+	 * @return string
+	 */
+	protected function column_items( $item ) {
+		if ( empty( $item['contents'] ) || ! is_array( $item['contents'] ) ) {
+			return;
+		}
+
+		$hash = [
+			'web'   => [
+				'icon'  => 'media-default',
+				'title' => esc_html__( 'Pages', 'rank-math' ),
+			],
+			'image' => [
+				'icon'  => 'format-image',
+				'title' => esc_html__( 'Images', 'rank-math' ),
+			],
+			'news'  => [
+				'icon'  => 'media-document',
+				'title' => esc_html__( 'News', 'rank-math' ),
+			],
+		];
+
+		$items = '';
+		foreach ( $item['contents'] as $contents ) {
+
+			$items .= ! isset( $hash[ $contents['type'] ] ) ? '<span class="rank-math-items-misc">' :
+				sprintf(
+					'<span title="%1$s"><span class="dashicons dashicons-%2$s"></span> ',
+					$hash[ $contents['type'] ]['title'], $hash[ $contents['type'] ]['icon']
+				);
+
+			/* translators: content: submitted and indexed */
+			$items .= sprintf( wp_kses_post( __( '%1$d <span class="indexed">(%2$d indexed)</span><br>', 'rank-math' ) ), $contents['submitted'], $contents['indexed'] );
+			$items .= '</span>';
+		}
+
+		return $items;
 	}
 
 	/**
@@ -52,64 +126,16 @@ class Sitemaps_List extends List_Table {
 	 *
 	 * @param object $item        The current item.
 	 * @param string $column_name The current column name.
+	 *
 	 * @return string
 	 */
 	public function column_default( $item, $column_name ) {
-
-		if ( 'path' === $column_name ) {
-			return ( empty( $item['isSitemapsIndex'] ) ? '' : '<span class="dashicons dashicons-category"></span>' ) . '<a href="' . $item['path'] . '" target="_blank">' . $item['path'] . '</a>';
-		}
-
-		if ( 'lastDownloaded' === $column_name ) {
-			$date = '';
-			if ( ! empty( $item['lastDownloaded'] ) ) {
-				$date = date_parse( $item['lastDownloaded'] );
-				$date = date( 'Y-m-d H:i:s', mktime( $date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year'] ) );
-			}
-
-			return $date;
-		}
-
-		if ( 'items' === $column_name ) {
-			$items = '';
-			if ( ! empty( $item['contents'] ) && is_array( $item['contents'] ) ) {
-				$hash = array(
-					'web'   => array(
-						'icon'  => 'media-default',
-						'title' => esc_html__( 'Pages', 'rank-math' ),
-					),
-					'image' => array(
-						'icon'  => 'format-image',
-						'title' => esc_html__( 'Images', 'rank-math' ),
-					),
-					'news'  => array(
-						'icon'  => 'media-document',
-						'title' => esc_html__( 'News', 'rank-math' ),
-					),
-				);
-				foreach ( $item['contents'] as $contents ) {
-
-					$items .= ! isset( $hash[ $contents['type'] ] ) ? '<span class="rank-math-items-misc">' :
-						sprintf(
-							'<span title="%1$s"><span class="dashicons dashicons-%2$s"></span> ',
-							$hash[ $contents['type'] ]['title'], $hash[ $contents['type'] ]['icon']
-						);
-
-					/* translators: content: submitted and indexed */
-					$items .= sprintf( wp_kses_post( __( '%1$d <span class="indexed">(%2$d indexed)</span><br>', 'rank-math' ) ), $contents['submitted'], $contents['indexed'] );
-					$items .= '</span>';
-				}
-			}
-
-			return $items;
-		}
-
 		if ( 'warnings' === $column_name ) {
-			return '<span title="' . esc_html__( 'Warnings', 'rank-math' ) . '">' . $item[ $column_name ] . '</span>';
+			return '<span title="' . esc_html__( 'Warnings', 'rank-math' ) . '">' . $item['warnings'] . '</span>';
 		}
 
 		if ( 'errors' === $column_name ) {
-			return '<span title="' . esc_html__( 'Errors', 'rank-math' ) . '">' . $item[ $column_name ] . '</span>';
+			return '<span title="' . esc_html__( 'Errors', 'rank-math' ) . '">' . $item['errors'] . '</span>';
 		}
 
 		return print_r( $item, true );
@@ -121,13 +147,13 @@ class Sitemaps_List extends List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return array(
+		return [
 			'path'           => esc_html__( 'Path', 'rank-math' ),
 			'lastDownloaded' => esc_html__( 'Last Downloaded', 'rank-math' ),
 			'items'          => esc_html__( 'Items', 'rank-math' ),
 			'warnings'       => esc_html__( 'Warnings', 'rank-math' ) . ' <span class="dashicons dashicons-warning"></span>',
 			'errors'         => esc_html__( 'Errors', 'rank-math' ) . ' <span class="dashicons dashicons-dismiss"></span>',
-		);
+		];
 	}
 
 	/**
@@ -136,7 +162,7 @@ class Sitemaps_List extends List_Table {
 	 * @param object $item The current item.
 	 */
 	public function single_row( $item ) {
-		$classes = array();
+		$classes = [];
 
 		$classes[] = ! empty( $item['isSitemapsIndex'] ) ? 'is-sitemap-index' : 'is-sitemap';
 
@@ -161,11 +187,14 @@ class Sitemaps_List extends List_Table {
 	 * Get refresh button
 	 */
 	public function get_refresh_button() {
-		$url = Helper::get_admin_url( 'search-console', array(
-			'view'             => 'sitemaps',
-			'refresh_sitemaps' => '1',
-			'security'         => wp_create_nonce( 'rank_math_refresh_sitemaps' ),
-		) );
+		$url = Helper::get_admin_url(
+			'search-console',
+			[
+				'view'             => 'sitemaps',
+				'refresh_sitemaps' => '1',
+				'security'         => wp_create_nonce( 'rank_math_refresh_sitemaps' ),
+			]
+		);
 		?>
 		<div class="alignleft actions">
 			<a href="<?php echo esc_url( $url ); ?>" class="button button-secondary"><?php esc_html_e( 'Refresh Sitemaps', 'rank-math' ); ?></a>

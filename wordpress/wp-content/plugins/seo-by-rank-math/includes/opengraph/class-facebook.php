@@ -12,6 +12,9 @@ namespace RankMath\OpenGraph;
 
 use DateInterval;
 use RankMath\Helper;
+use RankMath\Paper\Paper;
+use MyThemeShop\Helpers\Str;
+use MyThemeShop\Helpers\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -305,8 +308,8 @@ class Facebook extends OpenGraph {
 		if ( is_front_page() || is_home() ) {
 			$type = 'website';
 		} elseif ( is_singular() ) {
-			$type = 'article';
-			if ( in_array( $this->schema, [ 'video', 'product', 'local' ] ) ) {
+			$type = Conditional::is_woocommerce_active() && is_product() ? 'product' : 'article';
+			if ( in_array( $this->schema, [ 'video', 'product', 'local' ], true ) ) {
 				$type = $this->schema;
 				if ( ! is_front_page() ) {
 					$this->action( 'rank_math/opengraph/facebook', $this->schema, 30 );
@@ -328,7 +331,7 @@ class Facebook extends OpenGraph {
 		 */
 		$type = $this->do_filter( 'opengraph/type', $type );
 
-		if ( is_string( $type ) && '' !== $type && $echo ) {
+		if ( Str::is_non_empty( $type ) && $echo ) {
 			$this->tag( 'og:type', $type );
 		}
 
@@ -373,7 +376,7 @@ class Facebook extends OpenGraph {
 	 * @link https://developers.facebook.com/docs/reference/opengraph/object-type/article/
 	 */
 	public function url() {
-		$url = $this->do_filter( 'opengraph/url', esc_url( rank_math()->head->canonical( false ) ) );
+		$url = $this->do_filter( 'opengraph/url', esc_url( Paper::get()->get_canonical() ) );
 		$this->tag( 'og:url', $url );
 	}
 
@@ -404,7 +407,7 @@ class Facebook extends OpenGraph {
 	 */
 	public function site_owner() {
 		$app_id = Helper::get_settings( 'titles.facebook_app_id' );
-		if ( 0 != $app_id ) {
+		if ( 0 !== absint( $app_id ) ) {
 			$this->tag( 'fb:app_id', $app_id );
 			return;
 		}
@@ -525,8 +528,8 @@ class Facebook extends OpenGraph {
 	 */
 	public function video() {
 		$this->tag( 'og:video', Helper::get_post_meta( 'snippet_video_url' ) );
-		if ( $duration = Helper::get_post_meta( 'snippet_video_duration' ) ) { // phpcs:ignore
-			$this->tag( 'video:duration', $this->duration_to_seconds( Helper::get_formatted_duration( $duration ) ) );
+		if ( $duration = Helper::get_formatted_duration( Helper::get_post_meta( 'snippet_video_duration' ) ) ) { // phpcs:ignore
+			$this->tag( 'video:duration', $this->duration_to_seconds( $duration ) );
 		}
 	}
 

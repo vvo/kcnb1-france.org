@@ -27,23 +27,31 @@ class Redirections {
 	 * The Constructor.
 	 */
 	public function __construct() {
-		if ( is_admin() ) {
-			$this->admin = new Admin;
-		} else {
-			$this->action( 'wp', 'do_redirection' );
-		}
+		$this->load_admin();
 
-		if ( is_admin() || Conditional::is_rest() ) {
-			new Watcher;
+		if ( ! is_admin() ) {
+			$this->action( 'wp', 'do_redirection' );
 		}
 
 		if ( Helper::has_cap( 'redirections' ) ) {
 			$this->filter( 'rank_math/admin_bar/items', 'admin_bar_items', 11 );
 		}
 
-		// Disable Auto-Redirect.
-		if ( get_option( 'permalink_structure' ) && Helper::get_settings( 'general.redirections_post_redirect' ) ) {
+		if ( $this->disable_auto_redirect() ) {
 			remove_action( 'template_redirect', 'wp_old_slug_redirect' );
+		}
+	}
+
+	/**
+	 * Load redirection admin and rest api.
+	 */
+	private function load_admin() {
+		if ( is_admin() ) {
+			$this->admin = new Admin;
+		}
+
+		if ( is_admin() || Conditional::is_rest() ) {
+			new Watcher;
 		}
 	}
 
@@ -51,7 +59,7 @@ class Redirections {
 	 * Do redirection on frontend.
 	 */
 	public function do_redirection() {
-		if ( is_customize_preview() || wp_doing_ajax() || ! isset( $_SERVER['REQUEST_URI'] ) || empty( $_SERVER['REQUEST_URI'] ) || $this->is_script_uri_or_http_x() ) {
+		if ( is_customize_preview() || Conditional::is_ajax() || ! isset( $_SERVER['REQUEST_URI'] ) || empty( $_SERVER['REQUEST_URI'] ) || $this->is_script_uri_or_http_x() ) {
 			return;
 		}
 
@@ -117,10 +125,19 @@ class Redirections {
 			return true;
 		}
 
-		if ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && ! empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' ) {
+		if ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && ! empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) === 'xmlhttprequest' ) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Disable Auto-Redirect.
+	 *
+	 * @return bool
+	 */
+	private function disable_auto_redirect() {
+		return get_option( 'permalink_structure' ) && Helper::get_settings( 'general.redirections_post_redirect' );
 	}
 }

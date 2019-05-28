@@ -62,7 +62,7 @@ class Sitemap {
 		}
 
 		// Get list of hidden languages.
-		$hidden_languages = $sitepress->get_setting( 'hidden_languages', array() );
+		$hidden_languages = $sitepress->get_setting( 'hidden_languages', [] );
 
 		// If there are no hidden languages return original URL.
 		if ( empty( $hidden_languages ) ) {
@@ -158,8 +158,11 @@ class Sitemap {
 
 		// Ping Google and Bing.
 		wp_remote_get( 'http://www.google.com/webmasters/tools/ping?sitemap=' . $url, array( 'blocking' => false ) );
-		wp_remote_get( 'http://www.google.com/ping?sitemap=' . $url, array( 'blocking' => false ) );
-		wp_remote_get( 'http://www.bing.com/ping?sitemap=' . $url, array( 'blocking' => false ) );
+
+		if ( Router::get_base_url( 'geo-sitemap.xml' ) !== $url ) {
+			wp_remote_get( 'http://www.google.com/ping?sitemap=' . $url, array( 'blocking' => false ) );
+			wp_remote_get( 'http://www.bing.com/ping?sitemap=' . $url, array( 'blocking' => false ) );
+		}
 	}
 
 	/**
@@ -240,7 +243,7 @@ class Sitemap {
 		}
 
 		if ( is_null( $post_type_dates ) ) {
-			$post_type_dates = array();
+			$post_type_dates = [];
 			$post_type_names = get_post_types( array( 'public' => true ) );
 
 			if ( ! empty( $post_type_names ) ) {

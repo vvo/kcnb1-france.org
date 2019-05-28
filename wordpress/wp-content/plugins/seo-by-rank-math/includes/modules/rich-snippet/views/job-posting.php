@@ -24,8 +24,13 @@ $cmb->add_field([
 	'id'      => 'rank_math_snippet_jobposting_currency',
 	'type'    => 'text',
 	'name'    => esc_html__( 'Salary Currency', 'rank-math' ),
-	'desc'    => esc_html__( 'ISO 4217 Currency Code', 'rank-math' ),
-	'classes' => 'cmb-row-33',
+	'desc'    => esc_html__( 'ISO 4217 Currency code. Example: EUR', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^[A-Z]{3}$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: EUR', 'rank-math' ),
+	],
 	'dep'     => $jobposting,
 ]);
 
@@ -117,12 +122,15 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_jobposting_url',
-	'type'    => 'text_url',
-	'name'    => esc_html__( 'Organization URL (Recommended)', 'rank-math' ),
-	'desc'    => esc_html__( 'The URL of the organization offering the job position. Leave empty to use your own company information.', 'rank-math' ),
-	'classes' => 'cmb-row-50',
-	'dep'     => $jobposting,
+	'id'         => 'rank_math_snippet_jobposting_url',
+	'type'       => 'text_url',
+	'name'       => esc_html__( 'Organization URL (Recommended)', 'rank-math' ),
+	'desc'       => esc_html__( 'The URL of the organization offering the job position. Leave empty to use your own company information.', 'rank-math' ),
+	'classes'    => 'cmb-row-50 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-url' => 'true',
+	],
+	'dep'        => $jobposting,
 ]);
 
 $cmb->add_field([

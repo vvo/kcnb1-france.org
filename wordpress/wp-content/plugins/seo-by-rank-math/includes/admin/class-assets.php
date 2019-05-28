@@ -10,9 +10,9 @@
 
 namespace RankMath\Admin;
 
+use RankMath\Helper;
 use RankMath\Runner;
 use RankMath\Traits\Hooker;
-use RankMath\Helper as GlobalHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,24 +51,38 @@ class Assets implements Runner {
 		// Styles.
 		wp_register_style( self::PREFIX . 'common', $css . 'common.css', null, rank_math()->version );
 		wp_register_style( self::PREFIX . 'cmb2', $css . 'cmb2.css', null, rank_math()->version );
-		wp_register_style( self::PREFIX . 'dashboard', $css . 'dashboard.css', array( 'rank-math-common' ), rank_math()->version );
-		wp_register_style( self::PREFIX . 'plugin-feedback', $css . 'feedback.css', array( 'rank-math-common' ), rank_math()->version );
+		wp_register_style( self::PREFIX . 'dashboard', $css . 'dashboard.css', [ 'rank-math-common' ], rank_math()->version );
+		wp_register_style( self::PREFIX . 'plugin-feedback', $css . 'feedback.css', [ 'rank-math-common' ], rank_math()->version );
 
 		// Scripts.
 		wp_register_script( 'clipboard', rank_math()->plugin_url() . 'assets/vendor/clipboard.min.js', null, '2.0.0', true );
-		wp_register_script( self::PREFIX . 'common', $js . 'common.js', array( 'jquery' ), rank_math()->version, true );
-		wp_register_script( self::PREFIX . 'dashboard', $js . 'dashboard.js', array( 'jquery', 'clipboard' ), rank_math()->version, true );
-		wp_register_script( self::PREFIX . 'plugin-feedback', $js . 'feedback.js', array( 'jquery' ), rank_math()->version, true );
+		wp_register_script( 'validate', rank_math()->plugin_url() . 'assets/vendor/jquery.validate.min.js', [ 'jquery' ], '1.19.0', true );
+		wp_register_script( self::PREFIX . 'validate', $js . 'validate.js', [ 'jquery' ], rank_math()->version, true );
+		wp_register_script( self::PREFIX . 'common', $js . 'common.js', [ 'jquery', 'validate' ], rank_math()->version, true );
+		wp_register_script( self::PREFIX . 'dashboard', $js . 'dashboard.js', [ 'jquery', 'clipboard', 'validate' ], rank_math()->version, true );
+		wp_register_script( self::PREFIX . 'plugin-feedback', $js . 'feedback.js', [ 'jquery' ], rank_math()->version, true );
 
 		// Select2.
 		wp_register_style( 'select2-rm', $vendor . 'select2/select2.min.css', null, '4.0.6-rc.1' );
 		wp_register_script( 'select2-rm', $vendor . 'select2/select2.min.js', null, '4.0.6-rc.1', true );
 
-		GlobalHelper::add_json( 'hasPremium', \class_exists( '\\RankMath\\Premium' ) );
-		GlobalHelper::add_json( 'api', array(
-			'root'  => esc_url_raw( get_rest_url() ),
-			'nonce' => ( wp_installing() && ! is_multisite() ) ? '' : wp_create_nonce( 'wp_rest' ),
-		) );
+		Helper::add_json( 'hasPremium', \class_exists( '\\RankMath\\Premium' ) );
+		Helper::add_json(
+			'api',
+			[
+				'root'  => esc_url_raw( get_rest_url() ),
+				'nonce' => ( wp_installing() && ! is_multisite() ) ? '' : wp_create_nonce( 'wp_rest' ),
+			]
+		);
+		Helper::add_json(
+			'validationl10n',
+			[
+				'regexErrorDefault'    => __( 'Please use the correct format.', 'rank-math' ),
+				'requiredErrorDefault' => __( 'This field is required.', 'rank-math' ),
+				'emailErrorDefault'    => __( 'Please enter a valid email address.', 'rank-math' ),
+				'urlErrorDefault'      => __( 'Please enter a valid URL.', 'rank-math' ),
+			]
+		);
 
 		/**
 		 * Allow other plugins to register styles or scripts into admin after plugin assets.
@@ -83,14 +97,14 @@ class Assets implements Runner {
 		$screen = get_current_screen();
 
 		// Our screens only.
-		if ( ! in_array( $screen->taxonomy, GlobalHelper::get_allowed_taxonomies() ) && ! in_array( $screen->id, $this->get_admin_screen_ids() ) ) {
+		if ( ! in_array( $screen->taxonomy, Helper::get_allowed_taxonomies(), true ) && ! in_array( $screen->id, $this->get_admin_screen_ids(), true ) ) {
 			return;
 		}
 
 		// Add thank you.
 		$this->filter( 'admin_footer_text', 'admin_footer_text' );
 
-		GlobalHelper::add_json( 'maxTags', GlobalHelper::is_mythemeshop_connected() ? 5 : 1 );
+		Helper::add_json( 'maxTags', Helper::is_site_connected() ? 5 : 1 );
 
 		/**
 		 * Allow other plugins to enqueue styles or scripts into admin after plugin assets.
@@ -106,7 +120,7 @@ class Assets implements Runner {
 	 */
 	public function admin_footer_text( $text ) {
 		/* translators: plugin url */
-		return GlobalHelper::is_whitelabel() ? $text : '<em>' . sprintf( wp_kses_post( __( 'Thank you for using <a href="%s" target="_blank">Rank Math</a>', 'rank-math' ) ), 'https://s.rankmath.com/home' ) . '</em>';
+		return Helper::is_whitelabel() ? $text : '<em>' . sprintf( wp_kses_post( __( 'Thank you for using <a href="%s" target="_blank">Rank Math</a>', 'rank-math' ) ), 'https://s.rankmath.com/home' ) . '</em>';
 	}
 
 	/**
@@ -115,19 +129,23 @@ class Assets implements Runner {
 	public function overwrite_wplink() {
 
 		wp_deregister_script( 'wplink' );
-		wp_register_script( 'wplink', rank_math()->plugin_url() . 'assets/admin/js/wplink.js', array( 'jquery', 'wpdialogs' ), null, true );
+		wp_register_script( 'wplink', rank_math()->plugin_url() . 'assets/admin/js/wplink.js', [ 'jquery', 'wpdialogs' ], null, true );
 
-		wp_localize_script( 'wplink', 'wpLinkL10n', array(
-			'title'          => esc_html__( 'Insert/edit link', 'rank-math' ),
-			'update'         => esc_html__( 'Update', 'rank-math' ),
-			'save'           => esc_html__( 'Add Link', 'rank-math' ),
-			'noTitle'        => esc_html__( '(no title)', 'rank-math' ),
-			'noMatchesFound' => esc_html__( 'No matches found.', 'rank-math' ),
-			'linkSelected'   => esc_html__( 'Link selected.', 'rank-math' ),
-			'linkInserted'   => esc_html__( 'Link inserted.', 'rank-math' ),
-			'relCheckbox'    => __( 'Add <code>rel="nofollow"</code>', 'rank-math' ),
-			'linkTitle'      => esc_html__( 'Link Title', 'rank-math' ),
-		) );
+		wp_localize_script(
+			'wplink',
+			'wpLinkL10n',
+			[
+				'title'          => esc_html__( 'Insert/edit link', 'rank-math' ),
+				'update'         => esc_html__( 'Update', 'rank-math' ),
+				'save'           => esc_html__( 'Add Link', 'rank-math' ),
+				'noTitle'        => esc_html__( '(no title)', 'rank-math' ),
+				'noMatchesFound' => esc_html__( 'No matches found.', 'rank-math' ),
+				'linkSelected'   => esc_html__( 'Link selected.', 'rank-math' ),
+				'linkInserted'   => esc_html__( 'Link inserted.', 'rank-math' ),
+				'relCheckbox'    => __( 'Add <code>rel="nofollow"</code>', 'rank-math' ),
+				'linkTitle'      => esc_html__( 'Link Title', 'rank-math' ),
+			]
+		);
 	}
 
 	/**
@@ -154,7 +172,7 @@ class Assets implements Runner {
 	 * @return array
 	 */
 	private function get_admin_screen_ids() {
-		$pages = array(
+		$pages = [
 			'toplevel_page_rank-math',
 			'rank-math_page_rank-math-role-manager',
 			'rank-math_page_rank-math-seo-analysis',
@@ -166,8 +184,8 @@ class Assets implements Runner {
 			'rank-math_page_rank-math-help',
 			'user-edit',
 			'profile',
-		);
+		];
 
-		return array_merge( $pages, GlobalHelper::get_allowed_post_types() );
+		return array_merge( $pages, Helper::get_allowed_post_types() );
 	}
 }

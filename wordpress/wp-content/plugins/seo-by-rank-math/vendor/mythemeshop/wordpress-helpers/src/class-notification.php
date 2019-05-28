@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop;
@@ -148,7 +148,7 @@ class Notification {
 		}
 
 		$screen = get_current_screen();
-		if ( self::SCREEN_ANY == $this->args( 'screen' ) || Str::contains( $this->args( 'screen' ), $screen->id ) ) {
+		if ( self::SCREEN_ANY === $this->args( 'screen' ) || Str::contains( $this->args( 'screen' ), $screen->id ) ) {
 			$this->displayed = true;
 		}
 

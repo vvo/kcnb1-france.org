@@ -114,13 +114,13 @@ class Your_Site implements Wizard_Step {
 		]);
 
 		// Save these settings.
-		$functions = [ 'save_local_seo', 'save_post_types', 'save_taxonomies' ];
+		$functions = [ 'save_local_seo', 'save_open_graph', 'save_post_types', 'save_taxonomies' ];
 		foreach ( $functions as $function ) {
 			$settings = $this->$function( $settings, $values );
 		}
 
 		$business_type = [ 'news', 'business', 'webshop', 'otherbusiness' ];
-		$modules       = [ 'local-seo' => in_array( $values['site_type'], $business_type ) ? 'on' : 'off' ];
+		$modules       = [ 'local-seo' => in_array( $values['site_type'], $business_type, true ) ? 'on' : 'off' ];
 		$users         = get_users( [ 'role__in' => [ 'administrator', 'editor', 'author', 'contributor' ] ] );
 
 		if ( count( $users ) > 1 && ! is_plugin_active( 'members/members.php' ) ) {
@@ -169,14 +169,23 @@ class Your_Site implements Wizard_Step {
 				break;
 		}
 
-		$settings['titles']['open_graph_image']    = $values['open_graph_image'];
-		$settings['titles']['open_graph_image_id'] = $values['open_graph_image_id'];
+		return $settings;
+	}
 
-		// Check and delete.
-		if ( empty( $values['open_graph_image_id'] ) ) {
-			unset( $settings['titles']['open_graph_image'] );
-			unset( $settings['titles']['open_graph_image_id'] );
+	/**
+	 * Save Open Graph
+	 *
+	 * @param array $settings Array of all settings.
+	 * @param array $values   Array of posted values.
+	 *
+	 * @return array
+	 */
+	private function save_open_graph( $settings, $values ) {
+		if ( ! empty( $values['open_graph_image_id'] ) ) {
+			$settings['titles']['open_graph_image']    = $values['open_graph_image'];
+			$settings['titles']['open_graph_image_id'] = $values['open_graph_image_id'];
 		}
+
 		if ( empty( $values['company_logo_id'] ) ) {
 			unset( $settings['titles']['knowledgegraph_logo'] );
 			unset( $settings['titles']['knowledgegraph_logo_id'] );

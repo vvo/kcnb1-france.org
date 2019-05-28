@@ -44,17 +44,18 @@ $cmb->add_field([
 	'type'    => 'text',
 	'name'    => esc_html__( 'Venue Name', 'rank-math' ),
 	'desc'    => esc_html__( 'The venue name.', 'rank-math' ),
-	'classes' => 'cmb-row-33',
+	'classes' => 'cmb-row-50',
 	'dep'     => $event,
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_event_venue_url',
-	'type'    => 'text_url',
-	'name'    => esc_html__( 'Venue URL', 'rank-math' ),
-	'desc'    => esc_html__( 'Website URL of the venue', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $event,
+	'id'         => 'rank_math_snippet_event_venue_url',
+	'type'       => 'text_url',
+	'name'       => esc_html__( 'Venue URL', 'rank-math' ),
+	'desc'       => esc_html__( 'Website URL of the venue', 'rank-math' ),
+	'classes'    => 'rank-math-validate-field',
+	'attributes' => [ 'data-rule-url' => 'true' ],
+	'dep'        => $event,
 ]);
 
 $cmb->add_field([
@@ -65,11 +66,36 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'   => 'rank_math_snippet_event_performer',
-	'type' => 'text',
-	'name' => esc_html__( 'Performer', 'rank-math' ),
-	'desc' => esc_html__( 'A performer at the event', 'rank-math' ),
-	'dep'  => $event,
+	'id'      => 'rank_math_snippet_event_performer_type',
+	'type'    => 'radio_inline',
+	'name'    => esc_html__( 'Performer', 'rank-math' ),
+	'options' => [
+		'Person'       => esc_html__( 'Person', 'rank-math' ),
+		'Organization' => esc_html__( 'Organization', 'rank-math' ),
+	],
+	'classes' => 'cmb-row-33 nob',
+	'default' => 'Person',
+	'dep'     => $event,
+]);
+
+$cmb->add_field([
+	'id'      => 'rank_math_snippet_event_performer',
+	'type'    => 'text',
+	'name'    => esc_html__( 'Performer Name', 'rank-math' ),
+	'desc'    => esc_html__( 'A performer at the event', 'rank-math' ),
+	'classes' => 'cmb-row-50',
+	'dep'     => $event,
+]);
+
+$cmb->add_field([
+	'id'         => 'rank_math_snippet_event_performer_url',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Performer URL', 'rank-math' ),
+	'attributes' => [
+		'data-rule-url' => 'true',
+	],
+	'classes'    => 'rank-math-validate-field',
+	'dep'        => $event,
 ]);
 
 $cmb->add_field([
@@ -109,12 +135,15 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_event_ticketurl',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Ticket URL', 'rank-math' ),
-	'desc'    => esc_html__( 'A URL where visitors can purchase tickets for the event.', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $event,
+	'id'         => 'rank_math_snippet_event_ticketurl',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Ticket URL', 'rank-math' ),
+	'desc'       => esc_html__( 'A URL where visitors can purchase tickets for the event.', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-url' => 'true',
+	],
+	'dep'        => $event,
 ]);
 
 $cmb->add_field([
@@ -128,12 +157,17 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'rank_math_snippet_event_currency',
-	'type'    => 'text',
-	'name'    => esc_html__( 'Currency', 'rank-math' ),
-	'desc'    => esc_html__( 'ISO 4217 Currency Code', 'rank-math' ),
-	'classes' => 'cmb-row-33',
-	'dep'     => $event,
+	'id'         => 'rank_math_snippet_event_currency',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Currency', 'rank-math' ),
+	'desc'       => esc_html__( 'ISO 4217 Currency code. Example: EUR', 'rank-math' ),
+	'classes'    => 'cmb-row-33 rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^[A-Z]{3}$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: EUR', 'rank-math' ),
+	],
+	'dep'        => $event,
 ]);
 
 $cmb->add_field([

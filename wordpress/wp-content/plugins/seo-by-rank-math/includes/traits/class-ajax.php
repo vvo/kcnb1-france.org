@@ -20,19 +20,6 @@ defined( 'ABSPATH' ) || exit;
 trait Ajax {
 
 	/**
-	 * Check if its an ajax request
-	 *
-	 * @return boolean
-	 */
-	public function is_ajax() {
-		if ( function_exists( 'wp_doing_ajax' ) ) {
-			return \wp_doing_ajax();
-		}
-
-		return defined( 'DOING_AJAX' ) && DOING_AJAX;
-	}
-
-	/**
 	 * Hooks a function on to a specific ajax action
 	 *
 	 * @param string   $tag             The name of the action to which the $function_to_add is hooked.

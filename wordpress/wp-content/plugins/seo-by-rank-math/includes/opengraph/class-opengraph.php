@@ -14,6 +14,7 @@ use RankMath\Post;
 use RankMath\Term;
 use RankMath\User;
 use RankMath\Helper;
+use RankMath\Paper\Paper;
 use RankMath\Traits\Hooker;
 
 defined( 'ABSPATH' ) || exit;
@@ -97,7 +98,7 @@ class OpenGraph {
 			$title = ucwords( $title );
 		}
 
-		return $title ? $title : rank_math()->head->title( '' );
+		return $title ? $title : Paper::get()->get_title();
 	}
 
 	/**
@@ -132,7 +133,7 @@ class OpenGraph {
 	 * @return string
 	 */
 	protected function fallback_description( $callback = false ) {
-		$desc = trim( rank_math()->head->metadesc( false ) );
+		$desc = Paper::get()->get_description();
 		if ( '' === $desc && $callback ) {
 			$desc = $callback();
 		}

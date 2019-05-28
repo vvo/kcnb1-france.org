@@ -110,7 +110,7 @@ trait Hooker {
 	 *
 	 * @param array $config Array of configuration.
 	 */
-	protected function config( $config = array() ) {
+	protected function config( $config = [] ) {
 		if ( ! empty( $config ) ) {
 			foreach ( $config as $key => $value ) {
 				$this->$key = $value;

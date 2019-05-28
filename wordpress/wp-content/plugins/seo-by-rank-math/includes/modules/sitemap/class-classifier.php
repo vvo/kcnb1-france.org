@@ -64,7 +64,7 @@ class Classifier {
 
 		// Because parse_url may return false.
 		if ( ! is_array( $url_parts ) ) {
-			$url_parts = array();
+			$url_parts = [];
 		}
 
 		if ( $this->contains_protocol( $url_parts ) && $this->is_external_link( $url_parts ) ) {

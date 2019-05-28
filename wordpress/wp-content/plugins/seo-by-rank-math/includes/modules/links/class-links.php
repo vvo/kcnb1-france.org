@@ -79,11 +79,11 @@ class Links {
 		global $wpdb;
 
 		$counts = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}rank_math_internal_meta WHERE object_id = {$post_id}" ); // phpcs:ignore
-		$counts = ! empty( $counts ) ? $counts : (object) array(
+		$counts = ! empty( $counts ) ? $counts : (object) [
 			'internal_link_count' => 0,
 			'external_link_count' => 0,
 			'incoming_link_count' => 0,
-		);
+		];
 		?>
 		<span class="rank-math-column-display rank-math-link-count">
 			<strong><?php esc_html_e( 'Links: ', 'rank-math' ); ?></strong>
@@ -103,16 +103,18 @@ class Links {
 		$post_types = Helper::get_accessible_post_types();
 		unset( $post_types['attachment'] );
 
-		$posts = get_posts( array(
-			'post_type'   => array_keys( $post_types ),
-			'post_status' => array( 'publish', 'future' ),
-			'meta_query'  => array(
-				array(
-					'key'     => 'rank_math_internal_links_processed',
-					'compare' => 'NOT EXISTS',
-				),
-			),
-		) );
+		$posts = get_posts(
+			[
+				'post_type'   => array_keys( $post_types ),
+				'post_status' => [ 'publish', 'future' ],
+				'meta_query'  => [
+					[
+						'key'     => 'rank_math_internal_links_processed',
+						'compare' => 'NOT EXISTS',
+					],
+				],
+			]
+		);
 
 		// Early Bail!
 		if ( empty( $posts ) ) {
@@ -145,7 +147,8 @@ class Links {
 	/**
 	 * Checks if the post is processable.
 	 *
-	 * @param  WP_Post $post    The post object.
+	 * @param WP_Post $post    The post object.
+	 *
 	 * @return bool True when the post is processable.
 	 */
 	private function is_processable( $post ) {
@@ -156,7 +159,7 @@ class Links {
 		}
 
 		// Post statuses to skip.
-		if ( in_array( $post->post_status, array( 'auto-draft', 'trash' ), true ) ) {
+		if ( in_array( $post->post_status, [ 'auto-draft', 'trash' ], true ) ) {
 			return false;
 		}
 

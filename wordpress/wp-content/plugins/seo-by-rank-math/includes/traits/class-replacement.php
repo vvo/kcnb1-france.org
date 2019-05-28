@@ -11,6 +11,7 @@
 namespace RankMath\Traits;
 
 use RankMath\Helper;
+use MyThemeShop\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -104,9 +105,9 @@ trait Replacement {
 	private function get_post_type() {
 		global $wp_query;
 
-		if ( isset( $wp_query->query_vars['post_type'] ) && ( ( is_string( $wp_query->query_vars['post_type'] ) && '' !== $wp_query->query_vars['post_type'] ) || ( is_array( $wp_query->query_vars['post_type'] ) && array() !== $wp_query->query_vars['post_type'] ) ) ) {
+		if ( isset( $wp_query->query_vars['post_type'] ) && ( Str::is_non_empty( $wp_query->query_vars['post_type'] ) || ( is_array( $wp_query->query_vars['post_type'] ) && [] !== $wp_query->query_vars['post_type'] ) ) ) {
 			$post_type = $wp_query->query_vars['post_type'];
-		} elseif ( isset( $this->args->post_type ) && ( is_string( $this->args->post_type ) && '' !== $this->args->post_type ) ) {
+		} elseif ( isset( $this->args->post_type ) && Str::is_non_empty( $this->args->post_type ) ) {
 			$post_type = $this->args->post_type;
 		} else {
 			// Make it work in preview mode.

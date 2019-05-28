@@ -81,7 +81,7 @@ class DB {
 			$table->orWhereLike( 'url_to', $args['search'] );
 		}
 
-		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], [ 'id', 'url_to', 'header_code', 'hits', 'last_accessed' ] ) ) {
+		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], [ 'id', 'url_to', 'header_code', 'hits', 'last_accessed' ], true ) ) {
 			$table->orderBy( $args['orderby'], $args['order'] );
 		}
 
@@ -151,10 +151,26 @@ class DB {
 	private static function compare_redirections( $redirections, $uri ) {
 		foreach ( $redirections as $redirection ) {
 			$redirection['sources'] = maybe_unserialize( $redirection['sources'] );
-			foreach ( $redirection['sources'] as $source ) {
-				if ( Str::comparison( self::get_clean_pattern( $source['pattern'], $source['comparison'] ), $uri, $source['comparison'] ) ) {
-					return $redirection;
-				}
+			if ( ! empty( $redirection['sources'] ) && self::compare_sources( $redirection['sources'], $uri ) ) {
+				return $redirection;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Compare sources.
+	 *
+	 * @param array  $sources Array of sources.
+	 * @param string $uri     Uri to comapre with.
+	 *
+	 * @return bool
+	 */
+	private static function compare_sources( $sources, $uri ) {
+		foreach ( $sources as $source ) {
+			if ( Str::comparison( self::get_clean_pattern( $source['pattern'], $source['comparison'] ), $uri, $source['comparison'] ) ) {
+				return true;
 			}
 		}
 

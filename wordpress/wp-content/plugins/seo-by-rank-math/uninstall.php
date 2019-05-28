@@ -43,7 +43,9 @@ if ( true === apply_filters( 'rank_math_clear_data_on_uninstall', false ) ) {
 	// Drop Tables.
 	rank_math_drop_table( 'rank_math_404_logs' );
 	rank_math_drop_table( 'rank_math_redirections' );
-	rank_math_drop_table( 'rank_math_links' );
+	rank_math_drop_table( 'rank_math_redirections_cache' );
+	rank_math_drop_table( 'rank_math_internal_links' );
+	rank_math_drop_table( 'rank_math_internal_meta' );
 	rank_math_drop_table( 'rank_math_sc_analytics' );
 
 	// Remove Capabilities.

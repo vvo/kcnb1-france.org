@@ -6,11 +6,12 @@
  * @subpackage RankMath\Admin
  */
 
-use RankMath\Admin\Admin_Helper;
 use RankMath\KB;
+use RankMath\Helper;
+use RankMath\Admin\Admin_Helper;
 
-$registered = Admin_Helper::get_registration_data();
-$class      = false !== $registered ? 'status-green' : 'status-red';
+$is_registered = Helper::is_site_connected();
+$class         = $is_registered ? 'status-green' : 'status-red';
 ?>
 <div class="rank-math-box <?php echo $class; ?>">
 
@@ -18,24 +19,22 @@ $class      = false !== $registered ? 'status-green' : 'status-red';
 
 		<h3><?php esc_html_e( 'Plugin Activation', 'rank-math' ); ?></h3>
 
-		<span class="button button-large <?php echo $class; ?>"><?php echo $registered ? esc_html__( 'Plugin Activated', 'rank-math' ) : esc_html__( 'Not Activated', 'rank-math' ); ?></span>
+		<span class="button button-large <?php echo $class; ?>"><?php echo $is_registered ? esc_html__( 'Plugin Activated', 'rank-math' ) : esc_html__( 'Not Activated', 'rank-math' ); ?></span>
 
 	</header>
 
-	<div class="rank-math-box-content rank-math-ui" style="min-height:100px">
+	<div class="rank-math-box-content rank-math-ui rank-math-validate-field" style="min-height:100px">
 
 		<form method="post" action="">
 
-			<input type="hidden" name="registration-action" value="<?php echo $registered ? 'deregister' : 'register'; ?>">
+			<input type="hidden" name="registration-action" value="<?php echo $is_registered ? 'deregister' : 'register'; ?>">
 
-			<?php if ( ! $registered ) : ?>
+			<?php if ( ! $is_registered ) : ?>
 			<strong><?php esc_html_e( 'Rank Math Email/Username', 'rank-math' ); ?></strong><br>
-			<input class="regular-text fullwidth required" required type="text" name="connect-username" value="">
-			<span class="validation-message"><?php esc_html_e( 'This field is required.', 'rank-math' ); ?></span>
+			<input class="regular-text fullwidth required" data-rule-required="true" type="text" name="connect-username" value="">
 			<br><br>
 			<strong><?php esc_html_e( 'Rank Math Password', 'rank-math' ); ?></strong><br>
-			<input class="regular-text fullwidth required" required type="password" name="connect-password" value="">
-			<span class="validation-message"><?php esc_html_e( 'This field is required.', 'rank-math' ); ?></span>
+			<input class="regular-text fullwidth required" data-rule-required="true" type="password" name="connect-password" value="">
 			<br><br>
 			<div class="frm-gather-data">
 				<input type="checkbox" class="cmb2-option cmb2-list" name="rank-math-usage-tracking" id="rank-math-usage-tracking" value="on" checked="checked" />
@@ -51,8 +50,8 @@ $class      = false !== $registered ? 'status-green' : 'status-red';
 				<?php Admin_Helper::get_social_share(); ?>
 			<?php endif; ?>
 			<div class="frm-submit">
-				<button type="submit" class="button button-primary button-xlarge" name="button"><?php echo $registered ? esc_html__( 'Deactivate License', 'rank-math' ) : esc_html__( 'Connect Your Account', 'rank-math' ); ?></button>
-				<?php if ( ! $registered ) { ?>
+				<button type="submit" class="button button-primary button-xlarge" name="button"><?php echo $is_registered ? esc_html__( 'Deactivate License', 'rank-math' ) : esc_html__( 'Connect Your Account', 'rank-math' ); ?></button>
+				<?php if ( ! $is_registered ) { ?>
 					<p><strong><?php esc_html_e( 'Don’t have an account?', 'rank-math' ); ?></strong> <em><a href="https://rankmath.com/#signup" target="_blank"><?php esc_html_e( 'Click here', 'rank-math' ); ?></a></em></p>
 				<?php } ?>
 			</div>

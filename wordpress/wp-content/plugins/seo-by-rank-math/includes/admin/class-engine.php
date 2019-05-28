@@ -13,6 +13,7 @@ namespace RankMath\Admin;
 use RankMath\Helper;
 use RankMath\Updates;
 use RankMath\Traits\Hooker;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\Conditional;
 use RankMath\Search_Console\Search_Console;
 
@@ -35,23 +36,25 @@ class Engine {
 		rank_math()->admin        = new Admin;
 		rank_math()->admin_assets = new Assets;
 
+		$this->load_review_tab();
 		$this->load_setup_wizard();
 		$this->search_console_ajax();
 
-		$runners = array(
+		$runners = [
 			rank_math()->admin,
 			rank_math()->admin_assets,
 			new Admin_Menu,
 			new Option_Center,
 			new Metabox,
 			new Post_Columns,
+			new Post_Filters,
 			new Import_Export,
 			new Notices,
 			new CMB2_Fields,
 			new Deactivate_Survey,
 			new Updates,
 			new Watcher,
-		);
+		];
 
 		foreach ( $runners as $runner ) {
 			$runner->hooks();
@@ -80,9 +83,25 @@ class Engine {
 			return;
 		}
 
-		if ( isset( $_POST['action'] ) && in_array( $_POST['action'], array( 'rank_math_search_console_authentication', 'rank_math_search_console_deauthentication', 'rank_math_search_console_get_profiles' ) ) ) {
-			Helper::update_modules( array( 'search-console' => 'on' ) );
+		$action = Param::post( 'action' );
+		if ( $action && in_array( $action, [ 'rank_math_search_console_authentication', 'rank_math_search_console_deauthentication', 'rank_math_search_console_get_profiles' ], true ) ) {
+			Helper::update_modules( [ 'search-console' => 'on' ] );
 			new Search_Console;
 		}
+	}
+
+	/**
+	 * Load review tab in metabox.
+	 */
+	private function load_review_tab() {
+		if (
+			get_option( 'rank_math_already_reviewed' ) ||
+			get_option( 'rank_math_install_date' ) + ( 2 * WEEK_IN_SECONDS ) > current_time( 'timestamp' )
+		) {
+			return;
+		}
+
+		$review = new Ask_Review;
+		$review->hooks();
 	}
 }

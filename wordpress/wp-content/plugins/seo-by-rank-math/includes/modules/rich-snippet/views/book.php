@@ -45,10 +45,14 @@ $cmb->add_field([
 		],
 
 		[
-			'id'   => 'url',
-			'type' => 'text_url',
-			'name' => esc_html__( 'Url', 'rank-math' ),
-			'desc' => esc_html__( 'URL specific to this edition if one exists.', 'rank-math' ),
+			'id'         => 'url',
+			'type'       => 'text_url',
+			'name'       => esc_html__( 'URL', 'rank-math' ),
+			'desc'       => esc_html__( 'URL specific to this edition if one exists.', 'rank-math' ),
+			'attributes' => [
+				'data-rule-url' => 'true',
+			],
+			'classes'    => 'rank-math-validate-field',
 		],
 
 		[

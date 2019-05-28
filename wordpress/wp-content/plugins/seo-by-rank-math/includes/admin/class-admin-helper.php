@@ -12,7 +12,8 @@
 
 namespace RankMath\Admin;
 
-use RankMath\Helper as GlobalHelper;
+use RankMath\Helper;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\WordPress;
 
 defined( 'ABSPATH' ) || exit;
@@ -41,7 +42,7 @@ class Admin_Helper {
 		$default .= "\n# More info: https://s.rankmath.com/home\n";
 		$default .= "User-Agent: *\n";
 		$public   = get_option( 'blog_public' );
-		if ( '0' === $public ) {
+		if ( 0 === absint( $public ) ) {
 			$default .= "Disallow: /\n";
 		} else {
 			$site_url = parse_url( site_url() );
@@ -99,8 +100,7 @@ class Admin_Helper {
 	public static function get_taxonomies_options( $args = [] ) {
 		global $wp_taxonomies;
 
-		$args = wp_parse_args( $args, [ 'public' => true ] );
-
+		$args       = wp_parse_args( $args, [ 'public' => true ] );
 		$taxonomies = wp_filter_object_list( $wp_taxonomies, $args, 'and', 'label' );
 
 		return empty( $taxonomies ) ? false : [ 'off' => esc_html__( 'None', 'rank-math' ) ] + $taxonomies;
@@ -126,7 +126,7 @@ class Admin_Helper {
 		}
 
 		// Getter.
-		$options = GlobalHelper::is_plugin_active_for_network() ? get_blog_option( get_main_site_id(), $key, false ) : get_option( $key, false );
+		$options = Helper::is_plugin_active_for_network() ? get_blog_option( get_main_site_id(), $key, false ) : get_option( $key, false );
 		return empty( $options ) ? false : $options;
 	}
 
@@ -142,12 +142,12 @@ class Admin_Helper {
 
 		if ( empty( $username ) ) {
 			$error = true;
-			GlobalHelper::add_notification( esc_html__( 'Username is not entered.', 'rank-math' ), [ 'type' => 'error' ] );
+			Helper::add_notification( esc_html__( 'Username is not entered.', 'rank-math' ), [ 'type' => 'error' ] );
 		}
 
 		if ( empty( $password ) ) {
 			$error = true;
-			GlobalHelper::add_notification( esc_html__( 'Password is not entered.', 'rank-math' ), [ 'type' => 'error' ] );
+			Helper::add_notification( esc_html__( 'Password is not entered.', 'rank-math' ), [ 'type' => 'error' ] );
 		}
 
 		if ( $error ) {
@@ -162,7 +162,7 @@ class Admin_Helper {
 				'api_key'   => $body['token'],
 				'connected' => true,
 			]);
-			GlobalHelper::add_notification( esc_html__( 'Thank you for connecting your Rank Math account.', 'rank-math' ), 'success' );
+			Helper::add_notification( esc_html__( 'Thank you for connecting your Rank Math account.', 'rank-math' ), 'success' );
 
 			return true;
 		}
@@ -184,6 +184,7 @@ class Admin_Helper {
 			'body'       => [
 				'username' => $username,
 				'password' => $password,
+				'site_url' => esc_url( site_url() ),
 			],
 		]);
 
@@ -194,7 +195,7 @@ class Admin_Helper {
 			$message = is_wp_error( $response ) ? $response->get_error_message() : $body['message'];
 
 			foreach ( (array) $message as $e ) {
-				GlobalHelper::add_notification( $e, [ 'type' => 'error' ] );
+				Helper::add_notification( $e, [ 'type' => 'error' ] );
 			}
 
 			return false;
@@ -207,14 +208,8 @@ class Admin_Helper {
 	 * Change tracking status.
 	 */
 	public static function allow_tracking() {
-		$allow = 'off';
-		if ( isset( $_POST['rank-math-usage-tracking'] ) ) {
-			$allow = filter_input( INPUT_POST, 'rank-math-usage-tracking', FILTER_VALIDATE_BOOLEAN );
-			$allow = $allow ? 'on' : 'off';
-		}
-
 		$settings                   = get_option( 'rank-math-options-general' );
-		$settings['usage_tracking'] = $allow;
+		$settings['usage_tracking'] = Param::post( 'rank-math-usage-tracking', false, FILTER_VALIDATE_BOOLEAN ) ? 'on' : 'off';
 
 		update_option( 'rank-math-options-general', $settings );
 	}
@@ -254,7 +249,7 @@ class Admin_Helper {
 	public static function is_post_edit() {
 		global $pagenow;
 
-		return in_array( $pagenow, [ 'post.php', 'post-new.php' ] );
+		return in_array( $pagenow, [ 'post.php', 'post-new.php' ], true );
 	}
 
 	/**
@@ -264,7 +259,7 @@ class Admin_Helper {
 	 */
 	public static function is_term_edit() {
 		global $pagenow;
-		return ( 'term.php' === $pagenow );
+		return 'term.php' === $pagenow;
 	}
 
 	/**
@@ -275,7 +270,7 @@ class Admin_Helper {
 	public static function is_user_edit() {
 		global $pagenow;
 
-		return in_array( $pagenow, [ 'profile.php', 'user-edit.php' ] );
+		return in_array( $pagenow, [ 'profile.php', 'user-edit.php' ], true );
 	}
 
 	/**
@@ -286,7 +281,7 @@ class Admin_Helper {
 	public static function is_term_profile_page() {
 		global $pagenow;
 
-		return in_array( $pagenow, [ 'term.php', 'profile.php', 'user-edit.php' ] );
+		return in_array( $pagenow, [ 'term.php', 'profile.php', 'user-edit.php' ], true );
 	}
 
 	/**
@@ -295,7 +290,7 @@ class Admin_Helper {
 	 * @codeCoverageIgnore
 	 */
 	public static function get_social_share() {
-		if ( GlobalHelper::is_whitelabel() ) {
+		if ( Helper::is_whitelabel() ) {
 			return;
 		}
 

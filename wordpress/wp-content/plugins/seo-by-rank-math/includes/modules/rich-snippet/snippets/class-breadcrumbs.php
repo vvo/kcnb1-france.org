@@ -10,6 +10,8 @@
 
 namespace RankMath\RichSnippet;
 
+use RankMath\Frontend\Breadcrumbs as BreadcrumbTrail;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -28,8 +30,7 @@ class Breadcrumbs implements Snippet {
 	 * @return array
 	 */
 	public function process( $data, $jsonld ) {
-		$breadcrumbs = rank_math()->breadcrumbs;
-		$crumbs      = $breadcrumbs ? $breadcrumbs->get_crumbs() : false;
+		$crumbs = BreadcrumbTrail::get() ? BreadcrumbTrail::get()->get_crumbs() : false;
 		if ( empty( $crumbs ) ) {
 			return $data;
 		}

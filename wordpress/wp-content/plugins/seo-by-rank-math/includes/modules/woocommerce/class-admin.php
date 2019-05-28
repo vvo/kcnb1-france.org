@@ -103,8 +103,8 @@ class Admin extends Module {
 		$category_base   = $remove_category_base ? '' : $permalink_structure['category_rewrite_slug'];
 		$use_parent_slug = Str::contains( '%product_cat%', $permalink_structure['product_rewrite_slug'] );
 
-		$product_rules  = array();
-		$category_rules = array();
+		$product_rules  = [];
+		$category_rules = [];
 		foreach ( $this->get_categories() as $category ) {
 			$category_slug = $remove_parent_slugs ? $category['slug'] : $this->get_category_fullpath( $category );
 
@@ -118,7 +118,7 @@ class Admin extends Module {
 			}
 		}
 
-		$rules = empty( $rules ) ? array() : $rules;
+		$rules = empty( $rules ) ? [] : $rules;
 		return $category_rules + $product_rules + $rules;
 	}
 
@@ -136,7 +136,7 @@ class Admin extends Module {
 				'hide_empty' => false,
 			));
 
-			$slugs = array();
+			$slugs = [];
 			foreach ( $categories as $category ) {
 				$slugs[ $category->term_id ] = array(
 					'parent' => $category->parent,

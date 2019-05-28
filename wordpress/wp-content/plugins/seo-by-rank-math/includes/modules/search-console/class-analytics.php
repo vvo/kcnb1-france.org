@@ -45,7 +45,6 @@ class Analytics {
 	 * Admin Initialize.
 	 */
 	public function admin_init() {
-
 		$this->table = new Analytics_List;
 		$this->table->prepare_items();
 	}
@@ -54,11 +53,8 @@ class Analytics {
 	 * Display Table.
 	 */
 	public function display_table() {
-
 		echo '<form method="post" class="rank-math-sc-analytics">';
-
 		$this->table->display();
-
 		echo '</form>';
 	}
 
@@ -66,11 +62,14 @@ class Analytics {
 	 * Add screen options.
 	 */
 	public function add_screen_options() {
-		add_screen_option( 'per_page', array(
-			'label'   => esc_html__( 'Items per page', 'rank-math' ),
-			'default' => 100,
-			'option'  => 'rank_math_sc_analytics_per_page',
-		) );
+		add_screen_option(
+			'per_page',
+			[
+				'label'   => esc_html__( 'Items per page', 'rank-math' ),
+				'default' => 100,
+				'option'  => 'rank_math_sc_analytics_per_page',
+			]
+		);
 	}
 
 	/**

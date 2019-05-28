@@ -4,7 +4,7 @@
  *
  * @since      0.9.0
  * @package    RankMath
- * @subpackage RankMath\Admin\Import
+ * @subpackage RankMath\Admin\Importers
  * @author     Rank Math <support@rankmath.com>
  */
 
@@ -13,9 +13,11 @@ namespace RankMath\Admin\Importers;
 use Exception;
 use RankMath\Helper;
 use RankMath\Traits\Ajax;
+use RankMath\Traits\Meta;
 use RankMath\Traits\Hooker;
 use RankMath\Admin\Admin_Helper;
 use MyThemeShop\Helpers\DB;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\Attachment;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class Plugin_Importer {
 
-	use Hooker, Ajax;
+	use Hooker, Ajax, Meta;
 
 	/**
 	 * The plugin name
@@ -81,14 +83,7 @@ abstract class Plugin_Importer {
 	 *
 	 * @var array
 	 */
-	protected $_pagination_args = array();
-
-	/**
-	 * Plugin slug for internal  use.
-	 *
-	 * @var string
-	 */
-	protected $plugin_slug = '';
+	protected $_pagination_args = [];
 
 	/**
 	 * Class constructor
@@ -96,8 +91,6 @@ abstract class Plugin_Importer {
 	 * @param string $plugin_file Plugins file.
 	 */
 	public function __construct( $plugin_file ) {
-		$this->plugin_slug = \strtolower( get_class( $this ) );
-		$this->plugin_slug = \str_replace( 'rankmath\\admin\\importers\\', '', $this->plugin_slug );
 		$this->plugin_file = $plugin_file;
 	}
 
@@ -126,18 +119,22 @@ abstract class Plugin_Importer {
 	 */
 	public function get_choices() {
 		if ( empty( $this->choices ) ) {
-			return array();
+			return [];
 		}
 
-		$hash = array(
-			'settings'     => esc_html__( 'Import Settings', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import Yoast plugin settings, global meta, sitemap settings, etc.', 'rank-math' ) ),
-			'postmeta'     => esc_html__( 'Import Post Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import meta information of your posts/pages like the focus keyword, titles, descriptions, robots meta, OpenGraph info, etc.', 'rank-math' ) ),
-			'termmeta'     => esc_html__( 'Import Term Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import data like category, tag, and CPT meta data from Yoast SEO.', 'rank-math' ) ),
-			'usermeta'     => esc_html__( 'Import Author Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import meta information like titles, descriptions, focus keyword, robots meta, etc., of your author archive pages.', 'rank-math' ) ),
-			'redirections' => esc_html__( 'Import Redirections', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import all the redirections you have already set up in Yoast.', 'rank-math' ) ),
+		return array_intersect_key(
+			[
+				'settings'     => esc_html__( 'Import Settings', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import plugin settings, global meta, sitemap settings, etc.', 'rank-math' ) ),
+				'postmeta'     => esc_html__( 'Import Post Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import meta information of your posts/pages like the focus keyword, titles, descriptions, robots meta, OpenGraph info, etc.', 'rank-math' ) ),
+				'termmeta'     => esc_html__( 'Import Term Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import data like category, tag, and CPT meta data from SEO.', 'rank-math' ) ),
+				'usermeta'     => esc_html__( 'Import Author Meta', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import meta information like titles, descriptions, focus keyword, robots meta, etc., of your author archive pages.', 'rank-math' ) ),
+				'redirections' => esc_html__( 'Import Redirections', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Import all the redirections you have already set up in.', 'rank-math' ) ),
+			],
+			array_combine(
+				$this->choices,
+				$this->choices
+			)
 		);
-
-		return \array_intersect_key( $hash, \array_combine( $this->choices, $this->choices ) );
 	}
 
 	/**
@@ -146,15 +143,7 @@ abstract class Plugin_Importer {
 	 * @return bool Indicating whether there is something to import
 	 */
 	public function run_detect() {
-		if ( true === $this->has_options() ) {
-			return true;
-		}
-
-		$result = 0;
-		if ( ! empty( $this->meta_key ) ) {
-			$result = DB::query_builder( 'postmeta' )->selectCount( '*', 'count' )->whereLike( 'meta_key', $this->meta_key )->getVar();
-		}
-		return 0 === absint( $result ) ? false : true;
+		return true === $this->has_options() ? true : $this->has_postmeta();
 	}
 
 	/**
@@ -167,38 +156,9 @@ abstract class Plugin_Importer {
 			return false;
 		}
 
-		return $this->cleanup();
-	}
-
-	/**
-	 * Removes the plugin data from the database.
-	 *
-	 * @return bool Cleanup status.
-	 */
-	public function cleanup() {
-		global $wpdb;
-		$result = false;
-
-		if ( ! empty( $this->meta_key ) ) {
-			$result = DB::query_builder( 'postmeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
-			$result = DB::query_builder( 'termmeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
-			$result = DB::query_builder( 'usermeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
-		}
-
-		if ( ! empty( $this->option_keys ) ) {
-			$table = DB::query_builder( 'options' );
-			foreach ( $this->option_keys as $option_key ) {
-				$table->orWhere( 'option_name', $option_key );
-			}
-
-			$result = $table->delete();
-		}
-
-		if ( ! empty( $this->table_names ) ) {
-			foreach ( $this->table_names as $table ) {
-				$wpdb->query( "DROP TABLE {$wpdb->prefix}{$table}" ); // phpcs:ignore
-			}
-		}
+		$result = $this->drop_custom_tables();
+		$result = $this->clean_meta_table();
+		$result = $this->clean_options();
 
 		return $result;
 	}
@@ -211,7 +171,6 @@ abstract class Plugin_Importer {
 	 * @param string $perform The action to perform when running import action.
 	 */
 	public function run_import( $perform ) {
-
 		if ( ! method_exists( $this, $perform ) ) {
 			throw new Exception( esc_html__( 'Unable to perform action this time.', 'rank-math' ) );
 		}
@@ -223,43 +182,42 @@ abstract class Plugin_Importer {
 		 */
 		$this->items_per_page = absint( $this->do_filter( 'importers/items_per_page', 100 ) );
 
-		$hash_ok = array(
-			'settings'     => esc_html__( 'Settings imported successfully.', 'rank-math' ),
-			'deactivate'   => esc_html__( 'Plugin deactivated successfully.', 'rank-math' ),
-			/* translators: start, end, total */
-			'postmeta'     => esc_html__( 'Imported post meta for posts %1$s - %2$s out of %3$s ', 'rank-math' ),
-			/* translators: total */
-			'termmeta'     => esc_html__( 'Imported term meta for %s terms.', 'rank-math' ),
-			/* translators: start, end, total */
-			'usermeta'     => esc_html__( 'Imported user meta for users %1$s - %2$s out of %3$s ', 'rank-math' ),
-			/* translators: total */
-			'redirections' => esc_html__( 'Imported %s redirections.', 'rank-math' ),
-		);
+		$status     = new Status;
+		$result     = $this->$perform();
+		$is_success = is_array( $result ) || true === $result;
 
-		$hash_failed = array(
-			'settings'     => esc_html__( 'Settings import failed.', 'rank-math' ),
-			'postmeta'     => esc_html__( 'Posts meta import failed.', 'rank-math' ),
-			'termmeta'     => esc_html__( 'Term meta import failed.', 'rank-math' ),
-			'usermeta'     => esc_html__( 'User meta import failed.', 'rank-math' ),
-			'redirections' => esc_html__( 'There are no redirection to import.', 'rank-math' ),
-		);
+		$status->set_action( $perform );
+		$status->set_status( $is_success );
+		$message = $this->format_message( $result, $perform, $status->get_message() );
+		if ( is_scalar( $result ) ) {
+			$result = [];
+		}
+		$result['message'] = $message;
 
-		$result = $this->$perform();
-		if ( is_array( $result ) ) {
-			$message = $hash_ok[ $perform ];
-			if ( 'postmeta' === $perform || 'usermeta' === $perform ) {
-				$result['message'] = sprintf( $message, $result['start'], $result['end'], $result['total_items'] );
-			} elseif ( 'termmeta' === $perform || 'redirections' === $perform ) {
-				$result['message'] = sprintf( $message, $result['count'] );
-			}
+		if ( $is_success ) {
 			$this->success( $result );
 		}
 
-		if ( true === $result ) {
-			$this->success( $hash_ok[ $perform ] );
+		$this->error( $result );
+	}
+
+	/**
+	 * Get success message.
+	 *
+	 * @param array  $result  Array of result.
+	 * @param string $action  Action performed.
+	 * @param string $message Message to format.
+	 *
+	 * @return mixed
+	 */
+	private function format_message( $result, $action, $message ) {
+		if ( 'postmeta' === $action || 'usermeta' === $action ) {
+			$message = sprintf( $message, $result['start'], $result['end'], $result['total_items'] );
+		} elseif ( 'termmeta' === $action || 'redirections' === $action ) {
+			$message = sprintf( $message, $result['count'] );
 		}
 
-		$this->error( $hash_failed[ $perform ] );
+		return $message;
 	}
 
 	/**
@@ -301,15 +259,18 @@ abstract class Plugin_Importer {
 	 * @param bool   $convert     (Optional) Conversion type. Default: false.
 	 */
 	protected function replace_meta( $hash, $source, $object_id, $object_type, $convert = false ) {
-		$get  = "get_{$object_type}_meta";
-		$func = "update_{$object_type}_meta";
-
 		foreach ( $hash as $search => $replace ) {
-			$value = ! empty( $source[ $search ] ) ? $source[ $search ] : $get( $object_id, $search, true );
-			if ( ! empty( $value ) ) {
-				$value = false === $convert ? $value : $this->$convert( $value );
-				$func( $object_id, $replace, $value );
+			$value = ! empty( $source[ $search ] ) ? $source[ $search ] : $this->get_meta( $object_type, $object_id, $search );
+			if ( empty( $value ) ) {
+				continue;
 			}
+
+			$this->update_meta(
+				$object_type,
+				$object_id,
+				$replace,
+				false !== $convert ? $this->$convert( $value ) : $value
+			);
 		}
 	}
 
@@ -322,7 +283,7 @@ abstract class Plugin_Importer {
 	 * @param string         $image_id    Image id field key to save id.
 	 * @param int            $object_id   Object ID either post id, term id or user id.
 	 */
-	protected function replace_image( $source, &$destination, $image, $image_id, $object_id = null ) {
+	protected function replace_image( $source, $destination, $image, $image_id, $object_id = null ) {
 		$attachment_id = Attachment::get_by_url( $source );
 		if ( 1 > $attachment_id ) {
 			return;
@@ -334,8 +295,8 @@ abstract class Plugin_Importer {
 			return;
 		}
 
-		$destination( $object_id, $image, $source );
-		$destination( $object_id, $image_id, $attachment_id );
+		$this->update_meta( $destination, $object_id, $image, $source );
+		$this->update_meta( $destination, $object_id, $image_id, $attachment_id );
 	}
 
 	/**
@@ -356,50 +317,33 @@ abstract class Plugin_Importer {
 	}
 
 	/**
+	 * Set variable that twitter is using facebook data or not.
+	 *
+	 * @param string $object_type Object type for destination where to save.
+	 * @param int    $object_id   Object id for destination where to save.
+	 */
+	protected function is_twitter_using_facebook( $object_type, $object_id ) {
+		$keys = [
+			'rank_math_twitter_title',
+			'rank_math_twitter_description',
+			'rank_math_twitter_image',
+		];
+
+		foreach ( $keys as $key ) {
+			if ( ! empty( $this->get_meta( $object_type, $object_id, $key, true ) ) ) {
+				$this->update_meta( $object_type, $object_id, 'rank_math_twitter_use_facebook', 'off' );
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Convert Yoast / AIO SEO variables if needed.
 	 *
 	 * @param string $string Value to convert.
 	 * @return string
 	 */
-	public function convert_variables( $string ) {
-
-		// Yoast:
-		// Convert %%cf_<custom-field-name>%% to %%customfield(<custom-field-name>)%%.
-		// & %%ct_<custom-tax-name>%% to.
-		// %%ct_desc_<custom-tax-name>%%.
-		if ( 'yoast' === $this->plugin_slug ) {
-			$string = str_replace( '%%term_title%%', '%term%', $string );
-			$string = preg_replace( '/%%cf_([^%]+)%%/i', '%customfield($1)%', $string );
-			$string = preg_replace( '/%%ct_([^%]+)%%/i', '%ct($1)%', $string );
-			$string = preg_replace( '/%%ct_desc_([^%]+)%%/i', '%ct_desc($1)%', $string );
-		} elseif ( 'aioseo' === $this->plugin_slug ) {
-			$string = str_replace( '%blog_title%', '%sitename%', $string );
-			$string = str_replace( '%blog_description%', '%sitedesc%', $string );
-			$string = str_replace( '%post_title%', '%title%', $string );
-			$string = str_replace( '%page_title%', '%title%', $string );
-			$string = str_replace( '%category_title%', '%category%', $string );
-			$string = str_replace( '%category_description%', '%term_description%', $string );
-			$string = str_replace( '%archive_title%', '%term%', $string );
-			$string = str_replace( '%category%', '%category%', $string );
-			$string = str_replace( '%post_author_login%', '%name%', $string );
-			$string = str_replace( '%post_author_login%', '%name%', $string );
-			$string = str_replace( '%post_author_nicename%', '%name%', $string );
-			$string = str_replace( '%post_author_firstname%', '%name%', $string );
-			$string = str_replace( '%post_author_lastname%', '%name%', $string );
-			$string = str_replace( '%current_date%', '%currentdate%', $string );
-			$string = str_replace( '%post_date%', '%date%', $string );
-			$string = str_replace( '%post_year%', '%date(Y)%', $string );
-			$string = str_replace( '%post_month%', '%date(M)%', $string );
-			$string = str_replace( '%page_author_login%', '%name%', $string );
-			$string = str_replace( '%page_author_login%', '%name%', $string );
-			$string = str_replace( '%page_author_nicename%', '%name%', $string );
-			$string = str_replace( '%page_author_firstname%', '%name%', $string );
-			$string = str_replace( '%page_author_lastname%', '%name%', $string );
-			$string = str_replace( '%author%', '%name%', $string );
-			$string = str_replace( '%search%', '%search_query%', $string );
-			$string = str_replace( '%search%', '%search_query%', $string );
-		}
-
+	protected function convert_variables( $string ) {
 		return str_replace( '%%', '%', $string );
 	}
 
@@ -409,11 +353,11 @@ abstract class Plugin_Importer {
 	 * @param int $total_items Number of total items to set pagination.
 	 */
 	protected function set_pagination( $total_items = 0 ) {
-		$args = array(
+		$args = [
 			'total_pages' => 0,
 			'total_items' => $total_items,
 			'per_page'    => $this->items_per_page,
-		);
+		];
 
 		// Total Pages.
 		if ( ! $args['total_pages'] && $args['per_page'] > 0 ) {
@@ -421,7 +365,7 @@ abstract class Plugin_Importer {
 		}
 
 		// Current Page.
-		$pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
+		$pagenum = Param::request( 'paged', 0, FILTER_VALIDATE_INT );
 		if ( isset( $args['total_pages'] ) && $pagenum > $args['total_pages'] ) {
 			$pagenum = $args['total_pages'];
 		}
@@ -455,19 +399,8 @@ abstract class Plugin_Importer {
 	 * @return int|array
 	 */
 	protected function get_post_ids( $count = false ) {
-
 		$paged = $this->get_pagination_arg( 'page' );
-
-		if ( 'aio_rich_snippet' === $this->plugin_slug ) {
-			$table = DB::query_builder( 'postmeta' );
-			$table->where( 'meta_key', '_bsf_post_type' );
-
-			return $count ? absint( $table->selectCount( 'meta_id' )->getVar() ) :
-			$table->page( $paged - 1, $this->items_per_page )->get();
-		}
-
-		$table = DB::query_builder( 'posts' );
-		$table->whereIn( 'post_type', Helper::get_accessible_post_types() );
+		$table = DB::query_builder( 'posts' )->whereIn( 'post_type', Helper::get_accessible_post_types() );
 
 		return $count ? absint( $table->selectCount( 'ID', 'total' )->getVar() ) :
 			$table->select( 'ID' )->page( $paged - 1, $this->items_per_page )->get();
@@ -488,6 +421,81 @@ abstract class Plugin_Importer {
 	}
 
 	/**
+	 * Get system settings.
+	 */
+	protected function get_settings() {
+		$all_opts       = rank_math()->settings->all_raw();
+		$this->settings = $all_opts['general'];
+		$this->titles   = $all_opts['titles'];
+		$this->sitemap  = $all_opts['sitemap'];
+	}
+
+	/**
+	 * Update system settings.
+	 */
+	protected function update_settings() {
+		Helper::update_all_settings(
+			$this->settings,
+			$this->titles,
+			$this->sitemap
+		);
+	}
+
+	/**
+	 * Clean meta table for post, term and user.
+	 *
+	 * @return bool
+	 */
+	private function clean_meta_table() {
+		if ( empty( $this->meta_key ) ) {
+			return false;
+		}
+
+		$result = false;
+		$result = DB::query_builder( 'usermeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
+		$result = DB::query_builder( 'termmeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
+		$result = DB::query_builder( 'postmeta' )->whereLike( 'meta_key', $this->meta_key )->delete();
+
+		return $result;
+	}
+
+	/**
+	 * Clean option table.
+	 *
+	 * @return bool
+	 */
+	private function clean_options() {
+		if ( empty( $this->option_keys ) ) {
+			return false;
+		}
+
+		$table = DB::query_builder( 'options' );
+		foreach ( $this->option_keys as $option_key ) {
+			$table->orWhere( 'option_name', $option_key );
+		}
+
+		return $table->delete();
+	}
+
+	/**
+	 * Drop custom tables for plugins.
+	 *
+	 * @return bool
+	 */
+	private function drop_custom_tables() {
+		global $wpdb;
+		if ( empty( $this->table_names ) ) {
+			return false;
+		}
+
+		foreach ( $this->table_names as $table ) {
+			$wpdb->query( "DROP TABLE {$wpdb->prefix}{$table}" ); // phpcs:ignore
+		}
+
+		return true;
+	}
+
+	/**
 	 * Has options.
 	 *
 	 * @return bool
@@ -502,6 +510,20 @@ abstract class Plugin_Importer {
 			$table->orWhere( 'option_name', $option_key );
 		}
 
-		return ( absint( $table->getVar() ) > 0 ) ? true : false;
+		return absint( $table->getVar() ) > 0 ? true : false;
+	}
+
+	/**
+	 * Has postmeta.
+	 *
+	 * @return bool
+	 */
+	private function has_postmeta() {
+		if ( empty( $this->meta_key ) ) {
+			return false;
+		}
+
+		$result = DB::query_builder( 'postmeta' )->selectCount( '*', 'count' )->whereLike( 'meta_key', $this->meta_key )->getVar();
+		return absint( $result ) > 0 ? true : false;
 	}
 }

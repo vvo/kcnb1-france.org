@@ -37,7 +37,7 @@ class Image {
 	 *
 	 * @var array
 	 */
-	private $images = array();
+	private $images = [];
 
 	/**
 	 * Holds the OpenGraph instance.
@@ -69,7 +69,7 @@ class Image {
 		$this->network   = $opengraph->network;
 
 		// If an image was not supplied or could not be added.
-		if ( ! empty( $image ) && is_string( $image ) ) {
+		if ( Str::is_non_empty( $image ) ) {
 			$this->add_image_by_url( $image );
 		}
 
@@ -177,7 +177,7 @@ class Image {
 
 		if ( $attachment ) {
 			// In the past `add_image` accepted an image url, so leave this for backwards compatibility.
-			if ( is_string( $attachment ) ) {
+			if ( Str::is_non_empty( $attachment ) ) {
 				$attachment = array( 'url' => $attachment );
 			}
 			$attachment['alt'] = Attachment::get_alt_tag( $attachment_id );
@@ -193,7 +193,7 @@ class Image {
 	 */
 	public function add_image( $attachment ) {
 		// In the past `add_image` accepted an image url, so leave this for backwards compatibility.
-		if ( is_string( $attachment ) ) {
+		if ( Str::is_non_empty( $attachment ) ) {
 			$attachment = array( 'url' => $attachment );
 		}
 
@@ -457,7 +457,7 @@ class Image {
 			return;
 		}
 
-		$images = array();
+		$images = [];
 		if ( preg_match_all( '`<img [^>]+>`', $content, $matches ) ) {
 			foreach ( $matches[0] as $img ) {
 				if ( preg_match( '`src=(["\'])(.*?)\1`', $img, $match ) ) {
@@ -536,7 +536,7 @@ class Image {
 	 * @return array The different variations possible for this attachment ID.
 	 */
 	public function get_variations( $attachment_id ) {
-		$variations = array();
+		$variations = [];
 
 		/**
 		 * Determines which image sizes we'll loop through to get an appropriate image.

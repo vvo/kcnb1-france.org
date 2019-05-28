@@ -38,7 +38,7 @@ class Event implements Snippet {
 			'location'    => [
 				'@type' => 'Place',
 				'name'  => Helper::get_post_meta( 'snippet_event_venue' ),
-				'url'   => Helper::get_post_meta( 'snippet_event_venueurl' ),
+				'url'   => Helper::get_post_meta( 'snippet_event_venue_url' ),
 			],
 			'offers'      => [
 				'@type'    => 'Offer',
@@ -68,13 +68,29 @@ class Event implements Snippet {
 		if ( ! empty( $entity['offers']['validFrom'] ) ) {
 			$entity['offers']['validFrom'] = str_replace( ' ', 'T', date( 'Y-m-d H:i', $entity['offers']['validFrom'] ) );
 		}
+
+		$entity = $this->add_performer( $entity );
+
+		return $entity;
+	}
+
+	/**
+	 * Add Performer data.
+	 *
+	 * @param array $entity   Array of json-ld data.
+	 *
+	 * @return array
+	 */
+	public function add_performer( $entity ) {
 		if ( $performer = Helper::get_post_meta( 'snippet_event_performer' ) ) { // phpcs:ignore
 			$entity['performer'] = [
-				'@type' => 'Person',
+				'@type' => Helper::get_post_meta( 'snippet_event_performer_type' ) ? Helper::get_post_meta( 'snippet_event_performer_type' ) : 'Person',
 				'name'  => $performer,
 			];
+			if ( $performer_url = Helper::get_post_meta( 'snippet_event_performer_url' ) ) { // phpcs:ignore
+				$entity['performer']['sameAs'] = $performer_url;
+			}
 		}
-
 		return $entity;
 	}
 }

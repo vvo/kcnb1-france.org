@@ -5,10 +5,12 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Admin
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Admin;
+
+use MyThemeShop\Helpers\Param;
 
 /**
  * Page class.
@@ -151,20 +153,29 @@ class Page {
 			return;
 		}
 
-		if ( ! is_null( $this->onsave ) && is_callable( $this->onsave ) ) {
-			add_action( 'admin_init', [ $this, 'save' ] );
-		}
+		$hooks = [
+			'admin_init'            => [
+				'callback'  => 'save',
+				'condition' => ! is_null( $this->onsave ) && is_callable( $this->onsave ),
+			],
+			'admin_enqueue_scripts' => [
+				'callback'  => 'enqueue',
+				'condition' => ! empty( $this->assets ),
+			],
+			'contextual_help'       => [
+				'callback'  => 'contextual_help',
+				'condition' => ! empty( $this->help ),
+			],
+			'admin_body_class'      => [
+				'callback'  => 'body_class',
+				'condition' => ! empty( $this->classes ),
+			],
+		];
 
-		if ( ! empty( $this->assets ) ) {
-			add_action( 'admin_enqueue_scripts', [ $this, 'enqueue' ] );
-		}
-
-		if ( ! empty( $this->help ) ) {
-			add_filter( 'contextual_help', [ $this, 'contextual_help' ] );
-		}
-
-		if ( ! empty( $this->classes ) ) {
-			add_action( 'admin_body_class', [ $this, 'body_class' ] );
+		foreach ( $hooks as $hook => $data ) {
+			if ( true === $data['condition'] ) {
+				add_action( $hook, [ $this, $data['callback'] ] );
+			}
 		}
 	}
 
@@ -198,6 +209,7 @@ class Page {
 	 * @codeCoverageIgnore
 	 *
 	 * @param string $classes Space-separated list of CSS classes.
+	 *
 	 * @return string
 	 */
 	public function body_class( $classes = '' ) {
@@ -254,9 +266,7 @@ class Page {
 	 * @return bool
 	 */
 	public function is_current_page() {
-
-		$page = isset( $_GET['page'] ) && ! empty( $_GET['page'] ) ? filter_input( INPUT_GET, 'page' ) : false;
-		return $page === $this->id;
+		return Param::get( 'page' ) === $this->id;
 	}
 
 	/**
@@ -294,7 +304,8 @@ class Page {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param  array $tab Tab to get content for.
+	 * @param array $tab Tab to get content for.
+	 *
 	 * @return string
 	 */
 	private function get_help_content( $tab ) {

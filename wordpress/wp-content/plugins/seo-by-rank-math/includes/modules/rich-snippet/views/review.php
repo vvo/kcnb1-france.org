@@ -11,37 +11,41 @@ $review = [ [ 'rank_math_rich_snippet', 'review' ] ];
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_review_worst_rating',
 	'name'       => esc_html__( 'Worst Rating', 'rank-math' ),
+	'desc'       => esc_html__( 'Minimum rating.', 'rank-math' ),
 	'type'       => 'text',
 	'default'    => 1,
 	'dep'        => $review,
+	'classes'    => 'cmb-row-33',
 	'attributes' => [ 'type' => 'number' ],
 ]);
 
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_review_best_rating',
 	'name'       => esc_html__( 'Best Rating', 'rank-math' ),
+	'desc'       => esc_html__( 'Maximum rating.', 'rank-math' ),
 	'type'       => 'text',
 	'default'    => 5,
 	'dep'        => $review,
+	'classes'    => 'cmb-row-33',
 	'attributes' => [ 'type' => 'number' ],
 ]);
 
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_review_rating_value',
-	'name'       => esc_html__( 'Rating Value', 'rank-math' ),
+	'name'       => esc_html__( 'Rating', 'rank-math' ),
+	'desc'       => esc_html__( 'Final rating of the item.', 'rank-math' ),
 	'type'       => 'text',
 	'dep'        => $review,
+	'classes'    => 'cmb-row-33',
 	'attributes' => [
 		'type' => 'number',
-		'min'  => 1,
-		'max'  => 5,
-		'step' => 0.1,
 	],
 ]);
 
 $cmb->add_field([
 	'id'      => 'rank_math_snippet_review_location',
 	'name'    => esc_html__( 'Review Location', 'rank-math' ),
+	'desc'    => esc_html__( 'The review or rating must be displayed on the page to comply with Google\'s Rich Snippet guidelines.', 'rank-math' ),
 	'type'    => 'select',
 	'dep'     => $review,
 	'classes' => 'nob',

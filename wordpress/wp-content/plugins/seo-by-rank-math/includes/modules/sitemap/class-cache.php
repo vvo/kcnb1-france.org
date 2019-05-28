@@ -200,7 +200,7 @@ class Cache {
 			return;
 		}
 
-		$data  = array();
+		$data  = [];
 		$files = self::cached_files();
 		foreach ( $files as $file => $sitemap_type ) {
 			if ( $type !== $sitemap_type ) {

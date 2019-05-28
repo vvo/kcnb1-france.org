@@ -20,7 +20,7 @@ $tab = isset( $_GET['view'] ) ? $_GET['view'] : 'overview';
 	Helper::search_console()->display_nav();
 
 	if ( Helper::search_console()->client->is_authorized ) {
-		$allowed_tabs = array( 'overview', 'analytics', 'tracker' );
+		$allowed_tabs = [ 'overview', 'analytics', 'tracker' ];
 
 		// phpcs:disable
 		// Search Console - Analytics Tab

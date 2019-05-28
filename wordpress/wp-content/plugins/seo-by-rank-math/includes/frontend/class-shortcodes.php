@@ -11,6 +11,7 @@
 namespace RankMath\Frontend;
 
 use RankMath\Helper;
+use RankMath\Paper\Paper;
 use RankMath\Traits\Hooker;
 use RankMath\Traits\Shortcode;
 
@@ -48,8 +49,19 @@ class Shortcodes {
 		// Contact shortcode.
 		$this->add_shortcode( 'rank_math_contact_info', 'contact_info' );
 
-		// Review shortcode.
-		$this->add_shortcode( 'rank_math_review_snippet', 'review_snippet' );
+		// Breadcrumb shortcode.
+		$this->add_shortcode( 'rank_math_breadcrumb', 'breadcrumb' );
+	}
+
+	/**
+	 * Get the breadcrumb
+	 *
+	 * @param array $args Arguments.
+	 *
+	 * @return string
+	 */
+	public function breadcrumb( $args ) {
+		return Breadcrumbs::get()->get_breadcrumb( $args );
 	}
 
 	/**
@@ -60,14 +72,18 @@ class Shortcodes {
 	 * @return string Shortcode output.
 	 */
 	public function contact_info( $args ) {
-		$args = shortcode_atts( array(
-			'show'  => 'all',
-			'class' => '',
-		), $args, 'contact-info' );
+		$args = shortcode_atts(
+			[
+				'show'  => 'all',
+				'class' => '',
+			],
+			$args,
+			'contact-info'
+		);
 
-		$allowed = array( 'address', 'hours', 'phone', 'social', 'map' );
+		$allowed = [ 'address', 'hours', 'phone', 'social', 'map' ];
 		if ( 'person' === Helper::get_settings( 'titles.knowledgegraph_type' ) ) {
-			$allowed = array( 'address' );
+			$allowed = [ 'address' ];
 		}
 
 		if ( ! empty( $args['show'] ) && 'all' !== $args['show'] ) {
@@ -102,11 +118,11 @@ class Shortcodes {
 	 * @return string
 	 */
 	private function get_contact_classes( $allowed, $extra_class ) {
-		$classes = array( 'rank-math-contact-info', $extra_class );
+		$classes = [ 'rank-math-contact-info', $extra_class ];
 		foreach ( $allowed as $elem ) {
 			$classes[] = sanitize_html_class( 'show-' . $elem );
 		}
-		if ( count( $allowed ) == 1 ) {
+		if ( count( $allowed ) === 1 ) {
 			$classes[] = sanitize_html_class( 'show-' . $elem . '-only' );
 		}
 
@@ -130,13 +146,13 @@ class Shortcodes {
 		 */
 		$parts_format = $this->do_filter( 'shortcode/contact/address_parts_format', '<span class="contact-address-%1$s">%2$s</span>' );
 
-		$hash = array(
+		$hash = [
 			'streetAddress'   => 'address',
 			'addressLocality' => 'locality',
 			'addressRegion'   => 'region',
 			'postalCode'      => 'postalcode',
 			'addressCountry'  => 'country',
-		);
+		];
 		?>
 		<label><?php esc_html_e( 'Address:', 'rank-math' ); ?></label>
 		<address>
@@ -195,7 +211,7 @@ class Shortcodes {
 	 * @return array
 	 */
 	private function get_hours_combined( $hours ) {
-		$combined = array();
+		$combined = [];
 
 		foreach ( $hours as $hour ) {
 			if ( empty( $hour['time'] ) ) {
@@ -231,7 +247,7 @@ class Shortcodes {
 	 * Output social identities.
 	 */
 	private function display_social() {
-		$networks = array(
+		$networks = [
 			'facebook'      => 'Facebook',
 			'twitter'       => 'Twitter',
 			'google_places' => 'Google Places',
@@ -246,7 +262,7 @@ class Shortcodes {
 			'soundcloud'    => 'SoundClound',
 			'tumblr'        => 'Tumblr',
 			'myspace'       => 'MySpace',
-		);
+		];
 		?>
 		<div class="rank-math-social-networks">
 			<?php
@@ -290,37 +306,43 @@ class Shortcodes {
 	 * @return string
 	 */
 	public function yoast_address( $args ) {
-		$atts = shortcode_atts( array(
-			'hide_name'          => '0',
-			'hide_address'       => '0',
-			'show_state'         => '1',
-			'show_country'       => '1',
-			'show_phone'         => '1',
-			'show_phone_2'       => '1',
-			'show_fax'           => '1',
-			'show_email'         => '1',
-			'show_url'           => '0',
-			'show_vat'           => '0',
-			'show_tax'           => '0',
-			'show_coc'           => '0',
-			'show_price_range'   => '0',
-			'show_logo'          => '0',
-			'show_opening_hours' => '0',
-		), $args, 'wpseo_address' );
-		$show = array( 'address' );
+		$atts = shortcode_atts(
+			[
+				'hide_name'          => '0',
+				'hide_address'       => '0',
+				'show_state'         => '1',
+				'show_country'       => '1',
+				'show_phone'         => '1',
+				'show_phone_2'       => '1',
+				'show_fax'           => '1',
+				'show_email'         => '1',
+				'show_url'           => '0',
+				'show_vat'           => '0',
+				'show_tax'           => '0',
+				'show_coc'           => '0',
+				'show_price_range'   => '0',
+				'show_logo'          => '0',
+				'show_opening_hours' => '0',
+			],
+			$args,
+			'wpseo_address'
+		);
+		$show = [ 'address' ];
 
-		if ( '1' == $atts['show_phone'] ) {
+		if ( 1 === absint( $atts['show_phone'] ) ) {
 			$show[] = 'phone';
 		}
 
-		if ( '1' == $atts['show_opening_hours'] ) {
+		if ( 1 === absint( $atts['show_opening_hours'] ) ) {
 			$show[] = 'hours';
 		}
 
-		return $this->contact_info( array(
-			'show'  => join( ',', $show ),
-			'class' => 'wpseo_address_compat',
-		) );
+		return $this->contact_info(
+			[
+				'show'  => join( ',', $show ),
+				'class' => 'wpseo_address_compat',
+			]
+		);
 	}
 
 	/**
@@ -330,10 +352,12 @@ class Shortcodes {
 	 * @return string
 	 */
 	public function yoast_map( $args ) {
-		return $this->contact_info( array(
-			'show'  => 'map',
-			'class' => 'wpseo_map_compat',
-		) );
+		return $this->contact_info(
+			[
+				'show'  => 'map',
+				'class' => 'wpseo_map_compat',
+			]
+		);
 	}
 
 	/**
@@ -343,89 +367,11 @@ class Shortcodes {
 	 * @return string
 	 */
 	public function yoast_opening_hours( $args ) {
-		return $this->contact_info( array(
-			'show'  => 'hours',
-			'class' => 'wpseo_opening_hours_compat',
-		) );
-	}
-
-	/**
-	 * Review Snippet shortcode, displays nicely formatted reviews.
-	 *
-	 * @return string Shortcode output.
-	 *
-	 * @since 1.0.12
-	 */
-	public function review_snippet() {
-		global $post;
-
-		if ( false === $this->can_add_review_snippet() ) {
-			return;
-		}
-
-		wp_enqueue_style( 'font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', null, rank_math()->version );
-		wp_enqueue_style( 'rank-math-review-snippet', rank_math()->assets() . 'css/rank-math-review-snippet.css', null, rank_math()->version );
-
-		// Title.
-		$title = Helper::get_post_meta( 'snippet_name' );
-		$title = $title ? $title : rank_math()->head->title( '' );
-
-		// Description.
-		$excerpt = Helper::replace_vars( '%excerpt%', $post );
-		$desc    = Helper::get_post_meta( 'snippet_desc' );
-		$desc    = $desc ? $desc : ( $excerpt ? $excerpt : Helper::get_post_meta( 'description' ) );
-
-		// Image.
-		$image = Helper::get_thumbnail_with_fallback( $post->ID, 'medium' );
-
-		// Ratings.
-		$rating = Helper::get_post_meta( 'snippet_review_rating_value' );
-		$rating = isset( $rating ) ? floatval( $rating ) : 0;
-		ob_start();
-		?>
-			<div id="rank-math-review">
-				<h5 class="rank-math-title"><?php echo esc_html( $title ); ?></h5>
-
-				<div class="rank-math-review-item">
-					<?php if ( ! empty( $image ) ) { ?>
-						<div class="rank-math-review-image">
-							<img src="<?php echo esc_url( $image[0] ); ?>" />
-						</div>
-					<?php } ?>
-					<div class="rank-math-review-data">
-						<?php echo $desc; ?>
-					</div>
-				</div>
-				<div class="rank-math-total-wrapper">
-					<strong><?php echo $this->do_filter( 'review/text', esc_html__( 'Editor\'s Rating:', 'rank-math' ) ); ?></strong><br />
-					<span class="rank-math-total"><?php echo $rating; ?></span>
-					<div class="rank-math-review-star">
-						<div class="rank-math-review-result-wrapper">
-							<?php echo \str_repeat( '<i class="fa fa-star"></i>', 5 ); ?>
-
-							<div class="rank-math-review-result" style="width:<?php echo ( $rating * 20 ); ?>%;">
-								<?php echo \str_repeat( '<i class="fa fa-star"></i>', 5 ); ?>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		<?php
-		return $this->do_filter( 'review/html', ob_get_clean() );
-	}
-
-	/**
-	 * Check if we can add review snippet.
-	 *
-	 * @return bool
-	 */
-	private function can_add_review_snippet() {
-		if ( ! is_singular() || ! is_main_query() ) {
-			return false;
-		}
-		if ( 'review' !== Helper::get_post_meta( 'rich_snippet' ) ) {
-			return false;
-		}
-		return true;
+		return $this->contact_info(
+			[
+				'show'  => 'hours',
+				'class' => 'wpseo_opening_hours_compat',
+			]
+		);
 	}
 }

@@ -38,20 +38,20 @@ endif;
 	</div>
 	<div class="break"></div>
 	<div class="column halfwidth">
-		<h3>Click History</h3>
+		<h3><?php esc_html_e( 'Click History', 'rank-math' ); ?></h3>
 		<div id="analysis-overview-click-history" style="height: 250px"></div>
 	</div>
 	<div class="column halfwidth">
-		<h3>Impressions History</h3>
+		<h3><?php esc_html_e( 'Impressions History', 'rank-math' ); ?></h3>
 		<div id="analysis-overview-impression-history" style="height: 250px"></div>
 	</div>
 	<div class="break"></div>
 	<div class="column halfwidth">
-		<h3>CTR History</h3>
+		<h3><?php esc_html_e( 'CTR History', 'rank-math' ); ?></h3>
 		<div id="analysis-overview-ctr-history" style="height: 250px"></div>
 	</div>
 	<div class="column halfwidth">
-		<h3>Position History</h3>
+		<h3><?php esc_html_e( 'Position History', 'rank-math' ); ?></h3>
 		<div id="analysis-overview-position-history" style="height: 250px"></div>
 	</div>
 </div>

@@ -5,12 +5,13 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Helpers
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Helpers;
 
 use MyThemeShop\Helpers\Str;
+use MyThemeShop\Helpers\Param;
 
 /**
  * Url class.
@@ -21,7 +22,8 @@ class Url {
 	 * Simple check for validating a URL, it must start with http:// or https://.
 	 * and pass FILTER_VALIDATE_URL validation.
 	 *
-	 * @param  string $url to check.
+	 * @param string $url to check.
+	 *
 	 * @return bool
 	 */
 	public static function is_url( $url ) {
@@ -46,7 +48,8 @@ class Url {
 	/**
 	 * Check whether a url is relative.
 	 *
-	 * @param  string $url URL string to check.
+	 * @param string $url URL string to check.
+	 *
 	 * @return bool
 	 */
 	public static function is_relative( $url ) {
@@ -58,6 +61,7 @@ class Url {
 	 *
 	 * @param string $url    URL string to check. This should be a absolute URL.
 	 * @param string $domain If wants to use some other domain not home_url().
+	 *
 	 * @return bool
 	 */
 	public static function is_external( $url, $domain = false ) {
@@ -76,10 +80,12 @@ class Url {
 	/**
 	 * Get current url.
 	 *
+	 * @codeCoverageIgnore
+	 *
 	 * @return string
 	 */
 	public static function get_current_url() {
-		return self::get_scheme() . '://' . self::get_host() . self::get_port() . $_SERVER['REQUEST_URI'];
+		return self::get_scheme() . '://' . self::get_host() . self::get_port() . Param::server( 'REQUEST_URI' );
 	}
 
 	/**
@@ -96,15 +102,21 @@ class Url {
 	 *
 	 * @link http://stackoverflow.com/questions/2297403/http-host-vs-server-name
 	 *
+	 * @codeCoverageIgnore
+	 *
 	 * @return string the HTTP_HOST or SERVER_NAME
 	 */
 	public static function get_host() {
-		if ( isset( $_SERVER['HTTP_HOST'] ) && $_SERVER['HTTP_HOST'] ) {
-			return $_SERVER['HTTP_HOST'];
+		$host = Param::server( 'HTTP_HOST' );
+		if ( false !== $host ) {
+			return $host;
 		}
-		if ( isset( $_SERVER['SERVER_NAME'] ) && $_SERVER['SERVER_NAME'] ) {
-			return $_SERVER['SERVER_NAME'];
+
+		$name = Param::server( 'SERVER_NAME' );
+		if ( false !== $name ) {
+			return $name;
 		}
+
 		return '';
 	}
 
@@ -114,14 +126,16 @@ class Url {
 	 * @return string
 	 */
 	public static function get_port() {
-		$has_port = isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] && ! in_array( $_SERVER['SERVER_PORT'], [ '80', '443' ] );
-		return $has_port ? ':' . $_SERVER['SERVER_PORT'] : '';
+		$port     = Param::server( 'SERVER_PORT' );
+		$has_port = $port && ! in_array( $port, [ '80', '443' ], true );
+		return $has_port ? ':' . $port : '';
 	}
 
 	/**
 	 * Get parent domain
 	 *
-	 * @param  string $url Url to parse.
+	 * @param string $url Url to parse.
+	 *
 	 * @return string
 	 */
 	public static function get_domain( $url ) {

@@ -9,7 +9,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Rank Math SEO
- * Version:           1.0.23.1
+ * Version:           1.0.25
  * Plugin URI:        https://s.rankmath.com/home
  * Description:       Rank Math is a revolutionary SEO product that combines the features of many SEO tools and lets you multiply your traffic in the easiest way possible.
  * Author:            Rank Math
@@ -34,7 +34,7 @@ final class RankMath {
 	 *
 	 * @var string
 	 */
-	public $version = '1.0.23.1';
+	public $version = '1.0.25';
 
 	/**
 	 * Rank Math database version.
@@ -290,6 +290,9 @@ final class RankMath {
 		if ( defined( 'DOING_CRON' ) && ! defined( 'DOING_AJAX' ) && \RankMath\Helper::get_settings( 'general.usage_tracking' ) ) {
 			new \RankMath\Tracking;
 		}
+
+		// Frontend SEO Score.
+		$this->container['frontend_seo_score'] = new \RankMath\Frontend_SEO_Score;
 	}
 
 	/**
@@ -305,6 +308,7 @@ final class RankMath {
 		add_filter( 'plugin_action_links_' . plugin_basename( RANK_MATH_FILE ), [ $this, 'plugin_action_links' ] );
 
 		// Booting.
+		add_action( 'plugins_loaded', [ $this, 'init' ], 14 );
 		add_action( 'rest_api_init', [ $this, 'init_rest_api' ] );
 
 		if ( is_admin() ) {
@@ -312,13 +316,20 @@ final class RankMath {
 		}
 
 		// Frontend Only.
-		if ( ! is_admin() ) {
+		if ( ! is_admin() || in_array( \MyThemeShop\Helpers\Param::request( 'action' ), [ 'elementor', 'elementor_ajax' ], true ) ) {
 			add_action( 'plugins_loaded', [ $this, 'init_frontend' ], 15 );
 		}
 
+		// WP_CLI.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			add_action( 'plugins_loaded', [ $this, 'init_wp_cli' ], 20 );
 		}
+	}
+
+	/**
+	 * Initialize the essential files.
+	 */
+	public function init() {
 	}
 
 	/**
@@ -332,6 +343,7 @@ final class RankMath {
 
 		$controllers = [
 			new \RankMath\Rest\Admin,
+			new \RankMath\Rest\Front,
 		];
 
 		foreach ( $controllers as $controller ) {
@@ -416,10 +428,12 @@ final class RankMath {
 		}
 		load_plugin_textdomain( 'rank-math', false, rank_math()->plugin_dir() . '/languages/' );
 
-		$this->container['json']->add( 'version', $this->version, 'rankMath' );
-		$this->container['json']->add( 'ajaxurl', admin_url( 'admin-ajax.php' ), 'rankMath' );
-		$this->container['json']->add( 'adminurl', admin_url( 'admin.php' ), 'rankMath' );
-		$this->container['json']->add( 'security', wp_create_nonce( 'rank-math-ajax-nonce' ), 'rankMath' );
+		if ( is_user_logged_in() ) {
+			$this->container['json']->add( 'version', $this->version, 'rankMath' );
+			$this->container['json']->add( 'ajaxurl', admin_url( 'admin-ajax.php' ), 'rankMath' );
+			$this->container['json']->add( 'adminurl', admin_url( 'admin.php' ), 'rankMath' );
+			$this->container['json']->add( 'security', wp_create_nonce( 'rank-math-ajax-nonce' ), 'rankMath' );
+		}
 	}
 
 	/**

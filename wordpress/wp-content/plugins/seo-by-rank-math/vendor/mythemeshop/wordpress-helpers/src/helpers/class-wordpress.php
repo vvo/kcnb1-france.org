@@ -5,13 +5,13 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Helpers
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Helpers;
 
 use MyThemeShop\Helpers\Str;
-use MyThemeShop\Helpers\Util;
+use MyThemeShop\Helpers\Param;
 
 /**
  * WordPress class.
@@ -24,6 +24,7 @@ class WordPress {
 	 * @codeCoverageIgnore
 	 *
 	 * @param string $output How to return roles.
+	 *
 	 * @return array
 	 */
 	public static function get_roles( $output = 'names' ) {
@@ -135,17 +136,19 @@ class WordPress {
 	 */
 	private static function post_type_from_request() {
 
-		if ( isset( $_REQUEST['post_type'] ) ) {
-			return sanitize_key( $_REQUEST['post_type'] );
+		if ( $post_type = Param::request( 'post_type' ) ) { // phpcs:ignore
+			return sanitize_key( $post_type );
 		}
 
-		if ( isset( $_REQUEST['post_ID'] ) ) {
-			return get_post_type( $_REQUEST['post_ID'] );
+		if ( $post_id = Param::request( 'post_ID' ) ) { // phpcs:ignore
+			return get_post_type( $post_id );
 		}
 
-		if ( isset( $_GET['post'] ) ) {
-			return get_post_type( $_GET['post'] );
+		// @codeCoverageIgnoreStart
+		if ( $post = Param::get( 'post' ) ) { // phpcs:ignore
+			return get_post_type( $post );
 		}
+		// @codeCoverageIgnoreEnd
 
 		return false;
 	}
@@ -153,7 +156,8 @@ class WordPress {
 	/**
 	 * Strip all shortcodes active or orphan.
 	 *
-	 * @param  string $content Content to remove shortcodes from.
+	 * @param string $content Content to remove shortcodes from.
+	 *
 	 * @return string
 	 */
 	public static function strip_shortcodes( $content ) {

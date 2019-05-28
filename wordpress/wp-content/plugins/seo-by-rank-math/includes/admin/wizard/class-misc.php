@@ -113,21 +113,31 @@ class Misc implements Wizard_Step {
 
 		// Rich Snippet.
 		if ( 'on' === $values['rich_snippet'] ) {
-			foreach ( Helper::get_accessible_post_types() as $post_type ) {
-				if ( 'attachment' === $post_type ) {
-					continue;
-				}
-
-				$id           = 'pt_' . $post_type . '_default_rich_snippet';
-				$article_type = 'pt_' . $post_type . '_default_article_type';
-
-				$settings['titles'][ $id ]           = $values[ $id ];
-				$settings['titles'][ $article_type ] = $values[ $article_type ];
-			}
+			$this->save_rich_snippet( $settings, $values );
 		}
 		Helper::update_all_settings( $settings['general'], $settings['titles'], null );
 
 		return Helper::get_admin_url();
+	}
+
+	/**
+	 * Save rich snippet values for post type.
+	 *
+	 * @param array $settings Array of setting.
+	 * @param array $values   Values to save.
+	 */
+	private function save_rich_snippet( &$settings, $values ) {
+		foreach ( Helper::get_accessible_post_types() as $post_type ) {
+			if ( 'attachment' === $post_type ) {
+				continue;
+			}
+
+			$id           = 'pt_' . $post_type . '_default_rich_snippet';
+			$article_type = 'pt_' . $post_type . '_default_article_type';
+
+			$settings['titles'][ $id ]           = $values[ $id ];
+			$settings['titles'][ $article_type ] = $values[ $article_type ];
+		}
 	}
 
 	/**

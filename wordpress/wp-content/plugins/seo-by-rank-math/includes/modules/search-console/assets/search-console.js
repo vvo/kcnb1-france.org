@@ -133,6 +133,7 @@
 			},
 
 			dashboardCharts: function() {
+				var self = this
 
 				// Early Bail!!!
 				if ( null === document.getElementById( 'analysis-overview-dashboard' ) ) {
@@ -141,23 +142,10 @@
 
 				google.charts.load( 'current', { 'packages': [ 'corechart', 'controls' ] })
 				google.charts.setOnLoadCallback( function() {
+					rankMath.overviewChartData = self.getChartData()
+					self.setOldChartData()
 
-					var chartData = [ [ 'Date', 'Clicks', 'Impressions', 'Position', 'CTR' ] ]
-					$.each( rankMath.overviewChartData, function() {
-						chartData.push([ new Date( this.property ), parseInt( this.clicks ), parseInt( this.impressions ), parseFloat( this.position ), parseFloat( this.ctr ) ])
-					})
-					rankMath.overviewChartData = chartData
-
-					if ( '' !== rankMath.overviewChartDataOld ) {
-						var chartDataOld = [ [ 'Date', 'Clicks', 'Impressions', 'Position', 'CTR' ] ]
-						$.each( rankMath.overviewChartDataOld, function() {
-							chartDataOld.push([ new Date( this.property ), parseInt( this.clicks ), parseInt( this.impressions ), parseFloat( this.position ), parseFloat( this.ctr ) ])
-						})
-						rankMath.overviewChartDataOld = chartDataOld
-					}
-
-
-					var dataTable    = new google.visualization.arrayToDataTable( chartData ),
+					var dataTable    = new google.visualization.arrayToDataTable( rankMath.overviewChartData ),
 						dataTableOld = false,
 						dashboard    = new google.visualization.Dashboard( document.getElementById( 'analysis-overview-dashboard' ) ),
 						formatDate   = new google.visualization.DateFormat({ pattern: 'MMMM d, yyyy' })
@@ -169,90 +157,24 @@
 						formatDate.format( dataTableOld, 0 )
 					}
 
-					var chartRangeFilter = new google.visualization.ControlWrapper({
-						controlType: 'ChartRangeFilter',
-						containerId: 'analysis-overview-filter',
-						options: {
-							filterColumnLabel: 'Date',
-							ui: {
-								chartType: 'AreaChart',
-								chartOptions: {
-									chartArea: {
-										height: 60
-									},
-									hAxis: {
-										baselineColor: 'none'
-									}
-								},
-								minRangeSize: 86400000
-							}
-						}
-					})
-
 					var textStyle    = {
 						color: '#999',
 						fontName: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',
 						fontSize: 12
 					},
 					textStyle13 = $.extend({}, textStyle, { fontSize: 13 })
-					var chartWrapper = new google.visualization.ChartWrapper({
-						chartType: 'LineChart',
-						containerId: 'analysis-overview-chart',
-						options: {
-							height: 500,
-							hAxis: {
-								gridlines: { color: 'transparent' },
-								textStyle: textStyle
-							},
-							vAxis: { textStyle: textStyle },
-							legend: { textStyle: textStyle13 },
-							focusTarget: 'category'
-						}
-					})
 
-					dashboard.bind( chartRangeFilter, chartWrapper )
+					dashboard.bind( self.getChartRangeFilter(), self.getChartWrapper( textStyle, textStyle13 ) )
 					dashboard.draw( dataTable )
 
-					// Default Options
-					var defaultOptions = {
-						colors: [ '#666', '#c1c1c1' ],
-						height: 250,
-						hAxis: {
-							gridlines: { color: 'transparent' },
-							textStyle: textStyle
-						},
-						vAxis: {
-							textStyle: textStyle
-						},
-						legend: {
-							position: 'none',
-							textStyle: textStyle13
-						},
-						focusTarget: 'category'
-					}
-
-					var histories = { click: 1, impression: 2, ctr: 4, position: 3 }
-					$.each( histories, function( metric, column ) {
+					$.each( self.getHistories(), function( metric, column ) {
 						var elem = document.getElementById( 'analysis-overview-' + metric + '-history' )
 						if ( null === elem ) {
 							return true
 						}
 
 						var chart = new google.visualization.AreaChart( elem ),
-							data = dataTable.clone()
-
-						if ( 'click' === metric ) {
-							data.removeColumns( 2, 3 )
-						} else if ( 'impression' === metric ) {
-							data.removeColumn( 1 )
-							data.removeColumns( 2, 2 )
-						} else if ( 'ctr' === metric ) {
-							data.removeColumns( 2, 2 )
-							data.removeColumn( 1 )
-						} else if ( 'position' === metric ) {
-							data.removeColumns( 1, 2 )
-							data.removeColumns( 2, 3 )
-						}
+							data = self.formatDataTable( dataTable.clone(), metric )
 
 						if ( false !== dataTableOld && 0 < dataTableOld.getNumberOfRows() ) {
 							data.addColumn( 'number', 'Previous' )
@@ -261,8 +183,106 @@
 							}
 						}
 
-						chart.draw( data, defaultOptions )
+						chart.draw( data, self.chartDefaultOptions( textStyle, textStyle13 ) )
 					})
+				})
+			},
+
+			formatDataTable: function( dataTable, metric ) {
+				if ( 'click' === metric ) {
+					dataTable.removeColumns( 2, 3 )
+				} else if ( 'impression' === metric ) {
+					dataTable.removeColumn( 1 )
+					dataTable.removeColumns( 2, 2 )
+				} else if ( 'ctr' === metric ) {
+					dataTable.removeColumns( 2, 2 )
+					dataTable.removeColumn( 1 )
+				} else if ( 'position' === metric ) {
+					dataTable.removeColumns( 1, 2 )
+					dataTable.removeColumns( 2, 3 )
+				}
+
+				return dataTable
+			},
+
+			getHistories: function() {
+				return { click: 1, impression: 2, ctr: 4, position: 3 }
+			},
+
+			chartDefaultOptions: function( textStyle, textStyle13 ) {
+				return {
+					colors: [ '#666', '#c1c1c1' ],
+					height: 250,
+					hAxis: {
+						gridlines: { color: 'transparent' },
+						textStyle: textStyle
+					},
+					vAxis: {
+						textStyle: textStyle
+					},
+					legend: {
+						position: 'none',
+						textStyle: textStyle13
+					},
+					focusTarget: 'category'
+				}
+			},
+
+			getChartData: function() {
+				return this.formatChartData( rankMath.overviewChartData )
+			},
+
+			setOldChartData: function() {
+				if ( '' !== rankMath.overviewChartDataOld ) {
+					rankMath.overviewChartDataOld = this.formatChartData( rankMath.overviewChartDataOld )
+				}
+			},
+
+			formatChartData: function( data ) {
+				var chartData = [ [ 'Date', 'Clicks', 'Impressions', 'Position', 'CTR' ] ]
+				$.each( data, function() {
+					chartData.push([ new Date( this.property ), parseInt( this.clicks ), parseInt( this.impressions ), parseFloat( this.position ), parseFloat( this.ctr ) ])
+				})
+
+				return chartData
+			},
+
+			getChartRangeFilter: function() {
+				return new google.visualization.ControlWrapper({
+					controlType: 'ChartRangeFilter',
+					containerId: 'analysis-overview-filter',
+					options: {
+						filterColumnLabel: 'Date',
+						ui: {
+							chartType: 'AreaChart',
+							chartOptions: {
+								chartArea: {
+									height: 60
+								},
+								hAxis: {
+									baselineColor: 'none'
+								}
+							},
+							minRangeSize: 86400000
+						}
+					}
+				})
+			},
+
+			getChartWrapper: function( textStyle, textStyle13 ) {
+				return new google.visualization.ChartWrapper({
+					chartType: 'LineChart',
+					containerId: 'analysis-overview-chart',
+					options: {
+						height: 500,
+						hAxis: {
+							gridlines: { color: 'transparent' },
+							textStyle: textStyle
+						},
+						vAxis: { textStyle: textStyle },
+						legend: { textStyle: textStyle13 },
+						focusTarget: 'category'
+					}
 				})
 			}
 		}

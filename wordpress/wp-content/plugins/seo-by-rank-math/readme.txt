@@ -1,11 +1,11 @@
 === WordPress SEO Plugin - Rank Math ===
 Contributors: rankmath
 Plugin link: https://s.rankmath.com/homepage
-Tags: seo, sitemap, google search console, schema.org, redirection
-Tested up to: 5.2
+Tags: seo, sitemap, google search console, schema, redirection
+Tested up to: 5.2.1
 Requires at least: 4.6.0
 Requires PHP: 5.6
-Stable tag: 1.0.23.1
+Stable tag: 1.0.25
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -17,7 +17,7 @@ Rank Math is a revolutionary SEO plugin that combines the features of many SEO t
 ★★★★★<br>
 
 **SEO is the most consistent source of traffic for any website.** We created <a href="https://s.rankmath.com/seo" target="_blank">**Rank Math, a WordPress SEO plugin**</a>, to help every website owner get access to the SEO tools they need to improve their SEO and attract more traffic to their website.
-## <center><a href="https://s.rankmath.com/demo" target="_blank">Try The Demo</a></center> ##
+## <a href="https://s.rankmath.com/demo" target="_blank">Try The Demo</a> ##
 
 [youtube https://www.youtube.com/watch?v=NgeaqIy2OB0]
 
@@ -34,8 +34,8 @@ See the features which are exclusive to Rank Math SEO plugin and to understand w
 * **Setup Wizard (Easy to follow)**
 Rank Math practically configures itself. Rank Math features a step-by-step installation and configuration wizard that sets up SEO for WordPress perfectly.
 
-* **Google Schema Rich Snippets Integrated**
-Configuring Rich Snippets is now easy, thank to Rank Math. With support for 14 types of rich snippets, you'll be able to optimize your posts in just a few clicks.
+* **Google Schema Markup aka Rich Snippets Integrated**
+Configuring Google Schema Markup aka Rich Snippets is now easy, thanks to Rank Math. With support for 14 types of rich snippets, you’ll be able to optimize your posts in just a few clicks.
 
 * **Optimize Upto 5 Keywords**
 Unlike other plugins, Rank Math lets you optimize your posts for 5 focus keywords per post.
@@ -97,13 +97,15 @@ Even with significantly more features than other plugins, Rank Math still consis
 
 * **New SEO Analyzer** — Rank Math's built-in SEO analysis will give you SEO recommendations that you'd normally spend hundreds of dollars to get.
 
+* **Optimize 5 Keywords At Once** — You can optimize your post for up to 5 different keywords with Rank Math.
+
 * **1-Click Import From Yoast** — With a single click of your mouse, Rank Math can import all your settings from Yoast SEO to itself. The transfer is instant, and you don't lose any SERP rankings as a result.
 
 * **1-Click Import From AIO SEO** — Rank Math can also import all your settings from AIO SEO in a single click. The transfer is instant, and you don't lose any SERP rankings as a result.
 
-* **Optimize 5 Keywords At Once** — You can optimize your post for up to 5 different keywords with Rank Math.
-
 * **1-Click Import From All In One Schema Rich Snippets** — Rank Math can also import all of AIO's Rich Snippet settings in a few clicks, which help preserve your rich rankings when moving to Rank Math.
+
+* **1-Click Import From SEOPress SEO** — With a single click of your mouse, Rank Math can import all your settings from SEOPress & SEOPress Pro SEO plugin to itself. The transfer is instant, and you don't lose any SERP rankings as a result.
 
 * **Google Keyword Suggestion** — When deciding on focus keywords, Rank Math can help you discover more keywords by pulling in keyword suggestions from Google.
 
@@ -276,6 +278,8 @@ Coming Soon!
 
 <a href="https://s.rankmath.com/santanureview" target="_blank">#1 SEO Plugin - Rank Math</a>
 
+<a href="https://s.rankmath.com/wmmrm" target="_blank">Detailed setup tutorial</a>
+
 
 ## CONNECT WITH THE TEAM AND SEO EXPERTS ##
 
@@ -367,7 +371,7 @@ Rank Math requires at least PHP 5.6, cURL lib, cron jobs, to be installed and en
 Yes, as the plugin is provided through WordPress.org, it is available on WordPress.com as well.
 
 = Which Schema type is best for coupon websites? =
-There's no real schema designed specifically for separate discount codes. We would suggest not to use any Schema for coupon codes because doing so might get your site penalized.
+There’s no real Schema Markup designed specifically for separate discount codes. We would suggest not to use any Schema Markup and choose ‘None’ option for coupon codes because not doing so might get your site penalized.
 
 = Why are my images not getting indexed? =
 It is completely normal for Google to not index your submitted images. Sometimes, not even a single submitted images is indexed by Google.
@@ -447,10 +451,9 @@ We look forward to helping you.
 
 == Changelog ==
 
-= 1.0.23.1 [May 4th, 2019] =
-* Fixed Unparsable structured data error. [Know more](https://support.google.com/webmasters/answer/9166415).
-
-= 1.0.23 [Apr 4th, 2019] =
-* Fixed a bug where the indexing of the posts was getting affected if someone previously selected any value in the custom tab of the general settings of the plugin but saved the settings using the default tab. Yep, it's confusing, and thus it skipped through our nose. The good thing is, it's caught and fixed. Hurray!
+= 1.0.25 [May 28, 2019] =
+* Fixed unresponsiveness of single post editor for non-English websites
+* Fixed incorrect OG type for WooCommerce's products
+* Fixed PHP notices in the SEO Analyzer tool
 
 Full changelog can be found here - **[Rank Math SEO changelog](https://rankmath.com/changelog)**

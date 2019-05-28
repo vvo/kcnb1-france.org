@@ -43,11 +43,11 @@ class Author implements Provider {
 		$users = $this->get_users();
 
 		if ( empty( $users ) ) {
-			return array();
+			return [];
 		}
 
 		$page       = 1;
-		$index      = array();
+		$index      = [];
 		$user_pages = array_chunk( $users, $max_entries );
 
 		if ( 1 === count( $user_pages ) ) {
@@ -76,7 +76,7 @@ class Author implements Provider {
 	 * @return array
 	 */
 	public function get_sitemap_links( $type, $max_entries, $current_page ) {
-		$links = array();
+		$links = [];
 		$users = $this->get_users( array(
 			'offset' => ( $current_page - 1 ) * $max_entries,
 			'number' => $max_entries,
@@ -115,7 +115,7 @@ class Author implements Provider {
 	 * @param  array $args Arguments to add.
 	 * @return array
 	 */
-	protected function get_users( $args = array() ) {
+	protected function get_users( $args = [] ) {
 
 		$defaults = array(
 			'orderby'    => 'meta_value_num',

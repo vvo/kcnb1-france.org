@@ -12,10 +12,14 @@
 
 namespace RankMath;
 
+use RankMath\Paper\Paper;
 use RankMath\Traits\Ajax;
+use RankMath\Traits\Meta;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Arr;
 use MyThemeShop\Helpers\Str;
+use MyThemeShop\Helpers\Url;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class Common {
 
-	use Hooker, Ajax;
+	use Hooker, Ajax, Meta;
 
 	/**
 	 * The Constructor.
@@ -47,15 +51,16 @@ class Common {
 
 		$this->ajax( 'mark_page_as', 'mark_page_as' );
 
-		add_action( 'wp_ajax_nopriv_rank_math_overlay_thumb', array( $this, 'generate_overlay_thumbnail' ) );
+		add_action( 'wp_ajax_nopriv_rank_math_overlay_thumb', [ $this, 'generate_overlay_thumbnail' ] );
 	}
 
 	/**
 	 * Removes stopword from the sample permalink that is generated in an AJAX request.
 	 *
-	 * @param  array  $permalink The permalink generated for this post by WordPress.
-	 * @param  int    $post_id   The ID of the post.
-	 * @param  string $title     The title for the post that the user used.
+	 * @param array  $permalink The permalink generated for this post by WordPress.
+	 * @param int    $post_id   The ID of the post.
+	 * @param string $title     The title for the post that the user used.
+	 *
 	 * @return array
 	 */
 	public function stopwords_sample_permalink( $permalink, $post_id, $title ) {
@@ -96,9 +101,10 @@ class Common {
 	/**
 	 * Filters the category that gets used in the %category% permalink token.
 	 *
-	 * @param  WP_Term $term  The category to use in the permalink.
-	 * @param  array   $terms Array of all categories (WP_Term objects) associated with the post.
-	 * @param  WP_Post $post  The post in question.
+	 * @param WP_Term $term  The category to use in the permalink.
+	 * @param array   $terms Array of all categories (WP_Term objects) associated with the post.
+	 * @param WP_Post $post  The post in question.
+	 *
 	 * @return WP_Term
 	 */
 	public function post_link_category( $term, $terms, $post ) {
@@ -110,8 +116,9 @@ class Common {
 	/**
 	 * Filters the permalink for a post of a custom post type.
 	 *
-	 * @param  string  $post_link The post's permalink.
-	 * @param  WP_Post $post      The post in question.
+	 * @param string  $post_link The post's permalink.
+	 * @param WP_Post $post      The post in question.
+	 *
 	 * @return string
 	 */
 	public function post_type_link( $post_link, $post ) {
@@ -140,7 +147,8 @@ class Common {
 	/**
 	 * Get chain of hierarchical link.
 	 *
-	 * @param  WP_Term $term The term in question.
+	 * @param WP_Term $term The term in question.
+	 *
 	 * @return string
 	 */
 	private function get_hierarchical_link( $term ) {
@@ -161,8 +169,9 @@ class Common {
 	/**
 	 * Get primary term of the post.
 	 *
-	 * @param  string $taxonomy Taxonomy name.
-	 * @param  int    $post_id  Post ID.
+	 * @param string $taxonomy Taxonomy name.
+	 * @param int    $post_id  Post ID.
+	 *
 	 * @return object|false Primary term on success, false if there are no terms, WP_Error on failure.
 	 */
 	private function get_primary_term( $taxonomy, $post_id ) {
@@ -178,7 +187,8 @@ class Common {
 	/**
 	 * Exclude taxonomies.
 	 *
-	 * @param  array $taxonomies Excluded taxonomies.
+	 * @param array $taxonomies Excluded taxonomies.
+	 *
 	 * @return array
 	 */
 	public function default_excluded_taxonomies( $taxonomies ) {
@@ -194,6 +204,7 @@ class Common {
 	 * Adds rel="nofollow" to a link, only used for login / registration links.
 	 *
 	 * @param string $link The link element as a string.
+	 *
 	 * @return string
 	 */
 	public function nofollow_link( $link ) {
@@ -263,7 +274,7 @@ class Common {
 					'meta'      => [ 'title' => esc_html__( 'Edit default SEO settings for this post type', 'rank-math' ) ],
 					'_priority' => 35,
 				];
-			} elseif ( ( is_category() || is_tag() || is_tax() ) && in_array( $post_type, Helper::get_accessible_post_types() ) ) {
+			} elseif ( ( is_category() || is_tag() || is_tax() ) && in_array( $post_type, Helper::get_accessible_post_types(), true ) ) {
 				$mark_me        = true;
 				$term           = get_queried_object();
 				$labels         = get_taxonomy_labels( get_taxonomy( $term->taxonomy ) );
@@ -315,7 +326,7 @@ class Common {
 			$dashicon_format = '<span class="dashicons dashicons-%s" style="font-family: dashicons; font-size: 19px;"></span>';
 			$ispillar_check  = '';
 			if ( is_singular( Helper::get_accessible_post_types() ) ) {
-				if ( get_post_meta( get_the_ID(), 'rank_math_pillar_content', true ) == 'on' ) {
+				if ( get_post_meta( get_the_ID(), 'rank_math_pillar_content', true ) === 'on' ) {
 					$ispillar_check = sprintf( $dashicon_format, 'yes' );
 				}
 				$items['pillar-content'] = [
@@ -328,9 +339,9 @@ class Common {
 				];
 			}
 
-			if ( ! is_admin() && isset( rank_math()->head ) ) {
-				$robots            = rank_math()->head->generate->get( 'robots' );
-				$noindex_check     = in_array( 'noindex', $robots ) ? sprintf( $dashicon_format, 'yes' ) : '';
+			if ( ! is_admin() && Paper::get() ) {
+				$robots            = Paper::get()->get_robots();
+				$noindex_check     = in_array( 'noindex', $robots, true ) ? sprintf( $dashicon_format, 'yes' ) : '';
 				$items['no-index'] = [
 					'id'        => 'rank-math-no-index',
 					'title'     => $noindex_check . esc_html__( 'As NoIndex', 'rank-math' ),
@@ -340,7 +351,7 @@ class Common {
 					'_priority' => 120,
 				];
 
-				$nofollow_check     = in_array( 'nofollow', $robots ) ? sprintf( $dashicon_format, 'yes' ) : '';
+				$nofollow_check     = in_array( 'nofollow', $robots, true ) ? sprintf( $dashicon_format, 'yes' ) : '';
 				$items['no-follow'] = [
 					'id'        => 'rank-math-no-follow',
 					'title'     => $nofollow_check . esc_html__( 'As NoFollow', 'rank-math' ),
@@ -377,8 +388,7 @@ class Common {
 	 * @param array $items Array to add menu into.
 	 */
 	private function seo_tools_menu_item( &$items ) {
-		$link            = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		$link_urlencoded = ( ! is_admin() && ! is_preview() ) ? urlencode( $link ) : '';
+		$link_urlencoded = ( ! is_admin() && ! is_preview() ) ? urlencode( Url::get_current_url() ) : '';
 
 		$items['third-party'] = [
 			'id'        => 'rank-math-third-party',
@@ -455,12 +465,13 @@ class Common {
 	/**
 	 * Sort admin bar items callback.
 	 *
-	 * @param  array $item1 Item A to compare.
-	 * @param  array $item2 Item B to compare.
+	 * @param array $item1 Item A to compare.
+	 * @param array $item2 Item B to compare.
+	 *
 	 * @return integer
 	 */
 	public function sort_admin_bar_items( $item1, $item2 ) {
-		if ( ! isset( $item1['_priority'] ) || ! isset( $item2['_priority'] ) || $item1['_priority'] == $item2['_priority'] ) {
+		if ( ! isset( $item1['_priority'] ) || ! isset( $item2['_priority'] ) || $item1['_priority'] === $item2['_priority'] ) {
 			return $item1['_original_order'] < $item2['_original_order'] ? -1 : 1;
 		}
 		return $item1['_priority'] < $item2['_priority'] ? -1 : 1;
@@ -470,37 +481,32 @@ class Common {
 	 * AJAX function to mark page for different thing.
 	 */
 	public function mark_page_as() {
-
 		check_ajax_referer( 'rank-math-ajax-nonce', 'security' );
-
 		$this->has_cap_ajax( 'onpage_general' );
 
-		$what        = isset( $_POST['what'] ) ? $_POST['what'] : false;
-		$object_id   = isset( $_POST['objectID'] ) ? $_POST['objectID'] : false;
-		$object_type = isset( $_POST['objectType'] ) ? $_POST['objectType'] : false;
+		$what        = Param::post( 'what' );
+		$object_id   = Param::post( 'objectID' );
+		$object_type = Param::post( 'objectType' );
 
-		if ( ! $what || ! $object_id || ! $object_type || ! in_array( $what, [ 'pillar_content', 'noindex', 'nofollow' ] ) ) {
+		if ( ! $what || ! $object_id || ! $object_type || ! in_array( $what, [ 'pillar_content', 'noindex', 'nofollow' ], true ) ) {
 			return 0;
 		}
 
-		$get    = "get_{$object_type}_meta";
-		$update = "update_{$object_type}_meta";
-
 		if ( 'pillar_content' === $what ) {
-			$current = $get( $object_id, 'rank_math_pillar_content', true );
+			$current = $this->get_meta( $object_type, $object_id, 'rank_math_pillar_content' );
 			$updated = 'on' === $current ? 'off' : 'on';
-			$update( $object_id, 'rank_math_pillar_content', $updated );
+			$this->update_meta( $object_type, $object_id, 'rank_math_pillar_content', $updated );
 			die( '1' );
 		}
 
 		if ( 'noindex' === $what || 'nofollow' === $what ) {
-			$robots = (array) $get( $object_id, 'rank_math_robots', true );
+			$robots = (array) $this->get_meta( $object_type, $object_id, 'rank_math_robots' );
 			$robots = array_filter( $robots );
 
 			Arr::add_delete_value( $robots, $what );
 			$robots = array_unique( $robots );
 
-			$update( $object_id, 'rank_math_robots', $robots );
+			$this->update_meta( $object_type, $object_id, 'rank_math_robots', $robots );
 			die( '1' );
 		}
 
@@ -511,8 +517,8 @@ class Common {
 	 * AJAX function to generate overlay image.
 	 */
 	public function generate_overlay_thumbnail() {
-		$thumbnail_id  = ! empty( $_REQUEST['id'] ) ? (int) $_REQUEST['id'] : 0;
-		$type          = $_REQUEST['type'] ? $_REQUEST['type'] : 'play';
+		$thumbnail_id  = Param::request( 'id', 0, FILTER_VALIDATE_INT );
+		$type          = Param::request( 'type', 'play' );
 		$overlay_image = Helper::choices_overlay_images()[ $type ]['url'];
 		$image         = wp_get_attachment_image_src( $thumbnail_id, 'full' );
 
@@ -530,7 +536,7 @@ class Common {
 	 */
 	public function create_overlay_image( $image_file, $overlay_image ) {
 		$image_format = pathinfo( $image_file, PATHINFO_EXTENSION );
-		if ( ! in_array( $image_format, array( 'jpg', 'jpeg', 'gif', 'png' ) ) ) {
+		if ( ! in_array( $image_format, [ 'jpg', 'jpeg', 'gif', 'png' ], true ) ) {
 			return;
 		}
 		if ( 'jpg' === $image_format ) {
@@ -560,6 +566,7 @@ class Common {
 	 * Get Rank Math icon.
 	 *
 	 * @param integer $width Width of icon.
+	 *
 	 * @return string
 	 */
 	private function get_icon( $width = 20 ) {

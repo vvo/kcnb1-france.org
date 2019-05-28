@@ -27,21 +27,21 @@ class Module_Manager {
 	 *
 	 * @var array
 	 */
-	public $modules = array();
+	public $modules = [];
 
 	/**
 	 * Hold module object.
 	 *
 	 * @var array
 	 */
-	private $controls = array();
+	private $controls = [];
 
 	/**
 	 * Hold active module ids.
 	 *
 	 * @var array
 	 */
-	private $active = array();
+	private $active = [];
 
 	/**
 	 * The Constructor.
@@ -170,6 +170,15 @@ class Module_Manager {
 				'class' => 'RankMath\Links\Links',
 				'icon'  => 'dashicons-admin-links',
 			),
+			'bbpress'        => array(
+				'id'            => 'bbpress',
+				'title'         => esc_html__( 'bbPress', 'rank-math' ),
+				'desc'          => esc_html__( 'Add proper Meta tags to your bbPress forum posts, categories, profiles, etc. Get more options to take control of what search engines see and how they see it.', 'rank-math' ),
+				'icon'          => 'dashicons-cart',
+				'disabled'      => ( ! function_exists( 'is_bbpress' ) ),
+				'disabled_text' => esc_html__( 'Please activate bbPress plugin to use this module.', 'rank-math' ),
+				'only'          => 'skip',
+			),
 		) );
 
 		ksort( $modules );
@@ -182,7 +191,7 @@ class Module_Manager {
 	 * Load active modules.
 	 */
 	public function load_modules() {
-		$this->active = get_option( 'rank_math_modules', array() );
+		$this->active = get_option( 'rank_math_modules', [] );
 
 		foreach ( $this->modules as $id => $module ) {
 			if ( false === $this->can_load_module( $id, $module ) ) {
@@ -323,7 +332,7 @@ class Module_Manager {
 	 *
 	 * @param array $args Module configuration.
 	 */
-	public function add_module( $args = array() ) {
+	public function add_module( $args = [] ) {
 		$this->modules[ $args['id'] ] = $args;
 	}
 }

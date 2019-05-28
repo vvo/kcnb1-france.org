@@ -49,7 +49,7 @@ use RankMath\KB;
 					<span class="dashicons dashicons-video-alt3"></span><a href="<?php KB::the( 'wp-error-fixes' ); ?>" target="_blank"><?php esc_html_e( 'Common WordPress Errors & Fixes', 'rank-math' ); ?></a>
 				</li>
 				<li>
-					<span class="dashicons dashicons-sos"></span><a href="<?php KB::the( 'mts-forum' ); ?>" target="_blank"><?php esc_html_e( 'Get 24x7 Support', 'rank-math' ); ?></a>
+					<span class="dashicons dashicons-sos"></span><a href="<?php KB::the( 'rm-support' ); ?>" target="_blank"><?php esc_html_e( 'Get 24x7 Support', 'rank-math' ); ?></a>
 				</li>
 			</ul>
 		</div>

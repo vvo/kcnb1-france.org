@@ -26,12 +26,13 @@ class Table extends List_Table {
 	 */
 	public function __construct() {
 
-		parent::__construct( array(
-			'singular' => esc_html__( 'event', 'rank-math' ),
-			'plural'   => esc_html__( 'events', 'rank-math' ),
-			'no_items' => esc_html__( 'The 404 error log is empty.', 'rank-math' ),
-		) );
-
+		parent::__construct(
+			[
+				'singular' => esc_html__( 'event', 'rank-math' ),
+				'plural'   => esc_html__( 'events', 'rank-math' ),
+				'no_items' => esc_html__( 'The 404 error log is empty.', 'rank-math' ),
+			]
+		);
 	}
 
 	/**
@@ -43,13 +44,15 @@ class Table extends List_Table {
 		$per_page = $this->get_items_per_page( 'rank_math_404_monitor_per_page' );
 		$search   = $this->get_search();
 
-		$data = DB::get_logs( array(
-			'limit'   => $per_page,
-			'order'   => $this->get_order(),
-			'orderby' => $this->get_orderby( 'accessed' ),
-			'paged'   => $this->get_pagenum(),
-			'search'  => $search ? $search : '',
-		) );
+		$data = DB::get_logs(
+			[
+				'limit'   => $per_page,
+				'order'   => $this->get_order(),
+				'orderby' => $this->get_orderby( 'accessed' ),
+				'paged'   => $this->get_pagenum(),
+				'search'  => $search ? $search : '',
+			]
+		);
 
 		$this->items = $data['logs'];
 
@@ -57,10 +60,12 @@ class Table extends List_Table {
 			$this->items[ $i ]['uri_decoded'] = urldecode( $item['uri'] );
 		}
 
-		$this->set_pagination_args( array(
-			'total_items' => $data['count'],
-			'per_page'    => $per_page,
-		) );
+		$this->set_pagination_args(
+			[
+				'total_items' => $data['count'],
+				'per_page'    => $per_page,
+			]
+		);
 	}
 
 	/**
@@ -91,22 +96,31 @@ class Table extends List_Table {
 	}
 
 	/**
+	 * Handle the URI column.
+	 *
+	 * @param object $item The current item.
+	 */
+	protected function column_uri( $item ) {
+		return $item['uri_decoded'] . $this->column_actions( $item );
+	}
+
+	/**
+	 * Handle the referer column.
+	 *
+	 * @param object $item The current item.
+	 */
+	protected function column_referer( $item ) {
+		return '<a href="' . $item['referer'] . '" target="_blank">' . $item['referer'] . '</a>';
+	}
+
+	/**
 	 * Handles the default column output.
 	 *
 	 * @param object $item        The current item.
 	 * @param string $column_name The current column name.
 	 */
 	public function column_default( $item, $column_name ) {
-
-		if ( 'uri' === $column_name ) {
-			return $item['uri_decoded'] . $this->column_actions( $item );
-		}
-
-		if ( 'referer' === $column_name ) {
-			return '<a href="' . $item['referer'] . '" target="_blank">' . $item['referer'] . '</a>';
-		}
-
-		if ( in_array( $column_name, array( 'times_accessed', 'accessed', 'user_agent' ) ) ) {
+		if ( in_array( $column_name, [ 'times_accessed', 'accessed', 'user_agent' ], true ) ) {
 			return $item[ $column_name ];
 		}
 
@@ -119,22 +133,32 @@ class Table extends List_Table {
 	 * @param object $item The current item.
 	 */
 	public function column_actions( $item ) {
-		$actions = array();
+		$actions = [];
 
 		if ( Helper::get_module( 'redirections' ) ) {
 			$redirection = Cache::get_by_url( $item['uri_decoded'] );
 
 			if ( $redirection ) {
-				$url = esc_url( Helper::get_admin_url( 'redirections', array(
-					'redirection' => $redirection->redirection_id,
-					'security'    => wp_create_nonce( 'redirection_list_action' ),
-				) ) );
+				$url = esc_url(
+					Helper::get_admin_url(
+						'redirections',
+						[
+							'redirection' => $redirection->redirection_id,
+							'security'    => wp_create_nonce( 'redirection_list_action' ),
+						]
+					)
+				);
 
 				$actions['view_redirection'] = sprintf( '<a href="%s" target="_blank">' . esc_html__( 'View Redirection', 'rank-math' ) . '</a>', $url );
 			} else {
-				$url = esc_url( Helper::get_admin_url( 'redirections', array(
-					'url' => $item['uri_decoded'],
-				) ) );
+				$url = esc_url(
+					Helper::get_admin_url(
+						'redirections',
+						[
+							'url' => $item['uri_decoded'],
+						]
+					)
+				);
 
 				$actions['redirect'] = sprintf(
 					'<a href="%1$s" class="rank-math-404-redirect-btn">%2$s</a>',
@@ -145,11 +169,14 @@ class Table extends List_Table {
 
 		$actions['delete'] = sprintf(
 			'<a href="%s" class="rank-math-404-delete">' . esc_html__( 'Delete', 'rank-math' ) . '</a>',
-			Helper::get_admin_url( '404-monitor', array(
-				'action'   => 'delete',
-				'log'      => $item['id'],
-				'security' => wp_create_nonce( '404_delete_log' ),
-			) )
+			Helper::get_admin_url(
+				'404-monitor',
+				[
+					'action'   => 'delete',
+					'log'      => $item['id'],
+					'security' => wp_create_nonce( '404_delete_log' ),
+				]
+			)
 		);
 
 		return $this->row_actions( $actions );
@@ -161,16 +188,16 @@ class Table extends List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$columns = array(
+		$columns = [
 			'cb'             => '<input type="checkbox" />',
 			'uri'            => esc_html__( 'URI', 'rank-math' ),
 			'referer'        => esc_html__( 'Referer', 'rank-math' ),
 			'user_agent'     => esc_html__( 'User-Agent', 'rank-math' ),
 			'times_accessed' => esc_html__( 'Hits', 'rank-math' ),
 			'accessed'       => esc_html__( 'Access Time', 'rank-math' ),
-		);
+		];
 
-		if ( 'simple' == Helper::get_settings( 'general.404_monitor_mode' ) ) {
+		if ( 'simple' === Helper::get_settings( 'general.404_monitor_mode' ) ) {
 			unset( $columns['referer'], $columns['user_agent'] );
 			return $columns;
 		}
@@ -185,11 +212,11 @@ class Table extends List_Table {
 	 * @return array
 	 */
 	public function get_sortable_columns() {
-		return array(
-			'uri'            => array( 'uri', false ),
-			'times_accessed' => array( 'times_accessed', false ),
-			'accessed'       => array( 'accessed', false ),
-		);
+		return [
+			'uri'            => [ 'uri', false ],
+			'times_accessed' => [ 'times_accessed', false ],
+			'accessed'       => [ 'accessed', false ],
+		];
 	}
 
 	/**
@@ -199,10 +226,10 @@ class Table extends List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions = array(
+		$actions = [
 			'redirect' => esc_html__( 'Redirect', 'rank-math' ),
 			'delete'   => esc_html__( 'Delete', 'rank-math' ),
-		);
+		];
 
 		if ( ! Helper::get_module( 'redirections' ) ) {
 			unset( $actions['redirect'] );

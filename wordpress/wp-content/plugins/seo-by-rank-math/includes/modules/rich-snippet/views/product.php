@@ -23,11 +23,17 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'   => 'rank_math_snippet_product_currency',
-	'type' => 'text',
-	'name' => esc_html__( 'Product Currency', 'rank-math' ),
-	'desc' => esc_html__( 'ISO 4217 Currency Code', 'rank-math' ),
-	'dep'  => $product,
+	'id'         => 'rank_math_snippet_product_currency',
+	'type'       => 'text',
+	'name'       => esc_html__( 'Product Currency', 'rank-math' ),
+	'desc'       => esc_html__( 'ISO 4217 Currency Code', 'rank-math' ),
+	'classes'    => 'rank-math-validate-field',
+	'attributes' => [
+		'data-rule-regex'       => 'true',
+		'data-validate-pattern' => '^[A-Z]{3}$',
+		'data-msg-regex'        => esc_html__( 'Please use the correct format. Example: EUR', 'rank-math' ),
+	],
+	'dep'        => $product,
 ]);
 
 $cmb->add_field([

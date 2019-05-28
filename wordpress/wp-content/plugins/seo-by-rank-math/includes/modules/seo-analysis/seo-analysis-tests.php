@@ -13,17 +13,16 @@ use RankMath\Helper;
 
 defined( 'ABSPATH' ) || exit;
 
-add_filter( 'rank_math/seo_analysis/tests', 'rank_math_register_seo_analysis_test' );
+add_filter( 'rank_math/seo_analysis/tests', 'rank_math_register_seo_analysis_basic_tests' );
 /**
- * Register local seo analysis tests.
+ * Register local seo analysis basic tests.
  *
  * @param array $tests Array of tests.
+ *
  * @return array
  */
-function rank_math_register_seo_analysis_test( $tests ) {
-
-	$tests['site_description'] = array(
-		'category'    => 'basic',
+function rank_math_register_seo_analysis_basic_tests( $tests ) {
+	$new_tests['site_description'] = [
 		'title'       => esc_html__( 'Site Tagline', 'rank-math' ),
 		/* translators: link to general setting screen */
 		'description' => sprintf( esc_html__( 'Your theme may display the Site Tagline, and it can also be used in SEO titles &amp; descriptions. Set it to something unique. You can change it by navigating to <a href="%s">Settings &gt; General</a>.', 'rank-math' ), admin_url( 'options-general.php' ) ),
@@ -32,11 +31,9 @@ function rank_math_register_seo_analysis_test( $tests ) {
 			/* translators: link to general setting screen */
 			'<p>' . sprintf( wp_kses_post( __( 'Changing your tagline is very easy.  Just head on over to <a target="_blank" href="%1$s">Settings - General</a> in WordPress\'s admin menu (on the left), or click on the link in this sentence.', 'rank-math' ) ), esc_url( admin_url( 'options-general.php' ) ) ) . '</p>' .
 			'<p>' . esc_html__( 'The tagline is the second option.  Choose a tagline that summarizes your site in a few words.  The tagline is also a good place to use your main keyword.', 'rank-math' ) . '</p>',
-		'callback'    => 'rank_math_analyze_site_description',
-	);
+	];
 
-	$tests['blog_public'] = array(
-		'category'    => 'basic',
+	$new_tests['blog_public'] = [
 		'title'       => esc_html__( 'Blog Public', 'rank-math' ),
 		/* translators: link to general setting screen */
 		'description' => esc_html__( 'Your site may not be visible to search engine.', 'rank-math' ),
@@ -48,11 +45,9 @@ function rank_math_register_seo_analysis_test( $tests ) {
 				'</a>'
 			) .
 		'</p>',
-		'callback'    => 'rank_math_analyze_blog_public',
-	);
+	];
 
-	$tests['permalink_structure'] = array(
-		'category'    => 'basic',
+	$new_tests['permalink_structure'] = [
 		'title'       => esc_html__( 'Permalink Structure', 'rank-math' ),
 		/* translators: link to permalink setting screen */
 		'description' => sprintf( __( 'For the best SEO results, use a custom permalink structure, preferably one that includes the post title (<code>%%postname%%</code>). You can change it by navigating to <a href="%s">Settings &gt; Permalinks</a>', 'rank-math' ), admin_url( 'options-permalink.php' ) ),
@@ -62,30 +57,43 @@ function rank_math_register_seo_analysis_test( $tests ) {
 			'<p>' . sprintf( wp_kses_post( __( 'Fortunately, it\'s very easy to fix.  Just hop on over to <a target="_blank" href="%1$s">Settings - Permalinks</a>.  Then chose the "Post Name" option.', 'rank-math' ) ), esc_url( admin_url( 'options-permalink.php' ) ) ) . '</p>' .
 			'<p>' . esc_html__( 'This option will replace the "?p=99" part of the URL with the post\'s title, like this: http://www.yoursite.com/my-amazing-post-title/', 'rank-math' ) . '</p>' .
 			'<p>' . esc_html__( 'This looks nice for readers - and it gets your keywords into the URL (keywords in the URL is a ranking factor).', 'rank-math' ) . '</p>',
-		'callback'    => 'rank_math_analyze_permalink_structure',
-	);
+	];
 
-	$tests['focus_keywords'] = array(
-		'category'    => 'basic',
+	$new_tests['focus_keywords'] = [
 		'title'       => esc_html__( 'Focus Keywords', 'rank-math' ),
 		'description' => esc_html__( 'Setting focus keywords for your posts allows Rank Math to analyse the content.', 'rank-math' ),
 		'how_to_fix'  => '<p>' . esc_html__( 'Rank Math allows you to set a focus keyword for every post and page you write - the option is in the "Meta Box", which appears under the text editor in the screen where you write and edit content.', 'rank-math' ) . '</p>' .
 			'<p>' . esc_html__( 'Rank Math uses these focus keywords to analyze your on-page content.  It can tell if you\'ve done a good job of optimizing your text to rank for these keywords.', 'rank-math' ) . '</p>' .
 			'<p>' . esc_html__( 'Of course, if you don\'t give Rank Math a focus keyword to work with, it can\'t give you any useful feedback.', 'rank-math' ) . '</p>' .
 			'<p>' . esc_html__( 'Fixing this issue is easy - just edit the post, and set a Focus Keyword.  Then follow Rank Math\'s analysis to improve your rankings.', 'rank-math' ) . '</p>',
-		'callback'    => 'rank_math_analyze_focus_keywords',
-	);
+	];
 
-	$tests['post_titles'] = array(
-		'category'    => 'basic',
+	$new_tests['post_titles'] = [
 		'title'       => esc_html__( 'Post Titles Missing Focus Keywords', 'rank-math' ),
 		'description' => esc_html__( 'Make sure the focus keywords you set for the posts appear in their titles.', 'rank-math' ),
 		'how_to_fix'  => '<p>' . esc_html__( 'HTML Page Titles play a large role in Google\'s ranking algorithm.  When you add a Focus Keyword to a post or page, Rank Math will check to see that you used the keyword in the title.  If it finds any posts or pages that are missing the keyword in the title, it will tell you here.', 'rank-math' ) . '</p>' .
 			'<p>' . esc_html__( 'Fixing the issue is simple - just edit the post/page and add the focus keyword(s) to the title.', 'rank-math' ) . '</p>',
-		'callback'    => 'rank_math_analyze_post_titles',
-	);
+	];
 
-	$tests['search_console'] = array(
+	foreach ( $new_tests as $key => $test ) {
+		$test['category'] = 'basic';
+		$test['callback'] = 'rank_math_analyze_' . $key;
+		$tests[ $key ]    = $test;
+	}
+
+	return $tests;
+}
+
+add_filter( 'rank_math/seo_analysis/tests', 'rank_math_register_seo_analysis_advance_tests' );
+/**
+ * Register local seo analysis basic tests.
+ *
+ * @param array $tests Array of tests.
+ *
+ * @return array
+ */
+function rank_math_register_seo_analysis_advance_tests( $tests ) {
+	$tests['search_console'] = [
 		'category'    => 'advanced',
 		'title'       => esc_html__( 'Search Console', 'rank-math' ),
 		'description' => sprintf(
@@ -100,15 +108,15 @@ function rank_math_register_seo_analysis_test( $tests ) {
 			/* translators: Link to Search Console KB article */
 			'<p>' . sprintf( wp_kses_post( __( 'Read <a href="%1$s" target="_blank">this article</a> for detailed instructions on setting up your Google Webmaster account and getting Rank Math to work with the Google Search Console.', 'rank-math' ) ), KB::get( 'search-console' ) ) . '</p>',
 		'callback'    => 'rank_math_analyze_search_console',
-	);
+	];
 
-	$tests['sitemaps'] = array(
+	$tests['sitemaps'] = [
 		'category'    => 'advanced',
 		'title'       => esc_html__( 'Sitemaps', 'rank-math' ),
 		'description' => esc_html__( 'XML sitemaps are a special type of text file that tells search engines about the structure of your site. They\'re a list of all the resources (pages and files) you would like the search engine to index. You can assign different priorities, so certain pages will be crawled first. Before XML sitemaps, search engines were limited to indexing the content they could find by following links. That\'s still an important feature for search engine spiders, but XML sitemaps have made it easier for content creators and search engines to collaborate.', 'rank-math' ),
 		'how_to_fix'  => esc_html__( 'If you don\'t have an XML sitemap, the best option is to install a plugin that creates sitemaps for you. That way you\'ll know the sitemap will always be up-to-date. Plugins can also automatically ping the search engines when the XML file is updated. The Rank Math WordPress plugin gives you complete control over your site\'s XML sitemaps. You can control the settings for each page as you write or edit it, and Rank Math will ping Google as soon as you submit your edits. This results in fast crawls and indexing.', 'rank-math' ),
 		'callback'    => 'rank_math_analyze_sitemap',
-	);
+	];
 
 	return $tests;
 }
@@ -121,8 +129,8 @@ function rank_math_register_seo_analysis_test( $tests ) {
 function rank_math_analyze_site_description() {
 	$sitedesc = get_bloginfo( 'description' );
 
-	if ( '' == $sitedesc ) {
-		return array(
+	if ( '' === $sitedesc ) {
+		return [
 			'status'  => 'warning',
 			'message' => sprintf(
 				/* translators: 1: link open tag; 2: link close tag. */
@@ -130,20 +138,20 @@ function rank_math_analyze_site_description() {
 				'<a href="' . esc_attr( $customize_url ) . '">',
 				'</a>'
 			),
-		);
+		];
 	}
 
 	if ( rank_math_has_default_tagline() ) { // phpcs:ignore
-		return array(
+		return [
 			'status'  => 'fail',
 			'message' => wp_kses_post( __( 'Your Site Tagline is set to the default value <em>Just another WordPress site</em>.', 'rank-math' ) ),
-		);
+		];
 	}
 
-	return array(
+	return [
 		'status'  => 'ok',
 		'message' => esc_html__( 'Your Site Tagline is set to a custom value.', 'rank-math' ),
-	);
+	];
 }
 
 /**
@@ -169,25 +177,25 @@ function rank_math_has_default_tagline() {
 function rank_math_analyze_permalink_structure() {
 	$permalink_structure = get_option( 'permalink_structure' );
 
-	if ( '' == $permalink_structure ) {
-		return array(
+	if ( '' === $permalink_structure ) {
+		return [
 			'status'  => 'fail',
 			'message' => wp_kses_post( __( 'Permalinks are set to the default value. <em>Pretty permalinks</em> are disabled. ', 'rank-math' ) ),
-		);
+		];
 	}
 
 	if ( ! rank_math_has_postname_in_permalink() ) {
-		return array(
+		return [
 			'status'  => 'fail',
 			'message' => wp_kses_post( __( 'Permalinks are set to a custom structure but the post titles do not appear in the permalinks.', 'rank-math' ) ),
-		);
+		];
 	}
 
-	return array(
+	return [
 		'status'  => 'ok',
 		/* translators: permalink structure */
 		'message' => sprintf( wp_kses_post( __( 'Post permalink structure is set to %s.', 'rank-math' ) ), '<code>' . $permalink_structure . '</code>' ),
-	);
+	];
 }
 
 /**
@@ -211,10 +219,10 @@ function rank_math_analyze_search_console() {
 	$profile       = Helper::get_settings( 'general.console_profile' );
 	$status        = $is_authorized && $profile;
 
-	return array(
+	return [
 		'status'  => $status ? 'ok' : 'fail',
 		'message' => $status ? esc_html__( 'Google Search Console has been linked.', 'rank-math' ) : esc_html__( 'You have not linked Google Search Console yet.', 'rank-math' ),
-	);
+	];
 }
 
 /**
@@ -225,28 +233,30 @@ function rank_math_analyze_search_console() {
 function rank_math_analyze_focus_keywords() {
 	global $wpdb;
 
-	$in_search_post_types = get_post_types( array( 'exclude_from_search' => false ) );
+	$in_search_post_types = get_post_types( [ 'exclude_from_search' => false ] );
 	$in_search_post_types = empty( $in_search_post_types ) ? '' : " AND {$wpdb->posts}.post_type IN ('" . join( "', '", array_map( 'esc_sql', $in_search_post_types ) ) . "')";
 
-	$meta_query = new WP_Meta_Query( array(
-		'relation' => 'AND',
-		array(
-			'key'     => 'rank_math_focus_keyword',
-			'compare' => 'NOT EXISTS',
-		),
-		array(
-			'relation' => 'OR',
-			array(
-				'key'     => 'rank_math_robots',
-				'value'   => 'noindex',
-				'compare' => 'NOT LIKE',
-			),
-			array(
-				'key'     => 'rank_math_robots',
+	$meta_query = new WP_Meta_Query(
+		[
+			'relation' => 'AND',
+			[
+				'key'     => 'rank_math_focus_keyword',
 				'compare' => 'NOT EXISTS',
-			),
-		),
-	));
+			],
+			[
+				'relation' => 'OR',
+				[
+					'key'     => 'rank_math_robots',
+					'value'   => 'noindex',
+					'compare' => 'NOT LIKE',
+				],
+				[
+					'key'     => 'rank_math_robots',
+					'compare' => 'NOT EXISTS',
+				],
+			],
+		]
+	);
 
 	$mq_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
 	$query  = "SELECT {$wpdb->posts}.ID, {$wpdb->posts}.post_type FROM $wpdb->posts {$mq_sql['join']} WHERE 1 = 1 {$mq_sql['where']}{$in_search_post_types} AND ({$wpdb->posts}.post_status = 'publish') GROUP BY {$wpdb->posts}.ID";
@@ -254,10 +264,10 @@ function rank_math_analyze_focus_keywords() {
 
 	// Early Bail!
 	if ( empty( $data ) ) {
-		return array(
+		return [
 			'status'  => 'ok',
 			'message' => esc_html__( 'All published posts have focus keywords set.', 'rank-math' ),
-		);
+		];
 	}
 
 	$rows = rank_math_analyze_group_result( $data );
@@ -271,11 +281,11 @@ function rank_math_analyze_focus_keywords() {
 		);
 	}
 
-	return array(
+	return [
 		'status'  => 'fail',
 		/* translators: post type links */
 		'message' => sprintf( esc_html__( 'There are %s with no focus keyword set.', 'rank-math' ), join( ', ', $links ) ),
-	);
+	];
 }
 
 /**
@@ -286,46 +296,50 @@ function rank_math_analyze_focus_keywords() {
 function rank_math_analyze_post_titles() {
 	global $wpdb;
 
-	$in_search_post_types = get_post_types( array( 'exclude_from_search' => false ) );
-	$in_search_post_types = empty( $in_search_post_types ) ? '' : " AND {$wpdb->posts}.post_type IN ('" . join( "', '", array_map( 'esc_sql', $in_search_post_types ) ) . "')";
-
 	$message = '';
 	$result  = 'fail';
-	$info    = array();
-
-	$meta_query = new WP_Meta_Query( array(
-		'relation' => 'AND',
-		array(
-			'key'     => 'rank_math_focus_keyword',
-			'compare' => 'EXISTS',
-		),
-		array(
-			'relation' => 'OR',
-			array(
-				'key'     => 'rank_math_robots',
-				'value'   => 'noindex',
-				'compare' => 'NOT LIKE',
-			),
-			array(
-				'key'     => 'rank_math_robots',
-				'compare' => 'NOT EXISTS',
-			),
-		),
-	));
-
-	$mq_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-	$query  = "SELECT {$wpdb->posts}.ID, {$wpdb->posts}.post_type FROM $wpdb->posts {$mq_sql['join']} WHERE 1=1 {$mq_sql['where']}{$in_search_post_types} AND ({$wpdb->posts}.post_status = 'publish') AND {$wpdb->posts}.post_title NOT REGEXP REPLACE({$wpdb->postmeta}.meta_value, ',', '|') GROUP BY {$wpdb->posts}.ID";
-	$data   = $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore
+	$info    = [];
+	$data    = rank_math_get_posts_with_titles();
 
 	// Early Bail!
 	if ( empty( $data ) ) {
-		return array(
+		return [
 			'status'  => 'ok',
 			'message' => esc_html__( 'Focus keywords appear in the titles of published posts where it is set.', 'rank-math' ),
-		);
+		];
 	}
 
-	$rows = rank_math_analyze_group_result( $data );
+	$rows  = rank_math_analyze_group_result( $data );
+	$links = rank_math_get_post_type_links( $rows );
+
+	$post_ids     = wp_list_pluck( $data, 'ID' );
+	$post_ids_max = array_slice( $post_ids, 0, 20 );
+	foreach ( $post_ids_max as $postid ) {
+		$info[] = '<a href="' . get_permalink( $postid ) . '" target="_blank">' . get_the_title( $postid ) . '</a>';
+	}
+	$count = count( $post_ids ) - 20;
+	if ( $count > 0 ) {
+		/* translators: post id count */
+		$info[] = sprintf( esc_html__( '+%d More...', 'rank-math' ), $count );
+	}
+
+	return [
+		'status'  => 'fail',
+		/* translators: post type links */
+		'message' => sprintf( esc_html__( 'There are %s published posts where the focus keyword does not appear in the post title.', 'rank-math' ), join( ', ', $links ) ),
+		'info'    => $info,
+	];
+}
+
+/**
+ * Get post_type links.
+ *
+ * @param array $rows Rows.
+ *
+ * @return array
+ */
+function rank_math_get_post_type_links( $rows ) {
+	$links = [];
 	foreach ( $rows as $post_type => $row ) {
 		$post_type = get_post_type_object( $post_type );
 		$count     = count( $row );
@@ -336,30 +350,45 @@ function rank_math_analyze_post_titles() {
 		);
 	}
 
-	$result  = 'ok';
-	$message = esc_html__( 'Focus keywords appear in the titles of published posts where it is set.', 'rank-math' );
-	if ( $wpdb->num_rows ) {
-		$result = 'fail';
-		/* translators: post type links */
-		$message = sprintf( esc_html__( 'There are %s published posts where the focus keyword does not appear in the post title.', 'rank-math' ), join( ', ', $links ) );
+	return $links;
+}
 
-		$post_ids     = wp_list_pluck( $data, 'ID' );
-		$post_ids_max = array_slice( $post_ids, 0, 20 );
-		foreach ( $post_ids_max as $postid ) {
-			$info[] = '<a href="' . get_permalink( $postid ) . '" target="_blank">' . get_the_title( $postid ) . '</a>';
-		}
-		$count = count( $post_ids ) - 20;
-		if ( $count > 0 ) {
-			/* translators: post id count */
-			$info[] = sprintf( esc_html__( '+%d More...', 'rank-math' ), $count );
-		}
-	}
+/**
+ * Get posts.
+ *
+ * @return mixed
+ */
+function rank_math_get_posts_with_titles() {
+	global $wpdb;
 
-	return array(
-		'status'  => $result,
-		'message' => $message,
-		'info'    => $info,
+	$in_post_types = get_post_types( [ 'exclude_from_search' => false ] );
+	$in_post_types = empty( $in_post_types ) ? '' : " AND {$wpdb->posts}.post_type IN ('" . join( "', '", array_map( 'esc_sql', $in_post_types ) ) . "')";
+	$meta_query    = new WP_Meta_Query(
+		[
+			'relation' => 'AND',
+			[
+				'key'     => 'rank_math_focus_keyword',
+				'compare' => 'EXISTS',
+			],
+			[
+				'relation' => 'OR',
+				[
+					'key'     => 'rank_math_robots',
+					'value'   => 'noindex',
+					'compare' => 'NOT LIKE',
+				],
+				[
+					'key'     => 'rank_math_robots',
+					'compare' => 'NOT EXISTS',
+				],
+			],
+		]
 	);
+
+	$mq_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
+	$query  = "SELECT {$wpdb->posts}.ID, {$wpdb->posts}.post_type FROM $wpdb->posts {$mq_sql['join']} WHERE 1=1 {$mq_sql['where']}{$in_post_types} AND ({$wpdb->posts}.post_status = 'publish') AND {$wpdb->posts}.post_title NOT REGEXP REPLACE({$wpdb->postmeta}.meta_value, ',', '|') GROUP BY {$wpdb->posts}.ID";
+
+	return $wpdb->get_results( $query, ARRAY_A ); // phpcs:ignore
 }
 
 /**
@@ -371,11 +400,8 @@ function rank_math_analyze_post_titles() {
  */
 function rank_math_analyze_group_result( $data ) {
 	foreach ( $data as $val ) {
-		if ( array_key_exists( 'post_type', $val ) ) {
-			$rows[ $val['post_type'] ][] = $val;
-		} else {
-			$rows[''][] = $val;
-		}
+		$key            = array_key_exists( 'post_type', $val ) ? $val['post_type'] : '';
+		$rows[ $key ][] = $val;
 	}
 	return $rows;
 }
@@ -389,10 +415,10 @@ function rank_math_analyze_group_result( $data ) {
 function rank_math_analyze_sitemap( $analyzer ) {
 
 	$found = Helper::is_module_active( 'sitemap' );
-	return array(
+	return [
 		'status'  => $found ? 'ok' : 'fail',
 		'message' => $found ? esc_html__( 'Your site has one or more sitemaps.', 'rank-math' ) : esc_html__( 'No sitemaps found.', 'rank-math' ),
-	);
+	];
 }
 
 
@@ -409,10 +435,10 @@ function rank_math_analyze_blog_public() {
 	);
 
 	$public = rank_math_is_blog_public();
-	return array(
+	return [
 		'status'  => $public ? 'ok' : 'fail',
 		'message' => $public ? esc_html__( 'Your site is accessible by search engine.', 'rank-math' ) : $info_message,
-	);
+	];
 }
 
 /**

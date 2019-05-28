@@ -10,6 +10,7 @@
 
 namespace RankMath\Sitemap;
 
+use WP_Query;
 use DOMDocument;
 use RankMath\Helper;
 use RankMath\Traits\Hooker;
@@ -52,7 +53,7 @@ class Image_Parser {
 	 *
 	 * @var array
 	 */
-	protected $attachments = array();
+	protected $attachments = [];
 
 	/**
 	 * Holds blog charset value for use in DOM parsing.
@@ -82,11 +83,12 @@ class Image_Parser {
 	/**
 	 * Get set of image data sets for the given post.
 	 *
-	 * @param  object $post Post object to get images for.
+	 * @param object $post Post object to get images for.
+	 *
 	 * @return array
 	 */
 	public function get_images( $post ) {
-		$images = array();
+		$images = [];
 		if ( ! is_object( $post ) ) {
 			return $images;
 		}
@@ -133,7 +135,7 @@ class Image_Parser {
 			$customs = array_filter( array_map( 'trim', explode( "\n", $customs ) ) );
 			foreach ( $customs as $key ) {
 				$src = get_post_meta( $post->ID, $key, true );
-				if ( ! empty( $src ) && is_string( $src ) && preg_match( '/\.(jpg|jpeg|png|gif)$/i', $src ) ) {
+				if ( Str::is_non_empty( $src ) && preg_match( '/\.(jpg|jpeg|png|gif)$/i', $src ) ) {
 					$images[] = $this->get_image_item( $post, $src, $post->post_title );
 				}
 			}
@@ -158,17 +160,18 @@ class Image_Parser {
 	 * Get term images
 	 *
 	 * @param object $term Term to get images from description for.
+	 *
 	 * @return array
 	 */
 	public function get_term_images( $term ) {
 		$images = $this->parse_html_images( $term->description );
 
 		foreach ( $this->parse_galleries( $term->description ) as $attachment ) {
-			$images[] = array(
+			$images[] = [
 				'src'   => $this->get_absolute_url( $this->image_url( $attachment->ID ) ),
 				'title' => $attachment->post_title,
 				'alt'   => Attachment::get_alt_tag( $attachment->ID ),
-			);
+			];
 		}
 
 		return $images;
@@ -177,16 +180,13 @@ class Image_Parser {
 	/**
 	 * Parse `<img />` tags in content.
 	 *
-	 * @param  string $content Content string to parse.
+	 * @param string $content Content string to parse.
+	 *
 	 * @return array
 	 */
 	private function parse_html_images( $content ) {
-		$images = array();
-		if ( ! class_exists( 'DOMDocument' ) ) {
-			return $images;
-		}
-
-		if ( empty( $content ) ) {
+		$images = [];
+		if ( ! class_exists( 'DOMDocument' ) || empty( $content ) ) {
 			return $images;
 		}
 
@@ -225,11 +225,11 @@ class Image_Parser {
 				continue;
 			}
 
-			$images[] = array(
+			$images[] = [
 				'src'   => $src,
 				'title' => $img->getAttribute( 'title' ),
 				'alt'   => $img->getAttribute( 'alt' ),
-			);
+			];
 		}
 
 		return $images;
@@ -238,12 +238,13 @@ class Image_Parser {
 	/**
 	 * Parse gallery shortcodes in a given content.
 	 *
-	 * @param  string $content Content string.
-	 * @param  int    $post_id Optional ID of post being parsed.
+	 * @param string $content Content string.
+	 * @param int    $post_id Optional ID of post being parsed.
+	 *
 	 * @return array Set of attachment objects.
 	 */
-	protected function parse_galleries( $content, $post_id = 0 ) {
-		$attachments = array();
+	private function parse_galleries( $content, $post_id = 0 ) {
+		$attachments = [];
 		$galleries   = $this->get_content_galleries( $content );
 
 		foreach ( $galleries as $gallery ) {
@@ -271,16 +272,16 @@ class Image_Parser {
 	 * Retrieves galleries from the passed content.
 	 * Forked from core to skip executing shortcodes for performance.
 	 *
-	 * @param  string $content Content to parse for shortcodes.
+	 * @param string $content Content to parse for shortcodes.
+	 *
 	 * @return array A list of arrays, each containing gallery data.
 	 */
-	protected function get_content_galleries( $content ) {
-
+	private function get_content_galleries( $content ) {
 		if ( ! has_shortcode( $content, 'gallery' ) ) {
-			return array();
+			return [];
 		}
 
-		$galleries = array();
+		$galleries = [];
 		if ( ! preg_match_all( '/' . get_shortcode_regex() . '/s', $content, $matches, PREG_SET_ORDER ) ) {
 			return $galleries;
 		}
@@ -291,7 +292,7 @@ class Image_Parser {
 				$attributes = shortcode_parse_atts( $shortcode[3] );
 
 				if ( '' === $attributes ) { // Valid shortcode without any attributes. R.
-					$attributes = array();
+					$attributes = [];
 				}
 
 				$galleries[] = $attributes;
@@ -304,14 +305,15 @@ class Image_Parser {
 	/**
 	 * Get image item array with filters applied.
 	 *
-	 * @param  WP_Post $post  Post object for the context.
-	 * @param  string  $src   Image URL.
-	 * @param  string  $title Optional image title.
-	 * @param  string  $alt   Optional image alt text.
+	 * @param WP_Post $post  Post object for the context.
+	 * @param string  $src   Image URL.
+	 * @param string  $title Optional image title.
+	 * @param string  $alt   Optional image alt text.
+	 *
 	 * @return array
 	 */
-	protected function get_image_item( $post, $src, $title = '', $alt = '' ) {
-		$image = array();
+	private function get_image_item( $post, $src, $title = '', $alt = '' ) {
+		$image = [];
 
 		/**
 		 * Filter image URL to be included in XML sitemap for the post.
@@ -345,22 +347,17 @@ class Image_Parser {
 	/**
 	 * Get attached image URL with filters applied. Adapted from core for speed.
 	 *
-	 * @param  int $post_id ID of the post.
+	 * @param int $post_id ID of the post.
+	 *
 	 * @return string
 	 */
 	private function image_url( $post_id ) {
-		static $uploads;
-
-		if ( empty( $uploads ) ) {
-			$uploads = wp_upload_dir();
-		}
-
+		$uploads = $this->get_upload_dir();
 		if ( false !== $uploads['error'] ) {
 			return '';
 		}
 
 		$file = get_post_meta( $post_id, '_wp_attached_file', true );
-
 		if ( empty( $file ) ) {
 			return '';
 		}
@@ -379,18 +376,33 @@ class Image_Parser {
 	}
 
 	/**
+	 * Get WordPress upload directory.
+	 *
+	 * @return bool|array
+	 */
+	private function get_upload_dir() {
+		static $rank_math_wp_uploads;
+
+		if ( empty( $rank_math_wp_uploads ) ) {
+			$rank_math_wp_uploads = wp_upload_dir();
+		}
+
+		return $rank_math_wp_uploads;
+	}
+
+	/**
 	 * Make absolute URL for domain or protocol-relative one.
 	 *
-	 * @param  string $src URL to process.
+	 * @param string $src URL to process.
+	 *
 	 * @return string
 	 */
-	protected function get_absolute_url( $src ) {
-
-		if ( empty( $src ) || ! is_string( $src ) ) {
+	private function get_absolute_url( $src ) {
+		if ( Str::is_empty( $src ) ) {
 			return $src;
 		}
 
-		if ( Url::is_relative( $src ) === true ) {
+		if ( true === Url::is_relative( $src ) ) {
 
 			if ( '/' !== $src[0] ) {
 				return $src;
@@ -400,7 +412,7 @@ class Image_Parser {
 			return $this->home_url . $src;
 		}
 
-		if ( strpos( $src, 'http' ) !== 0 ) {
+		if ( ! Str::starts_with( 'http', $src ) ) {
 			// Protocol relative url, we add the scheme as the standard requires a protocol.
 			return $this->scheme . ':' . $src;
 		}
@@ -411,32 +423,34 @@ class Image_Parser {
 	/**
 	 * Returns the attachments for a gallery.
 	 *
-	 * @param  int   $id      The post id.
-	 * @param  array $gallery The gallery config.
+	 * @param int   $id      The post id.
+	 * @param array $gallery The gallery config.
+	 *
 	 * @return array The selected attachments.
 	 */
-	protected function get_gallery_attachments( $id, $gallery ) {
+	private function get_gallery_attachments( $id, $gallery ) {
 
 		// When there are attachments to include.
 		if ( ! empty( $gallery['include'] ) ) {
 			return $this->get_gallery_attachments_for_included( $gallery['include'] );
 		}
 
-		return empty( $id ) ? array() : $this->get_gallery_attachments_for_parent( $id, $gallery );
+		return empty( $id ) ? [] : $this->get_gallery_attachments_for_parent( $id, $gallery );
 	}
 
 	/**
 	 * Returns the attachments for the given id.
 	 *
-	 * @param  int   $id      The post id.
-	 * @param  array $gallery The gallery config.
+	 * @param int   $id      The post id.
+	 * @param array $gallery The gallery config.
+	 *
 	 * @return array The selected attachments.
 	 */
-	protected function get_gallery_attachments_for_parent( $id, $gallery ) {
-		$query = array(
+	private function get_gallery_attachments_for_parent( $id, $gallery ) {
+		$query = [
 			'posts_per_page' => -1,
 			'post_parent'    => $id,
-		);
+		];
 
 		// When there are posts that should be excluded from result set.
 		if ( ! empty( $gallery['exclude'] ) ) {
@@ -449,17 +463,20 @@ class Image_Parser {
 	/**
 	 * Returns an array with attachments for the post ids that will be included.
 	 *
-	 * @param  array $include Array with ids to include.
+	 * @param array $include Array with ids to include.
+	 *
 	 * @return array The found attachments.
 	 */
-	protected function get_gallery_attachments_for_included( $include ) {
+	private function get_gallery_attachments_for_included( $include ) {
 		$ids_to_include = wp_parse_id_list( $include );
-		$attachments    = $this->get_attachments( array(
-			'posts_per_page' => count( $ids_to_include ),
-			'post__in'       => $ids_to_include,
-		));
+		$attachments    = $this->get_attachments(
+			[
+				'posts_per_page' => count( $ids_to_include ),
+				'post__in'       => $ids_to_include,
+			]
+		);
 
-		$gallery_attachments = array();
+		$gallery_attachments = [];
 		foreach ( $attachments as $val ) {
 			$gallery_attachments[ $val->ID ] = $val;
 		}
@@ -470,11 +487,12 @@ class Image_Parser {
 	/**
 	 * Returns the attachments.
 	 *
-	 * @param  array $args Array with query args.
+	 * @param array $args Array with query args.
+	 *
 	 * @return array The found attachments.
 	 */
 	protected function get_attachments( $args ) {
-		$default_args = array(
+		$default_args = [
 			'post_status'         => 'inherit',
 			'post_type'           => 'attachment',
 			'post_mime_type'      => 'image',
@@ -487,11 +505,11 @@ class Image_Parser {
 			'suppress_filters'    => true,
 			'ignore_sticky_posts' => true,
 			'no_found_rows'       => true,
-		);
+		];
 
 		$args = wp_parse_args( $args, $default_args );
 
-		$get_attachments = new \WP_Query();
+		$get_attachments = new WP_Query;
 		return $get_attachments->query( $args );
 	}
 }

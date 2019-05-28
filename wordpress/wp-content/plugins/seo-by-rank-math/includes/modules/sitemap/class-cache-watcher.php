@@ -27,7 +27,7 @@ class Cache_Watcher {
 	 *
 	 * @var array
 	 */
-	protected static $cache_clear = array();
+	protected static $cache_clear = [];
 
 	/**
 	 * Holds the flag to clear all cache.
@@ -41,7 +41,7 @@ class Cache_Watcher {
 	 *
 	 * @var array
 	 */
-	protected static $clear_types = array();
+	protected static $clear_types = [];
 
 	/**
 	 * Hook methods for invalidation on necessary events.
@@ -248,7 +248,7 @@ class Cache_Watcher {
 	 *
 	 * @param array $types Set of sitemap types to delete cache transients for.
 	 */
-	public static function clear( $types = array() ) {
+	public static function clear( $types = [] ) {
 		if ( ! Sitemap::is_cache_enabled() ) {
 			return;
 		}
@@ -278,7 +278,7 @@ class Cache_Watcher {
 		if ( self::$clear_all ) {
 			Cache::invalidate_storage();
 			self::$clear_all   = false;
-			self::$clear_types = array();
+			self::$clear_types = [];
 			return;
 		}
 
@@ -286,7 +286,7 @@ class Cache_Watcher {
 			Cache::invalidate_storage( $type );
 		}
 
-		self::$clear_types = array();
+		self::$clear_types = [];
 	}
 
 	/**

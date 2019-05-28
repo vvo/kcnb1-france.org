@@ -6,6 +6,8 @@
  * @subpackage RankMath\Settings
  */
 
+use RankMath\Helper;
+
 $dep = [ [ 'disable_date_archives', 'off' ] ];
 
 $cmb->add_field([
@@ -62,11 +64,13 @@ $cmb->add_field([
 ]);
 
 $cmb->add_field([
-	'id'      => 'noindex_date',
-	'type'    => 'switch',
-	'name'    => esc_html__( 'Noindex Date Archives', 'rank-math' ),
-	'desc'    => esc_html__( 'Prevent date archives from getting indexed by search engines.', 'rank-math' ),
-	'default' => 'on',
+	'id'                => 'date_archive_robots',
+	'type'              => 'multicheck',
+	/* translators: post type name */
+	'name'              => esc_html__( 'Date Robots Meta', 'rank-math' ),
+	'desc'              => esc_html__( 'Custom values for robots meta tag on date page.', 'rank-math' ),
+	'options'           => Helper::choices_robots(),
+	'select_all_button' => false,
 ]);
 
 $cmb->add_field([

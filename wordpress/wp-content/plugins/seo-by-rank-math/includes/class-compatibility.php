@@ -63,7 +63,7 @@ class Compatibility {
 	 * Remove robots for this plugin
 	 */
 	public function subscribe_to_comments_reloaded_remove_robots() {
-		remove_action( 'rank_math/head', array( rank_math()->head, 'robots' ), 10 );
+		remove_action( 'rank_math/frontend/robots', '__return_empty_array' );
 	}
 
 	/**
@@ -77,8 +77,8 @@ class Compatibility {
 
 		$screen = get_current_screen();
 		if (
-			( ! Str::contains( 'rank-math', $screen->id ) && ! in_array( $screen->base, array( 'post', 'term', 'profile', 'user-edit' ) ) ) ||
-			'pf_form' == $screen->id
+			( ! Str::contains( 'rank-math', $screen->id ) && ! in_array( $screen->base, [ 'post', 'term', 'profile', 'user-edit' ], true ) ) ||
+			'pf_form' === $screen->id
 		) {
 			return;
 		}
@@ -90,7 +90,8 @@ class Compatibility {
 	/**
 	 * Disable genesis seo functionality
 	 *
-	 * @param  array $array Array hold disable info.
+	 * @param array $array Array hold disable info.
+	 *
 	 * @return array
 	 */
 	public function disable_genesis_seo( $array ) {

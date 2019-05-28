@@ -72,7 +72,7 @@ class Watcher {
 	 * @param WP_Post $before  Post object before update.
 	 */
 	public function handle_post_update( $post_id, $post, $before ) {
-		if ( ! in_array( $post->post_type, Helper::get_accessible_post_types() ) ) {
+		if ( ! in_array( $post->post_type, Helper::get_accessible_post_types(), true ) ) {
 			return;
 		}
 

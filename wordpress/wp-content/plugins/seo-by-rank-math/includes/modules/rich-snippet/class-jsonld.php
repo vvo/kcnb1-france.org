@@ -11,6 +11,7 @@
 namespace RankMath\RichSnippet;
 
 use RankMath\Helper;
+use RankMath\Paper\Paper;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Url;
 use MyThemeShop\Helpers\Conditional;
@@ -85,33 +86,49 @@ class JsonLD {
 	 * @return array
 	 */
 	public function add_context_data( $data ) {
-		/**
-		 * Allow developer to disable the breadcrumb json-ld output.
-		 *
-		 * @param bool $unsigned Default: true
-		 */
-		$is_breadcrumb   = Helper::get_settings( 'general.breadcrumbs' ) && $this->do_filter( 'json_ld/breadcrumbs_enabled', true );
-		$is_product_page = Conditional::is_woocommerce_active() && ( ( is_tax() && in_array( get_query_var( 'taxonomy' ), get_object_taxonomies( 'product' ) ) ) || is_shop() );
-
-		$snippets = [
-			'\\RankMath\\RichSnippet\\Website'         => true,
+		$is_product_page = $this->is_product_page();
+		$snippets        = [
+			'\\RankMath\\RichSnippet\\Website'         => is_front_page(),
 			'\\RankMath\\RichSnippet\\Search_Results'  => is_search(),
 			'\\RankMath\\RichSnippet\\Author'          => is_author(),
 			'\\RankMath\\RichSnippet\\Products_Page'   => $is_product_page,
 			'\\RankMath\\RichSnippet\\Collection_Page' => ! $is_product_page && ( is_category() || is_tag() || is_tax() ),
 			'\\RankMath\\RichSnippet\\Blog'            => is_home(),
 			'\\RankMath\\RichSnippet\\Singular'        => is_singular(),
-			'\\RankMath\\RichSnippet\\Breadcrumbs'     => $is_breadcrumb,
+			'\\RankMath\\RichSnippet\\Breadcrumbs'     => $this->can_add_breadcrumb(),
 		];
 
 		foreach ( $snippets as $class => $can_run ) {
-			if ( $can_run && class_exists( $class ) ) {
+			if ( $can_run ) {
 				$class = new $class;
 				$data  = $class->process( $data, $this );
 			}
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Can add breadcrumb snippet.
+	 *
+	 * @return bool
+	 */
+	private function can_add_breadcrumb() {
+		/**
+		 * Allow developer to disable the breadcrumb json-ld output.
+		 *
+		 * @param bool $unsigned Default: true
+		 */
+		return Helper::get_settings( 'general.breadcrumbs' ) && $this->do_filter( 'json_ld/breadcrumbs_enabled', true );
+	}
+
+	/**
+	 * Is product page.
+	 *
+	 * @return bool
+	 */
+	private function is_product_page() {
+		return Conditional::is_woocommerce_active() && ( ( is_tax() && in_array( get_query_var( 'taxonomy' ), get_object_taxonomies( 'product' ), true ) ) || is_shop() );
 	}
 
 	/**
@@ -131,36 +148,53 @@ class JsonLD {
 			'phone' => [ 'titles.phone', 'telephone' ],
 		];
 
-		// phpcs:disable
-		if ( isset( $hash[ $prop ] ) && $value = Helper::get_settings( $hash[ $prop ][0] ) ) {
+		if ( isset( $hash[ $prop ] ) && $value = Helper::get_settings( $hash[ $prop ][0] ) ) { // phpcs:ignore
 			$entity[ $hash[ $prop ][1] ] = $value;
 			return;
 		}
 
-		if ( 'url' === $prop && $url = Helper::get_settings( 'titles.url' ) ) {
+		$perform = "add_prop_{$prop}";
+		if ( method_exists( $this, $perform ) ) {
+			$this->$perform( $entity );
+		}
+	}
+
+	/**
+	 * Add property to entity.
+	 *
+	 * @param array $entity Array of json-ld entity.
+	 */
+	private function add_prop_url( &$entity ) {
+		if ( $url = Helper::get_settings( 'titles.url' ) ) { // phpcs:ignore
 			$entity['url'] = ! Url::is_relative( $url ) ? $url : 'http://' . $url;
-			return;
 		}
+	}
 
-		if ( 'address' === $prop && $address = Helper::get_settings( 'titles.local_address' ) ) {
+	/**
+	 * Add property to entity.
+	 *
+	 * @param array $entity Array of json-ld entity.
+	 */
+	private function add_prop_address( &$entity ) {
+		if ( $address = Helper::get_settings( 'titles.local_address' ) ) { // phpcs:ignore
 			$entity['address'] = [ '@type' => 'PostalAddress' ] + $address;
-			return;
 		}
+	}
 
-		// phpcs:enable
-
-		if ( 'thumbnail' === $prop ) {
-			$image = Helper::get_thumbnail_with_fallback( get_the_ID(), 'full' );
-			if ( ! empty( $image ) ) {
-				$entity['image'] = [
-					'@type'  => 'ImageObject',
-					'url'    => $image[0],
-					'width'  => $image[1],
-					'height' => $image[2],
-				];
-			}
-
-			return;
+	/**
+	 * Add property to entity.
+	 *
+	 * @param array $entity Array of json-ld entity.
+	 */
+	private function add_prop_thumbnail( &$entity ) {
+		$image = Helper::get_thumbnail_with_fallback( get_the_ID(), 'full' );
+		if ( ! empty( $image ) ) {
+			$entity['image'] = [
+				'@type'  => 'ImageObject',
+				'url'    => $image[0],
+				'width'  => $image[1],
+				'height' => $image[2],
+			];
 		}
 	}
 
@@ -183,46 +217,54 @@ class JsonLD {
 	 * @return array
 	 */
 	public function get_post_collection( $data ) {
-		$parts = [];
-
+		$collection = [];
 		while ( have_posts() ) {
 			the_post();
-
-			$post_id = get_the_ID();
-			$schema  = Helper::get_post_meta( 'rich_snippet', $post_id );
-			if ( ! $schema ) {
-				continue;
-			}
-
-			$title = $this->get_post_title( $post_id );
-			$url   = $this->get_post_url( $post_id );
-
-			$part = [
-				'@type'            => isset( $data['schema'] ) ? $data['schema'] : $schema,
-				'headline'         => $title,
-				'name'             => $title,
-				'url'              => $url,
-				'mainEntityOfPage' => $url,
-				'dateModified'     => get_post_modified_time( 'Y-m-d\TH:i:sP', true ),
-				'datePublished'    => get_post_time( 'Y-m-d\TH:i:sP', true ),
-				'author'           => $this->get_author(),
-				'publisher'        => $this->get_publisher( $data ),
-				'image'            => $this->get_post_thumbnail( $post_id ),
-				'keywords'         => $this->get_post_terms( $post_id ),
-				'commentCount'     => get_comments_number(),
-				'comment'          => $this->get_comments( $post_id ),
-			];
-
-			if ( 'article' === $schema ) {
-				$part['wordCount'] = str_word_count( get_the_content() );
-			}
-
-			$parts[] = $part;
+			$this->get_post_collection_item( $collection, $data );
 		}
 
 		wp_reset_query();
 
-		return $parts;
+		return $collection;
+	}
+
+	/**
+	 * Process single post
+	 *
+	 * @param array $collection Collection holder.
+	 * @param array $data       Array of json-ld data.
+	 */
+	public function get_post_collection_item( &$collection, $data ) {
+		$post_id = get_the_ID();
+		$schema  = Helper::get_post_meta( 'rich_snippet', $post_id );
+		if ( ! $schema ) {
+			return;
+		}
+
+		$title = $this->get_post_title( $post_id );
+		$url   = $this->get_post_url( $post_id );
+
+		$part = [
+			'@type'            => isset( $data['schema'] ) ? $data['schema'] : $schema,
+			'headline'         => $title,
+			'name'             => $title,
+			'url'              => $url,
+			'mainEntityOfPage' => $url,
+			'dateModified'     => get_post_modified_time( 'Y-m-d\TH:i:sP', true ),
+			'datePublished'    => get_post_time( 'Y-m-d\TH:i:sP', true ),
+			'author'           => $this->get_author(),
+			'publisher'        => $this->get_publisher( $data ),
+			'image'            => $this->get_post_thumbnail( $post_id ),
+			'keywords'         => $this->get_post_terms( $post_id ),
+			'commentCount'     => get_comments_number(),
+			'comment'          => $this->get_comments( $post_id ),
+		];
+
+		if ( 'article' === $schema ) {
+			$part['wordCount'] = str_word_count( get_the_content() );
+		}
+
+		$collection[] = $part;
 	}
 
 	/**
@@ -436,14 +478,17 @@ class JsonLD {
 		$parts = [
 			'title'     => $this->get_post_title(),
 			'url'       => $this->get_post_url(),
-			'canonical' => rank_math()->head->canonical( false ),
+			'canonical' => Paper::get()->get_canonical(),
 			'modified'  => get_post_modified_time( 'Y-m-d\TH:i:sP', true ),
 			'published' => get_post_time( 'Y-m-d\TH:i:sP', true ),
 			'excerpt'   => wp_strip_all_tags( get_the_excerpt(), true ),
 		];
 
 		// Description.
-		$desc          = Helper::get_post_meta( 'snippet_desc' );
+		$desc = Helper::get_post_meta( 'snippet_desc' );
+		if ( ! $desc ) {
+			$desc = Helper::replace_vars( Helper::get_settings( "titles.pt_{$this->post->post_type}_default_snippet_desc" ), $this->post );
+		}
 		$parts['desc'] = $desc ? $desc : ( $parts['excerpt'] ? $parts['excerpt'] : Helper::get_post_meta( 'description' ) );
 
 		// Author.
@@ -461,7 +506,11 @@ class JsonLD {
 	 */
 	public function get_post_title( $post_id = 0 ) {
 		$title = Helper::get_post_meta( 'snippet_name', $post_id );
-		return $title ? $title : ( 0 === $post_id ? rank_math()->head->title( '' ) : get_the_title( $post_id ) );
+		if ( ! $title && ! empty( $this->post ) ) {
+			$title = Helper::replace_vars( Helper::get_settings( "titles.pt_{$this->post->post_type}_default_snippet_name" ), $this->post );
+		}
+
+		return $title ? $title : ( 0 === $post_id ? Paper::get()->get_title() : get_the_title( $post_id ) );
 	}
 
 	/**
@@ -472,7 +521,8 @@ class JsonLD {
 	 */
 	public function get_post_url( $post_id = 0 ) {
 		$url = Helper::get_post_meta( 'snippet_url', $post_id );
-		return $url ? $url : ( 0 === $post_id ? rank_math()->head->canonical( false ) : get_the_permalink( $post_id ) );
+
+		return $url ? $url : ( 0 === $post_id ? Paper::get()->get_canonical() : get_the_permalink( $post_id ) );
 	}
 
 	/**
@@ -487,6 +537,7 @@ class JsonLD {
 			return;
 		}
 
-		return wp_strip_all_tags( do_shortcode( $product->get_short_description() ? $product->get_short_description() : $product->get_description() ), true );
+		$description = $product->get_short_description() ? $product->get_short_description() : $product->get_description();
+		return wp_strip_all_tags( do_shortcode( $description ), true );
 	}
 }

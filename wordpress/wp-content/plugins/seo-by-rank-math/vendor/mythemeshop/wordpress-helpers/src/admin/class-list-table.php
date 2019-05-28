@@ -5,12 +5,13 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Admin
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Admin;
 
 use WP_List_Table;
+use MyThemeShop\Helpers\Param;
 
 /**
  * List_Table class.
@@ -39,17 +40,19 @@ class List_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_order() {
-		return ! empty( $_REQUEST['order'] ) && in_array( $_REQUEST['order'], [ 'desc', 'asc' ] ) ? strtoupper( $_REQUEST['order'] ) : 'DESC';
+		$order = Param::request( 'order', 'desc' );
+		return in_array( $order, [ 'desc', 'asc' ], true ) ? strtoupper( $order ) : 'DESC';
 	}
 
 	/**
 	 * Get orderby setting.
 	 *
 	 * @param string $default (Optional) Extract order by from request.
+	 *
 	 * @return string
 	 */
 	protected function get_orderby( $default = 'create_date' ) {
-		return ! empty( $_GET['orderby'] ) ? filter_input( INPUT_GET, 'orderby', FILTER_SANITIZE_STRING ) : $default;
+		return Param::get( 'orderby', $default, FILTER_SANITIZE_STRING );
 	}
 
 	/**
@@ -58,7 +61,7 @@ class List_Table extends WP_List_Table {
 	 * @return bool|string
 	 */
 	protected function get_search() {
-		return ! empty( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '';
+		return Param::request( 's', false, FILTER_SANITIZE_STRING );
 	}
 
 	/**

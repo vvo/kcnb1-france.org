@@ -13,7 +13,7 @@ namespace RankMath\Admin;
 use RankMath\Runner;
 use RankMath\Traits\Ajax;
 use RankMath\Traits\Hooker;
-use RankMath\Helper as GlobalHelper;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,15 +41,11 @@ class Deactivate_Survey implements Runner {
 
 		check_ajax_referer( 'rank_math_deactivate_feedback_nonce', 'security' );
 
-		$reason_key = '';
-		if ( ! empty( $_POST['reason_key'] ) ) {
-			$reason_key = $_POST['reason_key'];
-		}
-
-		$reason_text = $this->get_uninstall_reasons()[ $reason_key ]['title'];
-		if ( ! empty( $_POST[ "reason_{$reason_key}" ] ) ) {
-			$reason_text = $_POST[ "reason_{$reason_key}" ];
-		}
+		$reason_key  = Param::post( 'reason_key', '' );
+		$reason_text = Param::post(
+			"reason_{$reason_key}",
+			$this->get_uninstall_reasons()[ $reason_key ]['title']
+		);
 
 		wp_safe_remote_post(
 			'https://rankmath.com/wp-json/rankmath/v1/deactivationSurvey',

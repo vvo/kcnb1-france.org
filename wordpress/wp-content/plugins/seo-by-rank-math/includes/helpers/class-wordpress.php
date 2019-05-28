@@ -327,8 +327,8 @@ trait WordPress {
 	 * @return array
 	 */
 	public static function get_robots_defaults() {
-		$robots = [];
 		$screen = get_current_screen();
+		$robots = Helper::get_settings( 'titles.robots_global', [] );
 
 		if ( 'post' === $screen->base && Helper::get_settings( "titles.pt_{$screen->post_type}_custom_robots" ) ) {
 			$robots = Helper::get_settings( "titles.pt_{$screen->post_type}_robots", [] );
@@ -336,6 +336,10 @@ trait WordPress {
 
 		if ( 'term' === $screen->base && Helper::get_settings( "titles.tax_{$screen->taxonomy}_custom_robots" ) ) {
 			$robots = Helper::get_settings( "titles.tax_{$screen->taxonomy}_robots", [] );
+		}
+
+		if ( 'profile' === $screen->base && Helper::get_settings( 'titles.author_custom_robots' ) ) {
+			$robots = Helper::get_settings( 'titles.author_robots', [] );
 		}
 
 		if ( is_array( $robots ) && ! in_array( 'noindex', $robots, true ) ) {

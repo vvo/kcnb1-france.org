@@ -36,7 +36,7 @@ trait Conditional {
 	 * @return boolean
 	 */
 	public static function is_module_active( $id ) {
-		$active_modules = get_option( 'rank_math_modules', array() );
+		$active_modules = get_option( 'rank_math_modules', [] );
 		if ( ! is_array( $active_modules ) || ! isset( rank_math()->manager ) || is_null( rank_math()->manager ) ) {
 			return false;
 		}
@@ -61,12 +61,14 @@ trait Conditional {
 	}
 
 	/**
-	 * Check if mythemeshop account is connected
+	 * Check if site is connected to rank math api.
 	 *
 	 * @return bool
 	 */
-	public static function is_mythemeshop_connected() {
-		return (bool) Admin_Helper::get_registration_data();
+	public static function is_site_connected() {
+		$registered = Admin_Helper::get_registration_data();
+
+		return false !== $registered && $registered['connected'];
 	}
 
 	/**
@@ -80,8 +82,7 @@ trait Conditional {
 			return false;
 		}
 
-		$options = get_option( 'rank_math_connect_data', false );
-		return empty( $options ) ? true : false;
+		return ! self::is_site_connected();
 	}
 
 	/**
@@ -94,7 +95,7 @@ trait Conditional {
 			return false;
 		}
 
-		if ( true === Helper::get_settings( 'titles.noindex_author_archive' ) ) {
+		if ( Helper::get_settings( 'titles.author_custom_robots' ) && in_array( 'noindex', (array) Helper::get_settings( 'titles.author_robots' ), true ) ) {
 			return false;
 		}
 
@@ -109,5 +110,24 @@ trait Conditional {
 	 */
 	public static function is_api_available( $minimum_version = '2.0' ) {
 		return ( defined( 'REST_API_VERSION' ) && version_compare( REST_API_VERSION, $minimum_version, '>=' ) );
+	}
+
+	/**
+	 * Check if AMP module is active.
+	 *
+	 * @return bool
+	 *
+	 * @since 1.0.24
+	 */
+	public static function is_amp_active() {
+		if ( ! self::is_module_active( 'amp' ) ) {
+			return false;
+		}
+
+		if ( function_exists( 'ampforwp_get_setting' ) && 'rank_math' === ampforwp_get_setting( 'ampforwp-seo-selection' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

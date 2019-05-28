@@ -55,7 +55,7 @@ class Generator extends XML {
 	 *
 	 * @var Provider
 	 */
-	public $providers = array();
+	public $providers = [];
 
 	/**
 	 * The maximum number of entries per sitemap page.
@@ -102,7 +102,7 @@ class Generator extends XML {
 			$this->providers[] = new \RankMath\Sitemap\Providers\Author;
 		}
 
-		$external_providers = $this->do_filter( 'sitemap/providers', array() );
+		$external_providers = $this->do_filter( 'sitemap/providers', [] );
 		foreach ( $external_providers as $provider ) {
 			if ( is_object( $provider ) ) {
 				$this->providers[] = $provider;
@@ -171,14 +171,14 @@ class Generator extends XML {
 			return $this->get_sitemap( $links, $type, $page );
 		}
 
-		return '';
+		return $this->do_filter( "sitemap/{$type}/content", '' );
 	}
 
 	/**
 	 * Build the root sitemap (example.com/sitemap_index.xml) which lists sub-sitemaps for other content types.
 	 */
 	public function build_root_map() {
-		$links = array();
+		$links = [];
 		foreach ( $this->providers as $provider ) {
 			$links = array_merge( $links, $provider->get_index_links( $this->max_entries ) );
 		}

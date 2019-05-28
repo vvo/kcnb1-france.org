@@ -43,7 +43,7 @@ abstract class Metadata {
 	 *
 	 * @var array
 	 */
-	protected static $objects = array();
+	protected static $objects = [];
 
 	/**
 	 * Getter.

@@ -10,4 +10,5 @@ return array(
     'RankMath\\' => array($baseDir . '/includes'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'MyThemeShop\\Helpers\\' => array($vendorDir . '/mythemeshop/wordpress-helpers/src'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
 );

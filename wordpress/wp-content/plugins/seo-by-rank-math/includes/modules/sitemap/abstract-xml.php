@@ -36,7 +36,7 @@ abstract class XML {
 	 *
 	 * @param array $headers Array of headers.
 	 */
-	protected function send_headers( $headers = array() ) {
+	protected function send_headers( $headers = [] ) {
 		$expires  = gmdate( 'D, d M Y H:i:s', ( time() + YEAR_IN_SECONDS ) );
 		$defaults = array(
 			'X-Robots-Tag'  => 'noindex',

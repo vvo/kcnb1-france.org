@@ -11,8 +11,9 @@
 namespace RankMath\Admin;
 
 use RankMath\CMB2;
+use RankMath\Helper;
 use RankMath\Rewrite;
-use RankMath\Helper as GlobalHelper;
+use MyThemeShop\Helpers\Param;
 use MyThemeShop\Helpers\WordPress;
 use MyThemeShop\Helpers\Conditional;
 
@@ -29,7 +30,7 @@ class Serp_Preview {
 	public function display() {
 		$method = 'get_' . CMB2::current_object_type() . '_data';
 		$data   = $this->$method();
-		if ( 'post' === CMB2::current_object_type() && GlobalHelper::is_module_active( 'rich-snippet' ) ) {
+		if ( 'post' === CMB2::current_object_type() && Helper::is_module_active( 'rich-snippet' ) ) {
 			$snippet_preview = $this->get_snippet_html();
 		}
 		$snippet_type    = isset( $snippet_preview['type'] ) ? $snippet_preview['type'] : '';
@@ -126,8 +127,8 @@ class Serp_Preview {
 		setup_postdata( $post );
 
 		$post_type    = WordPress::get_post_type();
-		$title_format = GlobalHelper::get_settings( "titles.pt_{$post_type}_title" );
-		$desc_format  = GlobalHelper::get_settings( "titles.pt_{$post_type}_description" );
+		$title_format = Helper::get_settings( "titles.pt_{$post_type}_title" );
+		$desc_format  = Helper::get_settings( "titles.pt_{$post_type}_description" );
 		$title_format = $title_format ? $title_format : '%title%';
 
 		// Get the permalink.
@@ -142,7 +143,7 @@ class Serp_Preview {
 			$permalink              = get_permalink( $post_temp, true );
 			$permalink_format       = $permalink;
 		} else {
-			$permalink = str_replace( array( '%pagename%', '%postname%' ), ( $post->post_name ? $post->post_name : sanitize_title( $post->post_title ) ), $permalink_format );
+			$permalink = str_replace( [ '%pagename%', '%postname%' ], ( $post->post_name ? $post->post_name : sanitize_title( $post->post_title ) ), $permalink_format );
 		}
 
 		$url = untrailingslashit( esc_url( $permalink ) );
@@ -158,12 +159,12 @@ class Serp_Preview {
 	private function get_term_data() {
 		global $taxnow, $wp_rewrite;
 
-		$term_id  = isset( $_REQUEST['tag_ID'] ) ? absint( $_REQUEST['tag_ID'] ) : 0;
+		$term_id  = Param::request( 'tag_ID', 0, FILTER_VALIDATE_INT );
 		$term     = get_term( $term_id, $taxnow, OBJECT, 'edit' );
 		$taxonomy = get_taxonomy( $term->taxonomy );
 
-		$title_format = GlobalHelper::get_settings( "titles.tax_{$term->taxonomy}_title" );
-		$desc_format  = GlobalHelper::get_settings( "titles.tax_{$term->taxonomy}_description" );
+		$title_format = Helper::get_settings( "titles.tax_{$term->taxonomy}_title" );
+		$desc_format  = Helper::get_settings( "titles.tax_{$term->taxonomy}_description" );
 		$title_format = $title_format ? $title_format : '%term%';
 
 		// Get the permalink.
@@ -195,11 +196,11 @@ class Serp_Preview {
 	 * @return string
 	 */
 	private function get_termlink( $termlink, $taxonomy ) {
-		if ( 'category' === $taxonomy && GlobalHelper::get_settings( 'general.strip_category_base' ) ) {
+		if ( 'category' === $taxonomy && Helper::get_settings( 'general.strip_category_base' ) ) {
 			$termlink = str_replace( '/category/', '', $termlink );
 		}
 
-		if ( Conditional::is_woocommerce_active() && 'product_cat' === $taxonomy && GlobalHelper::get_settings( 'general.wc_remove_category_base' ) ) {
+		if ( Conditional::is_woocommerce_active() && 'product_cat' === $taxonomy && Helper::get_settings( 'general.wc_remove_category_base' ) ) {
 			$termlink = str_replace( 'product-category', '', $termlink );
 		}
 
@@ -217,7 +218,7 @@ class Serp_Preview {
 	private function get_ancestors( $term_id, $taxonomy ) {
 		$slugs = [];
 
-		if ( Conditional::is_woocommerce_active() && 'product_cat' === $taxonomy && GlobalHelper::get_settings( 'general.wc_remove_category_parent_slugs' ) ) {
+		if ( Conditional::is_woocommerce_active() && 'product_cat' === $taxonomy && Helper::get_settings( 'general.wc_remove_category_parent_slugs' ) ) {
 			return $slugs;
 		}
 
@@ -238,8 +239,8 @@ class Serp_Preview {
 	private function get_user_data() {
 		global $user_id, $wp_rewrite;
 
-		$title_format = GlobalHelper::get_settings( 'titles.author_archive_title' );
-		$desc_format  = GlobalHelper::get_settings( 'titles.author_archive_description' );
+		$title_format = Helper::get_settings( 'titles.author_archive_title' );
+		$desc_format  = Helper::get_settings( 'titles.author_archive_description' );
 		$title_format = $title_format ? $title_format : '%author%';
 
 		Rewrite::change_author_base();
@@ -282,11 +283,11 @@ class Serp_Preview {
 			unset( $data['currency'] );
 		}
 
-		$html = array(
+		$html = [
 			'type'    => $snippet_data['type'],
 			'desktop' => $this->get_desktop_preview( $data, $rating, $rating_count ),
 			'mobile'  => $this->get_mobile_preview( $data, $rating, $rating_count ),
-		);
+		];
 
 		return $html;
 	}
@@ -301,11 +302,11 @@ class Serp_Preview {
 	 */
 	private function get_desktop_preview( $data, $rating, $rating_count ) {
 		$preview = '';
-		$labels  = array(
+		$labels  = [
 			'price_range' => esc_html__( 'Price range: ', 'rank-math' ),
 			'calories'    => esc_html__( 'Calories: ', 'rank-math' ),
 			'in_stock'    => esc_html__( 'In stock', 'rank-math' ),
-		);
+		];
 
 		if ( $rating ) {
 			$preview .= $this->get_ratings( $rating );
@@ -322,7 +323,7 @@ class Serp_Preview {
 				continue;
 			}
 
-			if ( ! in_array( $key, array( 'event_date', 'event_place', 'event_name' ) ) ) {
+			if ( ! in_array( $key, [ 'event_date', 'event_place', 'event_name' ], true ) ) {
 				$preview .= '<span class="separator"> - </span>';
 			}
 
@@ -350,7 +351,7 @@ class Serp_Preview {
 	 * @return string
 	 */
 	private function get_mobile_preview( $data, $rating, $rating_count ) {
-		$labels = array(
+		$labels = [
 			'price'       => esc_html__( 'Price', 'rank-math' ),
 			'price_range' => esc_html__( 'Price range', 'rank-math' ),
 			'time'        => esc_html__( 'Cooking time', 'rank-math' ),
@@ -358,7 +359,7 @@ class Serp_Preview {
 			'in_stock'    => esc_html__( 'In Stock', 'rank-math' ),
 			'event_date'  => esc_html__( 'Date', 'rank-math' ),
 			'event_place' => esc_html__( 'Location', 'rank-math' ),
-		);
+		];
 
 		$preview = '';
 		if ( $rating ) {
@@ -434,47 +435,47 @@ class Serp_Preview {
 		$snippet         = get_post_meta( $post->ID, 'rank_math_rich_snippet', true );
 		$wp_review_total = get_post_meta( $post->ID, 'wp_review_total', true );
 
-		if ( ! in_array( $snippet, array( 'recipe', 'product', 'event', 'restaurant', 'review', 'service', 'software' ) ) && ! $wp_review_total ) {
+		if ( ! in_array( $snippet, [ 'recipe', 'product', 'event', 'restaurant', 'review', 'service', 'software' ], true ) && ! $wp_review_total ) {
 			return false;
 		}
 
-		$snippet_data = array( 'type' => $snippet );
+		$snippet_data = [ 'type' => $snippet ];
 
-		if ( 'product' === $post->post_type ) {
+		if ( 'product' === $post->post_type && Conditional::is_woocommerce_active() ) {
 			$product              = wc_get_product( $post->ID );
-			$snippet_data['data'] = array(
+			$snippet_data['data'] = [
 				'price'    => $product->get_price(),
 				'currency' => get_woocommerce_currency_symbol(),
 				'in_stock' => $product->get_stock_status(),
-			);
+			];
 		} else {
 			if ( 'recipe' === $snippet ) {
-				$hash = array(
+				$hash = [
 					'rating'   => 'recipe_rating',
 					'time'     => 'recipe_totaltime',
 					'calories' => 'recipe_calories',
-				);
+				];
 			} elseif ( 'product' === $snippet ) {
-				$hash = array(
+				$hash = [
 					'price'    => 'product_price',
 					'currency' => 'product_currency',
 					'in_stock' => 'product_instock',
-				);
+				];
 			} elseif ( 'event' === $snippet ) {
-				$hash = array(
+				$hash = [
 					'event_date'  => 'event_startdate',
 					'event_name'  => 'name',
 					'event_place' => 'event_address',
-				);
+				];
 			} elseif ( 'restaurant' === $snippet ) {
-				$hash = array(
+				$hash = [
 					'price_range' => 'local_price_range',
-				);
+				];
 			} else {
-				$hash = array(
+				$hash = [
 					'rating'       => $snippet . '_rating_value',
 					'rating_count' => $snippet . '_rating_count',
-				);
+				];
 			}
 
 			foreach ( $hash as $key => $value ) {

@@ -69,9 +69,9 @@ function rank_math_0_10_0_update_redirections() {
 	}
 
 	// Merge redirections and redirections sources to one array.
-	$old_redirections = array();
+	$old_redirections = [];
 	foreach ( $redirections as $redirection ) {
-		$redirection['sources']                 = array();
+		$redirection['sources']                 = [];
 		$old_redirections[ $redirection['id'] ] = $redirection;
 	}
 
@@ -86,23 +86,25 @@ function rank_math_0_10_0_update_redirections() {
 	// Convert to the new version structure.
 	foreach ( $old_redirections as $old_redirection ) {
 		// Sources column.
-		$new_sources = array();
+		$new_sources = [];
 		foreach ( $old_redirection['sources'] as $source ) {
-			$new_sources[] = array(
+			$new_sources[] = [
 				'pattern'    => $source['pattern'],
 				'comparison' => $source['comparison'],
-			);
+			];
 		}
 
-		Redirection::from([
-			'sources'       => $new_sources,
-			'url_to'        => $old_redirection['url_to'],
-			'header_code'   => $old_redirection['header_code'],
-			'hits'          => $old_redirection['times_accessed'],
-			'status'        => $old_redirection['redirection_status'],
-			'updated'       => $old_redirection['last_edit'],
-			'last_accessed' => $old_redirection['last_accessed'],
-		])->save();
+		Redirection::from(
+			[
+				'sources'       => $new_sources,
+				'url_to'        => $old_redirection['url_to'],
+				'header_code'   => $old_redirection['header_code'],
+				'hits'          => $old_redirection['times_accessed'],
+				'status'        => $old_redirection['redirection_status'],
+				'updated'       => $old_redirection['last_edit'],
+				'last_accessed' => $old_redirection['last_accessed'],
+			]
+		)->save();
 	}
 }
 

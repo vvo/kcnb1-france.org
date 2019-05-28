@@ -12,7 +12,6 @@ namespace RankMath\Admin\Importers;
 
 use RankMath\Helper;
 use MyThemeShop\Helpers\DB;
-use RankMath\Sitemap\Sitemap;
 use MyThemeShop\Helpers\WordPress;
 use RankMath\Redirections\Redirection;
 
@@ -59,46 +58,35 @@ class Yoast extends Plugin_Importer {
 	protected $table_names = [ 'yoast_seo_links', 'yoast_seo_meta' ];
 
 	/**
+	 * Convert Yoast / AIO SEO variables if needed.
+	 *
+	 * @param string $string Value to convert.
+	 *
+	 * @return string
+	 */
+	public function convert_variables( $string ) {
+		$string = str_replace( '%%term_title%%', '%term%', $string );
+		$string = preg_replace( '/%%cf_([^%]+)%%/i', '%customfield($1)%', $string );
+		$string = preg_replace( '/%%ct_([^%]+)%%/i', '%ct($1)%', $string );
+		$string = preg_replace( '/%%ct_desc_([^%]+)%%/i', '%ct_desc($1)%', $string );
+
+		return str_replace( '%%', '%', $string );
+	}
+
+	/**
 	 * Import settings of plugin.
 	 *
 	 * @return bool
 	 */
 	protected function settings() {
-
-		$all_opts = rank_math()->settings->all_raw();
-		$settings = $all_opts['general'];
-		$titles   = $all_opts['titles'];
-		$sitemap  = $all_opts['sitemap'];
+		$this->get_settings();
 
 		$yoast_main          = get_option( 'wpseo' );
 		$yoast_permalink     = get_option( 'wpseo_permalinks' );
 		$yoast_social        = get_option( 'wpseo_social' );
 		$yoast_titles        = get_option( 'wpseo_titles' );
-		$yoast_rss           = get_option( 'wpseo_rss' );
 		$yoast_internallinks = get_option( 'wpseo_internallinks' );
 		$yoast_sitemap       = get_option( 'wpseo_xml' );
-		$yoast_local         = get_option( 'wpseo_local', false );
-
-		if ( isset( $yoast_titles['separator'] ) ) {
-			$separator_options = [
-				'sc-dash'   => '-',
-				'sc-ndash'  => '&ndash;',
-				'sc-mdash'  => '&mdash;',
-				'sc-middot' => '&middot;',
-				'sc-bull'   => '&bull;',
-				'sc-star'   => '*',
-				'sc-smstar' => '&#8902;',
-				'sc-pipe'   => '|',
-				'sc-tilde'  => '~',
-				'sc-laquo'  => '&laquo;',
-				'sc-raquo'  => '&raquo;',
-				'sc-lt'     => '&lt;',
-				'sc-gt'     => '&gt;',
-			];
-			if ( isset( $separator_options[ $yoast_titles['separator'] ] ) ) {
-				$titles['title_separator'] = $separator_options[ $yoast_titles['separator'] ];
-			}
-		}
 
 		// Features.
 		$modules  = [];
@@ -113,37 +101,9 @@ class Yoast extends Plugin_Importer {
 
 		// Knowledge Graph Logo.
 		if ( isset( $yoast_main['company_logo'] ) ) {
-			$this->replace_image( $yoast_main['company_logo'], $titles, 'knowledgegraph_logo', 'knowledgegraph_logo_id' );
+			$this->replace_image( $yoast_main['company_logo'], $this->titles, 'knowledgegraph_logo', 'knowledgegraph_logo_id' );
 		}
-
-		$hash = [
-			'company_name'      => 'knowledgegraph_name',
-			'company_or_person' => 'knowledgegraph_type',
-		];
-		$this->replace( $hash, $yoast_titles, $titles );
-
-		$titles['local_seo'] = isset( $yoast_titles['company_or_person'] ) && ! empty( $yoast_titles['company_or_person'] ) ? 'on' : 'off';
-
-		// Verification Codes.
-		$hash = [
-			'baiduverify'     => 'baidu_verify',
-			'alexaverify'     => 'alexa_verify',
-			'googleverify'    => 'google_verify',
-			'msverify'        => 'bing_verify',
-			'pinterestverify' => 'pinterest_verify',
-			'yandexverify'    => 'yandex_verify',
-		];
-		$this->replace( $hash, $yoast_main, $settings );
-
-		// Links.
-		$hash = [
-			'redirectattachment' => 'attachment_redirect_urls',
-			'stripcategorybase'  => 'strip_category_base',
-			'cleanslugs'         => 'url_strip_stopwords',
-		];
-		$this->replace( $hash, $yoast_permalink, $settings, 'convert_bool' );
-		$this->replace( [ 'disable-author' => 'disable_author_archives' ], $yoast_titles, $titles, 'convert_bool' );
-		$this->replace( [ 'disable-date' => 'disable_date_archives' ], $yoast_titles, $titles, 'convert_bool' );
+		$this->titles['local_seo'] = isset( $yoast_titles['company_or_person'] ) && ! empty( $yoast_titles['company_or_person'] ) ? 'on' : 'off';
 
 		// Titles & Descriptions.
 		$hash = [
@@ -156,8 +116,31 @@ class Yoast extends Plugin_Importer {
 			'title-search-wpseo'     => 'search_title',
 			'title-404-wpseo'        => '404_title',
 		];
+		$this->replace( $hash, $yoast_titles, $this->titles, 'convert_variables' );
 
+		$this->local_seo_settings();
+		$this->set_separator( $yoast_titles );
+		$this->set_post_types( $yoast_titles );
+		$this->set_taxonomies( $yoast_titles );
+		$this->sitemap_settings( $yoast_main, $yoast_sitemap );
+		$this->social_webmaster_settings( $yoast_main, $yoast_social );
+		$this->breadcrumb_settings( $yoast_titles, $yoast_internallinks );
+		$this->misc_settings( $yoast_titles, $yoast_permalink, $yoast_social );
+		$this->update_settings();
+
+		return true;
+	}
+
+	/**
+	 * Set post type settings.
+	 *
+	 * @param array $yoast_titles Settings.
+	 */
+	private function set_post_types( $yoast_titles ) {
+		$hash = [];
 		foreach ( Helper::get_accessible_post_types() as $post_type ) {
+			$this->set_robots( "pt_{$post_type}", $post_type, $yoast_titles );
+
 			$hash[ "title-{$post_type}" ]              = "pt_{$post_type}_title";
 			$hash[ "metadesc-{$post_type}" ]           = "pt_{$post_type}_description";
 			$hash[ "post_types-{$post_type}-maintax" ] = "pt_{$post_type}_primary_taxonomy";
@@ -166,200 +149,66 @@ class Yoast extends Plugin_Importer {
 			$hash[ "title-ptarchive-{$post_type}" ]    = "pt_{$post_type}_archive_title";
 			$hash[ "metadesc-ptarchive-{$post_type}" ] = "pt_{$post_type}_archive_description";
 
-			// NOINDEX.
+			// NOINDEX and Sitemap.
+			$this->sitemap[ "pt_{$post_type}_sitemap" ] = 'on';
 			if ( isset( $yoast_titles[ "noindex-{$post_type}" ] ) && $yoast_titles[ "noindex-{$post_type}" ] ) {
-				$titles[ "pt_{$post_type}_custom_robots" ] = 'on';
-				$titles[ "pt_{$post_type}_robots" ][]      = 'noindex';
-				$titles[ "pt_{$post_type}_robots" ]        = array_unique( $titles[ "pt_{$post_type}_robots" ] );
-				$sitemap[ "pt_{$post_type}_sitemap" ]      = 'off';
-			} else {
-				// Sitemap.
-				$sitemap[ "pt_{$post_type}_sitemap" ] = 'on';
+				$this->sitemap[ "pt_{$post_type}_sitemap" ] = 'off';
 			}
 
 			// Show/Hide Metabox.
-			if ( isset( $yoast_titles[ "hideeditbox-{$post_type}" ] ) ) {
-				$titles[ "pt_{$post_type}_add_meta_box" ] = $yoast_titles[ "hideeditbox-{$post_type}" ] ? 'off' : 'on';
-			}
 			if ( isset( $yoast_titles[ "display-metabox-pt-{$post_type}" ] ) ) {
 				$show = $yoast_titles[ "display-metabox-pt-{$post_type}" ]; // phpcs:ignore
-				$titles[ "pt_{$post_type}_add_meta_box" ] = ( ! $show || 'off' === $show ) ? 'off' : 'on';
+				$this->titles[ "pt_{$post_type}_add_meta_box" ] = ( ! $show || 'off' === $show ) ? 'off' : 'on';
 			}
 		}
 
+		$this->replace( $hash, $yoast_titles, $this->titles, 'convert_variables' );
+	}
+
+	/**
+	 * Set taxonomies settings.
+	 *
+	 * @param array $yoast_titles Settings.
+	 */
+	private function set_taxonomies( $yoast_titles ) {
+		$hash = [];
 		foreach ( Helper::get_accessible_taxonomies() as $taxonomy => $object ) {
+			$this->set_robots( "tax_{$taxonomy}", "tax-{$taxonomy}", $yoast_titles );
+
 			$hash[ "title-tax-{$taxonomy}" ]    = "tax_{$taxonomy}_title";
 			$hash[ "metadesc-tax-{$taxonomy}" ] = "tax_{$taxonomy}_description";
 
-			// NOINDEX.
-			if ( isset( $yoast_titles[ "noindex-tax-{$taxonomy}" ] ) && $yoast_titles[ "noindex-tax-{$taxonomy}" ] ) {
-				$titles[ "tax_{$taxonomy}_custom_robots" ] = 'on';
-				$titles[ "tax_{$taxonomy}_robots" ][]      = 'noindex';
-				$titles[ "tax_{$taxonomy}_robots" ]        = array_unique( $titles[ "tax_{$taxonomy}_robots" ] );
-			} else {
-				$sitemap[ "tax_{$taxonomy}_sitemap" ] = 'off';
-			}
-
 			// Show/Hide Metabox.
-			if ( isset( $yoast_titles[ "hideeditbox-tax-{$taxonomy}" ] ) ) {
-				$titles[ "tax_{$taxonomy}_add_meta_box" ] = $yoast_titles[ "hideeditbox-tax-{$taxonomy}" ] ? 'off' : 'on';
-			}
-			if ( isset( $yoast_titles[ "display-metabox-tax-{$post_type}" ] ) ) {
-				$titles[ "tax_{$post_type}_add_meta_box" ] = $yoast_titles[ "display-metabox-tax-{$post_type}" ] ? 'off' : 'on';
+			if ( isset( $yoast_titles[ "display-metabox-tax-{$taxonomy}" ] ) ) {
+				$this->titles[ "tax_{$taxonomy}_add_meta_box" ] = $yoast_titles[ "display-metabox-tax-{$taxonomy}" ] ? 'off' : 'on';
 			}
 
 			// Sitemap.
 			$key   = "taxonomies-{$taxonomy}-not_in_sitemap";
 			$value = isset( $yoast_sitemap[ $key ] ) ? ! $yoast_sitemap[ $key ] : false;
 
-			$sitemap[ "tax_{$taxonomy}_sitemap" ] = $value ? 'on' : 'off';
+			$this->sitemap[ "tax_{$taxonomy}_sitemap" ] = $value ? 'on' : 'off';
 		}
-		$this->replace( $hash, $yoast_titles, $titles, 'convert_variables' );
+		$this->replace( $hash, $yoast_titles, $this->titles, 'convert_variables' );
+	}
 
-		// NOINDEX.
-		$hash = [
-			'noindex-subpages-wpseo' => 'noindex_archive_subpages',
-			'noindex-author-wpseo'   => 'noindex_author_archive',
-		];
-		$this->replace( $hash, $yoast_titles, $titles, 'convert_bool' );
-
-		// Social.
-		$hash = [
-			'facebook_site' => 'social_url_facebook',
-			'twitter_site'  => 'twitter_author_names',
-			'instagram_url' => 'social_url_instagram',
-			'linkedin_url'  => 'social_url_linkedin',
-			'youtube_url'   => 'social_url_youtube',
-			'pinterest_url' => 'social_url_pinterest',
-			'myspace_url'   => 'social_url_myspace',
-			'fbadminapp'    => 'facebook_app_id',
-		];
-		$this->replace( $hash, $yoast_social, $titles );
-
-		// OpenGraph.
-		if ( isset( $yoast_social['og_default_image'] ) ) {
-			$this->replace_image( $yoast_social['og_default_image'], $titles, 'open_graph_image', 'open_graph_image_id' );
+	/**
+	 * Set robots settings.
+	 *
+	 * @param string $prefix       Setting prefix.
+	 * @param string $yoast_prefix Setting prefix.
+	 * @param array  $yoast_titles Settings.
+	 */
+	private function set_robots( $prefix, $yoast_prefix, $yoast_titles ) {
+		if ( isset( $yoast_titles[ "noindex-{$yoast_prefix}" ] ) && $yoast_titles[ "noindex-{$yoast_prefix}" ] ) {
+			$this->titles[ "{$prefix}_custom_robots" ] = 'on';
+			$this->titles[ "{$prefix}_robots" ][]      = 'noindex';
+			$this->titles[ "{$prefix}_robots" ]        = array_unique( $this->titles[ "{$prefix}_robots" ] );
 		}
 
-		if ( isset( $yoast_social['og_frontpage_image'] ) ) {
-			$this->replace_image( $yoast_social['og_frontpage_image'], $titles, 'homepage_facebook_image', 'homepage_facebook_image_id' );
+		if ( isset( $yoast_titles[ "hideeditbox-{$yoast_prefix}" ] ) ) {
+			$this->titles[ "{$prefix}_add_meta_box" ] = $yoast_titles[ "hideeditbox-{$yoast_prefix}" ] ? 'off' : 'on';
 		}
-
-		$hash = [
-			'og_frontpage_title' => 'homepage_facebook_title',
-			'og_frontpage_desc'  => 'homepage_facebook_description',
-		];
-		$this->replace( $hash, $yoast_social, $titles, 'convert_variables' );
-
-		// Breadcrumbs.
-		$hash = [
-			'breadcrumbs-sep'           => 'breadcrumbs_separator',
-			'breadcrumbs-home'          => 'breadcrumbs_home_label',
-			'breadcrumbs-prefix'        => 'breadcrumbs_prefix',
-			'breadcrumbs-archiveprefix' => 'breadcrumbs_archive_format',
-			'breadcrumbs-searchprefix'  => 'breadcrumbs_search_format',
-			'breadcrumbs-404crumb'      => 'breadcrumbs_404_label',
-		];
-		$this->replace( $hash, $yoast_titles, $settings );
-		$this->replace( $hash, $yoast_internallinks, $settings );
-
-		$hash = [ 'breadcrumbs-enable' => 'breadcrumbs' ];
-		$this->replace( $hash, $yoast_titles, $settings, 'convert_bool' );
-		$this->replace( $hash, $yoast_internallinks, $settings, 'convert_bool' );
-
-		// RSS.
-		$hash = [
-			'rssbefore' => 'rss_before_content',
-			'rssafter'  => 'rss_after_content',
-		];
-		$this->replace( $hash, $yoast_rss, $settings, 'convert_variables' );
-
-		// Sitemap.
-		if ( ! isset( $yoast_main['enable_xml_sitemap'] ) && isset( $yoast_sitemap['enablexmlsitemap'] ) ) {
-			Helper::update_modules( [ 'sitemap' => 'on' ] );
-		}
-		$hash = [
-			'entries-per-page' => 'items_per_page',
-			'excluded-posts'   => 'exclude_posts',
-		];
-		$this->replace( $hash, $yoast_sitemap, $sitemap );
-
-		if ( empty( $yoast_sitemap['excluded-posts'] ) ) {
-			$sitemap['exclude_posts'] = '';
-		}
-
-		foreach ( WordPress::get_roles() as $role => $label ) {
-			$key = "user_role-{$role}-not_in_sitemap";
-			if ( isset( $yoast_sitemap[ $key ] ) && $yoast_sitemap[ $key ] ) {
-				$sitemap['exclude_roles'][] = $role;
-			}
-		}
-		if ( ! empty( $sitemap['exclude_roles'] ) ) {
-			$sitemap['exclude_roles'] = array_unique( $sitemap['exclude_roles'] );
-		}
-
-		// Local SEO.
-		if ( $yoast_local && is_array( $yoast_local ) ) {
-			$titles['local_seo'] = 'on';
-
-			// Address Format.
-			$address_format_hash = [
-				'address-state-postal'       => '{address} {locality}, {region} {postalcode}',
-				'address-state-postal-comma' => '{address} {locality}, {region}, {postalcode}',
-				'address-postal-city-state'  => '{address} {postalcode} {locality}, {region}',
-				'address-postal'             => '{address} {locality} {postalcode}',
-				'address-postal-comma'       => '{address} {locality}, {postalcode}',
-				'address-city'               => '{address} {locality}',
-				'postal-address'             => '{postalcode} {region} {locality} {address}',
-			];
-
-			$titles['local_address_format'] = $address_format_hash[ $yoast_local['address_format'] ];
-
-			// Street Address.
-			$address = [];
-			$hash    = [
-				'location_address' => 'streetAddress',
-				'location_city'    => 'addressLocality',
-				'location_state'   => 'addressRegion',
-				'location_zipcode' => 'postalCode',
-				'location_country' => 'addressCountry',
-			];
-			$this->replace( $hash, $yoast_local, $address );
-			$titles['local_address'] = $address;
-
-			if ( ! empty( $yoast_local['location_address_2'] ) ) {
-				$titles['local_address']['streetAddress'] .= ' ' . $yoast_local['location_address_2'];
-			}
-
-			// Coordinates.
-			if ( ! empty( $yoast_local['location_coords_lat'] ) && ! empty( $yoast_local['location_coords_long'] ) ) {
-				$titles['geo'] = $yoast_local['location_coords_lat'] . ' ' . $yoast_local['location_coords_long'];
-			}
-
-			// Phone Numbers.
-			if ( ! empty( $yoast_local['location_phone'] ) ) {
-				$titles['phone_numbers'][] = [
-					'type'   => 'customer support',
-					'number' => $yoast_local['location_phone'],
-				];
-
-				if ( ! empty( $yoast_local['location_phone_2nd'] ) ) {
-					$titles['phone_numbers'][] = [
-						'type'   => 'customer support',
-						'number' => $yoast_local['location_phone_2nd'],
-					];
-				}
-			}
-
-			// Opening Hours.
-			if ( ! empty( $yoast_local['opening_hours_24h'] ) ) {
-				$titles['opening_hours_format'] = isset( $yoast_local['opening_hours_24h'] ) && 'on' === $yoast_local['opening_hours_24h'] ? 'off' : 'on';
-			}
-		}
-
-		Helper::update_all_settings( $settings, $titles, $sitemap );
-
-		return true;
 	}
 
 	/**
@@ -370,8 +219,7 @@ class Yoast extends Plugin_Importer {
 	protected function postmeta() {
 		$this->set_pagination( $this->get_post_ids( true ) );
 
-		$destination = 'update_post_meta';
-		$post_ids    = $this->get_post_ids();
+		$post_ids = $this->get_post_ids();
 
 		$this->set_primary_term( $post_ids );
 
@@ -392,25 +240,6 @@ class Yoast extends Plugin_Importer {
 			$this->replace_meta( $hash, null, $post_id, 'post', 'convert_variables' );
 			delete_post_meta( $post_id, 'rank_math_permalink' );
 
-			// Facebook Image.
-			$og_thumb = get_post_meta( $post_id, '_yoast_wpseo_opengraph-image', true );
-			if ( ! empty( $og_thumb ) ) {
-				$this->replace_image( $og_thumb, $destination, 'rank_math_facebook_image', 'rank_math_facebook_image_id', $post_id );
-			}
-
-			// Twitter Image.
-			$twitter_thumb = get_post_meta( $post_id, '_yoast_wpseo_twitter-image', true );
-			if ( ! empty( $twitter_thumb ) ) {
-				$this->replace_image( $twitter_thumb, $destination, 'rank_math_twitter_image', 'rank_math_twitter_image_id', $post_id );
-			}
-
-			foreach ( [ 'rank_math_twitter_title', 'rank_math_twitter_description', 'rank_math_twitter_image' ] as $key ) {
-				if ( ! empty( get_post_meta( $post_id, $key, true ) ) ) {
-					update_post_meta( $post_id, 'rank_math_twitter_use_facebook', 'off' );
-					break;
-				}
-			}
-
 			// Cornerstone Content.
 			$cornerstone = get_post_meta( $post_id, '_yoast_wpseo_is_cornerstone', true );
 			if ( ! empty( $cornerstone ) ) {
@@ -418,18 +247,9 @@ class Yoast extends Plugin_Importer {
 			}
 
 			$this->set_post_robots( $post_id );
-
-			// Extra focus keywords.
-			$extra_fks = get_post_meta( $post_id, '_yoast_wpseo_focuskeywords', true );
-			if ( $extra_fks ) {
-				$extra_fks = json_decode( $extra_fks, true );
-				if ( ! empty( $extra_fks ) ) {
-					$extra_fks = implode( ', ', array_map( [ $this, 'map_focus_keyword' ], $extra_fks ) );
-					$main_fk   = get_post_meta( $post_id, 'rank_math_focus_keyword', true );
-					$extra_fks = $main_fk . ', ' . $extra_fks;
-					update_post_meta( $post_id, 'rank_math_focus_keyword', $extra_fks );
-				}
-			}
+			$this->set_post_social_media( $post_id );
+			$this->set_post_focus_keyword( $post_id );
+			$this->is_twitter_using_facebook( 'post', $post_id );
 		}
 
 		return $this->get_pagination_arg();
@@ -456,7 +276,7 @@ class Yoast extends Plugin_Importer {
 			$robots[] = 'nofollow';
 		}
 
-		if ( '1' == $robots_noindex ) {
+		if ( 1 === absint( $robots_noindex ) ) {
 			$robots[] = 'noindex';
 		}
 
@@ -466,6 +286,40 @@ class Yoast extends Plugin_Importer {
 		}
 
 		update_post_meta( $post_id, 'rank_math_robots', array_unique( $robots ) );
+	}
+
+	/**
+	 * Set post social media.
+	 *
+	 * @param int $post_id Post id.
+	 */
+	private function set_post_social_media( $post_id ) {
+		$og_thumb = get_post_meta( $post_id, '_yoast_wpseo_opengraph-image', true );
+		if ( ! empty( $og_thumb ) ) {
+			$this->replace_image( $og_thumb, 'post', 'rank_math_facebook_image', 'rank_math_facebook_image_id', $post_id );
+		}
+
+		$twitter_thumb = get_post_meta( $post_id, '_yoast_wpseo_twitter-image', true );
+		if ( ! empty( $twitter_thumb ) ) {
+			$this->replace_image( $twitter_thumb, 'post', 'rank_math_twitter_image', 'rank_math_twitter_image_id', $post_id );
+		}
+	}
+
+	/**
+	 * Set post focus keyword.
+	 *
+	 * @param int $post_id Post id.
+	 */
+	private function set_post_focus_keyword( $post_id ) {
+		$extra_fks = get_post_meta( $post_id, '_yoast_wpseo_focuskeywords', true );
+		$extra_fks = json_decode( $extra_fks, true );
+		if ( empty( $extra_fks ) ) {
+			return;
+		}
+
+		$extra_fks = implode( ', ', array_map( [ $this, 'map_focus_keyword' ], $extra_fks ) );
+		$main_fk   = get_post_meta( $post_id, 'rank_math_focus_keyword', true );
+		update_post_meta( $post_id, 'rank_math_focus_keyword', $main_fk . ', ' . $extra_fks );
 	}
 
 	/**
@@ -501,12 +355,12 @@ class Yoast extends Plugin_Importer {
 	 */
 	protected function termmeta() {
 		$count         = 0;
-		$destination   = 'update_term_meta';
 		$taxonomy_meta = get_option( 'wpseo_taxonomy_meta' );
 
 		if ( empty( $taxonomy_meta ) ) {
 			return compact( 'count' );
 		}
+
 		$hash = [
 			'wpseo_title'                 => 'rank_math_title',
 			'wpseo_desc'                  => 'rank_math_description',
@@ -522,37 +376,47 @@ class Yoast extends Plugin_Importer {
 		foreach ( $taxonomy_meta as $terms ) {
 			foreach ( $terms as $term_id => $data ) {
 				$count++;
-				$this->replace_meta( $hash, $data, $term_id, 'term', 'convert_variables' );
 				delete_term_meta( $term_id, 'rank_math_permalink' );
+				$this->replace_meta( $hash, $data, $term_id, 'term', 'convert_variables' );
 
-				// Facebook Image.
-				if ( ! empty( $data['wpseo_opengraph-image'] ) ) {
-					$this->replace_image( $data['wpseo_opengraph-image'], $destination, 'rank_math_facebook_image', 'rank_math_facebook_image_id', $term_id );
-				}
-
-				// Twitter Image.
-				if ( ! empty( $data['wpseo_twitter-image'] ) ) {
-					$this->replace_image( $data['wpseo_twitter-image'], $destination, 'rank_math_twitter_image', 'rank_math_twitter_image_id', $term_id );
-				}
-
-				foreach ( [ 'rank_math_twitter_title', 'rank_math_twitter_description', 'rank_math_twitter_image' ] as $key ) {
-					if ( ! empty( get_term_meta( $term_id, $key, true ) ) ) {
-						update_term_meta( $term_id, 'rank_math_twitter_use_facebook', 'off' );
-						break;
-					}
-				}
-
-				// NOINDEX.
-				if ( ! empty( $data['wpseo_noindex'] ) && 'noindex' === $data['wpseo_noindex'] ) {
-					$current   = get_term_meta( $term_id, 'rank_math_robots', true );
-					$current[] = 'noindex';
-
-					update_term_meta( $term_id, 'rank_math_robots', array_unique( $current ) );
-				}
+				$this->set_term_robots( $term_id, $data );
+				$this->set_term_social_media( $term_id, $data );
+				$this->is_twitter_using_facebook( 'term', $term_id );
 			}
 		}
 
 		return compact( 'count' );
+	}
+
+	/**
+	 * Set term robots
+	 *
+	 * @param int   $term_id Term id.
+	 * @param array $data    Term data.
+	 */
+	private function set_term_robots( $term_id, $data ) {
+		if ( ! empty( $data['wpseo_noindex'] ) && 'noindex' === $data['wpseo_noindex'] ) {
+			$current   = get_term_meta( $term_id, 'rank_math_robots', true );
+			$current[] = 'noindex';
+
+			update_term_meta( $term_id, 'rank_math_robots', array_unique( $current ) );
+		}
+	}
+
+	/**
+	 * Set term social media.
+	 *
+	 * @param int   $term_id Term id.
+	 * @param array $data    Term data.
+	 */
+	private function set_term_social_media( $term_id, $data ) {
+		if ( ! empty( $data['wpseo_opengraph-image'] ) ) {
+			$this->replace_image( $data['wpseo_opengraph-image'], 'term', 'rank_math_facebook_image', 'rank_math_facebook_image_id', $term_id );
+		}
+
+		if ( ! empty( $data['wpseo_twitter-image'] ) ) {
+			$this->replace_image( $data['wpseo_twitter-image'], 'term', 'rank_math_twitter_image', 'rank_math_twitter_image_id', $term_id );
+		}
 	}
 
 	/**
@@ -561,7 +425,6 @@ class Yoast extends Plugin_Importer {
 	 * @return array
 	 */
 	protected function usermeta() {
-
 		$this->set_pagination( $this->get_user_ids( true ) );
 		$user_ids = $this->get_user_ids();
 
@@ -570,6 +433,7 @@ class Yoast extends Plugin_Importer {
 			'wpseo_desc'     => 'rank_math_description',
 			'wpseo_metadesc' => 'rank_math_description',
 		];
+
 		foreach ( $user_ids as $user ) {
 			$userid = $user->ID;
 			$this->replace_meta( $hash, null, $userid, 'user', 'convert_variables' );
@@ -592,26 +456,316 @@ class Yoast extends Plugin_Importer {
 		$count = 0;
 		Helper::update_modules( [ 'redirections' => 'on' ] );
 		foreach ( $redirections as $redirection ) {
-			if ( ! isset( $redirection['origin'] ) || empty( $redirection['origin'] ) ) {
-				continue;
-			}
-
-			$item = Redirection::from([
-				'sources'     => [
-					[
-						'pattern'    => $redirection['origin'],
-						'comparison' => isset( $redirection['format'] ) && 'regex' === $redirection['format'] ? 'regex' : 'exact',
-					],
-				],
-				'url_to'      => isset( $redirection['url'] ) ? $redirection['url'] : '',
-				'header_code' => isset( $redirection['type'] ) ? $redirection['type'] : '301',
-			]);
-
-			if ( false !== $item->save() ) {
+			if ( false !== $this->save_redirection( $redirection ) ) {
 				$count++;
 			}
 		}
 
 		return compact( 'count' );
+	}
+
+	/**
+	 * Save redirection.
+	 *
+	 * @param array $redirection Redirection object.
+	 *
+	 * @return mixed
+	 */
+	private function save_redirection( $redirection ) {
+		if ( ! isset( $redirection['origin'] ) || empty( $redirection['origin'] ) ) {
+			return false;
+		}
+
+		$item = Redirection::from([
+			'sources'     => [
+				[
+					'pattern'    => $redirection['origin'],
+					'comparison' => isset( $redirection['format'] ) && 'regex' === $redirection['format'] ? 'regex' : 'exact',
+				],
+			],
+			'url_to'      => isset( $redirection['url'] ) ? $redirection['url'] : '',
+			'header_code' => isset( $redirection['type'] ) ? $redirection['type'] : '301',
+		]);
+
+		return $item->save();
+	}
+
+	/**
+	 * Set separator.
+	 *
+	 * @param array $yoast_titles    Settings.
+	 */
+	private function set_separator( $yoast_titles ) {
+		if ( ! isset( $yoast_titles['separator'] ) ) {
+			return;
+		}
+
+		$separator_options = [
+			'sc-dash'   => '-',
+			'sc-ndash'  => '&ndash;',
+			'sc-mdash'  => '&mdash;',
+			'sc-middot' => '&middot;',
+			'sc-bull'   => '&bull;',
+			'sc-star'   => '*',
+			'sc-smstar' => '&#8902;',
+			'sc-pipe'   => '|',
+			'sc-tilde'  => '~',
+			'sc-laquo'  => '&laquo;',
+			'sc-raquo'  => '&raquo;',
+			'sc-lt'     => '&lt;',
+			'sc-gt'     => '&gt;',
+		];
+
+		if ( isset( $separator_options[ $yoast_titles['separator'] ] ) ) {
+			$this->titles['title_separator'] = $separator_options[ $yoast_titles['separator'] ];
+		}
+	}
+
+	/**
+	 * Misc settings.
+	 *
+	 * @param array $yoast_titles    Settings.
+	 * @param array $yoast_permalink Settings.
+	 * @param array $yoast_social    Settings.
+	 */
+	private function misc_settings( $yoast_titles, $yoast_permalink, $yoast_social ) {
+		$hash = [
+			'company_name'      => 'knowledgegraph_name',
+			'company_or_person' => 'knowledgegraph_type',
+		];
+		$this->replace( $hash, $yoast_titles, $this->titles );
+
+		// Links.
+		$hash = [
+			'redirectattachment' => 'attachment_redirect_urls',
+			'stripcategorybase'  => 'strip_category_base',
+			'cleanslugs'         => 'url_strip_stopwords',
+		];
+		$this->replace( $hash, $yoast_permalink, $this->settings, 'convert_bool' );
+		$this->replace( [ 'disable-author' => 'disable_author_archives' ], $yoast_titles, $this->titles, 'convert_bool' );
+		$this->replace( [ 'disable-date' => 'disable_date_archives' ], $yoast_titles, $this->titles, 'convert_bool' );// Links.
+
+		// Re-writing.
+		$hash = [
+			'redirectattachment' => 'attachment_redirect_urls',
+			'stripcategorybase'  => 'strip_category_base',
+			'cleanslugs'         => 'url_strip_stopwords',
+		];
+		$this->replace( $hash, $yoast_permalink, $this->settings, 'convert_bool' );
+		$this->replace( [ 'disable-author' => 'disable_author_archives' ], $yoast_titles, $this->titles, 'convert_bool' );
+		$this->replace( [ 'disable-date' => 'disable_date_archives' ], $yoast_titles, $this->titles, 'convert_bool' );
+
+		// NOINDEX.
+		$hash = [
+			'noindex-subpages-wpseo' => 'noindex_archive_subpages',
+		];
+		$this->replace( $hash, $yoast_titles, $this->titles, 'convert_bool' );
+
+		// OpenGraph.
+		if ( isset( $yoast_social['og_default_image'] ) ) {
+			$this->replace_image( $yoast_social['og_default_image'], $this->titles, 'open_graph_image', 'open_graph_image_id' );
+		}
+
+		if ( isset( $yoast_social['og_frontpage_image'] ) ) {
+			$this->replace_image( $yoast_social['og_frontpage_image'], $this->titles, 'homepage_facebook_image', 'homepage_facebook_image_id' );
+		}
+
+		$hash = [
+			'og_frontpage_title' => 'homepage_facebook_title',
+			'og_frontpage_desc'  => 'homepage_facebook_description',
+		];
+		$this->replace( $hash, $yoast_social, $this->titles, 'convert_variables' );
+
+		if ( ! empty( $yoast_titles['noindex-author-wpseo'] ) ) {
+			$this->titles['author_custom_robots'] = 'on';
+			$this->titles['author_robots'][]      = 'noindex';
+		}
+	}
+
+	/**
+	 * Sitemap settings.
+	 *
+	 * @param array $yoast_main    Settings.
+	 * @param array $yoast_sitemap Settings.
+	 */
+	private function sitemap_settings( $yoast_main, $yoast_sitemap ) {
+		if ( ! isset( $yoast_main['enable_xml_sitemap'] ) && isset( $yoast_sitemap['enablexmlsitemap'] ) ) {
+			Helper::update_modules( [ 'sitemap' => 'on' ] );
+		}
+
+		$hash = [
+			'entries-per-page' => 'items_per_page',
+			'excluded-posts'   => 'exclude_posts',
+		];
+		$this->replace( $hash, $yoast_sitemap, $this->sitemap );
+
+		if ( empty( $yoast_sitemap['excluded-posts'] ) ) {
+			$this->sitemap['exclude_posts'] = '';
+		}
+
+		$this->sitemap_exclude_roles( $yoast_sitemap );
+	}
+
+	/**
+	 * Sitemap exclude roles.
+	 *
+	 * @param array $yoast_sitemap Settings.
+	 */
+	private function sitemap_exclude_roles( $yoast_sitemap ) {
+		foreach ( WordPress::get_roles() as $role => $label ) {
+			$key = "user_role-{$role}-not_in_sitemap";
+			if ( isset( $yoast_sitemap[ $key ] ) && $yoast_sitemap[ $key ] ) {
+				$this->sitemap['exclude_roles'][] = $role;
+			}
+		}
+
+		if ( ! empty( $this->sitemap['exclude_roles'] ) ) {
+			$this->sitemap['exclude_roles'] = array_unique( $this->sitemap['exclude_roles'] );
+		}
+	}
+
+	/**
+	 * Local SEO settings.
+	 */
+	private function local_seo_settings() {
+		$yoast_local = get_option( 'wpseo_local', false );
+		if ( ! is_array( $yoast_local ) ) {
+			return;
+		}
+
+		$this->titles['local_seo'] = 'on';
+		$this->local_address_settings( $yoast_local );
+		$this->local_phones_settings( $yoast_local );
+
+		if ( ! empty( $yoast_local['location_address_2'] ) ) {
+			$this->titles['local_address']['streetAddress'] .= ' ' . $yoast_local['location_address_2'];
+		}
+
+		// Coordinates.
+		if ( ! empty( $yoast_local['location_coords_lat'] ) && ! empty( $yoast_local['location_coords_long'] ) ) {
+			$this->titles['geo'] = $yoast_local['location_coords_lat'] . ' ' . $yoast_local['location_coords_long'];
+		}
+
+		// Opening Hours.
+		if ( ! empty( $yoast_local['opening_hours_24h'] ) ) {
+			$this->titles['opening_hours_format'] = isset( $yoast_local['opening_hours_24h'] ) && 'on' === $yoast_local['opening_hours_24h'] ? 'off' : 'on';
+		}
+	}
+
+	/**
+	 * Local phones settings.
+	 *
+	 * @param array $yoast_local Array of yoast local seo settings.
+	 */
+	private function local_phones_settings( $yoast_local ) {
+		if ( empty( $yoast_local['location_phone'] ) ) {
+			return;
+		}
+
+		$this->titles['phone_numbers'][] = [
+			'type'   => 'customer support',
+			'number' => $yoast_local['location_phone'],
+		];
+
+		if ( ! empty( $yoast_local['location_phone_2nd'] ) ) {
+			$this->titles['phone_numbers'][] = [
+				'type'   => 'customer support',
+				'number' => $yoast_local['location_phone_2nd'],
+			];
+		}
+	}
+
+	/**
+	 * Local address settings.
+	 *
+	 * @param array $yoast_local Array of yoast local seo settings.
+	 */
+	private function local_address_settings( $yoast_local ) {
+		// Address Format.
+		$address_format_hash = [
+			'address-state-postal'       => '{address} {locality}, {region} {postalcode}',
+			'address-state-postal-comma' => '{address} {locality}, {region}, {postalcode}',
+			'address-postal-city-state'  => '{address} {postalcode} {locality}, {region}',
+			'address-postal'             => '{address} {locality} {postalcode}',
+			'address-postal-comma'       => '{address} {locality}, {postalcode}',
+			'address-city'               => '{address} {locality}',
+			'postal-address'             => '{postalcode} {region} {locality} {address}',
+		];
+
+		$this->titles['local_address_format'] = $address_format_hash[ $yoast_local['address_format'] ];
+
+		// Street Address.
+		$address = [];
+		$hash    = [
+			'location_address' => 'streetAddress',
+			'location_city'    => 'addressLocality',
+			'location_state'   => 'addressRegion',
+			'location_zipcode' => 'postalCode',
+			'location_country' => 'addressCountry',
+		];
+		$this->replace( $hash, $yoast_local, $address );
+
+		$this->titles['local_address'] = $address;
+	}
+
+	/**
+	 * Social and Webmaster settings.
+	 *
+	 * @param array $yoast_main   Settings.
+	 * @param array $yoast_social Settings.
+	 */
+	private function social_webmaster_settings( $yoast_main, $yoast_social ) {
+		$hash = [
+			'baiduverify'     => 'baidu_verify',
+			'alexaverify'     => 'alexa_verify',
+			'googleverify'    => 'google_verify',
+			'msverify'        => 'bing_verify',
+			'pinterestverify' => 'pinterest_verify',
+			'yandexverify'    => 'yandex_verify',
+		];
+		$this->replace( $hash, $yoast_main, $this->settings );
+
+		$hash = [
+			'facebook_site' => 'social_url_facebook',
+			'twitter_site'  => 'twitter_author_names',
+			'instagram_url' => 'social_url_instagram',
+			'linkedin_url'  => 'social_url_linkedin',
+			'youtube_url'   => 'social_url_youtube',
+			'pinterest_url' => 'social_url_pinterest',
+			'myspace_url'   => 'social_url_myspace',
+			'fbadminapp'    => 'facebook_app_id',
+		];
+		$this->replace( $hash, $yoast_social, $this->titles );
+	}
+
+	/**
+	 * Breadcrumb settings.
+	 *
+	 * @param array $yoast_titles        Settings.
+	 * @param array $yoast_internallinks Settings.
+	 */
+	private function breadcrumb_settings( $yoast_titles, $yoast_internallinks ) {
+		$hash = [
+			'breadcrumbs-sep'           => 'breadcrumbs_separator',
+			'breadcrumbs-home'          => 'breadcrumbs_home_label',
+			'breadcrumbs-prefix'        => 'breadcrumbs_prefix',
+			'breadcrumbs-archiveprefix' => 'breadcrumbs_archive_format',
+			'breadcrumbs-searchprefix'  => 'breadcrumbs_search_format',
+			'breadcrumbs-404crumb'      => 'breadcrumbs_404_label',
+		];
+		$this->replace( $hash, $yoast_titles, $this->settings );
+		$this->replace( $hash, $yoast_internallinks, $this->settings );
+
+		$hash = [ 'breadcrumbs-enable' => 'breadcrumbs' ];
+		$this->replace( $hash, $yoast_titles, $this->settings, 'convert_bool' );
+		$this->replace( $hash, $yoast_internallinks, $this->settings, 'convert_bool' );
+
+		// RSS.
+		$yoast_rss = get_option( 'wpseo_rss' );
+		$hash      = [
+			'rssbefore' => 'rss_before_content',
+			'rssafter'  => 'rss_after_content',
+		];
+		$this->replace( $hash, $yoast_rss, $this->settings, 'convert_variables' );
 	}
 }

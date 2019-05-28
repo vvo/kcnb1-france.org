@@ -31,7 +31,7 @@ class Client {
 	 *
 	 * @var array
 	 */
-	public $data = array();
+	public $data = [];
 
 	/**
 	 * Hold selected profile.
@@ -45,53 +45,58 @@ class Client {
 	 */
 	public function __construct() {
 		$this->set_data();
+		$this->maybe_refresh_token();
 	}
 
 	/**
 	 * Make an HTTP GET request - for retrieving data.
 	 *
-	 * @param  string $url     URL to do request.
-	 * @param  array  $args    Assoc array of arguments (usually your data).
-	 * @param  int    $timeout Timeout limit for request in seconds.
+	 * @param string $url     URL to do request.
+	 * @param array  $args    Assoc array of arguments (usually your data).
+	 * @param int    $timeout Timeout limit for request in seconds.
+	 *
 	 * @return array|false     Assoc array of API response, decoded from JSON.
 	 */
-	public function get( $url, $args = array(), $timeout = 10 ) {
+	public function get( $url, $args = [], $timeout = 10 ) {
 		return $this->make_request( 'get', $url, $args, $timeout );
 	}
 
 	/**
 	 * Make an HTTP POST request - for creating and updating items.
 	 *
-	 * @param  string $url     URL to do request.
-	 * @param  array  $args    Assoc array of arguments (usually your data).
-	 * @param  int    $timeout Timeout limit for request in seconds.
+	 * @param string $url     URL to do request.
+	 * @param array  $args    Assoc array of arguments (usually your data).
+	 * @param int    $timeout Timeout limit for request in seconds.
+	 *
 	 * @return array|false     Assoc array of API response, decoded from JSON.
 	 */
-	public function post( $url, $args = array(), $timeout = 10 ) {
+	public function post( $url, $args = [], $timeout = 10 ) {
 		return $this->make_request( 'post', $url, $args, $timeout );
 	}
 
 	/**
 	 * Make an HTTP PUT request - for creating new items.
 	 *
-	 * @param  string $url     URL to do request.
-	 * @param  array  $args    Assoc array of arguments (usually your data).
-	 * @param  int    $timeout Timeout limit for request in seconds.
+	 * @param string $url     URL to do request.
+	 * @param array  $args    Assoc array of arguments (usually your data).
+	 * @param int    $timeout Timeout limit for request in seconds.
+	 *
 	 * @return array|false     Assoc array of API response, decoded from JSON.
 	 */
-	public function put( $url, $args = array(), $timeout = 10 ) {
+	public function put( $url, $args = [], $timeout = 10 ) {
 		return $this->make_request( 'put', $url, $args, $timeout );
 	}
 
 	/**
 	 * Make an HTTP DELETE request - for deleting data.
 	 *
-	 * @param  string $url     URL to do request.
-	 * @param  array  $args    Assoc array of arguments (usually your data).
-	 * @param  int    $timeout Timeout limit for request in seconds.
+	 * @param string $url     URL to do request.
+	 * @param array  $args    Assoc array of arguments (usually your data).
+	 * @param int    $timeout Timeout limit for request in seconds.
+	 *
 	 * @return array|false     Assoc array of API response, decoded from JSON.
 	 */
-	public function delete( $url, $args = array(), $timeout = 10 ) {
+	public function delete( $url, $args = [], $timeout = 10 ) {
 		return $this->make_request( 'delete', $url, $args, $timeout );
 	}
 
@@ -102,19 +107,19 @@ class Client {
 	 * @param string $url       URL to do request.
 	 * @param array  $args       Assoc array of parameters to be passed.
 	 * @param int    $timeout    Timeout limit for request in seconds.
+	 *
 	 * @return array|false Assoc array of decoded result.
 	 */
-	private function make_request( $http_verb, $url, $args = array(), $timeout = 10 ) {
-
+	private function make_request( $http_verb, $url, $args = [], $timeout = 10 ) {
 		if ( ! isset( $this->data['access_token'] ) ) {
 			return false;
 		}
 
-		$params = array(
+		$params = [
 			'timeout' => $timeout,
 			'method'  => $http_verb,
-			'headers' => array( 'Authorization' => 'Bearer ' . $this->data['access_token'] ),
-		);
+			'headers' => [ 'Authorization' => 'Bearer ' . $this->data['access_token'] ],
+		];
 
 		if ( 'DELETE' === $http_verb || 'PUT' === $http_verb ) {
 			$params['headers']['Content-Length'] = '0';
@@ -137,40 +142,40 @@ class Client {
 	 *
 	 * @return array
 	 */
-	public function process_response( $response, $http_verb = '', $url = '' ) {
-		if ( ! is_wp_error( $response ) ) {
-			$code = wp_remote_retrieve_response_code( $response );
-			$body = wp_remote_retrieve_body( $response );
-			if ( ! empty( $body ) ) {
-				$body = json_decode( $body, true );
-			}
-
-			if ( 200 === $code || 204 === $code ) {
-				return array(
-					'status' => 'success',
-					'code'   => '200',
-					'body'   => $body,
-				);
-			}
-
-			if ( isset( $body['error_description'] ) && 'Bad Request' === $body['error_description'] ) {
-				$body['error_description'] = esc_html__( 'Bad request. Please check the code.', 'rank-math' );
-			}
-
-			\error_log( 'Rank Math GSC API Error: ' . strtoupper( $http_verb ) . ' ' . $url . ' ' . $code . ' | ' . json_encode( $body, JSON_UNESCAPED_SLASHES ) );
-
-			return array(
+	private function process_response( $response, $http_verb = '', $url = '' ) {
+		if ( is_wp_error( $response ) ) {
+			return [
 				'status' => 'fail',
-				'code'   => $code,
-				'body'   => $body,
-			);
+				'code'   => $response->get_error_code(),
+				'body'   => [ 'error_description' => 'WP_Error: ' . $response->get_error_message() ],
+			];
 		}
 
-		return array(
+		$code = wp_remote_retrieve_response_code( $response );
+		$body = wp_remote_retrieve_body( $response );
+		if ( ! empty( $body ) ) {
+			$body = json_decode( $body, true );
+		}
+
+		if ( in_array( $code, [ 200, 204 ], true ) ) {
+			return [
+				'status' => 'success',
+				'code'   => '200',
+				'body'   => $body,
+			];
+		}
+
+		if ( isset( $body['error_description'] ) && 'Bad Request' === $body['error_description'] ) {
+			$body['error_description'] = esc_html__( 'Bad request. Please check the code.', 'rank-math' );
+		}
+
+		error_log( 'Rank Math GSC API Error: ' . strtoupper( $http_verb ) . ' ' . $url . ' ' . $code . ' | ' . json_encode( $body, JSON_UNESCAPED_SLASHES ) );
+
+		return [
 			'status' => 'fail',
-			'code'   => $response->get_error_code(),
-			'body'   => array( 'error_description' => 'WP_Error: ' . $response->get_error_message() ),
-		);
+			'code'   => $code,
+			'body'   => $body,
+		];
 	}
 
 	/**
@@ -178,8 +183,8 @@ class Client {
 	 *
 	 * @return array
 	 */
-	public function fetch_profiles() {
-		$profiles = array();
+	public function get_profiles() {
+		$profiles = [];
 
 		if ( ! $this->is_authorized ) {
 			return $profiles;
@@ -190,11 +195,7 @@ class Client {
 			foreach ( $response['body']['siteEntry'] as $site ) {
 				$profiles[ $site['siteUrl'] ] = $site['siteUrl'];
 			}
-			Helper::search_console_data( array(
-				'profiles' => $profiles,
-			));
-		} else {
-			$this->error_notice( $response, true );
+			Helper::search_console_data( [ 'profiles' => $profiles ] );
 		}
 
 		return $profiles;
@@ -204,30 +205,36 @@ class Client {
 	 * Fetch access token
 	 *
 	 * @param string $code oAuth token.
+	 *
 	 * @return array
 	 */
-	public function fetch_access_token( $code ) {
+	public function get_access_token( $code ) {
 		$config = Helper::get_console_api_config();
 
-		$response = wp_remote_post( $config['token_url'], array(
-			'body'    => array(
-				'code'          => $code,
-				'client_id'     => $config['client_id'],
-				'client_secret' => $config['client_secret'],
-				'redirect_uri'  => $config['redirect_uri'],
-				'grant_type'    => 'authorization_code',
-			),
-			'timeout' => 15,
-		) );
+		$response = wp_remote_post(
+			$config['token_url'],
+			[
+				'body'    => [
+					'code'          => $code,
+					'client_id'     => $config['client_id'],
+					'client_secret' => $config['client_secret'],
+					'redirect_uri'  => $config['redirect_uri'],
+					'grant_type'    => 'authorization_code',
+				],
+				'timeout' => 15,
+			]
+		);
 
 		$data = $this->process_response( $response );
 		if ( 'success' === $data['status'] ) {
-			Helper::search_console_data( array(
-				'authorized'    => true,
-				'expire'        => time() + $data['body']['expires_in'],
-				'access_token'  => $data['body']['access_token'],
-				'refresh_token' => $data['body']['refresh_token'],
-			));
+			Helper::search_console_data(
+				[
+					'authorized'    => true,
+					'expire'        => time() + $data['body']['expires_in'],
+					'access_token'  => $data['body']['access_token'],
+					'refresh_token' => $data['body']['refresh_token'],
+				]
+			);
 		}
 
 		$this->set_data();
@@ -238,7 +245,7 @@ class Client {
 	/**
 	 * Maybe we need to refresh the token before processing api request.
 	 */
-	public function maybe_refresh_token() {
+	private function maybe_refresh_token() {
 		if ( ! isset( $this->data['expire'] ) ) {
 			return;
 		}
@@ -248,9 +255,6 @@ class Client {
 		// If it has expired or does so in the next 30 seconds then refresh token.
 		if ( $expire && time() > ( $expire - 120 ) ) {
 			$new_token = $this->refresh_token();
-			if ( 'success' !== $new_token['status'] ) {
-				$this->error_notice( $new_token, true );
-			}
 		}
 	}
 
@@ -259,25 +263,30 @@ class Client {
 	 *
 	 * @return array
 	 */
-	public function refresh_token() {
+	private function refresh_token() {
 		$config = Helper::get_console_api_config();
 
-		$response = wp_remote_post( $config['token_url'], array(
-			'body'    => array(
-				'refresh_token' => $this->data['refresh_token'],
-				'client_id'     => $config['client_id'],
-				'client_secret' => $config['client_secret'],
-				'grant_type'    => 'refresh_token',
-			),
-			'timeout' => 15,
-		) );
+		$response = wp_remote_post(
+			$config['token_url'],
+			[
+				'body'    => [
+					'refresh_token' => $this->data['refresh_token'],
+					'client_id'     => $config['client_id'],
+					'client_secret' => $config['client_secret'],
+					'grant_type'    => 'refresh_token',
+				],
+				'timeout' => 15,
+			]
+		);
 
 		$data = $this->process_response( $response );
 		if ( 'success' === $data['status'] ) {
-			Helper::search_console_data( array(
-				'expire'       => time() + $data['body']['expires_in'],
-				'access_token' => $data['body']['access_token'],
-			));
+			Helper::search_console_data(
+				[
+					'expire'       => time() + $data['body']['expires_in'],
+					'access_token' => $data['body']['access_token'],
+				]
+			);
 		}
 
 		return $data;
@@ -287,12 +296,14 @@ class Client {
 	 * Disconnect client connection.
 	 */
 	public function disconnect() {
-
 		Helper::search_console_data( false );
-		add_option( 'rank_math_search_console_data', array(
-			'authorized' => false,
-			'profiles'   => array(),
-		) );
+		add_option(
+			'rank_math_search_console_data',
+			[
+				'authorized' => false,
+				'profiles'   => [],
+			]
+		);
 
 		$this->set_data();
 	}
@@ -300,37 +311,40 @@ class Client {
 	/**
 	 * Fetch sitemaps.
 	 *
-	 * @param  boolean $with_index With index data.
-	 * @param  boolean $force      Purge cache and fetch new data.
+	 * @param boolean $with_index With index data.
+	 * @param boolean $force      Purge cache and fetch new data.
+	 *
 	 * @return array
 	 */
-	public function fetch_sitemaps( $with_index = false, $force = false ) {
-
+	public function get_sitemaps( $with_index = false, $force = false ) {
 		if ( empty( $this->profile ) ) {
-			return array();
+			return [];
 		}
 
 		$key      = $this->generate_key( 'sitemaps', ( $with_index ? 'index' : '' ) );
 		$sitemaps = get_transient( $key );
-		if ( $force || false === $sitemaps ) {
-			$with_index = $with_index ? '?sitemapIndex=' . urlencode( trailingslashit( $this->profile ) . 'sitemap_index.xml' ) : '';
-			$response   = $this->get( 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode( $this->profile ) . '/sitemaps' . $with_index );
-
-			if ( 'success' === $response['status'] ) {
-				$sitemaps = $response['body']['sitemap'];
-				set_transient( $key, $sitemaps, DAY_IN_SECONDS );
-			} else {
-				Helper::add_notification( $response['body']['error']['message'] );
-			}
+		if ( ! $force && false !== $sitemaps ) {
+			return $sitemaps;
 		}
 
-		return $sitemaps ? $sitemaps : array();
+		$with_index = $with_index ? '?sitemapIndex=' . urlencode( trailingslashit( $this->profile ) . 'sitemap_index.xml' ) : '';
+		$response   = $this->get( 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode( $this->profile ) . '/sitemaps' . $with_index );
+
+		if ( 'success' !== $response['status'] ) {
+			Helper::add_notification( $response['body']['error']['message'] );
+			return [];
+		}
+
+		$sitemaps = $response['body']['sitemap'];
+		set_transient( $key, $sitemaps, DAY_IN_SECONDS );
+		return $sitemaps;
 	}
 
 	/**
 	 * Submit sitemap to search console.
 	 *
-	 * @param  string $sitemap Sitemap url.
+	 * @param string $sitemap Sitemap url.
+	 *
 	 * @return array
 	 */
 	public function submit_sitemap( $sitemap ) {
@@ -340,42 +354,12 @@ class Client {
 	/**
 	 * Delete sitemap from search console.
 	 *
-	 * @param  string $sitemap Sitemap url.
+	 * @param string $sitemap Sitemap url.
+	 *
 	 * @return array
 	 */
 	public function delete_sitemap( $sitemap ) {
 		return $this->delete( 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode( $this->profile ) . '/sitemaps/' . urlencode( $sitemap ) );
-	}
-
-	/**
-	 * Generate deferred error notice.
-	 *
-	 * @param array|string $response   Request response which contain error as well.
-	 * @param boolean      $disconnect Either disconnect client.
-	 */
-	public function error_notice( $response, $disconnect = false ) {
-
-		return;
-		if ( $disconnect ) {
-			$this->disconnect();
-		}
-
-		$message = false;
-		if ( is_string( $response ) ) {
-			$message = $response;
-		} elseif ( is_array( $response ) ) {
-			if ( isset( $response['body']['error']['message'] ) ) {
-				$message = $response['body']['error']['message'];
-			} elseif ( isset( $response['body']['error_description'] ) ) {
-				$message = $response['body']['error_description'];
-			}
-		}
-
-		if ( false === $message ) {
-			return;
-		}
-
-		Helper::add_notification( $message, [ 'type' => 'error' ] );
 	}
 
 	/**
@@ -395,11 +379,12 @@ class Client {
 	/**
 	 * Generate Cache Keys.
 	 *
-	 * @param  string $what What for you need the key.
-	 * @param  mixed  $args more salt to add into key.
+	 * @param string $what What for you need the key.
+	 * @param mixed  $args more salt to add into key.
+	 *
 	 * @return string
 	 */
-	public function generate_key( $what, $args = array() ) {
+	public function generate_key( $what, $args = [] ) {
 		$key = '_rank_math_' . $this->profile_salt . '_sc_' . $what;
 
 		if ( ! empty( $args ) ) {

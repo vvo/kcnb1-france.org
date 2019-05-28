@@ -51,21 +51,27 @@ $cmb->add_field([
 	'default' => Helper::get_settings( "titles.pt_{$post_type}_default_rich_snippet" ),
 ]);
 
-$headline = Helper::get_settings( "titles.pt_{$post_type}_default_snippet_name" );
-$headline = $headline ? $headline : '';
-
 // Common fields.
+$cmb->add_field([
+	'id'         => 'rank_math_snippet_shortcode',
+	'name'       => esc_html__( 'Shortcode', 'rank-math' ),
+	'type'       => 'text',
+	'desc'       => esc_html__( 'Copy & paste this shortcode in the content.', 'rank-math' ),
+	'dep'        => [ [ 'rank_math_rich_snippet', 'off,article,review', '!=' ] ],
+	'attributes' => [
+		'readonly' => 'readonly',
+		'value'    => '[rank_math_rich_snippet]',
+	],
+]);
+
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_name',
 	'type'       => 'text',
 	'name'       => esc_html__( 'Headline', 'rank-math' ),
 	'dep'        => [ [ 'rank_math_rich_snippet', 'off', '!=' ] ],
-	'attributes' => [ 'placeholder' => $headline ],
+	'attributes' => [ 'placeholder' => Helper::get_settings( "titles.pt_{$post_type}_default_snippet_name", '' ) ],
 	'classes'    => 'rank-math-supports-variables',
 ]);
-
-$description = Helper::get_settings( "titles.pt_{$post_type}_default_snippet_desc" );
-$description = $description ? $description : '';
 
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_desc',
@@ -74,7 +80,7 @@ $cmb->add_field([
 	'attributes' => [
 		'rows'            => 3,
 		'data-autoresize' => true,
-		'placeholder'     => $description,
+		'placeholder'     => Helper::get_settings( "titles.pt_{$post_type}_default_snippet_desc", '' ),
 	],
 	'classes'    => 'rank-math-supports-variables',
 	'dep'        => [ [ 'rank_math_rich_snippet', 'off,book,local', '!=' ] ],
@@ -83,11 +89,13 @@ $cmb->add_field([
 $cmb->add_field([
 	'id'         => 'rank_math_snippet_url',
 	'type'       => 'text_url',
-	'name'       => esc_html__( 'Url', 'rank-math' ),
+	'name'       => esc_html__( 'URL', 'rank-math' ),
 	'attributes' => [
 		'rows'            => 3,
 		'data-autoresize' => true,
+		'data-rule-url'   => true,
 	],
+	'classes'    => 'rank-math-validate-field',
 	'dep'        => [ [ 'rank_math_rich_snippet', 'book,event,local,music' ] ],
 ]);
 

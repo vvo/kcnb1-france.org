@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Database
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Database;

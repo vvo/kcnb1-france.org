@@ -5,7 +5,7 @@
  * @since      1.0.0
  * @package    MyThemeShop
  * @subpackage MyThemeShop\Database
- * @author     MyThemeShop <support@rankmath.com>
+ * @author     MyThemeShop <admin@mythemeshop.com>
  */
 
 namespace MyThemeShop\Database;
@@ -18,7 +18,7 @@ trait Escape {
 	/**
 	 * Escape array values for sql
 	 *
-	 * @param  array $arr Array to escape.
+	 * @param array $arr Array to escape.
 	 *
 	 * @return array
 	 */
@@ -29,7 +29,7 @@ trait Escape {
 	/**
 	 * Escape value for sql
 	 *
-	 * @param  mixed $value Value to escape.
+	 * @param mixed $value Value to escape.
 	 *
 	 * @return mixed
 	 */

@@ -102,9 +102,7 @@ class Capability_Manager {
 				continue;
 			}
 
-			foreach ( $this->get_default_capabilities_by_role( $slug ) as $cap ) {
-				$role->add_cap( $cap );
-			}
+			$this->loop_capabilities( $this->get_default_capabilities_by_role( $slug ), 'add_cap', $role );
 		}
 	}
 
@@ -119,9 +117,20 @@ class Capability_Manager {
 				continue;
 			}
 
-			foreach ( $capabilities as $cap ) {
-				$role->remove_cap( $cap );
-			}
+			$this->loop_capabilities( $capabilities, 'remove_cap', $role );
+		}
+	}
+
+	/**
+	 * Loop capabilities and perform action.
+	 *
+	 * @param array  $caps    Capabilities.
+	 * @param string $perform Action to perform.
+	 * @param object $role    Role object.
+	 */
+	private function loop_capabilities( $caps, $perform, $role ) {
+		foreach ( $caps as $cap ) {
+			$role->$perform( $cap );
 		}
 	}
 

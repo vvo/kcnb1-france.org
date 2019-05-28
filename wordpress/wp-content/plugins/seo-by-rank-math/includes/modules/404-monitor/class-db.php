@@ -33,17 +33,21 @@ class DB {
 	 * Get error logs.
 	 *
 	 * @param array $args Array of arguments.
+	 *
 	 * @return array
 	 */
 	public static function get_logs( $args ) {
-		$args = wp_parse_args( $args, array(
-			'orderby' => 'id',
-			'order'   => 'DESC',
-			'limit'   => 10,
-			'paged'   => 1,
-			'search'  => '',
-			'ids'     => array(),
-		) );
+		$args = wp_parse_args(
+			$args,
+			[
+				'orderby' => 'id',
+				'order'   => 'DESC',
+				'limit'   => 10,
+				'paged'   => 1,
+				'search'  => '',
+				'ids'     => [],
+			]
+		);
 
 		$table = self::table()->found_rows()->page( $args['paged'] - 1, $args['limit'] );
 
@@ -55,14 +59,14 @@ class DB {
 			$table->whereIn( 'id', (array) $args['ids'] );
 		}
 
-		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], array( 'id', 'uri', 'accessed', 'times_accessed' ) ) ) {
+		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], [ 'id', 'uri', 'accessed', 'times_accessed' ], true ) ) {
 			$table->orderBy( $args['orderby'], $args['order'] );
 		}
 
-		return array(
+		return [
 			'logs'  => $table->get( ARRAY_A ),
 			'count' => $table->get_found_rows(),
-		);
+		];
 	}
 
 	/**
@@ -71,14 +75,17 @@ class DB {
 	 * @param array $args Values to insert.
 	 */
 	public static function add( $args ) {
-		$args = wp_parse_args( $args, array(
-			'uri'            => '',
-			'accessed'       => current_time( 'mysql' ),
-			'times_accessed' => '1',
-			'ip'             => '',
-			'referer'        => '',
-			'user_agent'     => '',
-		));
+		$args = wp_parse_args(
+			$args,
+			[
+				'uri'            => '',
+				'accessed'       => current_time( 'mysql' ),
+				'times_accessed' => '1',
+				'ip'             => '',
+				'referer'        => '',
+				'user_agent'     => '',
+			]
+		);
 
 		// Maybe delete logs if record exceed defined limit.
 		$limit = absint( Helper::get_settings( 'general.404_monitor_limit' ) );
@@ -86,7 +93,7 @@ class DB {
 			self::clear_logs();
 		}
 
-		return self::table()->insert( $args, array( '%s', '%s', '%d', '%s', '%s', '%s' ) );
+		return self::table()->insert( $args, [ '%s', '%s', '%d', '%s', '%s', '%s' ] );
 	}
 
 	/**
@@ -107,7 +114,8 @@ class DB {
 	/**
 	 * Delete a record.
 	 *
-	 * @param  array $ids Array of ids to delete.
+	 * @param array $ids Array of ids to delete.
+	 *
 	 * @return int Number of records deleted.
 	 */
 	public static function delete_log( $ids ) {
@@ -144,14 +152,15 @@ class DB {
 	/**
 	 * Update if url is a matched and hit.
 	 *
-	 * @param  object $row Record to update.
+	 * @param object $row Record to update.
+	 *
 	 * @return int|false The number of rows updated, or false on error.
 	 */
 	private static function update_counter( $row ) {
-		$update_data = array(
+		$update_data = [
 			'accessed'       => current_time( 'mysql' ),
 			'times_accessed' => absint( $row['times_accessed'] ) + 1,
-		);
+		];
 		return self::table()->set( $update_data )->where( 'id', absint( $row['id'] ) )->update();
 	}
 }

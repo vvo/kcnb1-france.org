@@ -8,13 +8,15 @@
  * @author     Rank Math <support@rankmath.com>
  */
 
+use RankMath\Helper;
+
 /**
  * Change of authentication end-point notice.
  */
 function rank_math_1_0_18_authentication_change() {
-	$is_skipped = \RankMath\Helper::is_plugin_active_for_network() ? get_blog_option( get_main_site_id(), 'rank_math_registration_skip' ) : get_option( 'rank_math_registration_skip' );
+	$is_skipped = Helper::is_plugin_active_for_network() ? get_blog_option( get_main_site_id(), 'rank_math_registration_skip' ) : get_option( 'rank_math_registration_skip' );
 
-	\RankMath\Helper::add_notification(
+	Helper::add_notification(
 		sprintf(
 			'Rank Math has a new home. Please <a href="%s">Register for FREE</a> and <a href="%s">CONNECT your account</a> again.',
 			'https://rankmath.com/#signup',

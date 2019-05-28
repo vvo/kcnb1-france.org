@@ -6,6 +6,8 @@
  * @subpackage RankMath\WooCommerce
  */
 
+use RankMath\Helper;
+
 $cmb->add_field( array(
 	'id'      => 'wc_remove_product_base',
 	'type'    => 'switch',
@@ -47,4 +49,12 @@ $cmb->add_field( array(
 	'name'    => esc_html__( 'Remove Snippet Data', 'rank-math' ),
 	'desc'    => esc_html__( 'Remove Snippet Data from WooCommerce Shop page.', 'rank-math' ),
 	'default' => 'on',
+) );
+
+$cmb->add_field( array(
+	'id'      => 'product_brand',
+	'type'    => 'select',
+	'name'    => esc_html__( 'Brand', 'rank-math' ),
+	'desc'    => esc_html__( 'Select Product Brand Taxonomy to use in Schema.org & OpenGraph markup.', 'rank-math' ),
+	'options' => Helper::get_object_taxonomies( 'product', 'choices', false ),
 ) );

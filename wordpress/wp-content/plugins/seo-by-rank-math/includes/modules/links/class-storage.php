@@ -45,8 +45,11 @@ class Storage {
 	 * @return Link[] The links connected to the post.
 	 */
 	public function get_links( $post_id ) {
-		$links   = array();
-		$results = $this->table()->select( array( 'url', 'post_id', 'target_post_id', 'type' ) )->where( 'post_id', $post_id )->get();
+		$links   = [];
+		$results = $this->table()
+			->select( [ 'url', 'post_id', 'target_post_id', 'type' ] )
+			->where( 'post_id', $post_id )
+			->get();
 
 		foreach ( $results as $link ) {
 			$links[] = new Link( $link->url, $link->target_post_id, $link->type );
@@ -65,12 +68,15 @@ class Storage {
 	 */
 	public function save_links( $post_id, array $links ) {
 		foreach ( $links as $link ) {
-			$this->table()->insert( array(
-				'url'            => $link->get_url(),
-				'post_id'        => $post_id,
-				'target_post_id' => $link->get_target_post_id(),
-				'type'           => $link->get_type(),
-			), array( '%s', '%d', '%d', '%s' ) );
+			$this->table()->insert(
+				[
+					'url'            => $link->get_url(),
+					'post_id'        => $post_id,
+					'target_post_id' => $link->get_target_post_id(),
+					'type'           => $link->get_type(),
+				],
+				[ '%s', '%d', '%d', '%s' ]
+			);
 		}
 	}
 
@@ -82,10 +88,13 @@ class Storage {
 	 * @param Link[]   $links   Links to process for incoming link count update.
 	 */
 	public function update_link_counts( $post_id, $counts, array $links ) {
-		$counts = wp_parse_args( $counts, array(
-			'internal_link_count' => 0,
-			'external_link_count' => 0,
-		) );
+		$counts = wp_parse_args(
+			$counts,
+			[
+				'internal_link_count' => 0,
+				'external_link_count' => 0,
+			]
+		);
 
 		$this->save_meta_data( $post_id, $counts );
 		$this->update_incoming_links( $post_id, $links );
@@ -101,7 +110,7 @@ class Storage {
 	 */
 	public function update_incoming_links( $post_id, $links ) {
 		$post_ids = $this->get_internal_post_ids( $links );
-		$post_ids = array_merge( array( $post_id ), $post_ids );
+		$post_ids = array_merge( [ $post_id ], $post_ids );
 		$this->update_incoming_link_count( $post_ids );
 	}
 
@@ -109,10 +118,11 @@ class Storage {
 	 * Extract the post IDs from the links.
 	 *
 	 * @param Link[] $links Links to update the incoming link count of.
+	 *
 	 * @return int[] List of post IDs.
 	 */
 	protected function get_internal_post_ids( $links ) {
-		$post_ids = array();
+		$post_ids = [];
 		foreach ( $links as $link ) {
 			$post_ids[] = $link->get_target_post_id();
 		}
@@ -126,19 +136,21 @@ class Storage {
 	 * @param array $post_ids The posts to update the incoming link count for.
 	 */
 	public function update_incoming_link_count( array $post_ids ) {
-		$results = $this->table()->selectCount( 'id', 'incoming' )->select( 'target_post_id as post_id' )
+		$results = $this->table()
+			->selectCount( 'id', 'incoming' )
+			->select( 'target_post_id as post_id' )
 			->whereIn( 'target_post_id', $post_ids )
 			->groupBy( 'target_post_id' )->get();
 
-		$post_ids_non_zero = array();
+		$post_ids_non_zero = [];
 		foreach ( $results as $result ) {
-			$this->save_meta_data( $result->post_id, array( 'incoming_link_count' => $result->incoming ) );
+			$this->save_meta_data( $result->post_id, [ 'incoming_link_count' => $result->incoming ] );
 			$post_ids_non_zero[] = $result->post_id;
 		}
 
 		$post_ids_zero = array_diff( $post_ids, $post_ids_non_zero );
 		foreach ( $post_ids_zero as $post_id ) {
-			$this->save_meta_data( $post_id, array( 'incoming_link_count' => 0 ) );
+			$this->save_meta_data( $post_id, [ 'incoming_link_count' => 0 ] );
 		}
 	}
 
@@ -154,7 +166,7 @@ class Storage {
 		// Suppress database errors.
 		$last_suppressed_state = $wpdb->suppress_errors();
 
-		$where  = array( 'object_id' => $post_id );
+		$where  = [ 'object_id' => $post_id ];
 		$data   = array_merge( $where, $meta_data );
 		$result = $wpdb->insert( $wpdb->prefix . 'rank_math_internal_meta', $data );
 

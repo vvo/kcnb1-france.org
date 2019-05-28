@@ -10,13 +10,13 @@
 
 namespace RankMath\Admin;
 
+use RankMath\KB;
 use RankMath\CMB2;
 use RankMath\Helper;
 use RankMath\Runner;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Helpers\Arr;
 use MyThemeShop\Helpers\WordPress;
-use RankMath\KB;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -331,7 +331,7 @@ class Option_Center implements Runner {
 		);
 
 		foreach ( $flush_fields as $field_id ) {
-			if ( in_array( $field_id, $updated ) ) {
+			if ( in_array( $field_id, $updated, true ) ) {
 				Helper::schedule_flush_rewrite();
 				break;
 			}

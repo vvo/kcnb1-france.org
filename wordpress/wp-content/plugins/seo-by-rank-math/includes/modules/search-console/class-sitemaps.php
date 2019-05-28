@@ -71,52 +71,60 @@ class Sitemaps {
 	/**
 	 * Get sitemaps from api.
 	 *
-	 * @param  boolean $with_index With index data.
-	 * @param  boolean $force      Purge cache and fetch new data.
+	 * @param boolean $with_index With index data.
+	 * @param boolean $force      Purge cache and fetch new data.
+	 *
 	 * @return array
 	 */
 	public function get_sitemaps( $with_index = false, $force = false ) {
-		return $this->client->fetch_sitemaps( $with_index, $force );
+		return $this->client->get_sitemaps( $with_index, $force );
 	}
 
 	/**
 	 * Sync sitemaps with google search console.
 	 */
 	private function sync_sitemaps() {
-
-		if ( $this->selected_site_is_domain_property() ) {
+		if ( $this->selected_site_is_domain_property() || ! $this->check_selected_site() ) {
 			return false;
 		}
 
-		if ( ! $this->check_selected_site() ) {
-			return false;
-		}
-
-		$remote_sitemaps = $this->get_sitemaps();
-
-		$delete_sitemaps  = array();
-		$sitemaps_in_list = false;
-		$local_sitemap    = trailingslashit( $this->client->profile ) . 'sitemap_index.xml';
-
-		foreach ( $remote_sitemaps as $sitemap ) {
-			if ( $sitemap['path'] === $local_sitemap ) {
-				$sitemaps_in_list = true;
-			} else {
-				$delete_sitemaps[] = $sitemap['path'];
-			}
-		}
+		$data = $this->get_sitemap_to_sync();
 
 		// Submit it.
-		if ( ! $sitemaps_in_list ) {
-			$query = $this->client->submit_sitemap( $local_sitemap );
+		if ( ! $data['sitemaps_in_list'] ) {
+			$this->client->submit_sitemap( $data['local_sitemap'] );
+		}
+
+		if ( empty( $data['delete_sitemaps'] ) ) {
+			return;
 		}
 
 		// Delete it.
-		if ( ! empty( $delete_sitemaps ) ) {
-			foreach ( $delete_sitemaps as $sitemap ) {
-				$query = $this->client->delete_sitemap( $sitemap );
-			}
+		foreach ( $data['delete_sitemaps'] as $sitemap ) {
+			$this->client->delete_sitemap( $sitemap );
 		}
+	}
+
+	/**
+	 * Get sitemaps to sync.
+	 *
+	 * @return array
+	 */
+	private function get_sitemap_to_sync() {
+		$delete_sitemaps  = [];
+		$sitemaps_in_list = false;
+		$local_sitemap    = trailingslashit( $this->client->profile ) . 'sitemap_index.xml';
+
+		foreach ( $this->get_sitemaps() as $sitemap ) {
+			if ( $sitemap['path'] === $local_sitemap ) {
+				$sitemaps_in_list = true;
+				continue;
+			}
+
+			$delete_sitemaps[] = $sitemap['path'];
+		}
+
+		return compact( 'delete_sitemaps', 'sitemaps_in_list', 'local_sitemap' );
 	}
 
 	/**

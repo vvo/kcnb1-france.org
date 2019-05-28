@@ -98,15 +98,4 @@ class Redirections extends Plugin_Importer {
 
 		return '/';
 	}
-
-	/**
-	 * Returns array of choices of action which can be performed for plugin
-	 *
-	 * @return array
-	 */
-	public function get_choices() {
-		return [
-			'redirections' => esc_html__( 'Import Redirections', 'rank-math' ) . Admin_Helper::get_tooltip( esc_html__( 'Plugin redirections.', 'rank-math' ) ),
-		];
-	}
 }

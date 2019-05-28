@@ -32,7 +32,8 @@ class DB {
 	/**
 	 * Search for property.
 	 *
-	 * @param  string $query Search string.
+	 * @param string $query Search string.
+	 *
 	 * @return array
 	 */
 	public static function search( $query ) {
@@ -47,7 +48,8 @@ class DB {
 	/**
 	 * Get query for getting data for table
 	 *
-	 * @param  array $args Arguments.
+	 * @param array $args Arguments.
+	 *
 	 * @return \MyThemeShop\Database\Query_Builder
 	 */
 	public static function get_data_query( $args ) {
@@ -68,7 +70,7 @@ class DB {
 			$table->whereLike( 'property', $args['search'] );
 		}
 
-		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], array( 'id', 'property', 'clicks', 'impressions', 'position', 'ctr' ) ) ) {
+		if ( ! empty( $args['orderby'] ) && in_array( $args['orderby'], [ 'id', 'property', 'clicks', 'impressions', 'position', 'ctr' ], true ) ) {
 			$table->orderBy( $args['orderby'], $args['order'] );
 		}
 
@@ -78,22 +80,26 @@ class DB {
 	/**
 	 * Get data for listing.
 	 *
-	 * @param  array $args Arguments.
+	 * @param array $args Arguments.
+	 *
 	 * @return array
 	 */
 	public static function get_data( $args ) {
-		$args = wp_parse_args( $args, array(
-			'orderby' => 'clicks',
-			'order'   => 'DESC',
-			'limit'   => 10,
-			'paged'   => 0,
-			'offset'  => 0,
-			'search'  => '',
-		) );
+		$args = wp_parse_args(
+			$args,
+			[
+				'orderby' => 'clicks',
+				'order'   => 'DESC',
+				'limit'   => 10,
+				'paged'   => 0,
+				'offset'  => 0,
+				'search'  => '',
+			]
+		);
 
 		$table = self::get_data_query( $args )->found_rows();
 		if ( ! empty( $args['start_date'] ) && ! empty( $args['end_date'] ) ) {
-			$table->whereBetween( 'date', array( $args['start_date'], $args['end_date'] ) );
+			$table->whereBetween( 'date', [ $args['start_date'], $args['end_date'] ] );
 		}
 
 		if ( $args['limit'] > 0 ) {
@@ -101,29 +107,41 @@ class DB {
 			$table->page( $page, $args['limit'] );
 		}
 
-		$rows  = $table->get( ARRAY_A );
-		$count = $table->get_found_rows();
+		$rows     = $table->get( ARRAY_A );
+		$count    = $table->get_found_rows();
+		$old_rows = self::get_old_rows( $args, $table );
+		return compact( 'rows', 'old_rows', 'count' );
+	}
 
-		// Old Set.
-		if ( ! empty( $args['prev_start_date'] ) && ! empty( $args['prev_end_date'] ) ) {
+	/**
+	 * Get old rows data for listing.
+	 *
+	 * @param array         $args  Arguments.
+	 * @param Query_Builder $table Table instance.
+	 *
+	 * @return array
+	 */
+	private static function get_old_rows( $args, $table ) {
+		if ( empty( $args['prev_start_date'] ) || empty( $args['prev_end_date'] ) ) {
+			return [];
+		}
 
-			$table->selectCount()->where( 'dimension', 'date' )->whereBetween( 'date', array( $args['prev_start_date'], $args['prev_end_date'] ) );
-			$old_total = absint( $table->getVar() );
+		$table->selectCount()->where( 'dimension', 'date' )
+			->whereBetween( 'date', [ $args['prev_start_date'], $args['prev_end_date'] ] );
 
-			$old_rows = array();
-			if ( $args['diff'] <= $old_total ) {
+		$old_rows  = [];
+		$old_total = absint( $table->getVar() );
 
-				$table = self::get_data_query( $args );
-				$table->whereBetween( 'date', array( $args['prev_start_date'], $args['prev_end_date'] ) )->limit( 5000 );
+		if ( $args['diff'] <= $old_total ) {
+			$table = self::get_data_query( $args );
+			$table->whereBetween( 'date', [ $args['prev_start_date'], $args['prev_end_date'] ] )->limit( 5000 );
 
-				$old_rows = array();
-				foreach ( $table->get( ARRAY_A ) as $row ) {
-					$old_rows[ $row['property'] ] = $row;
-				}
+			foreach ( $table->get( ARRAY_A ) as $row ) {
+				$old_rows[ $row['property'] ] = $row;
 			}
 		}
 
-		return compact( 'rows', 'old_rows', 'count' );
+		return $old_rows;
 	}
 
 	/**
@@ -133,6 +151,7 @@ class DB {
 	 *
 	 * @param string $id    ID of the data to fetch.
 	 * @param array  $dates Array of dates.
+	 *
 	 * @return mixed
 	 */
 	public static function get_overview_data_from_cache( $id, $dates ) {
@@ -145,7 +164,7 @@ class DB {
 		if ( 'keywords' === $id || 'pages' === $id ) {
 			$data = self::table()->distinct()->selectCount( 'property', 'count' )
 				->where( 'dimension', 'pages' === $id ? 'page' : 'query' )
-				->whereBetween( 'date', array( $dates['start_date'], $dates['end_date'] ) )
+				->whereBetween( 'date', [ $dates['start_date'], $dates['end_date'] ] )
 				->getVar();
 		}
 
@@ -159,6 +178,7 @@ class DB {
 	 *
 	 * @param array  $dates      Array of dates.
 	 * @param string $dimension (Optional) Dimension to search in values are 'query', 'page' and 'date'.
+	 *
 	 * @return object
 	 */
 	public static function get_overview_data( $dates, $dimension = 'query' ) {
@@ -179,15 +199,8 @@ class DB {
 		$overview->old_ctr         = 0;
 
 		// Chart Data.
-		$rows  = self::get_data_query( array( 'dimension' => $dimension ) )->whereBetween( 'date', array( $dates['start_date'], $dates['end_date'] ) )->get();
-		$total = count( $rows );
-
-		foreach ( $rows as $row ) {
-			$overview->clicks      += $row->clicks;
-			$overview->impressions += $row->impressions;
-			$overview->position    += $row->position;
-			$overview->ctr         += $row->ctr;
-		}
+		$rows  = self::get_data_query( [ 'dimension' => $dimension ] )->whereBetween( 'date', [ $dates['start_date'], $dates['end_date'] ] )->get();
+		$total = self::sum_overview_data( $overview, $rows );
 
 		if ( $total > 0 ) {
 			$overview->ctr      = round( $overview->ctr / $total, 2 );
@@ -195,17 +208,11 @@ class DB {
 		}
 
 		// Previous Chart Data.
-		$old_rows  = self::get_data_query( array( 'dimension' => $dimension ) )->whereBetween( 'date', array( $dates['prev_start_date'], $dates['prev_end_date'] ) )->get();
+		$old_rows  = self::get_data_query( [ 'dimension' => $dimension ] )->whereBetween( 'date', [ $dates['prev_start_date'], $dates['prev_end_date'] ] )->get();
 		$old_total = count( $old_rows );
 
 		if ( $dates['diff'] <= $old_total ) {
-			foreach ( $old_rows as $row ) {
-				$overview->old_clicks      += $row->clicks;
-				$overview->old_impressions += $row->impressions;
-				$overview->old_position    += $row->position;
-				$overview->old_ctr         += $row->ctr;
-			}
-
+			self::sum_overview_data( $overview, $old_rows, 'old_' );
 			if ( $old_total > 0 ) {
 				$overview->old_ctr      = round( $overview->old_ctr / $old_total, 2 );
 				$overview->old_position = round( $overview->old_position / $old_total, 2 );
@@ -218,6 +225,28 @@ class DB {
 	}
 
 	/**
+	 * Sum overview data.
+	 *
+	 * @param object $overview Overview object.
+	 * @param array  $rows     Array of rows.
+	 * @param string $prefix   Prefix for old rows.
+	 *
+	 * @return int Total number of rows.
+	 */
+	private static function sum_overview_data( $overview, $rows, $prefix = '' ) {
+		$total = 0;
+		foreach ( $rows as $row ) {
+			$total++;
+			$overview->{$prefix . 'clicks'}      += $row->clicks;
+			$overview->{$prefix . 'impressions'} += $row->impressions;
+			$overview->{$prefix . 'position'}    += $row->position;
+			$overview->{$prefix . 'ctr'}         += $row->ctr;
+		}
+
+		return $total;
+	}
+
+	/**
 	 * Add a record.
 	 *
 	 * @param array  $row Data to insert.
@@ -225,15 +254,17 @@ class DB {
 	 * @param string $type Dimension.
 	 */
 	public static function insert( $row, $date, $type ) {
-		self::table()->insert(array(
-			'date'        => $date,
-			'property'    => $row['keys'][0],
-			'clicks'      => $row['clicks'],
-			'impressions' => $row['impressions'],
-			'position'    => $row['position'],
-			'ctr'         => $row['ctr'],
-			'dimension'   => $type,
-		));
+		self::table()->insert(
+			[
+				'date'        => $date,
+				'property'    => $row['keys'][0],
+				'clicks'      => $row['clicks'],
+				'impressions' => $row['impressions'],
+				'position'    => $row['position'],
+				'ctr'         => $row['ctr'],
+				'dimension'   => $type,
+			]
+		);
 	}
 
 	/**
@@ -248,7 +279,7 @@ class DB {
 			$start = date( 'Y-m-d H:i:s', strtotime( '-1 days' ) );
 			$end   = date( 'Y-m-d H:i:s', strtotime( '-90 days' ) );
 
-			self::table()->whereBetween( 'date', array( $end, $start ) )->delete();
+			self::table()->whereBetween( 'date', [ $end, $start ] )->delete();
 		}
 		self::purge_cache();
 
@@ -258,7 +289,8 @@ class DB {
 	/**
 	 * Check if a date exists in the sysyem.
 	 *
-	 * @param  string $date Date.
+	 * @param string $date Date.
+	 *
 	 * @return boolean
 	 */
 	public static function date_exists( $date ) {
@@ -314,7 +346,8 @@ class DB {
 	/**
 	 * Get data for weekly email.
 	 *
-	 * @param  array $data Array of data to search within.
+	 * @param array $data Array of data to search within.
+	 *
 	 * @return array
 	 */
 	public static function data_info( $data ) {
@@ -335,7 +368,7 @@ class DB {
 			->selectSum( 'impressions', 'impressions' )
 			->selectAvg( 'position', 'position' )
 			->selectAvg( 'ctr', 'ctr' )
-			->whereBetween( 'date', array( $data['start_date'], $data['end_date'] ) )->one();
+			->whereBetween( 'date', [ $data['start_date'], $data['end_date'] ] )->one();
 
 		$data_info = compact( 'keywords', 'pages', 'totals' );
 		set_transient( $option_key, $data_info, DAY_IN_SECONDS * 7 );

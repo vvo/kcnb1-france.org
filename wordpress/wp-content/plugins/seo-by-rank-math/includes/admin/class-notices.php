@@ -14,6 +14,7 @@ use RankMath\Runner;
 use RankMath\Helper;
 use RankMath\Traits\Ajax;
 use RankMath\Traits\Hooker;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,7 +51,7 @@ class Notices implements Runner {
 			return;
 		}
 
-		$current = get_post_types( array( 'public' => true ) );
+		$current = get_post_types( [ 'public' => true ] );
 		update_option( 'rank_math_known_post_types', $current );
 
 		if ( Helper::is_module_active( 'sitemap' ) ) {
@@ -62,7 +63,7 @@ class Notices implements Runner {
 	 * If plugin configuration not done
 	 */
 	private function is_plugin_configured() {
-		if ( isset( $_GET['page'] ) && 'mts-install-plugins' === $_GET['page'] ) {
+		if ( 'mts-install-plugins' === Param::get( 'page' ) ) {
 			return;
 		}
 
@@ -85,7 +86,7 @@ class Notices implements Runner {
 	 * If any new post type detected
 	 */
 	private function new_post_type() {
-		$known   = get_option( 'rank_math_known_post_types', array() );
+		$known   = get_option( 'rank_math_known_post_types', [] );
 		$current = Helper::get_accessible_post_types();
 		$new     = array_diff( $current, $known );
 

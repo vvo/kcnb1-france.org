@@ -12,6 +12,7 @@ namespace RankMath\Search_Console;
 
 use Exception;
 use RankMath\Helper;
+use MyThemeShop\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -30,12 +31,13 @@ class Data_Fetcher extends \WP_Background_Process {
 	/**
 	 * Task to perform
 	 *
-	 * @param  string $item Item to process.
+	 * @param string $item Item to process.
+	 *
 	 * @return bool
 	 */
 	protected function task( $item ) {
 		try {
-			if ( ! empty( trim( $item ) ) && is_string( $item ) ) {
+			if ( Str::is_non_empty( $item ) ) {
 				Helper::search_console()->get_analytics_data( $item );
 			}
 			return false;

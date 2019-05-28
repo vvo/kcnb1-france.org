@@ -6,7 +6,7 @@
  * @subpackage RankMath\Admin
  */
 
-$backups = get_option( 'rank_math_backups', array() );
+$backups = get_option( 'rank_math_backups', [] );
 ?>
 <div class="rank-math-export-form cmb2-form">
 

@@ -10,10 +10,11 @@
 
 namespace RankMath\Admin;
 
+use RankMath\Helper;
 use RankMath\Runner;
 use RankMath\Traits\Hooker;
 use MyThemeShop\Admin\Page;
-use RankMath\Helper as GlobalHelper;
+use MyThemeShop\Helpers\Param;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,36 +42,47 @@ class Admin_Menu implements Runner {
 	public function register_pages() {
 		$this->check_registration();
 
-		if ( GlobalHelper::is_invalid_registration() && ! is_network_admin() ) {
+		if ( Helper::is_invalid_registration() && ! is_network_admin() ) {
 			return;
 		}
 
 		// Dashboard / Welcome / About.
-		new Page( 'rank-math', esc_html__( 'Rank Math', 'rank-math' ), array(
-			'position'   => 80,
-			'capability' => 'manage_options',
-			'icon'       => rank_math()->plugin_url() . 'assets/admin/img/menu-icon.svg',
-			'render'     => Admin_Helper::get_view( 'dashboard' ),
-			'classes'    => array( 'rank-math-page' ),
-			'assets'     => array(
-				'styles'  => array( 'rank-math-dashboard' => '' ),
-				'scripts' => array( 'rank-math-dashboard' => '' ),
-			),
-			'is_network' => is_network_admin() && GlobalHelper::is_plugin_active_for_network(),
-		));
+		new Page(
+			'rank-math',
+			esc_html__( 'Rank Math', 'rank-math' ),
+			[
+				'position'   => 80,
+				'capability' => 'manage_options',
+				'icon'       => rank_math()->plugin_url() . 'assets/admin/img/menu-icon.svg',
+				'render'     => Admin_Helper::get_view( 'dashboard' ),
+				'classes'    => [ 'rank-math-page' ],
+				'assets'     => [
+					'styles'  => [ 'rank-math-dashboard' => '' ],
+					'scripts' => [
+						'rank-math-dashboard' => '',
+						'rank-math-validate'  => '',
+					],
+				],
+				'is_network' => is_network_admin() && Helper::is_plugin_active_for_network(),
+			]
+		);
 
 		// Help & Support.
-		new Page( 'rank-math-help', esc_html__( 'Help &amp; Support', 'rank-math' ), array(
-			'position'   => 99,
-			'parent'     => 'rank-math',
-			'capability' => 'level_1',
-			'classes'    => array( 'rank-math-page' ),
-			'render'     => Admin_Helper::get_view( 'help-manager' ),
-			'assets'     => array(
-				'styles'  => array( 'rank-math-common' => '' ),
-				'scripts' => array( 'rank-math-common' => '' ),
-			),
-		));
+		new Page(
+			'rank-math-help',
+			esc_html__( 'Help &amp; Support', 'rank-math' ),
+			[
+				'position'   => 99,
+				'parent'     => 'rank-math',
+				'capability' => 'level_1',
+				'classes'    => [ 'rank-math-page' ],
+				'render'     => Admin_Helper::get_view( 'help-manager' ),
+				'assets'     => [
+					'styles'  => [ 'rank-math-common' => '' ],
+					'scripts' => [ 'rank-math-common' => '' ],
+				],
+			]
+		);
 	}
 
 	/**
@@ -125,15 +137,17 @@ class Admin_Menu implements Runner {
 	 * Check for registration.
 	 */
 	private function check_registration() {
-
-		$what = isset( $_POST['registration-action'] ) ? $_POST['registration-action'] : false;
+		$what = Param::post( 'registration-action' );
 		if ( false === $what ) {
 			return;
 		}
 
 		if ( 'register' === $what ) {
 			Admin_Helper::allow_tracking();
-			Admin_Helper::register_product( $_POST['connect-username'], $_POST['connect-password'] );
+			Admin_Helper::register_product(
+				Param::post( 'connect-username' ),
+				Param::post( 'connect-password' )
+			);
 		}
 
 		if ( 'deregister' === $what ) {

@@ -11,6 +11,7 @@
 namespace RankMath\OpenGraph;
 
 use RankMath\Helper;
+use MyThemeShop\Helpers\Str;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -171,7 +172,7 @@ class Twitter extends OpenGraph {
 	 */
 	public function website() {
 		$this->site = $this->get_twitter_id( Helper::get_settings( 'titles.social_url_twitter' ) );
-		if ( is_string( $this->site ) && '' !== $this->site ) {
+		if ( Str::is_non_empty( $this->site ) ) {
 			$this->tag( 'twitter:site', '@' . $this->site );
 		}
 	}
@@ -199,9 +200,9 @@ class Twitter extends OpenGraph {
 		}
 		$author = $this->get_twitter_id( ltrim( trim( $author ), '@' ) );
 
-		if ( is_string( $author ) && '' !== $author ) {
+		if ( Str::is_non_empty( $author ) ) {
 			$this->tag( 'twitter:creator', '@' . $author );
-		} elseif ( is_string( $this->site ) && '' !== $this->site ) {
+		} elseif ( Str::is_non_empty( $this->site ) ) {
 			$this->tag( 'twitter:creator', '@' . $this->site );
 		}
 	}

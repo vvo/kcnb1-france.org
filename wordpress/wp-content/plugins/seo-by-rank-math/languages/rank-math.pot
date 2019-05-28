@@ -80,6 +80,27 @@ msgstr ""
 msgid "Import &amp; Export"
 msgstr ""
 
+msgid "Rate Rank Math SEO"
+msgstr ""
+
+msgid "Hey, we noticed you are using Rank Math SEO plugin for more than 2 weeks – <em>that's awesome!</em> <br>Could you please do us a BIG favor and give it a <strong>5-star</strong> rating on WordPress to help us spread the word and boost our motivation?"
+msgstr ""
+
+msgid "I already did. Please don't show this message again."
+msgstr ""
+
+msgid "Please use the correct format."
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
+msgid "Please enter a valid email address."
+msgstr ""
+
+msgid "Please enter a valid URL."
+msgstr ""
+
 #. translators: plugin url
 msgid "Thank you for using <a href=\"%s\" target=\"_blank\">Rank Math</a>"
 msgstr ""
@@ -199,16 +220,16 @@ msgstr ""
 msgid "Backup restored successfully."
 msgstr ""
 
-msgid "Settings could not be imported:"
-msgstr ""
-
-msgid "Upload failed."
-msgstr ""
-
 msgid "Settings successfully imported. Your old configuration has been saved as a backup."
 msgstr ""
 
 msgid "No settings found to be imported."
+msgstr ""
+
+msgid "Settings could not be imported:"
+msgstr ""
+
+msgid "Settings could not be imported: Upload failed."
 msgstr ""
 
 msgid "The featured image should be at least 200 by 200 pixels to be picked up by Facebook and other social media sites."
@@ -402,6 +423,9 @@ msgstr ""
 msgid "Sitemap Settings"
 msgstr ""
 
+msgid "No data found."
+msgstr ""
+
 msgid "Bulk Edit This Field"
 msgstr ""
 
@@ -411,24 +435,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-msgid "All Posts"
-msgstr ""
-
-msgid "SEO Score: Great"
-msgstr ""
-
-msgid "SEO Score: Good"
-msgstr ""
-
-msgid "SEO Score: Bad"
-msgstr ""
-
-msgid "Focus Keyword Not Set"
-msgstr ""
-
-msgid "Articles noindexed"
-msgstr ""
-
 msgid "SEO Details"
 msgstr ""
 
@@ -436,6 +442,12 @@ msgid "SEO Title"
 msgstr ""
 
 msgid "SEO Desc"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Alternative Text"
 msgstr ""
 
 msgid "Save"
@@ -459,16 +471,25 @@ msgstr ""
 msgid "Schema"
 msgstr ""
 
-msgid "Title"
+msgid "All Posts"
 msgstr ""
 
-msgid "Alternative Text"
+msgid "SEO Score: Great"
+msgstr ""
+
+msgid "SEO Score: Good"
+msgstr ""
+
+msgid "SEO Score: Bad"
+msgstr ""
+
+msgid "Focus Keyword Not Set"
+msgstr ""
+
+msgid "Articles noindexed"
 msgstr ""
 
 msgid "Pillar Content"
-msgstr ""
-
-msgid "No data found."
 msgstr ""
 
 msgid "Rank Math Product Registration"
@@ -478,9 +499,6 @@ msgid "Return to dashboard"
 msgstr ""
 
 msgid "Username/Email"
-msgstr ""
-
-msgid "This field is required."
 msgstr ""
 
 msgid "Password"
@@ -609,7 +627,7 @@ msgstr ""
 msgid "URL unavailable. Add a short URL."
 msgstr ""
 
-msgid "Permalink should be at most 25 characters long."
+msgid "Permalink should be at most 75 characters long."
 msgstr ""
 
 msgid "Focus Keyword found in the subheading(s)."
@@ -982,6 +1000,30 @@ msgstr ""
 msgid "Unable to perform action this time."
 msgstr ""
 
+msgid "Import Rich Snippets"
+msgstr ""
+
+msgid "Import all Schema data for Posts, Pages, and custom post types."
+msgstr ""
+
+msgid "Import AIO SEO plugin settings, global meta, sitemap settings, etc."
+msgstr ""
+
+msgid "Import meta information of your posts/pages like the titles, descriptions, robots meta, OpenGraph info, etc."
+msgstr ""
+
+msgid "Plugin redirections."
+msgstr ""
+
+msgid "Import SEOPress plugin settings, global meta, sitemap settings, etc."
+msgstr ""
+
+msgid "Import data like category, tag, and CPT meta data from SEOPress."
+msgstr ""
+
+msgid "Import all the redirections you have already set up in SEOPress."
+msgstr ""
+
 msgid "Settings imported successfully."
 msgstr ""
 
@@ -1017,21 +1059,6 @@ msgid "User meta import failed."
 msgstr ""
 
 msgid "There are no redirection to import."
-msgstr ""
-
-msgid "Import Rich Snippets"
-msgstr ""
-
-msgid "Import all Schema data for Posts, Pages, and custom post types."
-msgstr ""
-
-msgid "Import AIO SEO plugin settings, global meta, sitemap settings, etc."
-msgstr ""
-
-msgid "Import meta information of your posts/pages like the titles, descriptions, robots meta, OpenGraph info, etc."
-msgstr ""
-
-msgid "Plugin redirections."
 msgstr ""
 
 msgid "Plugin settings and site-wide meta data."
@@ -1797,6 +1824,19 @@ msgstr ""
 msgid "Facebook Sharing Debugger"
 msgstr ""
 
+#. translators: %s is a Rank Math link.
+msgid "Powered by %s"
+msgstr ""
+
+msgid "SEO Score"
+msgstr ""
+
+msgid "Front End SEO Score"
+msgstr ""
+
+msgid "Show the SEO Score on the front end for this post."
+msgstr ""
+
 msgid "Home"
 msgstr ""
 
@@ -1863,6 +1903,15 @@ msgid "Link Counter"
 msgstr ""
 
 msgid "Counts the total number of internal, external links, to and from links inside your posts."
+msgstr ""
+
+msgid "bbPress"
+msgstr ""
+
+msgid "Add proper Meta tags to your bbPress forum posts, categories, profiles, etc. Get more options to take control of what search engines see and how they see it."
+msgstr ""
+
+msgid "Please activate bbPress plugin to use this module."
 msgstr ""
 
 msgid "Settings"
@@ -2171,9 +2220,6 @@ msgstr ""
 msgid "Page %s"
 msgstr ""
 
-msgid "Page not found"
-msgstr ""
-
 msgid "Admin only notice: this page has no meta description set. Please edit the page to add one, or setup a template in Rank Math -> Titles &amp; Metas."
 msgstr ""
 
@@ -2189,7 +2235,7 @@ msgstr ""
 msgid "Hours:"
 msgstr ""
 
-msgid "Editor's Rating:"
+msgid "Page not found"
 msgstr ""
 
 msgid "Play icon"
@@ -2327,13 +2373,16 @@ msgstr ""
 msgid "Top Admin Bar"
 msgstr ""
 
+msgid "Index"
+msgstr ""
+
+msgid "Instructs search engines to index and show these pages in the search results."
+msgstr ""
+
 msgid "Robots Meta"
 msgstr ""
 
 msgid "Custom values for robots meta tag."
-msgstr ""
-
-msgid "Index"
 msgstr ""
 
 msgid "Canonical URL"
@@ -3193,6 +3242,225 @@ msgstr ""
 msgid "This tab contains snippet options."
 msgstr ""
 
+msgid "Post ID does not exists or was deleted."
+msgstr ""
+
+msgid "Snippet not selected."
+msgstr ""
+
+msgid "Edition"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "ISBN"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Editor's Rating:"
+msgstr ""
+
+msgid "Course Provider"
+msgstr ""
+
+msgid "Course Provider Name"
+msgstr ""
+
+msgid "Course Provider URL"
+msgstr ""
+
+msgid "Event Type"
+msgstr ""
+
+msgid "Venue Name"
+msgstr ""
+
+msgid "Venue URL"
+msgstr ""
+
+msgid "Performer"
+msgstr ""
+
+msgid "Performer Name"
+msgstr ""
+
+msgid "Performer URL"
+msgstr ""
+
+msgid "Event Status"
+msgstr ""
+
+msgid "Start Date"
+msgstr ""
+
+msgid "End Date"
+msgstr ""
+
+msgid "Ticket URL"
+msgstr ""
+
+msgid "Entry Price"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Availability"
+msgstr ""
+
+msgid "Availability Starts"
+msgstr ""
+
+msgid "Stock Inventory"
+msgstr ""
+
+msgid "Salary"
+msgstr ""
+
+msgid "Salary Currency"
+msgstr ""
+
+msgid "Payroll"
+msgstr ""
+
+msgid "Date Posted"
+msgstr ""
+
+msgid "Expiry Posted"
+msgstr ""
+
+msgid "Unpublish when expired"
+msgstr ""
+
+msgid "Employment Type "
+msgstr ""
+
+msgid "Hiring Organization "
+msgstr ""
+
+msgid "Posting ID"
+msgstr ""
+
+msgid "Organization URL"
+msgstr ""
+
+msgid "Organization Logo"
+msgstr ""
+
+msgid "Product SKU"
+msgstr ""
+
+msgid "Product Brand"
+msgstr ""
+
+msgid "Product Currency"
+msgstr ""
+
+msgid "Product Price"
+msgstr ""
+
+msgid "Price Valid Until"
+msgstr ""
+
+msgid "Product In-Stock"
+msgstr ""
+
+msgid "Cuisine"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Recipe Yield"
+msgstr ""
+
+msgid "Preparation Time"
+msgstr ""
+
+msgid "Cooking Time"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "Rating Minimum"
+msgstr ""
+
+msgid "Rating Maximum"
+msgstr ""
+
+msgid "Recipe Video"
+msgstr ""
+
+msgid "Recipe Video Thumbnail"
+msgstr ""
+
+msgid "Recipe Video Name"
+msgstr ""
+
+msgid "Video Upload Date"
+msgstr ""
+
+msgid "Recipe Video Description"
+msgstr ""
+
+msgid "Recipe Ingredients"
+msgstr ""
+
+msgid "Recipe Instruction Name"
+msgstr ""
+
+msgid "Recipe Instructions"
+msgstr ""
+
+msgid "Opening Time"
+msgstr ""
+
+msgid "Closing Time"
+msgstr ""
+
+msgid "Open Days"
+msgstr ""
+
+msgid "Serves Cuisine"
+msgstr ""
+
+msgid "Menu URL"
+msgstr ""
+
+msgid "Content URL"
+msgstr ""
+
+msgid "Embed URL"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Views"
+msgstr ""
+
+msgid "Gender"
+msgstr ""
+
+msgid "Job Title"
+msgstr ""
+
+msgid "Service Type"
+msgstr ""
+
+msgid "Price Currency"
+msgstr ""
+
+msgid "Operating System"
+msgstr ""
+
+msgid "Application Category"
+msgstr ""
+
 msgid "Book Editions"
 msgstr ""
 
@@ -3205,19 +3473,10 @@ msgstr ""
 msgid "The title of the tome. Use for the title of the tome if it differs from the book.<br>*Optional when tome has the same title as the book."
 msgstr ""
 
-msgid "Edition"
-msgstr ""
-
 msgid "The edition of the book."
 msgstr ""
 
-msgid "ISBN"
-msgstr ""
-
 msgid "The ISBN of the print book."
-msgstr ""
-
-msgid "Url"
 msgstr ""
 
 msgid "URL specific to this edition if one exists."
@@ -3248,15 +3507,6 @@ msgid "Paperback"
 msgstr ""
 
 msgid "Audio Book"
-msgstr ""
-
-msgid "Course Provider"
-msgstr ""
-
-msgid "Course Provider URL"
-msgstr ""
-
-msgid "Event Type"
 msgstr ""
 
 msgid "Type of the event."
@@ -3316,25 +3566,13 @@ msgstr ""
 msgid "Visual Arts Event"
 msgstr ""
 
-msgid "Venue Name"
-msgstr ""
-
 msgid "The venue name."
-msgstr ""
-
-msgid "Venue URL"
 msgstr ""
 
 msgid "Website URL of the venue"
 msgstr ""
 
-msgid "Performer"
-msgstr ""
-
 msgid "A performer at the event"
-msgstr ""
-
-msgid "Event Status"
 msgstr ""
 
 msgid "Current status of the event (optional)"
@@ -3352,37 +3590,22 @@ msgstr ""
 msgid "Rescheduled"
 msgstr ""
 
-msgid "Start Date"
-msgstr ""
-
 msgid "Date and time of the event."
-msgstr ""
-
-msgid "End Date"
 msgstr ""
 
 msgid "End date and time of the event."
 msgstr ""
 
-msgid "Ticket URL"
-msgstr ""
-
 msgid "A URL where visitors can purchase tickets for the event."
-msgstr ""
-
-msgid "Entry Price"
 msgstr ""
 
 msgid "Entry price of the event (optional)"
 msgstr ""
 
-msgid "Currency"
+msgid "ISO 4217 Currency code. Example: EUR"
 msgstr ""
 
-msgid "ISO 4217 Currency Code"
-msgstr ""
-
-msgid "Availability"
+msgid "Please use the correct format. Example: EUR"
 msgstr ""
 
 msgid "Offer availability"
@@ -3394,13 +3617,7 @@ msgstr ""
 msgid "Preorder"
 msgstr ""
 
-msgid "Availability Starts"
-msgstr ""
-
 msgid "Date and time when offer is made available. (optional)"
-msgstr ""
-
-msgid "Stock Inventory"
 msgstr ""
 
 msgid "Number of tickets (optional)"
@@ -3445,9 +3662,6 @@ msgstr ""
 msgid "Insert amount, e.g. \"50.00\", or a salary range, e.g. \"40.00-50.00\"."
 msgstr ""
 
-msgid "Salary Currency"
-msgstr ""
-
 msgid "Payroll (Recommended)"
 msgstr ""
 
@@ -3469,19 +3683,10 @@ msgstr ""
 msgid "Hourly"
 msgstr ""
 
-msgid "Date Posted"
-msgstr ""
-
 msgid "The original date on which employer posted the job. You can leave it empty to use the post publication date as job posted date."
 msgstr ""
 
-msgid "Expiry Posted"
-msgstr ""
-
 msgid "The date when the job posting will expire. If a job posting never expires, or you do not know when the job will expire, do not include this property."
-msgstr ""
-
-msgid "Unpublish when expired"
 msgstr ""
 
 msgid "If checked, post status will be changed to Draft and its URL will return a 404 error, as required by the Rich Result guidelines."
@@ -3538,13 +3743,7 @@ msgstr ""
 msgid "Logo URL of the organization offering the job position. Leave empty to use your own company information."
 msgstr ""
 
-msgid "Opening Time"
-msgstr ""
-
-msgid "Closing Time"
-msgstr ""
-
-msgid "Open Days"
+msgid "Insert $ / $$ / $$$ / $$$$."
 msgstr ""
 
 msgid "Rank Math automatically inserts additional Rich Snippet meta data for WooCommerce products. You can set the Rich Snippet Type to \"None\" to disable this feature and just use the default data added by WooCommerce."
@@ -3558,10 +3757,13 @@ msgstr ""
 msgid "Rich Snippets help you stand out in SERPs. <a href=\"%s\" target=\"_blank\">Learn more</a>."
 msgstr ""
 
-msgid "Headline"
+msgid "Shortcode"
 msgstr ""
 
-msgid "Author"
+msgid "Copy & paste this shortcode in the content."
+msgstr ""
+
+msgid "Headline"
 msgstr ""
 
 msgid "MusicGroup"
@@ -3570,112 +3772,58 @@ msgstr ""
 msgid "MusicAlbum"
 msgstr ""
 
-msgid "Gender"
-msgstr ""
-
 msgid "Job title"
 msgstr ""
 
-msgid "Product SKU"
+msgid "The job title of the person (for example, Financial Manager)."
 msgstr ""
 
-msgid "Product Brand"
-msgstr ""
-
-msgid "Product Currency"
-msgstr ""
-
-msgid "Product Price"
-msgstr ""
-
-msgid "Price Valid Until"
+msgid "ISO 4217 Currency Code"
 msgstr ""
 
 msgid "The date after which the price will no longer be available."
 msgstr ""
 
-msgid "Product In-Stock"
-msgstr ""
-
 msgid "Type of dish, for example \"appetizer\", or \"dessert\"."
-msgstr ""
-
-msgid "Cuisine"
 msgstr ""
 
 msgid "The cuisine of the recipe (for example, French or Ethiopian)."
 msgstr ""
 
-msgid "Keywords"
-msgstr ""
-
 msgid "Other terms for your recipe such as the season, the holiday, or other descriptors. Separate multiple entries with commas."
-msgstr ""
-
-msgid "Recipe Yield"
 msgstr ""
 
 msgid "Quantity produced by the recipe, for example \"4 servings\""
 msgstr ""
 
-msgid "The number of calories in the recipe."
+msgid "The number of calories in the recipe. Optional."
 msgstr ""
 
-msgid "Preparation Time"
+msgid " ISO 8601 duration format. Example: 1H30M"
 msgstr ""
 
-msgid "Example: 1H30M"
+msgid "Please use the correct format. Example: 1H30M"
 msgstr ""
 
-msgid "Cooking Time"
-msgstr ""
-
-msgid "Total Time"
-msgstr ""
-
-msgid "Rating score of the recipe."
-msgstr ""
-
-msgid "Rating Minimum"
+msgid "Rating score of the recipe. Optional."
 msgstr ""
 
 msgid "Rating minimum score of the recipe."
 msgstr ""
 
-msgid "Rating Maximum"
-msgstr ""
-
 msgid "Rating maximum score of the recipe."
 msgstr ""
 
-msgid "Recipe Video"
-msgstr ""
-
-msgid "A recipe video URL."
-msgstr ""
-
-msgid "Recipe Video Thumbnail"
+msgid "A recipe video URL. Optional."
 msgstr ""
 
 msgid "A recipe video thumbnail URL."
 msgstr ""
 
-msgid "Recipe Video Name"
-msgstr ""
-
 msgid "A recipe video Name."
 msgstr ""
 
-msgid "Video Upload Date"
-msgstr ""
-
-msgid "Recipe Video Description"
-msgstr ""
-
 msgid "A recipe video Description."
-msgstr ""
-
-msgid "Recipe Ingredients"
 msgstr ""
 
 msgid "Recipe ingredients, add one item per line"
@@ -3693,13 +3841,7 @@ msgstr ""
 msgid "How To Section"
 msgstr ""
 
-msgid "Recipe Instruction Name"
-msgstr ""
-
 msgid "Instruction name of the recipe."
-msgstr ""
-
-msgid "Recipe Instructions"
 msgstr ""
 
 msgid "Steps to take, add one instruction per line"
@@ -3714,28 +3856,31 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-msgid "Serves Cuisine"
+msgid "The type of cuisine we serve. Separated by comma."
 msgstr ""
 
-msgid "The type of cuisine we serve. separated by comma."
-msgstr ""
-
-msgid "Menu URL"
-msgstr ""
-
-msgid "The menu url of the restaurant."
+msgid "URL pointing to the menu of the restaurant."
 msgstr ""
 
 msgid "Worst Rating"
 msgstr ""
 
+msgid "Minimum rating."
+msgstr ""
+
 msgid "Best Rating"
 msgstr ""
 
-msgid "Rating Value"
+msgid "Maximum rating."
+msgstr ""
+
+msgid "Final rating of the item."
 msgstr ""
 
 msgid "Review Location"
+msgstr ""
+
+msgid "The review or rating must be displayed on the page to comply with Google's Rich Snippet guidelines."
 msgstr ""
 
 msgid "Below Content"
@@ -3750,52 +3895,28 @@ msgstr ""
 msgid "Custom (use shortcode)"
 msgstr ""
 
-msgid "Copy & paste this shortcode in the content."
-msgstr ""
-
-msgid "Service Type"
-msgstr ""
-
 msgid "The type of service being offered, e.g. veterans' benefits, emergency relief, etc."
 msgstr ""
 
-msgid "Price Currency"
+msgid "Average of all ratings (1-5). Example: 4.7"
 msgstr ""
 
 msgid "Rating Count"
 msgstr ""
 
-msgid "Operating System"
+msgid "Number of ratings"
 msgstr ""
 
 msgid "For example, \"Windows 7\", \"OSX 10.6\", \"Android 1.6\""
 msgstr ""
 
-msgid "Application Category"
-msgstr ""
-
 msgid "For example, \"Game\", \"Multimedia\""
-msgstr ""
-
-msgid "Content URL"
 msgstr ""
 
 msgid "A URL pointing to the actual video media file."
 msgstr ""
 
-msgid "Embed URL"
-msgstr ""
-
 msgid "A URL pointing to the embeddable player for the video."
-msgstr ""
-
-msgid "Duration"
-msgstr ""
-
-msgid "Duration of the video"
-msgstr ""
-
-msgid "Views"
 msgstr ""
 
 msgid "Number of views"
@@ -4019,7 +4140,37 @@ msgstr ""
 msgid "The data sets are empty in your cache. You can wait for the next cronjob or <strong>Update Manually</strong>. Please navigate to <a href=\"%s\">SEO > Settings > Search Console</a>."
 msgstr ""
 
+msgid "Click History"
+msgstr ""
+
+msgid "Impressions History"
+msgstr ""
+
+msgid "CTR History"
+msgstr ""
+
+msgid "Position History"
+msgstr ""
+
+msgid "Coming Soon"
+msgstr ""
+
 msgid "Run the SEO Analysis to see suggestions on improving your rank in search engines."
+msgstr ""
+
+msgid "How to fix"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Info"
 msgstr ""
 
 msgid "Site-wide analysis"
@@ -4029,6 +4180,15 @@ msgid "Analyze this Page"
 msgstr ""
 
 msgid "SEO Analysis for this page"
+msgstr ""
+
+msgid "Passed Tests"
+msgstr ""
+
+msgid "Failed Tests"
+msgstr ""
+
+msgid "Start Site-Wide Analysis"
 msgstr ""
 
 #. translators: API error
@@ -4059,42 +4219,15 @@ msgstr ""
 msgid "Youtube Connected"
 msgstr ""
 
+#. translators: link to social option setting
+msgid "Add Social Schema to your website by linking your social profiles <a href=\"%s\">here</a>."
+msgstr ""
+
 #. translators: social name
 msgid "Your website has a %s page connected to it."
 msgstr ""
 
 msgid "Your website has no %s connected to it."
-msgstr ""
-
-msgid "SEO Score"
-msgstr ""
-
-msgid "Passed Tests"
-msgstr ""
-
-msgid "Failed Tests"
-msgstr ""
-
-msgid "Start Site-Wide Analysis"
-msgstr ""
-
-#. translators: link to social option setting
-msgid "Add Social Schema to your website by linking your social profiles <a href=\"%s\">here</a>."
-msgstr ""
-
-msgid "How to fix"
-msgstr ""
-
-msgid "OK"
-msgstr ""
-
-msgid "Failed"
-msgstr ""
-
-msgid "Warning"
-msgstr ""
-
-msgid "Info"
 msgstr ""
 
 msgid "Advanced SEO"
@@ -4251,12 +4384,12 @@ msgstr ""
 msgid "Focus keywords appear in the titles of published posts where it is set."
 msgstr ""
 
-#. translators: post type links
-msgid "There are %s published posts where the focus keyword does not appear in the post title."
-msgstr ""
-
 #. translators: post id count
 msgid "+%d More..."
+msgstr ""
+
+#. translators: post type links
+msgid "There are %s published posts where the focus keyword does not appear in the post title."
 msgstr ""
 
 msgid "Your site has one or more sitemaps."
@@ -4471,6 +4604,31 @@ msgstr ""
 msgid "Include archive pages of terms that have no posts associated."
 msgstr ""
 
+msgid "KML File"
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "This KML Fiile is generated by <a href=\"%s\" target=\"_blank\">Rank Math WordPress SEO Plugin</a>. It is used to provide location information to Google."
+msgstr ""
+
+#. translators: link to rankmath.com
+msgid "Learn more about <a href=\"%s\" target=\"_blank\">KML File</a>."
+msgstr ""
+
+#. translators: xsl value count
+#. translators: xsl value count
+msgid "<a href=\"%s\">&#8592; Sitemap Index</a>"
+msgstr ""
+
+msgid "Phone number"
+msgstr ""
+
+msgid "Latitude"
+msgstr ""
+
+msgid "Longitude"
+msgstr ""
+
 msgid "XML Sitemap"
 msgstr ""
 
@@ -4491,10 +4649,6 @@ msgstr ""
 
 #. translators: xsl value count
 msgid "This XML Sitemap contains <strong>%s</strong> URLs."
-msgstr ""
-
-#. translators: xsl value count
-msgid "<a href=\"%s\">&#8592; Sitemap Index</a>"
 msgstr ""
 
 msgid "Last Mod."
@@ -4639,10 +4793,25 @@ msgstr ""
 msgid "Remove Snippet Data from WooCommerce Shop page."
 msgstr ""
 
+msgid "Brand"
+msgstr ""
+
+msgid "Select Product Brand Taxonomy to use in Schema.org & OpenGraph markup."
+msgstr ""
+
 msgid "Module slug"
 msgstr ""
 
 msgid "Module state either on or off"
+msgstr ""
+
+msgid "Site token didn't match."
+msgstr ""
+
+msgid "Site disconnected successfully."
+msgstr ""
+
+msgid "Site token"
 msgstr ""
 
 msgid "Sorry, field is empty which is not allowed."
@@ -4816,6 +4985,42 @@ msgstr ""
 msgid "Find out more."
 msgstr ""
 
+msgid "Show SEO Score"
+msgstr ""
+
+#. translators: %s is the shortcode
+msgid "Show the calculated SEO Score as a badge on the front end for selected post types. It can be disabled for specific posts."
+msgstr ""
+
+msgid "SEO Score Post Types"
+msgstr ""
+
+msgid "SEO Score Template"
+msgstr ""
+
+msgid "Change the styling for the front end SEO score badge."
+msgstr ""
+
+msgid "Circle"
+msgstr ""
+
+msgid "Square"
+msgstr ""
+
+msgid "SEO Score Position"
+msgstr ""
+
+#. translators: %1$s is the shortcode
+msgid "Display the badges automatically, or insert the %1$s shortcode in your posts and the %2$s template tag in your theme template files."
+msgstr ""
+
+msgid "Support Us with a Link"
+msgstr ""
+
+#. translators: %s is th word "nofollow" inside a HTML tag
+msgid "If you are showing the SEO scores on the front end, this option will insert a %s backlink to RankMath.com to show your support."
+msgstr ""
+
 msgid "RSS Before Content"
 msgstr ""
 
@@ -4937,10 +5142,20 @@ msgstr ""
 msgid "Change the <code>/author/</code> part in author archive URLs."
 msgstr ""
 
-msgid "Noindex Author Archives"
+#. translators: post type name
+msgid "Author Robots Meta"
 msgstr ""
 
-msgid "Prevent author archive pages from getting indexed by search engines. Useful for single-author blogs, where the author archive shows the same posts as the homepage/blog page."
+msgid "Select custom robots meta for author page, such as <code>nofollow</code>, <code>noarchive</code>, etc. Otherwise the default meta will be used, as set in the Global Meta tab."
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Custom values for robots meta tag on author page."
 msgstr ""
 
 msgid "Author Archive Title"
@@ -5009,12 +5224,6 @@ msgstr ""
 msgid "Select custom robots meta for homepage, such as <code>nofollow</code>, <code>noarchive</code>, etc. Otherwise the default meta will be used, as set in the Global Meta tab."
 msgstr ""
 
-msgid "Default"
-msgstr ""
-
-msgid "Custom"
-msgstr ""
-
 msgid "Custom values for robots meta tag on homepage."
 msgstr ""
 
@@ -5066,10 +5275,11 @@ msgstr ""
 msgid "Title tag on 404 Not Found error page."
 msgstr ""
 
-msgid "Noindex Date Archives"
+#. translators: post type name
+msgid "Date Robots Meta"
 msgstr ""
 
-msgid "Prevent date archives from getting indexed by search engines."
+msgid "Custom values for robots meta tag on date page."
 msgstr ""
 
 msgid "Noindex Search Results"
