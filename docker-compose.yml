@@ -12,6 +12,7 @@ services:
       MYSQL_ROOT_HOST: '%'
     volumes:
       - ./db:/var/lib/mysql
+      - ./additional-configurations/mycustom.cnf:/etc/mysql/conf.d/custom.cnf
     ports:
       - 44006:3306
   web:
