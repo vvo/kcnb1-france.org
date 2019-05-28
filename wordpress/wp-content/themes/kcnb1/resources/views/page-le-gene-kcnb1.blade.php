@@ -4,7 +4,7 @@
   @while(have_posts()) @php the_post() @endphp
     <div class="container bg-white position-relative">
       <h1 class="text-center">La mutation <br/>du gène KCNB1</h1>
-      <p class="lead">Fin 2014 des mutations dans le gène KCNB1 ont été découvertes aux États-Unis chez des personnes atteintes d’encéphalopathies épileptiques. Depuis, de nombreuses entre la mutation du gène KCNB1 et les symptômes des personnes atteintes mais aussi d'identifier et de recenser plus précisément les cas à travers le monde.</p>
+      <p class="lead">Fin 2014 des mutations dans le gène KCNB1 ont été découvertes aux États-Unis chez des personnes atteintes d'encéphalopathies épileptiques. Depuis, de nombreuses entre la mutation du gène KCNB1 et les symptômes des personnes atteintes mais aussi d'identifier et de recenser plus précisément les cas à travers le monde.</p>
     </div>
     <div class="bg-gray mt-n9 pt-9 pb-6">
       <div class="container">
@@ -12,7 +12,7 @@
         <div class="row">
           <div class="offset-md-1 col-md-3">
             <p>Notre corps est constitué de milliards de cellules. À l'intérieur de ces cellules se trouvent nos chromosomes. Ces structures contiennent notre ADN (notre code génétique) qui indiquent au corps comment se développer et fonctionner. Les chromosomes contiennent eux des informations génétiques qui se regroupent en <strong>gènes</strong>. Chaque gène a un rôle spécifique dans le corps lorsqu'il fonctionne correctement.</p>
-            <p>Des mutations génétiques peuvent survenir sur cette séquence d’ADN qui code pour partie la protéine KCNB1. Il est possible de vérifier cet encodage de façon précise. Lorsqu'une anomalie survient et qu'il provoque un dysfonctionnement génique alors on parle d'une <strong>mutation</strong>.</p>
+            <p>Des mutations génétiques peuvent survenir sur cette séquence d'ADN qui code pour partie la protéine KCNB1. Il est possible de vérifier cet encodage de façon précise. Lorsqu'une anomalie survient et qu'il provoque un dysfonctionnement génique alors on parle d'une <strong>mutation</strong>.</p>
           </div>
           <div class="col-md-3">
             <img src="@asset('images/le-gene-KCNB1/sequence.png')" class="img-fluid" alt="Image représentant une séquence ADN" />
@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="bg-white">
-          <p class="lead">« Aujourd’hui plus de 20 mutations dans le gène KCNB1 ont été détectées.
+          <p class="lead">« Aujourd'hui plus de 20 mutations dans le gène KCNB1 ont été détectées.
               Le type de mutation et sa localisation sur le gène ne prédit pas la sévérité
               de la maladie. »</p>
         </div>
@@ -91,7 +91,7 @@
             <p>Au total <strong>toute évolution atypique inquiétante</strong> du développement sensori moteur quelque soit l'âge est à même de faire <strong>envisager une maladie neurologique sous jacente et parmi celles-ci la mutation KCNB1</strong>.</p>
           </div>
           <div class="col-md-3">
-            <p>Cette mutation génétique nouvellement identifiée appartient au <strong>syndrome microdélétionnels</strong> et doit être recherchée dans le cadre des recherches étiologiques menées par un médecin neuro pédiatre qui est amené à rencontrer l’enfant.</p>
+            <p>Cette mutation génétique nouvellement identifiée appartient au <strong>syndrome microdélétionnels</strong> et doit être recherchée dans le cadre des recherches étiologiques menées par un médecin neuro pédiatre qui est amené à rencontrer l'enfant.</p>
           </div>
         </div>
       </div>
@@ -108,6 +108,5 @@
         <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5733250/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5733250/</a></li>
       </ul>
     </div>
-    @include('partials.chiffres')
   @endwhile
 @endsection

@@ -20,7 +20,7 @@
 
         if ( $parent->have_posts() ) : ?>
           <?php while ( $parent->have_posts() ) : $parent->the_post(); ?>
-            <div class="card-container mb-3">
+            <div class="card-container mb-3 d-flex align-items-stretch">
               <div class="card">
                 <div class="card-body">
                   <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
@@ -28,7 +28,7 @@
                 </div>
                 {{ the_post_thumbnail('card') }}
                 <div class="card-body">
-                  <p class="card-text">{!! get_the_excerpt() !!}</p>
+                  <p class="card-text">{!! wp_trim_words(get_the_content(), 18) !!}</p>
                 </div>
               <a href="{{ the_permalink() }}" title="{{ the_title() }}" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
               </div>
@@ -38,6 +38,5 @@
         </div>
       </div>
     </div>
-    @include('partials.chiffres')
   @endwhile
 @endsection

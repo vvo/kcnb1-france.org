@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Cookie Notice for GDPR - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-12-19 10:44:10+0000\n"
+"PO-Revision-Date: 2019-05-11 09:02:21+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -281,7 +281,7 @@ msgstr "Réinitialiser les réglages"
 
 #: cookie-notice.php:355
 msgid "Do you like this plugin?"
-msgstr "Vous aimez cette extension&nbsp;?"
+msgstr "Aimez-vous cette extension ?"
 
 #: cookie-notice.php:352
 msgid "Need support?"

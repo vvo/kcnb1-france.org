@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Custom Post Type UI - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-04-29 08:03:07+0000\n"
+"PO-Revision-Date: 2019-05-20 19:44:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -208,8 +208,8 @@ msgid "Why can I not use dashes in post type or taxonomy slugs?"
 msgstr "Pourquoi ne puis-je pas utiliser de tirets dans les slugs de type de publication ou de taxonomie ?"
 
 #: inc/post-types.php:913
-msgid "Add support for various available post editor features on the right. A checked value means the post type means the feature is supported."
-msgstr "Ajoute le support des différentes fonctionnalités disponibles dans l'éditeur de contenu à droite. Une valeur cochée signifie que la fonctionnalité est supportée par le type de publication."
+msgid "Add support for various available post editor features on the right. A checked value means the post type feature is supported."
+msgstr "Ajoute le support des différentes fonctionnalités disponibles dans l’éditeur de contenu à droite. Une valeur cochée signifie que la fonctionnalité du type de publication est supportée."
 
 #: inc/post-types.php:569
 msgid "(e.g. Movies Attributes)"
@@ -1540,7 +1540,7 @@ msgstr "Voir l’archive d’interface publique"
 msgid "Labels"
 msgstr "Libellés"
 
-#: inc/post-types.php:911 inc/listings.php:76
+#: inc/listings.php:76 inc/post-types.php:911
 msgid "Supports"
 msgstr "Supports"
 
@@ -1735,7 +1735,7 @@ msgstr "%s a été ajouté avec succès"
 msgid "Help"
 msgstr "Aide"
 
-#: inc/post-types.php:592 inc/listings.php:75 inc/listings.php:288
+#: inc/listings.php:75 inc/listings.php:288 inc/post-types.php:592
 #: inc/taxonomies.php:586
 msgid "Settings"
 msgstr "Réglages"
@@ -1777,7 +1777,7 @@ msgid "%s version %s by %s"
 msgstr "%s version %s par %s"
 
 #. Plugin Name of the plugin
-#: inc/about.php:55 inc/utility.php:107 inc/utility.php:122
+#: inc/utility.php:107 inc/utility.php:122 inc/about.php:55
 msgid "Custom Post Type UI"
 msgstr "Custom Post Type UI"
 

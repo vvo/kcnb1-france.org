@@ -1,3 +1,5 @@
+@include('partials.chiffres')
+
 <footer class="bg-grazy pt-5 pb-5">
   <div class="container">
     <div class="row">

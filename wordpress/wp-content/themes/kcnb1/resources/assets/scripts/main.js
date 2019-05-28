@@ -2,7 +2,7 @@
 import 'jquery';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
-import { faComment, faCalendarAlt, faStickyNote } from '@fortawesome/free-regular-svg-icons';
+import { faComment, faCalendarAlt, faStickyNote, faNewspaper } from '@fortawesome/free-regular-svg-icons';
 import { faStream, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import './autoload/**/*'
 
@@ -11,7 +11,7 @@ import common from './routes/common';
 import home from './routes/home';
 import aboutUs from './routes/about';
 
-library.add(faFacebook, faInstagram, faComment, faStream, faCalendarAlt, faStickyNote, faMapMarkerAlt);
+library.add(faFacebook, faInstagram, faComment, faStream, faCalendarAlt, faStickyNote, faMapMarkerAlt, faNewspaper);
 dom.watch();
 
 /** Populate Router instance with DOM routes */

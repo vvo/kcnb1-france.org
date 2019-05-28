@@ -54,6 +54,8 @@ add_action('after_setup_theme', function () {
      */
     add_theme_support('post-thumbnails');
     add_image_size('card', 298, 200, true);
+    add_image_size('article', 465, 380, true);
+    add_image_size('full', 1280, 400, true);
 
     /**
      * Enable HTML5 markup support

@@ -1,9 +1,12 @@
-<div class="bg-gray mt-8">
-  <div class="container temoignagne-container">
-    {{ the_post_thumbnail('post-thumbnail', ['class' => 'img-fluid']) }}
-    <div class="icon-text mt-5"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
-    <h1 class="mt-2">{!! App::title() !!}</h1>
-    <div class="magazine mt-5">@php the_content() @endphp</div>
+<div class="bg-gray mt-8 pb-1">
+  <div class="container article-container">
+    {{ the_post_thumbnail('full', ['class' => 'img-fluid']) }}
+    <div class="offset-md-1 col-md-6">
+      <?php if (function_exists('rank_math_the_breadcrumbs')) rank_math_the_breadcrumbs(); ?>
+      <div class="icon-text mt-5"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
+      <h1 class="mt-2">{!! App::title() !!}</h1>
+      <div class="mt-5">@php the_content() @endphp</div>
+    </div>
   </div>
 </div>
 

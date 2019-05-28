@@ -6,6 +6,10 @@
   @include font-size($font-size-18px);
 }
 
+.fs-30 {
+  @include font-size($font-size-30px);
+}
+
 .fs-40 {
   @include font-size($font-size-40px);
 }
@@ -57,12 +61,12 @@
 }
 
 .btn-red {
-  background: rgb(255, 16, 71);
-  background: linear-gradient(90deg, $cred 0%, $cpinky 100%);
+  background: $crougie;
+  background: linear-gradient(90deg, $crougie 0%, $cred 100%);
 }
 
 .btn-red:hover {
-  background: linear-gradient(90deg, $cpinky 0%, $cpinky 100%);
+  background: linear-gradient(90deg, $crougie 0%, $crougie 100%);
 }
 
 .card-container {
@@ -162,17 +166,11 @@ footer ul {
   text-decoration: none;
 }
 
-.temoignagne-container {
+.article-container {
   position: relative;
   top: -7rem;
 }
 
 .template-temoignage .attachment-post-thumbnail {
   @extend .img-fluid;
-}
-
-.magazine {
-  columns: 4 18.75rem;
-  column-gap: 1.5rem;
-  hyphens: auto;
 }

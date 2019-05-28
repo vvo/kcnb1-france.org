@@ -9,7 +9,7 @@
         </div>
         <div class="number mb-4 mr-4">
           <div class="numberTitle">50K€</div>
-          <div class="numberSubtitle">50 000 euros de dons</div>
+          <div class="numberSubtitle">50 000 euros<br/> de dons</div>
         </div>
         <div class="w-100 d-xl-none"></div>
         <div class="number mb-4 mr-4">

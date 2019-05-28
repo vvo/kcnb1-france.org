@@ -12,7 +12,7 @@
     <div class="col-md pt-4">
       <h1>La mutation du gène KCNB1 est une maladie génétique rare.</h1>
       <p class="mt-4 fs-18">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Léonard, Mathéo.L, Vincent et Mathéo LB.
-        Nous avons été diagnostiqués avec une mutation du gène KCNB1. D’autres enfants souffrants d’épilepsie ont peut-être
+        Nous avons été diagnostiqués avec une mutation du gène KCNB1. D'autres enfants souffrants d'épilepsie ont peut-être
         aussi cette mutation.
       </p>
       <a href="test" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
@@ -67,14 +67,14 @@
 
 <div class="container bg-white mt-n7 pt-7 pb-3">
   <h2 class="text-center">Agir pour la recherche sur le gène KCNB1</h2>
-  <p class="lead">Grâce aux progrès récents dans le domaine de la génétique,de nouveaux gènes impliqués dans des troubles du développement cérébral de l’enfant ont été mis en évidence.</p>
+  <p class="lead">Grâce aux progrès récents dans le domaine de la génétique,de nouveaux gènes impliqués dans des troubles du développement cérébral de l'enfant ont été mis en évidence.</p>
   <div class="row">
     <div class="offset-md-1 col-md-3">
-      <p>La régulation du passage du Potassium (K+) est indispensable au bon fonctionnement des neurones. <strong>En 2014, une équipe aux États-Unis a ainsi identifié des mutations dans le gène KCNB1 chez des enfants présentant un trouble précoce du développement associé à une épilepsie sévère</strong>. Ce gène code pour une protéine, qui est une composante principale d’un complexe protéique qui forme un canal perméable au Potassium.</p>
+      <p>La régulation du passage du Potassium (K+) est indispensable au bon fonctionnement des neurones. <strong>En 2014, une équipe aux États-Unis a ainsi identifié des mutations dans le gène KCNB1 chez des enfants présentant un trouble précoce du développement associé à une épilepsie sévère</strong>. Ce gène code pour une protéine, qui est une composante principale d'un complexe protéique qui forme un canal perméable au Potassium.</p>
     </div>
     <div class="col-md-3">
-      <p>Une trentaine de patients porteurs d’une mutation du gène KCNB1 ont été rapportées dans la littérature médicale. D’autres sont en train d’être reconnus.
-          <strong>Tous les patients rapportés présentent une « encéphalopathie développementale »</strong> c’est-à-dire une anomalie dans le fonctionnement cérébral entraînant un retard global des acquisitions, avec une épilepsie sévère chez la majorité d’entre eux.</p>
+      <p>Une trentaine de patients porteurs d'une mutation du gène KCNB1 ont été rapportées dans la littérature médicale. D'autres sont en train d'être reconnus.
+          <strong>Tous les patients rapportés présentent une « encéphalopathie développementale »</strong> c'est-à-dire une anomalie dans le fonctionnement cérébral entraînant un retard global des acquisitions, avec une épilepsie sévère chez la majorité d'entre eux.</p>
     </div>
   </div>
   <p class="py-4 text-center">
@@ -89,18 +89,16 @@
             <img src="@asset('images/front-page/evenement.jpg')" class="img-fluid" alt="Photo exemple evenement KCNB1" />
         </div>
         <div class="col-md-3 mt-4">
-          <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Événement à venir :</div>
+          <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Évènement à venir :</div>
           <h3 class="mt-3">1<sup>ère</sup> journée de rencontres 🇪🇺 Européenes KCNB1</h3>
-          <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l’Hôpital Necker Enfants Malades à Paris</strong>.
+          <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l'Hôpital Necker Enfants Malades à Paris</strong>.
               Pour la première fois en Europe, une équipe de médecins, de chercheurs... <a href="test">Lire la suite →</a></p>
           <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i> Samedi 30 Mars 2019</div>
           <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i> Institut Imagine, Hôpital Necker Enfants Malades, Paris, France</div>
         </div>
       </div>
       <p class="py-4 mb-0 text-center">
-        <a href="test">Découvrez tous les événements et actualités →</a>
+        <a href="test">Découvrez tous les évènements et actualités →</a>
       </p>
   </div>
 </div>
-
-@include('partials.chiffres')
