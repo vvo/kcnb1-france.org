@@ -85,20 +85,65 @@
 <div class="bg-gray pb-3 pt-4">
   <div class="container">
       <div class="row">
-        <div class="offset-md-1 col-md-3 align-self-center mt-4">
-            <img src="@asset('images/front-page/evenement.jpg')" class="img-fluid" alt="Photo exemple evenement KCNB1" />
-        </div>
-        <div class="col-md-3 mt-4">
-          <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Évènement à venir :</div>
-          <h3 class="mt-3">1<sup>ère</sup> journée de rencontres 🇪🇺 Européenes KCNB1</h3>
-          <p>Nous convions les familles de patients européens touchés par la mutation du gène KCNB1 à participer à notre journée de rencontre qui se déroulera le <strong>samedi 30 mars 2019 au sein de l'Hôpital Necker Enfants Malades à Paris</strong>.
-              Pour la première fois en Europe, une équipe de médecins, de chercheurs... <a href="test">Lire la suite →</a></p>
-          <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i> Samedi 30 Mars 2019</div>
-          <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i> Institut Imagine, Hôpital Necker Enfants Malades, Paris, France</div>
-        </div>
+      <?php
+
+      $args = array(
+        'post_type'      => 'post',
+        'posts_per_page' => 1,
+        'meta_key' => 'date',
+        'orderby' => 'meta_value_num',
+        'order' => 'ASC',
+        'meta_query'=> array(
+          array(
+            'key' => 'date',
+            'compare' => '>',
+            'value' => date("Ymd"),
+            'type' => 'DATE'
+          )
+        )
+      );
+
+      $events = new WP_Query( $args );
+
+      if ( $events->have_posts() ) : ?>
+        <?php while ( $events->have_posts() ) : $events->the_post(); ?>
+          <div class="offset-md-1 col-md-3 align-self-center mt-4">
+            <a href="{{ get_permalink() }}">{{ the_post_thumbnail('article') }}</a>
+          </div>
+          <div class="col-md-3 mt-4">
+            <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Prochain évènement :</div>
+            <h3 class="mt-3"><a href="{{ get_permalink() }}">{!! get_the_title() !!}</a></h3>
+            <p>{!! wp_trim_words(get_the_content(), 30) !!}</p>
+            <p><a href="{{ get_permalink() }}">Lire la suite →</a></p>
+            <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i>Date de l'événement : {{ the_field('date') }}</div>
+            <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i>Lieu : {{ get_field('lieu')['address'] }}</div>
+          </div>
+        <?php endwhile; ?>
+        <?php else: ?>
+        <?php
+          $args = array(
+            'post_type'      => 'post',
+            'posts_per_page' => 1,
+          );
+
+          $articles = new WP_Query( $args );
+          if ( $articles->have_posts() ) : ?>
+          <?php while ( $articles->have_posts() ) : $articles->the_post(); ?>
+            <div class="offset-md-1 col-md-3 align-self-center mt-4">
+              <a href="{{ get_permalink() }}">{{ the_post_thumbnail('article') }}</a>
+            </div>
+            <div class="col-md-3 mt-4">
+              <div class="icon-text"><i class="far fa-calendar-alt fa-2x"></i> Dernier article :</div>
+              <h3 class="mt-3"><a href="{{ get_permalink() }}">{!! get_the_title() !!}</a></h3>
+              <p>{!! wp_trim_words(get_the_content(), 70) !!}</p>
+              <p><a href="{{ get_permalink() }}">Lire la suite →</a></p>
+            </div>
+          <?php endwhile; ?>
+          <?php endif; ?>
+      <?php endif; wp_reset_postdata(); ?>
       </div>
       <p class="py-4 mb-0 text-center">
-        <a href="test">Découvrez tous les évènements et actualités →</a>
+        <a href="test">Découvrez toutes les actualités →</a>
       </p>
   </div>
 </div>

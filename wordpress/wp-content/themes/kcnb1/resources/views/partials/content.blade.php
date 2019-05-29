@@ -6,7 +6,7 @@
       @else
         <div class="col-md-3 order-last align-self-center">
       @endif
-        {{ the_post_thumbnail('article') }}
+        <a href="{{ get_permalink() }}">{{ the_post_thumbnail('article') }}</a>
       </div>
       @if($count % 2 === 0)
         <div class="col-md-3">
