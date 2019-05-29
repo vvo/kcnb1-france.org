@@ -51,7 +51,7 @@
 
         <h2 class="text-center mt-6">Principaux symptômes</h2>
         <p class="lead">Chaque personne peut présenter un ou plusieurs de ces symptômes et nous les listons pour vous aider et guider des parents qui se poseraient la question d'un diagnostic avec le corps médical.</p>
-        <div class="row">
+        <div class="row bg-white p-4">
           <div class="offset-md-1 col-md-2">
             <ul>
               <li>Encéphalopathie</li>
@@ -86,6 +86,7 @@
             </ul>
           </div>
         </div>
+        <p class="alert alert-pink" style="position: relative; top: -2rem;">Ils ne constituent en aucun cas un avis médical de notre part.</p>
         <div class="row mt-5">
           <div class="offset-md-1 col-md-3">
             <p>Au total <strong>toute évolution atypique inquiétante</strong> du développement sensori moteur quelque soit l'âge est à même de faire <strong>envisager une maladie neurologique sous jacente et parmi celles-ci la mutation KCNB1</strong>.</p>

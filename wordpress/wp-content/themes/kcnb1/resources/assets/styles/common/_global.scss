@@ -174,3 +174,21 @@ footer ul {
 .template-temoignage .attachment-post-thumbnail {
   @extend .img-fluid;
 }
+
+.alert-pink {
+  @extend .fs-18;
+  display: table; // only way to easily center a div without having to use a wrapper or a fixed width, omg css
+  margin: 0 auto;
+  font-weight: $font-weight-normal;
+  border: 2px solid $cpinky;
+  color: $cpinky;
+  background: transparent;
+  padding: 1rem;
+  text-align: center;
+}
+
+@include media-breakpoint-up(lg) {
+  .lg-2columns {
+    columns: 2 auto;
+  }
+}

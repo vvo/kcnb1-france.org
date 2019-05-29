@@ -21,9 +21,9 @@
           <br/>de recherche en France
           <br/>grâce à l'association KCNB1</h2>
         <p class="lead">L'association KCNB1 souhaitait accélérer la connaissance de cette mutation grâce à un programme de recherche dédié.</p>
-        <div class="row" style="columns: 2 auto">
+        <div class="row">
           <div class="offset-md-1 col-md-6">
-            <p style="columns: 2 auto">Ainsi en novembre 2017, grâce à l'association KCNB1 France et à l'équipe du centre de référence des Epilepsies rares coordonnée par le Pr Nabbout et leurs collaborations internationales, <strong>un programme de recherche clinique et fondamentale a été lancé à l'hôpital Necker et l'institut Imagine</strong> en regroupant 21 patients (18 enfants et 3 jeunes adultes) porteurs d'une mutation dans le gène KCNB1.
+            <p class="lg-2columns">Ainsi en novembre 2017, grâce à l'association KCNB1 France et à l'équipe du centre de référence des Epilepsies rares coordonnée par le Pr Nabbout et leurs collaborations internationales, <strong>un programme de recherche clinique et fondamentale a été lancé à l'hôpital Necker et l'institut Imagine</strong> en regroupant 21 patients (18 enfants et 3 jeunes adultes) porteurs d'une mutation dans le gène KCNB1.
             Parmi les 21 patients, 15 ont une nouvelle mutation non rapportée à ce jour dans la littérature.</p>
           </div>
         </div>
