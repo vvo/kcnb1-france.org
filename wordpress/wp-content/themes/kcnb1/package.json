@@ -47,7 +47,7 @@
     "bs-html-injector": "3.0.3",
     "buble": "0.19.7",
     "buble-loader": "0.5.1",
-    "cache-loader": "1.2.5",
+    "cache-loader": "4.0.0",
     "clean-webpack-plugin": "0.1.19",
     "copy-globs-webpack-plugin": "0.2.0",
     "css-loader": "0.28.11",
