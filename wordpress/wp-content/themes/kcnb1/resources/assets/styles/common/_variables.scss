@@ -25,11 +25,20 @@ $theme-colors: (
   blue: $cblu,
   pink: $cpinky,
   black: $cblackm,
-  grazy: $cgrazy
+  grazy: $cgrazy,
+  green: $clorage
 );
 
-$new-navbar-dark-color: str-replace(str-replace(#{$navbar-dark-color}, "(", "%28"), ")", "%29");
-$new-navbar-light-color: str-replace(str-replace(#{$navbar-light-color}, "(", "%28"), ")", "%29");
+$new-navbar-dark-color: str-replace(
+  str-replace(#{$navbar-dark-color}, "(", "%28"),
+  ")",
+  "%29"
+);
+$new-navbar-light-color: str-replace(
+  str-replace(#{$navbar-light-color}, "(", "%28"),
+  ")",
+  "%29"
+);
 
 $navbar-dark-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 $navbar-light-toggler-icon-bg: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$new-navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
@@ -58,16 +67,26 @@ $btn-font-size-lg: $font-size-18px;
 $btn-font-weight: $font-weight-normal;
 $btn-padding-y-lg: 1.5rem;
 $btn-padding-x-lg: 3rem;
-$btn-border-radius-lg: 4.125rem;
+$btn-padding-x-sm: 1rem;
+$btn-border-radius-lg: 2.5rem;
+$btn-border-radius-sm: 1rem;
 $link-color: $clinks;
 $link-hover-color: darken($link-color, 15%);
 $body-color: $cblackm;
 $spacers: map-merge(
   (
-    6: ($spacer * 4.5),
-    7: ($spacer * 7),
-    8: ($spacer * 11),
-    9: ($spacer * 14)
+    6: (
+      $spacer * 4.5
+    ),
+    7: (
+      $spacer * 7
+    ),
+    8: (
+      $spacer * 11
+    ),
+    9: (
+      $spacer * 14
+    )
   ),
   $spacers
 );

@@ -75,7 +75,7 @@
   max-width: 20.25rem;
 }
 
-.btn-white {
+.btn-white-temoignages {
   border-radius: 0;
   text-align: left;
   border: 0;
@@ -90,7 +90,7 @@
   @extend .align-items-center;
 }
 
-.btn-white:hover {
+.btn-white-temoignages:hover {
   background: $cblu;
   color: $cwhite;
   border-color: $cblu;

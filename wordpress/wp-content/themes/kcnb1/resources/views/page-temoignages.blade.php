@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-  @while(have_posts()) @php the_post() @endphp
-    <h1 class="text-center mb-3">Témoignages</h1>
-    <div class="bg-gray pt-5 pb-6">
-      <div class="container">
-        <div class="row justify-content-center">
-        <?php
+@while(have_posts()) @php the_post() @endphp
+<h1 class="text-center mb-3">Témoignages</h1>
+<div class="bg-gray pt-5 pb-6">
+  <div class="container">
+    <div class="row justify-content-center">
+      <?php
 
         $args = array(
             'post_type'      => 'page',
@@ -19,24 +19,12 @@
         $parent = new WP_Query( $args );
 
         if ( $parent->have_posts() ) : ?>
-          <?php while ( $parent->have_posts() ) : $parent->the_post(); ?>
-            <div class="card-container mb-3 d-flex align-items-stretch">
-              <div class="card">
-                <div class="card-body">
-                  <div class="icon-text"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
-                  <h3 class="card-title">{{ the_title() }}</h3>
-                </div>
-                {{ the_post_thumbnail('card') }}
-                <div class="card-body">
-                  <p class="card-text">{!! wp_trim_words(get_the_content(), 18) !!}</p>
-                </div>
-              <a href="{{ the_permalink() }}" title="{{ the_title() }}" class="btn btn-white">Lire le témoignage <i class="fas fa-stream fa-lg"></i></a>
-              </div>
-            </div>
-          <?php endwhile; ?>
-        <?php endif; wp_reset_postdata(); ?>
-        </div>
-      </div>
+      <?php while ( $parent->have_posts() ) : $parent->the_post(); ?>
+      @include('partials.temoignages-list')
+      <?php endwhile; ?>
+      <?php endif; wp_reset_postdata(); ?>
     </div>
-  @endwhile
+  </div>
+</div>
+@endwhile
 @endsection

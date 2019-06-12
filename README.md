@@ -35,16 +35,7 @@ Then copy the folder over OVH.
 
 ## Deploy changes to wordpress
 
-1. Export DB
-2. Replace all url occurences in DB backup
+1. Export DB via `docker exec kcnb1-franceorg_db_1 /usr/bin/mysqldump -u root --password=password wordpress > backup.sql`
+2. Replace all url occurences in DB backup about http://localhost to https://kcnb1-france.org in an editor
 3. Copy code to OVH
-4. Import DB backup
-
-## If something goes wrong
-
-```sh
-rm -rf db
-docker-compose stop
-docker-compose rm
-docker-compose up
-```
+4. Import DB backup via OVH phpMyAdmin

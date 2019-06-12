@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 5.2.x - Development - Administration package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-05-23 14:04:04+0000\n"
+"PO-Revision-Date: 2019-06-10 16:37:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -87,8 +87,8 @@ msgid "Improvements for Everyone"
 msgstr "Des améliorations pour tout le monde"
 
 #: wp-admin/about.php:129
-msgid "This administrator-focused update will let you safely fix or manage fatal errors without requiring developer time. It features better handling of the so-called “white screen of death,” and a way to enter recovery mode,  which pauses error-causing plugins or themes."
-msgstr "Cette mise à jour centrée sur l’administration va vous permettre de corriger ou gérer sans risque les erreurs fatales sans vous demander de temps de développement. Une meilleure prise en charge des fameux « écrans blancs de la mort » vous est proposée, ainsi qu’une manière de passer en « mode de récupération », ce qui permet de mettre en pause les extensions ou thèmes qui sont en erreur."
+msgid "This administrator-focused update will let you safely fix or manage fatal errors without requiring developer time. It features better handling of the so-called “white screen of death”, and a way to enter recovery mode, which pauses error-causing plugins or themes."
+msgstr "Cette mise à jour centrée sur l’administration va vous permettre de corriger ou gérer sans risque les erreurs fatales sans vous demander de temps de développement. Une meilleure prise en charge des fameux « écrans blancs de la mort » vous est proposée, ainsi qu’une manière de passer en mode de récupération, ce qui permet de mettre en pause les extensions ou thèmes qui sont en erreur."
 
 #: wp-admin/about.php:128
 msgid "PHP Error Protection"
@@ -115,19 +115,14 @@ msgstr "Gardez votre site en sécurité"
 msgid "Congratulations on updating to WordPress %s! This update makes it easier than ever to fix your site if something goes wrong."
 msgstr "Félicitations pour la mise à jour de WordPress %s ! Cette mise à jour rend plus facile que jamais l’application de correctifs sur votre site en cas de problème."
 
-#. translators: 1: The filename of the package.
-#: wp-admin/includes/file.php:1191 wp-admin/includes/file.php:1222
-msgid "The authenticity of %1$s could not be verified as signature verification is unavailable on this system."
-msgstr "L’authenticité de %1$s ne peut pas être vérifiée car la vérification de signature n’est pas disponible sur ce système."
-
 #. translators: tab heading for Site Health Status page
-#: wp-admin/site-health-info.php:52
+#: wp-admin/site-health-info.php:52 wp-admin/site-health.php:57
 msgctxt "Site Health"
 msgid "Status"
 msgstr "État"
 
 #. translators: tab heading for Site Health Info page
-#: wp-admin/site-health-info.php:59
+#: wp-admin/site-health-info.php:59 wp-admin/site-health.php:64
 msgctxt "Site Health"
 msgid "Info"
 msgstr "Informations"
@@ -142,7 +137,7 @@ msgid "Closed"
 msgstr "Fermé"
 
 #. translators: %s: number of critical issues found
-#: wp-admin/site-health.php:96 wp-admin/js/site-health.js:68
+#: wp-admin/site-health.php:102 wp-admin/js/site-health.js:68
 msgid "%s Critical issue"
 msgid_plural "%s Critical issues"
 msgstr[0] "%s problème critique"
@@ -186,6 +181,7 @@ msgid "PHP modules perform most of the tasks on the server that make your site r
 msgstr "Les modules PHP réalisent la plupart des tâches sur le serveur qui fait fonctionner votre site. Toute modification les concernant doit être réalisée par la personne chargée de l’administration de votre serveur."
 
 #: wp-admin/includes/class-wp-site-health.php:652
+#: wp-admin/includes/dashboard.php:1631
 msgid "PHP is the programming language we use to build and maintain WordPress. Newer versions of PHP are both faster and more secure, so updating will have a positive effect on your site&#8217;s performance."
 msgstr "PHP est le langage de programmation que nous utilisons pour construire et maintenir WordPress. Les nouvelles versions de PHP sont plus rapide et sécurisées. Ainsi, la mise à jour aura un effet positif sur les performances de votre site."
 
@@ -261,7 +257,7 @@ msgstr "Votre site a 1 thème installé, et il est à jour."
 msgid "Your site has 1 active plugin, and it is up to date."
 msgstr "Votre site a 1 extension active, et elle est à jour."
 
-#: wp-admin/site-health.php:117
+#: wp-admin/site-health.php:123
 msgid "Passed tests"
 msgstr "Tests passés"
 
@@ -281,7 +277,7 @@ msgstr "SI vous souhaitez exporter une liste de toutes les informations contenue
 msgid "This page can show you every detail about the configuration of your WordPress website. If we see anything here that could be improved, we will let you know on the Site Health Status page."
 msgstr "Cette page peut vous afficher chaque détail à propos de la configuration de votre WordPress. Si nous voyons ici quoi que ce soit qui puisse être amélioré,  nous vous le ferons savoir sur la page de l’état de santé."
 
-#: wp-admin/site-health-info.php:68 wp-admin/site-health.php:67
+#: wp-admin/site-health-info.php:68 wp-admin/site-health.php:73
 msgid "The Site Health check requires JavaScript."
 msgstr "La vérification de santé du site nécessite JavaScript."
 
@@ -339,7 +335,8 @@ msgid "The authenticity of %s could not be verified as no signature was found."
 msgstr "L’authenticité de %s n'a pas pu être vérifiée car aucune signature n’a été trouvée."
 
 #. translators: %s: The filename of the package.
-#: wp-admin/includes/file.php:1171
+#: wp-admin/includes/file.php:1171 wp-admin/includes/file.php:1191
+#: wp-admin/includes/file.php:1222
 msgid "The authenticity of %s could not be verified as signature verification is unavailable on this system."
 msgstr "L’authenticité de %s ne peut pas être vérifiée car la vérification des signatures est indisponible sur ce système."
 
@@ -491,7 +488,7 @@ msgstr "Il existe une nouvelle version disponible de %1$s, mais elle ne fonction
 msgid "This plugin failed to load properly and is paused during recovery mode."
 msgstr "Cette extension n’a pas pu se charger correctement et a été mise en pause dans le cadre du mode de récupération."
 
-#: wp-admin/includes/theme.php:905
+#: wp-admin/includes/theme.php:910
 msgid "Go to the Themes screen"
 msgstr "Aller à l’écran des thèmes"
 
@@ -507,42 +504,37 @@ msgstr "La taille totale n’est pas disponible. Des erreurs ont été rencontr�
 msgid "The size cannot be calculated. The directory is not accessible. Usually caused by invalid permissions."
 msgstr "La taille ne peut pas être calculée. Le répertoire n’est pas accessible. Usuellement cela est causé par des droits d’accès non valides."
 
-#. translators: %s: number of ratings
-#: wp-admin/includes/theme.php:727
-msgid "(%s ratings) <span class=\"screen-reader-text\">link to view ratings opens in a new tab</span>"
-msgstr "(%s avis) <span class=\"screen-reader-text\">lien pour voir les avis s’ouvrant dans un nouvel onglet</span>"
-
 #: wp-admin/includes/class-wp-debug-data.php:218
 msgid "These settings alter where and how parts of WordPress are loaded."
 msgstr "Ces réglages modifient où et comment les parties de WordPress sont chargées."
 
 #. translators: %s: number of items with no issues
-#: wp-admin/site-health.php:126 wp-admin/js/site-health.js:72
+#: wp-admin/site-health.php:132 wp-admin/js/site-health.js:72
 msgid "%s Item with no issues detected"
 msgid_plural "%s Items with no issues detected"
 msgstr[0] "%s élément sans problème détecté"
 msgstr[1] "%s éléments sans problème détectés"
 
 #. translators: %s: number of recommended improvements
-#: wp-admin/site-health.php:107 wp-admin/js/site-health.js:70
+#: wp-admin/site-health.php:113 wp-admin/js/site-health.js:70
 msgid "%s Recommended improvement"
 msgid_plural "%s Recommended improvements"
 msgstr[0] "%s amélioration recommandée"
 msgstr[1] "%s améliorations recommandées"
 
-#: wp-admin/site-health.php:90
+#: wp-admin/site-health.php:96
 msgid "The site health check shows critical information about your WordPress configuration and items that require your attention."
 msgstr "La vérification de santé du site affiche des informations critiques à propos de votre configuration WordPress et les éléments qui nécessitent votre attention."
 
-#: wp-admin/site-health.php:17 wp-admin/site-health.php:87
+#: wp-admin/site-health.php:17 wp-admin/site-health.php:93
 msgid "Site Health Status"
 msgstr "État de santé du site"
 
-#: wp-admin/site-health.php:81
+#: wp-admin/site-health.php:87
 msgid "Everything is running smoothly here."
 msgstr "Tout fonctionne parfaitement ici."
 
-#: wp-admin/site-health.php:77
+#: wp-admin/site-health.php:83
 msgid "Great job!"
 msgstr "Bon travail !"
 
@@ -1685,10 +1677,6 @@ msgstr "Mettre en place votre page d’accueil"
 msgid "Learn more about updating PHP"
 msgstr "En savoir plus sur la mise à jour de PHP"
 
-#: wp-admin/includes/dashboard.php:1631
-msgid "PHP is the programming language we use to build and maintain WordPress. Newer versions of PHP are both faster and more secure, so updating will have a positive effect on your site’s performance."
-msgstr "PHP est le langage de programmation que nous utilisons pour bâtir et maintenir WordPress. Les nouvelles versions de PHP sont à la fois plus rapides et plus sécurisées. La mise à jour aura donc un effet positif sur les performances de votre site."
-
 #: wp-admin/includes/dashboard.php:1630
 msgid "What is PHP and how does it affect my site?"
 msgstr "Qu’est-ce que PHP et comment cela affecte t-il mon site ?"
@@ -1830,11 +1818,11 @@ msgctxt "plugin"
 msgid "Resume %s"
 msgstr "Relancer %s"
 
-#: wp-admin/includes/theme.php:903
+#: wp-admin/includes/theme.php:908
 msgid "You can find more details and make changes on the Themes screen."
 msgstr "Vous trouverez plus de détails et pouvez apporter des modifications sur l’écran des thèmes."
 
-#: wp-admin/includes/theme.php:902
+#: wp-admin/includes/theme.php:907
 msgid "One or more themes failed to load properly."
 msgstr "Un ou plusieurs thèmes ont échoués à se charger correctement."
 
@@ -1843,7 +1831,7 @@ msgstr "Un ou plusieurs thèmes ont échoués à se charger correctement."
 msgid "Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the default category %s. The default category cannot be deleted."
 msgstr "Supprimer une catégorie ne supprime pas les articles de cette catégorie. Les articles ayant été assignés uniquement à cette catégorie se voient assignés à la catégorie par défaut, « %s ». La catégorie par défaut ne peut pas être supprimée."
 
-#: wp-admin/includes/theme.php:875
+#: wp-admin/includes/theme.php:880
 msgid "Could not resume the theme."
 msgstr "Impossible de relancer le thème."
 
@@ -3388,7 +3376,7 @@ msgid "Choose either a city in the same timezone as you or a UTC timezone offset
 msgstr "Choisissez une ville dans le même fuseau horaire que le vôtre ou un fuseau horaire universel spécifique."
 
 #. translators: %s: number of ratings
-#: wp-admin/theme-install.php:341
+#: wp-admin/includes/theme.php:729 wp-admin/theme-install.php:341
 msgid "(%s ratings)"
 msgstr "(%s votes)"
 
@@ -3747,7 +3735,7 @@ msgstr "Cela remplacera le contenu actuel de l’éditeur par la dernière versi
 msgid "Close media attachment panel"
 msgstr "Fermer le panneau des fichiers attachés."
 
-#: wp-admin/includes/ms.php:1075 wp-admin/site-health.php:59
+#: wp-admin/includes/ms.php:1075
 msgid "Info"
 msgstr "Info"
 
@@ -6141,7 +6129,7 @@ msgstr "Lorsque ce réglage est actif, un rappel est affiché dans la section «
 msgid "Accessibility Ready"
 msgstr "Optimisé pour l’accessibilité"
 
-#: wp-admin/includes/theme.php:741 wp-admin/themes.php:559
+#: wp-admin/includes/theme.php:746 wp-admin/themes.php:559
 msgid "This is a child theme of %s."
 msgstr "Ceci est un thème enfant de %s."
 
@@ -6246,7 +6234,7 @@ msgstr "Afficher le thème suivant"
 msgid "Show previous theme"
 msgstr "Afficher le thème précédent"
 
-#: wp-admin/includes/theme.php:735 wp-admin/themes.php:552
+#: wp-admin/includes/theme.php:740 wp-admin/themes.php:552
 msgid "Update Available"
 msgstr "Mise à jour disponible"
 
@@ -8590,7 +8578,7 @@ msgid "Plugins %s"
 msgstr "Extensions %s"
 
 #. translators: %s: plugin name
-#: wp-admin/includes/theme.php:763
+#: wp-admin/includes/theme.php:768
 #: wp-admin/includes/class-wp-theme-install-list-table.php:478
 #: wp-admin/includes/deprecated.php:1381 wp-admin/theme-install.php:299
 #: wp-admin/theme-install.php:319
@@ -8605,7 +8593,7 @@ msgstr "Tous les utilisateurs"
 #: wp-admin/includes/class-wp-links-list-table.php:88
 #: wp-admin/includes/class-wp-links-list-table.php:323
 #: wp-admin/includes/class-wp-themes-list-table.php:200
-#: wp-admin/includes/theme.php:758
+#: wp-admin/includes/theme.php:763
 #: wp-admin/includes/class-wp-plugins-list-table.php:500
 #: wp-admin/includes/class-wp-plugins-list-table.php:654
 #: wp-admin/includes/class-wp-plugins-list-table.php:683
@@ -10660,7 +10648,7 @@ msgstr "Sélectionnez le thème à modifier :"
 msgid "Edit Themes"
 msgstr "Modifier les thèmes"
 
-#: wp-admin/includes/theme.php:747 wp-admin/themes.php:563
+#: wp-admin/includes/theme.php:752 wp-admin/themes.php:563
 msgid "Tags:"
 msgstr "Étiquettes :"
 
@@ -11566,7 +11554,7 @@ msgstr "Une colonne"
 msgid "Feature Filter"
 msgstr "Filtre de fonctionnalités"
 
-#: wp-admin/includes/class-wp-screen.php:939
+#: wp-admin/includes/class-wp-screen.php:932
 msgid "Screen Options"
 msgstr "Options de l’écran"
 

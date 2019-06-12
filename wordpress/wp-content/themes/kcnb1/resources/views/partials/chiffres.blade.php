@@ -22,7 +22,7 @@
         </div>
       </div>
       <p class="text-center mt-5">
-        <a href="test" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
+        <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
       </p>
   </div>
 </div>
