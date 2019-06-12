@@ -26,3 +26,13 @@ const routes = new Router({
 
 // Load Events
 jQuery(document).ready(() => routes.loadEvents());
+
+const sticky = document.querySelector('.sticky');
+const origOffsetY = sticky.offsetTop;
+
+function onScroll() {
+  window.scrollY >= origOffsetY ? sticky.classList.add('fixme') :
+                                  sticky.classList.remove('fixme');
+}
+
+document.addEventListener('scroll', onScroll);

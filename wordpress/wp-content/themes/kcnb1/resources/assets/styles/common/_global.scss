@@ -192,3 +192,20 @@ footer ul {
     columns: 2 auto;
   }
 }
+
+#mainHeader {
+  height: 99px;
+}
+
+@include media-breakpoint-down(md) {
+  header .navbar.fixme {
+    position: fixed;
+    top: 0;
+    z-index: $zindex-dropdown;
+    background: white;
+  }
+
+  .admin-bar header .navbar.fixme {
+    top: 32px;
+  }
+}

@@ -15,8 +15,8 @@
     </div>
   </div>
 </div>
-<header class="mt-3 mb-5">
-  <nav class="navbar navbar-expand-lg navbar-light container">
+<header class="mt-3 mb-5" id="mainHeader">
+  <nav class="navbar navbar-expand-lg navbar-light container sticky">
     <a class="navbar-brand mr-5" href="{{ home_url('/') }}"><img srcset="@asset('images/logo.png'), @asset('images/logo-2x.png') 2x" src="@asset('images/logo-2x.png')"
         alt="Logo de l'association KCNB1 France" width="153" height="73" /></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
