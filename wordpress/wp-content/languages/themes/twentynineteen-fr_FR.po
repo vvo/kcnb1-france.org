@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - Twenty Nineteen package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-01-10 12:30:55+0000\n"
+"PO-Revision-Date: 2019-09-25 16:36:59+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,7 +37,7 @@ msgstr "Mis en avant"
 
 #: inc/back-compat.php:39 inc/back-compat.php:53 inc/back-compat.php:73
 msgid "Twenty Nineteen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again."
-msgstr "Twenty Nineteen nécessite au moins la version 4.7 de WordPress. Vous utilisez la version %s. Veuillez mettre à niveau puis réessayez."
+msgstr "Twenty Nineteen nécessite au moins la version 4.7 de WordPress. Vous utilisez la version %s. Veuillez mettre à niveau et réessayer."
 
 #: inc/template-functions.php:216
 msgid "Back"
@@ -58,26 +58,26 @@ msgstr "Appliquer une couleur personnalisée aux boutons, liens, images mises en
 #: inc/customizer.php:56
 msgctxt "primary color"
 msgid "Custom"
-msgstr "Personnalisé"
+msgstr "Personnalisée"
 
 #: inc/customizer.php:55
 msgctxt "primary color"
 msgid "Default"
 msgstr "Par défaut"
 
-#: functions.php:170
+#: functions.php:166
 msgid "White"
 msgstr "Blanc"
 
-#: functions.php:165
+#: functions.php:161
 msgid "Light Gray"
 msgstr "Gris clair"
 
-#: functions.php:160
+#: functions.php:156
 msgid "Dark Gray"
 msgstr "Gris foncé"
 
-#: functions.php:155
+#: functions.php:151
 msgid "Secondary"
 msgstr "Secondaire"
 
@@ -126,11 +126,11 @@ msgstr "Taille originale"
 msgid "Page"
 msgstr "Page"
 
-#: functions.php:194
+#: functions.php:190
 msgid "Add widgets here to appear in your footer."
 msgstr "Ajoutez ici des widgets qui apparaîtront dans votre pied de page."
 
-#: template-parts/footer/footer-widgets.php:12 functions.php:192
+#: functions.php:188 template-parts/footer/footer-widgets.php:12
 msgid "Footer"
 msgstr "Pied de page"
 
@@ -166,11 +166,11 @@ msgstr "Menu supérieur"
 #: template-parts/content/content.php:36
 #: template-parts/content/content-single.php:27
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
-msgstr "Continuer la lecture de<span class=\"screen-reader-text\"> « %s »</span>"
+msgstr "Continuer la lecture <span class=\"screen-reader-text\"> « %s »</span>"
 
+#: image.php:52 template-parts/content/content-page.php:27
 #: template-parts/content/content.php:49
-#: template-parts/content/content-page.php:27
-#: template-parts/content/content-single.php:40 image.php:52
+#: template-parts/content/content-single.php:40
 msgid "Pages:"
 msgstr "Pages :"
 
@@ -295,15 +295,15 @@ msgstr "Archives de la catégorie : "
 msgid "Edit <span class=\"screen-reader-text\">%s</span>"
 msgstr "Modifier <span class=\"screen-reader-text\">%s</span>"
 
-#: header.php:24
+#: header.php:25
 msgid "Skip to content"
 msgstr "Aller au contenu"
 
-#: template-parts/header/site-branding.php:46 functions.php:61
+#: functions.php:61 template-parts/header/site-branding.php:46
 msgid "Social Links Menu"
 msgstr "Menu des liens de réseaux sociaux"
 
-#: functions.php:59 functions.php:150
+#: functions.php:59 functions.php:146
 msgid "Primary"
 msgstr "Principal"
 
@@ -350,20 +350,20 @@ msgstr "Laisser un commentaire"
 msgid "Join the Conversation"
 msgstr "Rejoindre la conversation"
 
-#: classes/class-twentynineteen-walker-comment.php:100
+#: classes/class-twentynineteen-walker-comment.php:99
 msgid "Your comment is awaiting moderation."
 msgstr "Votre commentaire est en attente de modération."
 
-#: classes/class-twentynineteen-walker-comment.php:95
+#: classes/class-twentynineteen-walker-comment.php:94
 msgid "Edit"
 msgstr "Modifier"
 
 #. translators: 1: comment date, 2: comment time
-#: classes/class-twentynineteen-walker-comment.php:87
+#: classes/class-twentynineteen-walker-comment.php:86
 msgid "%1$s at %2$s"
 msgstr "%1$s à %2$s"
 
-#: classes/class-twentynineteen-walker-comment.php:67
+#: classes/class-twentynineteen-walker-comment.php:66
 msgid "%s <span class=\"screen-reader-text says\">says:</span>"
 msgstr "%s <span class=\"screen-reader-text says\">a dit :</span>"
 
@@ -375,15 +375,15 @@ msgstr "Apparemment, rien n’a été trouvé à cette adresse. Essayez avec une
 msgid "Oops! That page can&rsquo;t be found."
 msgstr "Aïe ! Cette page est introuvable."
 
+#. Theme URI of the theme
+msgid "https://wordpress.org/themes/twentynineteen/"
+msgstr "https://fr.wordpress.org/themes/twentynineteen/"
+
 #. Author of the theme
 msgid "the WordPress team"
 msgstr "L’équipe WordPress"
 
-#. Theme URI of the theme
-msgid "https://github.com/WordPress/twentynineteen"
-msgstr "https://github.com/WordPress/twentynineteen"
-
 #. Author URI of the theme
 #: footer.php:25
 msgid "https://wordpress.org/"
-msgstr "https://wordpress.org/"
+msgstr "https://fr.wordpress.org/"

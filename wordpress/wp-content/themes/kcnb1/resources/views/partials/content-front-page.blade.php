@@ -11,8 +11,8 @@
     </div>
     <div class="col-md pt-4">
       <h1>La mutation du gène KCNB1 est une maladie génétique rare.</h1>
-      <p class="mt-4 fs-18">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Léonard, Mathéo.L,
-        Vincent et Mathéo LB.
+      <p class="mt-4 fs-18">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Guillaume,
+        Léonard, Mathéo, Noah et Vincent.
         Nous avons été diagnostiqués avec une mutation du gène KCNB1. D'autres enfants souffrants d'épilepsie ont
         peut-être
         aussi cette mutation.
@@ -28,8 +28,8 @@
 <div class="bg-gray pt-6 pb-7 mt-5">
   <div class="container">
     <h2 class="text-center">Vivre avec la mutation du gène KCNB1</h2>
-    <p class="lead">En octobre 2018, 14 patients âgés de 3 à 34 ans ont été diagnostiqués avec la mutation du gène KCNB1
-      en France. Voici
+    <p class="lead">L'association KCNB1 France met en relation les familles de patients diagnostiqués avec la mutation
+      du gène KCNB1.<br /><br />Voici
       leur histoire.</p>
     <div class="row justify-content-center">
       <?php

@@ -8,3 +8,6 @@ wordpress/wp-content/debug.log
 wordpress/wp-content/wp-cache-config.php
 backup.sql
 yarn-error.log
+.history
+.yarn
+node_modules

@@ -64,14 +64,14 @@ msgid "Dark Gray"
 msgstr "Gris foncé"
 
 #. translators: %s: Name of current post
-#: inc/template-tags.php:194 template-parts/content.php:29
+#: template-parts/content.php:29 inc/template-tags.php:194
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "Continuer la lecture<span class=\"screen-reader-text\"> de &laquo;&nbsp;%s&nbsp;&raquo;</span>"
 
 #. translators: %s: Name of current post
-#: image.php:88 template-parts/content.php:53
-#: template-parts/content-single.php:47 template-parts/content-search.php:28
-#: template-parts/content-search.php:43 template-parts/content-page.php:39
+#: template-parts/content.php:53 template-parts/content-page.php:39
+#: template-parts/content-search.php:28 template-parts/content-search.php:43
+#: template-parts/content-single.php:47 image.php:88
 msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "Modifier<span class=\"screen-reader-text\"> \"%s\"</span>"
 
@@ -244,8 +244,8 @@ msgctxt "Used before full size attachment link."
 msgid "Full size"
 msgstr "Taille réelle"
 
-#: image.php:58 template-parts/content.php:36
-#: template-parts/content-single.php:26 template-parts/content-page.php:24
+#: template-parts/content.php:36 template-parts/content-page.php:24
+#: template-parts/content-single.php:26 image.php:58
 msgid "Pages:"
 msgstr "Pages&nbsp;:"
 
@@ -257,11 +257,11 @@ msgstr "Image suivante"
 msgid "Previous Image"
 msgstr "Image précédente"
 
-#: header.php:49
+#: header.php:50
 msgid "Menu"
 msgstr "Menu"
 
-#: header.php:27
+#: header.php:28
 msgid "Skip to content"
 msgstr "Aller au contenu principal"
 
@@ -313,11 +313,11 @@ msgstr "on"
 msgid "Sidebar"
 msgstr "Barre latérale"
 
-#: header.php:66 functions.php:93
+#: functions.php:93 header.php:67
 msgid "Social Links Menu"
 msgstr "Menu des liens de réseaux sociaux"
 
-#: header.php:53 functions.php:92
+#: functions.php:92 header.php:54
 msgid "Primary Menu"
 msgstr "Menu principal"
 
@@ -337,17 +337,17 @@ msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
 msgstr[0] "%1$s réflexion sur « %2$s »"
 msgstr[1] "%1$s réflexions sur « %2$s »"
 
-#: index.php:50 archive.php:53 search.php:41 image.php:62
-#: template-parts/content.php:40 template-parts/content-single.php:30
-#: template-parts/content-page.php:28
+#: archive.php:53 template-parts/content.php:40
+#: template-parts/content-page.php:28 template-parts/content-single.php:30
+#: search.php:41 index.php:50 image.php:62
 msgid "Page"
 msgstr "Page"
 
-#: index.php:49 archive.php:52 search.php:40
+#: archive.php:52 search.php:40 index.php:49
 msgid "Next page"
 msgstr "Page suivante"
 
-#: index.php:48 archive.php:51 search.php:39
+#: archive.php:51 search.php:39 index.php:48
 msgid "Previous page"
 msgstr "Page précédente"
 

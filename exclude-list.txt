@@ -1,0 +1,6 @@
+wp-content/themes/kcnb1/node_modules
+wp-content/cache
+wp-content/plugins
+wp-content/uploads
+wp-content/upgrade
+wp-content/debug.log

@@ -146,8 +146,8 @@
 .numberSubtitle {
   position: relative;
   top: -2rem;
-  color: $crougie;
-  font-weight: $font-weight-normal;
+  color: $cpinky;
+  font-weight: $font-weight-bold;
 }
 
 footer a {
@@ -198,11 +198,24 @@ footer ul {
 }
 
 @include media-breakpoint-down(md) {
+  header .navbar {
+    z-index: $zindex-fixed;
+    background: white;
+    position: relative;
+    padding-bottom: 0;
+  }
+
+  .navbar-collapse {
+    padding-bottom: 1rem;
+  }
+
+  .navbar-collapse.show {
+    border-bottom:  1px solid $cblackm;
+  }
+
   header .navbar.fixme {
     position: fixed;
     top: 0;
-    z-index: $zindex-dropdown;
-    background: white;
   }
 
   .admin-bar header .navbar.fixme {
