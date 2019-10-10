@@ -17,7 +17,7 @@
         peut-être
         aussi cette mutation.
       </p>
-      <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
+      <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">👉 Faire un don à l'association</a>
       <p class="mt-4 fs-18">
         <a href="{{ get_permalink(17) }}">Comprendre le gène KCNB1 et sa mutation →</a>
       </p>
@@ -38,8 +38,7 @@
           'post_type'      => 'page',
           'posts_per_page' => 3,
           'post_parent'    => 24,
-          'order'          => 'ASC',
-          'orderby'        => 'menu_order'
+          'orderby'        => 'rand'
         );
 
       $parent = new WP_Query( $args );

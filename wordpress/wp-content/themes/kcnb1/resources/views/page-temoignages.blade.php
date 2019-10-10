@@ -11,6 +11,7 @@
   Il n’existe à ce jour aucun médicament pour contrôler ces crises.
 
   <br /><br />
+  <a href="mailto:contact@kcnb1-france.org" class="btn border btn-white btn-md mt-2">📩 Envoyez-nous vos témoignages</a>
   <p>
     <div class="bg-gray pt-5 pb-6">
       <div class="container">

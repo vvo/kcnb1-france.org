@@ -7,6 +7,10 @@
 <div class="bg-gray mt-8 pb-1">
   <div class="container article-container">
     {{ the_post_thumbnail('full', ['class' => 'img-fluid']) }}
+    <div class="text-center mb-3 mt-3">
+        <span>Partagez cette page : </span>
+        <?php echo do_shortcode("[addtoany]"); ?>
+      </div>
       <h1 class="mt-5 text-center">Faire un don à l'association</h1>
       <div class="mt-3">
         <button class="btn btn-outline-black" type="button" disabled data-toggle="collapse" data-target="#don-cb" aria-expanded="true" aria-controls="don-cb">
@@ -21,7 +25,7 @@
             </div>
           </div>
           <div class="col-md border-left pl-4">
-            <p><strong>Tous les dons sont reversés à l'institut <a href="https://www.institutimagine.org/fr/" title="Lien vers le site de l'institut de recherche Imagine">Imagine</a></strong>, un institut de recherche et de soins public privé.</p>
+            <p>Vos dons sont utilisés pour : <strong>la recherche</strong> avec l'institut <a href="https://www.institutimagine.org/fr/" title="Lien vers le site de l'institut de recherche Imagine">Imagine</a>, un institut de recherche et de soins public privé, l'<strong>organisation d'événements</strong> par l'association et <strong>tout autre projet nécessaire</strong> <a href="{{ get_permalink(24) }}">au combat des familles</a> contre les maladies liées à la mutation du gène KCNB1.</p>
             <p>Depuis décembre 2017 <a href="{{ get_permalink(25) }}">un programme de recherche</a> clinique et fondamentale sur la mutation du gène KCNB1 a été lancé à l'<a href="http://hopital-necker.aphp.fr/">hopital Necker-Enfants malades</a> et l'institut Imagine.</p>
           </div>
         </div>

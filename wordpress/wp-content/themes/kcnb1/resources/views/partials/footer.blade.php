@@ -23,11 +23,15 @@
             class="block text-decoration-none font-weight-bold"><i class="fab fa-linkedin fa-2x align-bottom"></i> <span
               class="pl-1">association-kcnb1-france</span></a>
       </div>
-      <div class="col" style="line-height: 2">
+      <div class="col">
         <p class="font-weight-bold text-white">Contact</p>
         <p><span class="text-white">Association KCNB1 France</span><br />
           <span class="text-gray">6 Rue Des Martins<br />44230 Saint-Sébastien-sur-Loire<br /><a
               href="mailto:contact@kcnb1-france.org">contact@kcnb1-france.org</a></span>
+        </p>
+        <p class="font-weight-bold text-white">Réalisation (bénévoles)</p>
+        <p class="text-white">Design : <a href="https://romaindiguet.fr">Romain Diguet<a><br />
+          Code : <a href="https://codeagain.com">Vincent Voyer<a>
         </p>
       </div>
     </div>

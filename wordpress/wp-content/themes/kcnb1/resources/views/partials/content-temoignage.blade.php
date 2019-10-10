@@ -1,5 +1,6 @@
 <div class="bg-gray mt-8 pb-1">
   <div class="container article-container">
+    <?php if (function_exists('rank_math_the_breadcrumbs')) rank_math_the_breadcrumbs(); ?>
     {{ the_post_thumbnail('full', ['class' => 'img-fluid']) }}
     <div class="offset-md-1 col-md-6">
       <div class="icon-text mt-5"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>

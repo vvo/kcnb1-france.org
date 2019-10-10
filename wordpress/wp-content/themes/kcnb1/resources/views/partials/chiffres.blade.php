@@ -2,7 +2,7 @@
   <div class="container">
     @if(get_the_title() != 'Merci pour votre don')
       <p class="text-center">
-        <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">Faire un don à l'association</a>
+        <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">👉 Faire un don à l'association</a>
       </p>
     @endif
 

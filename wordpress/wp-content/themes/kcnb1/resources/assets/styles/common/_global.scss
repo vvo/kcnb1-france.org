@@ -222,3 +222,11 @@ footer ul {
     top: 32px;
   }
 }
+
+.content a:link:not(.btn) {
+  text-decoration: underline;
+}
+
+.h124 {
+  height: 124px
+}
