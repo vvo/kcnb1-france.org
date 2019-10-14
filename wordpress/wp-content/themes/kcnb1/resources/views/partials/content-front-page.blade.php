@@ -12,15 +12,14 @@
     <div class="col-md pt-4">
       <h1>La mutation du gène KCNB1 est une maladie génétique rare.</h1>
       <p class="mt-4 fs-18">Nous nous appelons Candice, Juliette, Laura, Maïa, Sarah, Soline, Arthur, Guillaume,
-        Léonard, Mathéo, Noah et Vincent.
-        Nous avons été diagnostiqués avec une mutation du gène KCNB1. D'autres enfants souffrants d'épilepsie ont
-        peut-être
-        aussi cette mutation.
+        Léonard, Mathéo, Noah, Vincent ...
+        Nous avons été diagnostiqués avec une mutation du gène KCNB1. D'autres enfants et adultes souffrants d'épilepsie ont
+        peut-être aussi cette mutation.
       </p>
-      <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">👉 Faire un don à l'association</a>
       <p class="mt-4 fs-18">
         <a href="{{ get_permalink(17) }}">Comprendre le gène KCNB1 et sa mutation →</a>
       </p>
+      <a href="{{ get_permalink(141) }}" class="btn btn-red btn-lg mt-2">👉 Faire un don à l'association</a>
     </div>
   </div>
 </div>
@@ -34,12 +33,18 @@
     <div class="row justify-content-center">
       <?php
 
+      // random posts
+      // $args = array(
+      //   'post_type'      => 'page',
+      //   'posts_per_page' => 3,
+      //   'post_parent'    => 24,
+      //   'orderby'        => 'rand'
+      // );
+
       $args = array(
-          'post_type'      => 'page',
-          'posts_per_page' => 3,
-          'post_parent'    => 24,
-          'orderby'        => 'rand'
-        );
+        'post__in' => array( 167, 48, 66 ),
+        'post_type' => 'any'
+      );
 
       $parent = new WP_Query( $args );
 
