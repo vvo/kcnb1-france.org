@@ -96,7 +96,7 @@
               beaucoup
               de médecins n’en ont pas encore entendu parler.​
 
-              <br /><br />D’autres enfants souffrants d’épilepsie ont peut-être
+              <br /><br />D’autres enfants et adultes souffrant d’épilepsie ont peut-être
               aussi cette mutation.​</p>
           </div>
         </div>

@@ -20,7 +20,7 @@
           développer et fonctionner. Les chromosomes contiennent eux des informations génétiques qui se regroupent en
           <strong>gènes</strong>. Chaque gène a un rôle spécifique dans le corps lorsqu'il fonctionne correctement.</p>
         <p>Des mutations génétiques peuvent survenir sur cette séquence d'ADN qui code pour partie la protéine KCNB1. Il
-          est possible de vérifier cet encodage de façon précise. Lorsqu'une anomalie survient et qu'il provoque un
+          est possible de vérifier cet encodage de façon précise. Lorsqu'une anomalie survient et qu'elle provoque un
           dysfonctionnement génique alors on parle d'une <strong>mutation</strong>.</p>
       </div>
       <div class="col-md-3">
@@ -117,7 +117,7 @@
             mutation KCNB1</strong>.</p>
       </div>
       <div class="col-md-3">
-        <p>Cette mutation génétique nouvellement identifiée appartient au <strong>syndrome microdélétionnels</strong> et
+        <p>Cette mutation génétique nouvellement identifiée appartient au <strong>syndrome microdélétionnel</strong> et
           doit être recherchée dans le cadre des recherches étiologiques menées par un médecin neuro pédiatre qui est
           amené à rencontrer l'enfant.</p>
       </div>

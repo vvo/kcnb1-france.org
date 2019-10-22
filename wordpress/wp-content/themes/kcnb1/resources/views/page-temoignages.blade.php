@@ -4,7 +4,7 @@
 @while(have_posts()) @php the_post() @endphp
 <h1 class="text-center mb-3">Témoignages</h1>
 <p class="lead">
-  Les patients atteints de la mutation du gène KCNB1 souffrent de symptomes variés qui rendent leur quotidien pour la
+  Les patients atteints de la mutation du gène KCNB1 souffrent de symptômes variés qui rendent leur quotidien pour la
   plupart de crises d’épilepsie pluriquotidienne,
   qui
   les foudroient à n’importe quel moment.

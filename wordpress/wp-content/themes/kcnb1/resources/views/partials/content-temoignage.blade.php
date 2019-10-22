@@ -6,6 +6,10 @@
       <div class="icon-text mt-5"><i class="far fa-comment fa-2x"></i> L'histoire de :</div>
       <h1 class="mt-2">{!! App::title() !!}</h1>
       <div class="mt-5">@php the_content() @endphp</div>
+      <div class="text-center mb-3 mt-3">
+        <span>Partagez cette page : </span>
+        <?php echo do_shortcode("[addtoany]"); ?>
+      </div>
     </div>
   </div>
 </div>
