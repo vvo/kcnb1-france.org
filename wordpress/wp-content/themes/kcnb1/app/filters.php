@@ -88,6 +88,6 @@ add_filter('comments_template', function ($comments_template) {
 }, 100);
 
 add_filter('acf/fields/google_map/api', function ($api){
-	$api['key'] = 'AIzaSyDTJ2AwtYWkRUyVG71sgp7bATT-nlLFWbg';
+	$api['key'] = 'AIzaSyDEr5-lS3T4KiLhkgvuZI5x2p79G1-GAo8';
 	return $api;
 });
