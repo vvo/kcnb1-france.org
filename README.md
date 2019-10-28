@@ -31,11 +31,22 @@ TODO:
 (cd wordpress/wp-content/themes/kcnb1 && yarn build:production)
 ```
 
-Then copy the folder over OVH.
-
 ## Deploy changes to wordpress
 
 1. Export DB via `docker exec kcnb1-franceorg_db_1 /usr/bin/mysqldump -u root --password=password wordpress > backup.sql`
 2. Replace all url occurences in DB backup about http://localhost to https://kcnb1-france.org in an editor
 3. Copy code to OVH
 4. Import DB backup via OVH phpMyAdmin
+
+## Deploy command
+
+```sh
+rsync -zahv --update --delete --exclude-from 'exclude-list.txt' wordpress/ kcnbfrh@sshcloud.cluster024.hosting.ovh.net:./www
+```
+
+```txt
+Host sshcloud.cluster024.hosting.ovh.net
+  Port 41857
+  User kcnbfrh
+```
+
