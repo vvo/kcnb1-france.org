@@ -82,7 +82,7 @@
     "webpack-dev-middleware": "2.0.6",
     "webpack-hot-middleware": "2.25.0",
     "webpack-merge": "4.2.2",
-    "yargs": "11.1.0"
+    "yargs": "14.2.0"
   },
   "stylelint": {
     "rules": {}
