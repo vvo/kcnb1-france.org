@@ -1,4 +1,5 @@
 wp-content/themes/kcnb1/node_modules
+wp-content/themes/kcnb1/.cache-loader
 wp-content/cache
 wp-content/plugins
 wp-content/uploads
