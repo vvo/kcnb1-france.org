@@ -64,7 +64,7 @@
     "import-glob": "1.5.0",
     "jquery": "3.4.1",
     "node-sass": "4.13.0",
-    "popper.js": "1.15.0",
+    "popper.js": "1.16.1",
     "postcss-loader": "2.1.6",
     "postcss-safe-parser": "3.0.1",
     "purgecss-webpack-plugin": "1.6.0",
