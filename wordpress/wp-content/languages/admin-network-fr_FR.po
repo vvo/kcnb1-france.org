@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 5.3.x - Development - Administration - Network Admin package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-10-08 04:35:32+0000\n"
+"PO-Revision-Date: 2019-12-04 14:39:13+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -711,8 +711,8 @@ msgid ""
 msgstr ""
 "Nouveau site créé par %1$s\n"
 "\n"
-"Adresse : %2$s\n"
-"Nom : %3$s"
+"Adresse : %2$s\n"
+"Nom : %3$s"
 
 #: wp-admin/includes/network.php:260 wp-admin/includes/network.php:611
 #: wp-admin/includes/network.php:653
@@ -737,7 +737,7 @@ msgstr "Cet écran permet aux super-admins d’ajouter de nouveaux sites au rés
 
 #: wp-admin/network/sites.php:33
 msgid "An Edit link to a separate Edit Site screen."
-msgstr "Un lien &laquo; Modifier &raquo; vers un nouvel écran de modification de site."
+msgstr "Un lien « Modifier » vers un nouvel écran de modification de site."
 
 #: wp-admin/network/themes.php:240
 msgid "Themes can be enabled on a site by site basis by the network admin on the Edit Site screen (which has a Themes tab); get there via the Edit action link on the All Sites screen. Only network admins are able to install or edit themes."

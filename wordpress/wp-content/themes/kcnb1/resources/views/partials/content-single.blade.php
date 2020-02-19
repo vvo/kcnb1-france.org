@@ -17,7 +17,7 @@
       <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i>Lieu :
         {{ get_field('lieu')['address'] }}</div>
       @endif
-      <div class="mt-5">@php the_content() @endphp</div>
+      <div class="mt-5 article-or-event">@php the_content() @endphp</div>
       <div class="text-center mb-3 mt-3">
         <span>Partagez cette page : </span>
         <?php echo do_shortcode("[addtoany]"); ?>
