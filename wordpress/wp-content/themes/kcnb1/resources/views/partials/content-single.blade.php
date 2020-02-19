@@ -18,6 +18,10 @@
         {{ get_field('lieu')['address'] }}</div>
       @endif
       <div class="mt-5">@php the_content() @endphp</div>
+      <div class="text-center mb-3 mt-3">
+        <span>Partagez cette page : </span>
+        <?php echo do_shortcode("[addtoany]"); ?>
+      </div>
     </div>
   </div>
 </div>
