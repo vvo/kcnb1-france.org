@@ -1,15 +1,15 @@
-version: '3'
+version: "3"
 
 services:
   db:
-    image: mysql:5.6.43
+    image: mysql/mysql-server:5.7
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: wordpress
       MYSQL_USER: username
       MYSQL_PASSWORD: password
-      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_HOST: "%"
     volumes:
       - ./db:/var/lib/mysql
       - ./additional-configurations/mycustom.cnf:/etc/mysql/conf.d/custom.cnf

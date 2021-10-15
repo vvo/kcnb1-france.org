@@ -57,6 +57,20 @@
     <p class="py-4 text-center mt-3">
       <a href="{{ get_permalink(24) }}">Découvrir tous les témoignages →</a>
     </p>
+
+    <h2 class="text-center mt-6 mb-6">Vidéo de présentation KCNB1 (with English subtitles)</h2>
+
+<div class="text-center mb-6">
+    <video controls width="300">
+
+    <!-- <source src="@asset('video-presentation.webm')"  type="video/webm"> -->
+
+    <source src="@asset('images/video-presentation.mp4')"
+            type="video/mp4">
+
+    Sorry, your browser doesn't support embedded videos.
+</video>
+</div>
   </div>
 </div>
 

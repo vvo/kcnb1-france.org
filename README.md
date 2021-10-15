@@ -4,17 +4,17 @@
 
 - [Docker](https://docs.docker.com/install/)
 - [nvm](https://github.com/creationix/nvm#installation-and-update)
-- [Yarn](https://yarnpkg.com/en/docs/install#alternatives-stable)
+- composer
 
 ## How to use
 
 ```sh
 nvm install
 nvm use
-(cd wordpress/wp-content/themes/kcnb1 && composer install && yarn)
+(cd wordpress/wp-content/themes/kcnb1 && composer install && npm install)
 docker-compose up
 # in another tab:
-(cd wordpress/wp-content/themes/kcnb1 && yarn start)
+(cd wordpress/wp-content/themes/kcnb1 && npm start)
 ```
 
 Then:
@@ -28,7 +28,7 @@ TODO:
 ## Deploy changes to theme only
 
 ```sh
-(cd wordpress/wp-content/themes/kcnb1 && yarn build:production)
+(cd wordpress/wp-content/themes/kcnb1 && npm run build:production)
 ```
 
 ## Deploy changes to wordpress
