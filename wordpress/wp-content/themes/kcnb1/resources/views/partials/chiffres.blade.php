@@ -23,8 +23,8 @@
         <div class="numberSubtitle">Généreux donateurs</div>
       </div>
       <div class="number mb-4 mr-4">
-        <div class="numberTitle">90K€</div>
-        <div class="numberSubtitle">+ de 90 000 euros<br /> de dons</div>
+        <div class="numberTitle">161K€</div>
+        <div class="numberSubtitle">+ de 161 000 euros<br /> de dons</div>
       </div>
     </div>
   </div>
