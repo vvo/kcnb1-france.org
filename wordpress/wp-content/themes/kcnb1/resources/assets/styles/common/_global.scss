@@ -175,6 +175,12 @@ footer ul {
   @extend .img-fluid;
 }
 
+@media (min-width: 768px) {
+  .w-70-md {
+    width: 70%;
+  }
+}
+
 .alert-pink {
   @extend .fs-18;
   display: table; // only way to easily center a div without having to use a wrapper or a fixed width, omg css
@@ -210,7 +216,7 @@ footer ul {
   }
 
   .navbar-collapse.show {
-    border-bottom:  1px solid $cblackm;
+    border-bottom: 1px solid $cblackm;
   }
 
   header .navbar.fixme {
@@ -228,9 +234,10 @@ footer ul {
 }
 
 .h124 {
-  height: 124px
+  height: 124px;
 }
 
-.article-or-event h2, .article-or-event h3 {
+.article-or-event h2,
+.article-or-event h3 {
   margin: 1.5em 0;
 }

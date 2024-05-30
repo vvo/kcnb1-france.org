@@ -16,7 +16,7 @@ services:
     ports:
       - 44006:3306
   web:
-    image: nginx:1.17.0
+    image: nginx
     ports:
       - 44000:80
     volumes:
