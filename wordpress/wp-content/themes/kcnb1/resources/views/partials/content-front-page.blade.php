@@ -5,7 +5,12 @@
 </nav>']) !!}
 
 <div class="container">
-  <div class="row">
+  <div class="text-center relative" style="position: relative; top: -2em">
+    <a href="https://www.helloasso.com/associations/association-kcnb1-france/evenements/tombola-kcnb1-france-juin-2024">
+    <img src="@asset('images/loterie-2024.png')" alt="Loterie TONBEAULOT" class="img-fluid w-70-md" /></a>
+    <hr />
+  </div>
+  <div class="row mt-2">
     <div class="col-md text-center">
       <img src="@asset('images/front-page/visuel.jpg')" alt="Photo de Soline a 8 ans" class="img-fluid" />
     </div>
