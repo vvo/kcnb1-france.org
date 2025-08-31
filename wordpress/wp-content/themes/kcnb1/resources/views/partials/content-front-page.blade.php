@@ -5,10 +5,6 @@
 </nav>']) !!}
 
 <div class="container">
-  <div class="text-center">
-    <a href="https://www.helloasso.com/associations/association-kcnb1-france/evenements/2eme-loterie-caritative-kcnb1-france-juin-2025"><img src="@asset('images/loterie.png')" alt="Loterie TONBEAULOT" class="img-fluid w-70-md" width="3674" height="586" /></a>
-    <hr />
-  </div>
   <div class="row mt-2">
     <div class="col-md text-center">
       <img src="@asset('images/front-page/visuel.jpg')" alt="Photo de Soline a 8 ans" class="img-fluid" />
