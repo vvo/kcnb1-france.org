@@ -10,21 +10,21 @@
 
     <div class="d-flex flex-row flex-wrap justify-content-center">
       <div class="number mb-4 mr-4">
-        <div class="numberTitle">90+</div>
+        <div class="numberTitle">100+</div>
         <div class="numberSubtitle">Merveilleux bénévoles</div>
       </div>
       <div class="number mb-4 mr-4">
-        <div class="numberTitle">30+</div>
+        <div class="numberTitle">50+</div>
         <div class="numberSubtitle">Évènements caritatifs<br />organisés</div>
       </div>
       <div class="w-100 d-xl-none"></div>
       <div class="number mb-4 mr-4">
-        <div class="numberTitle">600+</div>
+        <div class="numberTitle">1 000+</div>
         <div class="numberSubtitle">Généreux donateurs</div>
       </div>
       <div class="number mb-4 mr-4">
-        <div class="numberTitle">161K€</div>
-        <div class="numberSubtitle">+ de 161 000 euros<br /> de dons</div>
+        <div class="numberTitle">270K€+</div>
+        <div class="numberSubtitle">+ de 270 000 euros<br /> de dons</div>
       </div>
     </div>
   </div>
