@@ -1,8 +1,7 @@
-version: "3"
-
 services:
   db:
     image: mysql/mysql-server:5.7
+    platform: linux/amd64
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -17,6 +16,7 @@ services:
       - 44006:3306
   web:
     image: nginx
+    platform: linux/amd64
     ports:
       - 44000:80
     volumes:
@@ -26,6 +26,7 @@ services:
     depends_on:
       - php
   php:
+    platform: linux/amd64
     build:
       context: ./
       dockerfile: additional-configurations/php-Dockerfile

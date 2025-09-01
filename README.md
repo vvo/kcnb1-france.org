@@ -11,17 +11,19 @@
 ```sh
 nvm install
 nvm use
-(cd wordpress/wp-content/themes/kcnb1 && composer install && npm install)
+docker-compose exec php composer install --no-plugins -d /wordpress/wp-content/themes/kcnb1
+(cd wordpress/wp-content/themes/kcnb1 && npm install)
 docker-compose up
 # in another tab:
 (cd wordpress/wp-content/themes/kcnb1 && npm start)
 ```
 
 Then:
+
 - open http://localhost:44000/
 
-TODO:
-====
+# TODO:
+
 - script to sync db data from production to here
 - force remove of www and addition of https (test it with HEAD requests)
 
@@ -49,4 +51,3 @@ Host sshcloud.cluster024.hosting.ovh.net
   Port 41857
   User kcnbfrh
 ```
-

@@ -1,17 +1,25 @@
 FROM php:7.3.33-fpm
-RUN apt-get update -y
-RUN apt-get install -y sendmail
-RUN apt-get install -y libpng-dev
-RUN apt-get install -y libjpeg-dev
-RUN apt-get install -y libfreetype6-dev
-RUN apt-get install -y libmagickwand-dev
+
+# Install system dependencies
+RUN apt-get update -y && apt-get install -y \
+    sendmail \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libmagickwand-dev \
+    zlib1g-dev \
+    git \
+    unzip \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
 RUN pecl install imagick-3.4.3
-RUN apt-get install -y zlib1g-dev
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-install mbstring
-# RUN docker-php-ext-install zip
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install opcache
-RUN docker-php-ext-install bcmath
-RUN docker-php-ext-install exif
+RUN docker-php-ext-install mysqli mbstring gd opcache bcmath exif
 RUN docker-php-ext-enable imagick
+
+# Install Composer 2 (Composer 1 is no longer supported by Packagist)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Set working directory
+WORKDIR /wordpress
