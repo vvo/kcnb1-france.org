@@ -15,7 +15,14 @@
       <div class="icon-text text-blue"><i class="far fa-sticky-note fa-lg"></i>Date de l'événement :
         {{ the_field('date') }}</div>
       <div class="icon-text text-blue"><i class="fas fa-map-marker-alt fa-lg"></i>Lieu :
-        {{ get_field('lieu')['address'] }}</div>
+        @php
+          $lieu = get_field('lieu');
+          if (is_array($lieu) && isset($lieu['address'])) {
+            echo $lieu['address'];
+          } elseif (is_string($lieu)) {
+            echo $lieu;
+          }
+        @endphp</div>
       @endif
       <div class="mt-5 article-or-event">@php the_content() @endphp</div>
       <div class="text-center mb-3 mt-3">

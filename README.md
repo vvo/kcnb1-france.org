@@ -27,10 +27,15 @@ Then:
 - script to sync db data from production to here
 - force remove of www and addition of https (test it with HEAD requests)
 
-## Deploy changes to theme only
+## Deploy theme changes only
 
 ```sh
+# 1. Build the theme assets
 (cd wordpress/wp-content/themes/kcnb1 && npm run build:production)
+
+# 2. Deploy built assets and templates
+rsync -zahv wordpress/wp-content/themes/kcnb1/dist/ kcnbfrh@sshcloud.cluster024.hosting.ovh.net:./www/wp-content/themes/kcnb1/dist/
+rsync -zahv wordpress/wp-content/themes/kcnb1/resources/ kcnbfrh@sshcloud.cluster024.hosting.ovh.net:./www/wp-content/themes/kcnb1/resources/
 ```
 
 ## Deploy changes to wordpress
@@ -39,12 +44,6 @@ Then:
 2. Replace all url occurences in DB backup about http://localhost to https://kcnb1-france.org in an editor
 3. Copy code to OVH
 4. Import DB backup via OVH phpMyAdmin
-
-## Deploy command
-
-```sh
-rsync -zahv --update --delete --exclude-from 'exclude-list.txt' wordpress/ kcnbfrh@sshcloud.cluster024.hosting.ovh.net:./www
-```
 
 ```txt
 Host sshcloud.cluster024.hosting.ovh.net
