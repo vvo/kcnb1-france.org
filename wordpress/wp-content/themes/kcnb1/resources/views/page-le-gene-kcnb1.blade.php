@@ -6,7 +6,7 @@
   <h1 class="text-center">La mutation <br />du gène KCNB1</h1>
   <p class="lead">Fin 2014, des mutations dans le gène KCNB1 ont <a
       href="https://www.ncbi.nlm.nih.gov/pubmed/25164438">été découvertes aux États-Unis</a> chez des personnes
-    atteintes d'encéphalopathies épileptiques. Depuis, de nombreuses recherches ont étés menées afin de confirmer la
+    atteintes d'encéphalopathies épileptiques. Depuis, de nombreuses recherches ont été menées afin de confirmer la
     relation entre la mutation du gène KCNB1 et les symptômes des personnes atteintes mais aussi d'identifier et de
     recenser plus précisément les cas à travers le monde.</p>
 </div>
@@ -49,7 +49,7 @@
 <div class="bg-gray pt-6 pb-6">
   <div class="container">
     <h2 class="text-center">La mutation, <br />du gène KCNB1</h2>
-    <p class="lead">Les mutations du gène KCNB1 peuvent êtres héritées d'un parent porteur (sain) ou survenir "de novo"
+    <p class="lead">Les mutations du gène KCNB1 peuvent être héritées d'un parent porteur (sain) ou survenir "de novo"
       en raison d'une erreur dans la réplication cellulaire.</p>
     <div class="row">
       <div class="offset-md-1 col-md-3">
@@ -59,7 +59,7 @@
             ainsi que de retards de développement</strong>.</p>
       </div>
       <div class="col-md-3">
-        <p>Ces crises sont souvent présentes dès l'enfance et peuvent êtres variées dans leur déroulement. <strong>Il
+        <p>Ces crises sont souvent présentes dès l'enfance et peuvent être variées dans leur déroulement. <strong>Il
             est bien souvent difficile de contrôler ces crises avec des médicaments</strong>, on parle de crises
           pharmaco-résistantes.</p>
       </div>
@@ -112,7 +112,7 @@
     </div>
     <div class="row mt-5">
       <div class="offset-md-1 col-md-3">
-        <p>Au total <strong>toute évolution atypique inquiétante</strong> du développement sensori moteur quelque soit
+        <p>Au total <strong>toute évolution atypique inquiétante</strong> du développement sensori moteur quel que soit
           l'âge est à même de faire <strong>envisager une maladie neurologique sous jacente comme la
             mutation KCNB1</strong>.</p>
       </div>

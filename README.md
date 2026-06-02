@@ -11,9 +11,9 @@
 ```sh
 nvm install
 nvm use
-docker-compose exec php composer install --no-plugins -d /wordpress/wp-content/themes/kcnb1
 (cd wordpress/wp-content/themes/kcnb1 && npm install)
-docker-compose up
+docker-compose up -d
+docker-compose exec php composer install --no-plugins -d /wordpress/wp-content/themes/kcnb1
 # in another tab:
 (cd wordpress/wp-content/themes/kcnb1 && npm start)
 ```

@@ -12,7 +12,7 @@
     seul ou la seule patiente française ». <br /><br />Le diagnostic établi, nous faisons tous des recherches sur
     Internet et
     constatons qu’il y a très peu
-    d’informations sur cette « maladie ». Les 2 premières familles françaises rentrent en contact en 2016
+    d’informations sur cette « maladie ». Les 2 premières familles françaises entrent en contact en 2016
     via un
     blog
     américain. <br /><br />Nous sommes alors 10
@@ -27,7 +27,7 @@
         Nabbout lors d’une hospitalisation de sa fille Maïa à l’hôpital Necker-Enfants malades à Paris.</p>
 
       <p>Le Professeur Nabbout l’encourage à créer une
-        association. En quelques mois, grâce aux réseaux sociaux et aux forums de maladies rares, nous rentrons en
+        association. En quelques mois, grâce aux réseaux sociaux et aux forums de maladies rares, nous entrons en
         contact avec une,
         puis deux, puis trois… puis 15 familles françaises.</p>
 
@@ -67,7 +67,7 @@
           <li><strong>Mieux se faire connaître auprès des médecins et
               thérapeutes</strong> amenés à suivre des patients ayant une mutation du gène KCNB1 en partageant nos
             expériences
-            et les caractéristiques même de chaque cas recensé,</li>
+            et les caractéristiques mêmes de chaque cas recensé,</li>
         </ul>
       </div>
     </div>
@@ -86,7 +86,7 @@
               maladies rares et sur les réseaux sociaux, nous avons recensé 15 patients
               à fin 2018. <br />Nous sommes convaincus qu’il y en a d’autres.​</p>
 
-            <p>Aujourd’hui, nous sommes environ 100 familles réparties aux 4 coins du monde (France, Etats-Unis,
+            <p>Aujourd’hui, nous sommes environ 100 familles réparties aux quatre coins du monde (France, États-Unis,
               Espagne, Italie, Angleterre, Irlande, Australie, Allemagne, Pologne, Belgique etc…).​
 
               <br /><br />La mutation de
@@ -132,7 +132,7 @@
             sur la mutation du gène KCNB1</h3>
           <hr class="mt-4 mb-4" />
           <div class="lg-2columns">
-            <p><strong>A l’issue de cette rencontre, le Professeur Rima Nabbout et le chercheur Edor Kabashi nous
+            <p><strong>À l’issue de cette rencontre, le Professeur Rima Nabbout et le chercheur Edor Kabashi nous
                 annoncent</strong>
               qu’un programme de recherche clinique et fondamentale va être lancé par l’Institut Imagine et l’hôpital
               Necker-Enfants malades.</p>

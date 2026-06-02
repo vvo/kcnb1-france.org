@@ -8,14 +8,14 @@
     <div class="offset-lg-1 col-lg-3">
       <p>Grâce aux progrès récents dans le domaine de la génétique, de nouveaux gènes impliqués dans des troubles du
         développement cérébral de l'enfant ont été mis en évidence.</p>
-      <p><strong>En 2014, une équipe aux Etats-Unis a ainsi identifié des mutations dans le gène KCNB1 chez des enfants
+      <p><strong>En 2014, une équipe aux États-Unis a ainsi identifié des mutations dans le gène KCNB1 chez des enfants
           présentant un trouble précoce du développement associé à une épilepsie sévère</strong>. Ce gène code pour une
         protéine, qui est une composante principale d'un complexe protéique qui forme un canal perméable au Potassium.
       </p>
       <p>La régulation du passage du Potassium (K+) est indispensable au bon fonctionnement des neurones.
-        <p>Depuis sa découverte, une trentaine de patients porteurs d'une mutation du gène KCNB1 ont été rapportées dans
+        <p>Depuis sa découverte, une trentaine de patients porteurs d'une mutation du gène KCNB1 ont été rapportés dans
           la littérature médicale. D'autres sont en train d'être reconnus avec les tests génétiques qui deviennent plus
-          accessibles. <strong>Tous les patients rapportés présentent une« encéphalopathie développementale »</strong>
+          accessibles. <strong>Tous les patients rapportés présentent une « encéphalopathie développementale »</strong>
           c'est-à-dire une anomalie dans le fonctionnement cérébral entraînant un retard global des acquisitions, avec
           une épilepsie sévère chez la majorité d'entre eux.</p>
     </div>
@@ -87,7 +87,7 @@
 <div class="bg-gray pt-6 pb-6">
   <div class="container">
     <h2 class="text-center">Les étapes du programme<br /> de recherche</h2>
-    <p class="lead">Recueil des données cliniques et paracliniques pour connaîtreau mieux la maladie :</p>
+    <p class="lead">Recueil des données cliniques et paracliniques pour connaître au mieux la maladie :</p>
     <div class="row text-center">
       <div class="offset-md-1 col-md-2 d-flex">
         <div class="bg-white pb-3 pt-3 pl-4 pr-4">
