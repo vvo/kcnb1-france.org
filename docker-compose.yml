@@ -17,6 +17,7 @@ services:
   web:
     image: nginx
     platform: linux/amd64
+    # Plain HTTP, fronted by portless (https://kcnb1-france.localhost). See README.
     ports:
       - 44000:80
     volumes:

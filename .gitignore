@@ -7,7 +7,11 @@ wordpress/wp-content/upgrade
 wordpress/wp-content/debug.log
 wordpress/wp-content/wp-cache-config.php
 backup.sql
+prod-db.sql.gz
+*.sql.gz
+additional-configurations/certs/
 yarn-error.log
 .history
 .yarn
 node_modules
+.deploy-backups/
