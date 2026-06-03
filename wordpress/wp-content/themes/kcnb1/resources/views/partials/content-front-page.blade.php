@@ -5,6 +5,22 @@
 </nav>']) !!}
 
 <div class="container">
+  @php
+    // 3e loterie TONBEAULOT : bannière affichée automatiquement du 5 au 26 juin 2026,
+    // de 07h30 à 21h (heure de Paris). Hors de cette plage, rien ne s'affiche.
+    // Aperçu à tout moment via ?loterie=1.
+    $tz = wp_timezone();
+    $now = new DateTime('now', $tz);
+    $loterie_active = (
+      $now >= new DateTime('2026-06-05 07:30:00', $tz)
+      && $now <= new DateTime('2026-06-26 21:00:00', $tz)
+    ) || isset($_GET['loterie']);
+  @endphp
+  @if ($loterie_active)
+  <div class="text-center" style="margin-top: -3rem; margin-bottom: 3rem;">
+    <a href="https://www.helloasso.com/associations/association-kcnb1-france/evenements/3eme-loterie-caritative-kcnb1-france-juin-2026"><img src="@asset('images/loterie-2026.png')" alt="Loterie TONBEAULOT — du 5 au 26 juin 2026" class="img-fluid w-70-md" width="1942" height="809" /></a>
+  </div>
+  @endif
   <div class="row mt-2">
     <div class="col-md text-center">
       <img src="@asset('images/front-page/visuel.jpg')" alt="Photo de Soline a 8 ans" class="img-fluid" />
