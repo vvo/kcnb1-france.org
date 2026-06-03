@@ -24,7 +24,7 @@ if ( wp_using_themes() ) {
  * @param bool $exit Whether to exit without generating any content for 'HEAD' requests. Default true.
  */
 if ( 'HEAD' === $_SERVER['REQUEST_METHOD'] && apply_filters( 'exit_on_http_head', true ) ) {
-	exit();
+	exit;
 }
 
 // Process feeds and trackbacks even if not using themes.
@@ -36,11 +36,19 @@ if ( is_robots() ) {
 	 */
 	do_action( 'do_robots' );
 	return;
+} elseif ( is_favicon() ) {
+	/**
+	 * Fired when the template loader determines a favicon.ico request.
+	 *
+	 * @since 5.4.0
+	 */
+	do_action( 'do_favicon' );
+	return;
 } elseif ( is_feed() ) {
 	do_feed();
 	return;
 } elseif ( is_trackback() ) {
-	include( ABSPATH . 'wp-trackback.php' );
+	require ABSPATH . 'wp-trackback.php';
 	return;
 }
 
@@ -93,9 +101,16 @@ if ( wp_using_themes() ) {
 	 *
 	 * @param string $template The path of the template to include.
 	 */
-	$template = apply_filters( 'template_include', $template );
-	if ( $template ) {
-		include( $template );
+	$template   = apply_filters( 'template_include', $template );
+	$is_stringy = is_string( $template ) || ( is_object( $template ) && method_exists( $template, '__toString' ) );
+	$template   = $is_stringy ? realpath( (string) $template ) : null;
+	if (
+		is_string( $template ) &&
+		( str_ends_with( $template, '.php' ) || str_ends_with( $template, '.html' ) ) &&
+		is_file( $template ) &&
+		is_readable( $template )
+	) {
+		include $template;
 	} elseif ( current_user_can( 'switch_themes' ) ) {
 		$theme = wp_get_theme();
 		if ( $theme->errors() ) {

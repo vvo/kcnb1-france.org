@@ -1,21 +1,28 @@
 <?php
 
-/**
- * Disable error reporting
- *
- * Set this to error_reporting( -1 ) for debugging.
+/*
+ * The error_reporting() function can be disabled in php.ini. On systems where that is the case,
+ * it's best to add a dummy function to the wp-config.php file, but as this call to the function
+ * is run prior to wp-config.php loading, it is wrapped in a function_exists() check.
  */
-error_reporting( 0 );
+if ( function_exists( 'error_reporting' ) ) {
+	/*
+	 * Disable error reporting.
+	 *
+	 * Set this to error_reporting( -1 ) for debugging.
+	 */
+	error_reporting( 0 );
+}
 
-/** Set ABSPATH for execution */
+// Set ABSPATH for execution.
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/' );
+	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
 define( 'WPINC', 'wp-includes' );
 
 $protocol = $_SERVER['SERVER_PROTOCOL'];
-if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0' ) ) ) {
+if ( ! in_array( $protocol, array( 'HTTP/1.1', 'HTTP/2', 'HTTP/2.0', 'HTTP/3' ), true ) ) {
 	$protocol = 'HTTP/1.0';
 }
 
@@ -33,11 +40,11 @@ if ( empty( $load ) ) {
 	exit;
 }
 
-require( ABSPATH . 'wp-admin/includes/noop.php' );
-require( ABSPATH . WPINC . '/script-loader.php' );
-require( ABSPATH . WPINC . '/version.php' );
+require ABSPATH . 'wp-admin/includes/noop.php';
+require ABSPATH . WPINC . '/script-loader.php';
+require ABSPATH . WPINC . '/version.php';
 
-$expires_offset = 31536000; // 1 year
+$expires_offset = 31536000; // 1 year.
 $out            = '';
 
 $wp_scripts = new WP_Scripts();
@@ -45,9 +52,11 @@ wp_default_scripts( $wp_scripts );
 wp_default_packages_vendor( $wp_scripts );
 wp_default_packages_scripts( $wp_scripts );
 
-if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $wp_version ) {
+$etag = $wp_scripts->get_etag( $load );
+
+if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) && stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] ) === $etag ) {
 	header( "$protocol 304 Not Modified" );
-	exit();
+	exit;
 }
 
 foreach ( $load as $handle ) {
@@ -59,7 +68,7 @@ foreach ( $load as $handle ) {
 	$out .= get_file( $path ) . "\n";
 }
 
-header( "Etag: $wp_version" );
+header( "Etag: $etag" );
 header( 'Content-Type: application/javascript; charset=UTF-8' );
 header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + $expires_offset ) . ' GMT' );
 header( "Cache-Control: public, max-age=$expires_offset" );

@@ -7,11 +7,17 @@
  * @since 3.4.0
  */
 
+// Don't load directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 /**
  * Customize Control class.
  *
  * @since 3.4.0
  */
+#[AllowDynamicProperties]
 class WP_Customize_Control {
 
 	/**
@@ -60,7 +66,7 @@ class WP_Customize_Control {
 	 * The primary setting for the control (if there is one).
 	 *
 	 * @since 3.4.0
-	 * @var string
+	 * @var string|WP_Customize_Setting|null
 	 */
 	public $setting = 'default';
 
@@ -167,14 +173,14 @@ class WP_Customize_Control {
 	 *
 	 * Supplied `$args` override class property defaults.
 	 *
-	 * If `$args['settings']` is not defined, use the $id as the setting ID.
+	 * If `$args['settings']` is not defined, use the `$id` as the setting ID.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
 	 * @param string               $id      Control ID.
 	 * @param array                $args    {
-	 *     Optional. Arguments to override class property defaults.
+	 *     Optional. Array of properties for the new Control object. Default empty array.
 	 *
 	 *     @type int                  $instance_number Order in which this instance was created in relation
 	 *                                                 to other instances.
@@ -184,6 +190,8 @@ class WP_Customize_Control {
 	 *                                                 be used.
 	 *     @type string               $setting         The primary setting for the control (if there is one).
 	 *                                                 Default 'default'.
+	 *     @type string               $capability      Capability required to use this control. Normally this is empty
+	 *                                                 and the capability is derived from `$settings`.
 	 *     @type int                  $priority        Order priority to load the control. Default 10.
 	 *     @type string               $section         Section the control belongs to. Default empty.
 	 *     @type string               $label           Label for the control. Default empty.
@@ -195,11 +203,14 @@ class WP_Customize_Control {
 	 *                                                 attribute names are the keys and values are the values. Not
 	 *                                                 used for 'checkbox', 'radio', 'select', 'textarea', or
 	 *                                                 'dropdown-pages' control types. Default empty array.
+	 *     @type bool                 $allow_addition  Show UI for adding new content, currently only used for the
+	 *                                                 dropdown-pages control. Default false.
 	 *     @type array                $json            Deprecated. Use WP_Customize_Control::json() instead.
 	 *     @type string               $type            Control type. Core controls include 'text', 'checkbox',
 	 *                                                 'textarea', 'radio', 'select', and 'dropdown-pages'. Additional
 	 *                                                 input types such as 'email', 'url', 'number', 'hidden', and
 	 *                                                 'date' are supported implicitly. Default 'text'.
+	 *     @type callable             $active_callback Active callback.
 	 * }
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
@@ -236,14 +247,14 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Enqueue control related scripts/styles.
+	 * Enqueues control related scripts/styles.
 	 *
 	 * @since 3.4.0
 	 */
 	public function enqueue() {}
 
 	/**
-	 * Check whether control is active to current Customizer preview.
+	 * Checks whether control is active to current Customizer preview.
 	 *
 	 * @since 4.0.0
 	 *
@@ -281,7 +292,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Fetch a setting's value.
+	 * Fetches a setting's value.
 	 * Grabs the main setting by default.
 	 *
 	 * @since 3.4.0
@@ -296,7 +307,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Refreshes the parameters passed to the JavaScript via JSON.
 	 *
 	 * @since 3.4.0
 	 */
@@ -321,7 +332,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Get the data to export to the client via JSON.
+	 * Gets the data to export to the client via JSON.
 	 *
 	 * @since 4.1.0
 	 *
@@ -364,7 +375,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Get the control's content for insertion into the Customizer pane.
+	 * Gets the control's content for insertion into the Customizer pane.
 	 *
 	 * @since 4.1.0
 	 *
@@ -377,7 +388,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Check capabilities and render the control.
+	 * Checks capabilities and render the control.
 	 *
 	 * @since 3.4.0
 	 * @uses WP_Customize_Control::render()
@@ -392,7 +403,7 @@ class WP_Customize_Control {
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Control $this WP_Customize_Control instance.
+		 * @param WP_Customize_Control $control WP_Customize_Control instance.
 		 */
 		do_action( 'customize_render_control', $this );
 
@@ -404,7 +415,7 @@ class WP_Customize_Control {
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Control $this WP_Customize_Control instance.
+		 * @param WP_Customize_Control $control WP_Customize_Control instance.
 		 */
 		do_action( "customize_render_control_{$this->id}", $this );
 
@@ -426,14 +437,15 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Get the data link attribute for a setting.
+	 * Gets the data link attribute for a setting.
 	 *
 	 * @since 3.4.0
 	 * @since 4.9.0 Return a `data-customize-setting-key-link` attribute if a setting is not registered for the supplied setting key.
 	 *
 	 * @param string $setting_key
-	 * @return string Data link parameter, a `data-customize-setting-link` attribute if the `$setting_key` refers to a pre-registered setting,
-	 *                and a `data-customize-setting-key-link` attribute if the setting is not yet registered.
+	 * @return string Data link parameter, a `data-customize-setting-link` attribute if the `$setting_key` refers
+	 *                to a pre-registered setting, and a `data-customize-setting-key-link` attribute if the setting
+	 *                is not yet registered.
 	 */
 	public function get_link( $setting_key = 'default' ) {
 		if ( isset( $this->settings[ $setting_key ] ) && $this->settings[ $setting_key ] instanceof WP_Customize_Setting ) {
@@ -444,19 +456,19 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Render the data link attribute for the control's input element.
+	 * Renders the data link attribute for the control's input element.
 	 *
 	 * @since 3.4.0
 	 * @uses WP_Customize_Control::get_link()
 	 *
-	 * @param string $setting_key
+	 * @param string $setting_key Default 'default'.
 	 */
 	public function link( $setting_key = 'default' ) {
 		echo $this->get_link( $setting_key );
 	}
 
 	/**
-	 * Render the custom attributes for the control's input element.
+	 * Renders the custom attributes for the control's input element.
 	 *
 	 * @since 4.0.0
 	 */
@@ -467,7 +479,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Render the control's content.
+	 * Renders the control's content.
 	 *
 	 * Allows the content to be overridden without having to rewrite the wrapper in `$this::render()`.
 	 *
@@ -547,7 +559,7 @@ class WP_Customize_Control {
 				<select id="<?php echo esc_attr( $input_id ); ?>" <?php echo $describedby_attr; ?> <?php $this->link(); ?>>
 					<?php
 					foreach ( $this->choices as $value => $label ) {
-						echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->value(), $value, false ) . '>' . $label . '</option>';
+						echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->value(), $value, false ) . '>' . esc_html( $label ) . '</option>';
 					}
 					?>
 				</select>
@@ -601,8 +613,11 @@ class WP_Customize_Control {
 				// Hackily add in the data link parameter.
 				$dropdown = str_replace( '<select', '<select ' . $this->get_link() . ' id="' . esc_attr( $input_id ) . '" ' . $describedby_attr, $dropdown );
 
-				// Even more hacikly add auto-draft page stubs.
-				// @todo Eventually this should be removed in favor of the pages being injected into the underlying get_pages() call. See <https://github.com/xwp/wp-customize-posts/pull/250>.
+				/*
+				 * Even more hackily add auto-draft page stubs.
+				 * @todo Eventually this should be removed in favor of the pages being injected into the underlying get_pages() call.
+				 * See <https://github.com/xwp/wp-customize-posts/pull/250>.
+				 */
 				$nav_menus_created_posts_setting = $this->manager->get_setting( 'nav_menus_created_posts' );
 				if ( $nav_menus_created_posts_setting && current_user_can( 'publish_pages' ) ) {
 					$auto_draft_page_options = '';
@@ -622,14 +637,16 @@ class WP_Customize_Control {
 				<?php if ( $this->allow_addition && current_user_can( 'publish_pages' ) && current_user_can( 'edit_theme_options' ) ) : // Currently tied to menus functionality. ?>
 					<button type="button" class="button-link add-new-toggle">
 						<?php
-						/* translators: %s: Add New Page label. */
+						/* translators: %s: Add Page label. */
 						printf( __( '+ %s' ), get_post_type_object( 'page' )->labels->add_new_item );
 						?>
 					</button>
-					<div class="new-content-item">
-						<label for="create-input-<?php echo $this->id; ?>"><span class="screen-reader-text"><?php _e( 'New page title' ); ?></span></label>
-						<input type="text" id="create-input-<?php echo $this->id; ?>" class="create-item-input" placeholder="<?php esc_attr_e( 'New page title&hellip;' ); ?>">
-						<button type="button" class="button add-content"><?php _e( 'Add' ); ?></button>
+					<div class="new-content-item-wrapper">
+						<label for="create-input-<?php echo esc_attr( $this->id ); ?>"><?php _e( 'New page title' ); ?></label>
+						<div class="new-content-item">
+							<input type="text" id="create-input-<?php echo esc_attr( $this->id ); ?>" class="create-item-input" >
+							<button type="button" class="button add-content"><?php _e( 'Add' ); ?></button>
+						</div>
 					</div>
 				<?php endif; ?>
 				<?php
@@ -658,7 +675,7 @@ class WP_Customize_Control {
 	}
 
 	/**
-	 * Render the control's JS template.
+	 * Renders the control's JS template.
 	 *
 	 * This function is only run for control types that have been registered with
 	 * WP_Customize_Manager::register_control_type().
@@ -670,7 +687,7 @@ class WP_Customize_Control {
 	 */
 	final public function print_template() {
 		?>
-		<script type="text/html" id="tmpl-customize-control-<?php echo $this->type; ?>-content">
+		<script type="text/html" id="tmpl-customize-control-<?php echo esc_attr( $this->type ); ?>-content">
 			<?php $this->content_template(); ?>
 		</script>
 		<?php
@@ -687,106 +704,110 @@ class WP_Customize_Control {
 	 * @since 4.1.0
 	 */
 	protected function content_template() {}
-
 }
 
 /**
  * WP_Customize_Color_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-color-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-color-control.php';
 
 /**
  * WP_Customize_Media_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-media-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-media-control.php';
 
 /**
  * WP_Customize_Upload_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-upload-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-upload-control.php';
 
 /**
  * WP_Customize_Image_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-image-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-image-control.php';
 
 /**
  * WP_Customize_Background_Image_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-image-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-background-image-control.php';
 
 /**
  * WP_Customize_Background_Position_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-position-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-background-position-control.php';
 
 /**
  * WP_Customize_Cropped_Image_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-cropped-image-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-cropped-image-control.php';
 
 /**
  * WP_Customize_Site_Icon_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-site-icon-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-site-icon-control.php';
 
 /**
  * WP_Customize_Header_Image_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-header-image-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-header-image-control.php';
 
 /**
  * WP_Customize_Theme_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-theme-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-theme-control.php';
 
 /**
  * WP_Widget_Area_Customize_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-widget-area-customize-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-widget-area-customize-control.php';
 
 /**
  * WP_Widget_Form_Customize_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-widget-form-customize-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-widget-form-customize-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Item_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-item-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-item-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Location_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-location-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-location-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Name_Control class.
  *
  * As this file is deprecated, it will trigger a deprecation notice if instantiated. In a subsequent
- * release, the require_once() here will be removed and _deprecated_file() will be called if file is
+ * release, the require_once here will be removed and _deprecated_file() will be called if file is
  * required at all.
  *
  * @deprecated 4.9.0 This file is no longer used due to new menu creation UX.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-name-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-name-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Locations_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-locations-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-locations-control.php';
 
 /**
  * WP_Customize_Nav_Menu_Auto_Add_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-auto-add-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-auto-add-control.php';
 
 /**
  * WP_Customize_Date_Time_Control class.
  */
-require_once( ABSPATH . WPINC . '/customize/class-wp-customize-date-time-control.php' );
+require_once ABSPATH . WPINC . '/customize/class-wp-customize-date-time-control.php';
+
+/**
+ * WP_Sidebar_Block_Editor_Control class.
+ */
+require_once ABSPATH . WPINC . '/customize/class-wp-sidebar-block-editor-control.php';

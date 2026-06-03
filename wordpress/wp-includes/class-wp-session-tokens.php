@@ -12,6 +12,7 @@
  *
  * @since 4.0.0
  */
+#[AllowDynamicProperties]
 abstract class WP_Session_Tokens {
 
 	/**
@@ -66,13 +67,8 @@ abstract class WP_Session_Tokens {
 	 * @param string $token Session token to hash.
 	 * @return string A hash of the session token (a verifier).
 	 */
-	final private function hash_token( $token ) {
-		// If ext/hash is not present, use sha1() instead.
-		if ( function_exists( 'hash' ) ) {
-			return hash( 'sha256', $token );
-		} else {
-			return sha1( $token );
-		}
+	private function hash_token( $token ) {
+		return hash( 'sha256', $token );
 	}
 
 	/**
@@ -143,7 +139,7 @@ abstract class WP_Session_Tokens {
 			$session['ua'] = wp_unslash( $_SERVER['HTTP_USER_AGENT'] );
 		}
 
-		// Timestamp
+		// Timestamp.
 		$session['login'] = time();
 
 		$token = wp_generate_password( 43, false, false );

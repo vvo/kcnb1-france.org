@@ -2,10 +2,12 @@
  * @output wp-admin/js/user-profile.js
  */
 
-/* global ajaxurl, pwsL10n, userProfileL10n */
+/* global ajaxurl, pwsL10n, userProfileL10n, ClipboardJS */
 (function($) {
 	var updateLock = false,
-
+		isSubmitting = false,
+		__ = wp.i18n.__,
+		clipboard = new ClipboardJS( '.application-password-display .copy-button' ),
 		$pass1Row,
 		$pass1,
 		$pass2,
@@ -14,32 +16,50 @@
 		$toggleButton,
 		$submitButtons,
 		$submitButton,
-		currentPass;
+		currentPass,
+		$form,
+		originalFormContent,
+		$passwordWrapper,
+		successTimeout;
 
 	function generatePassword() {
 		if ( typeof zxcvbn !== 'function' ) {
 			setTimeout( generatePassword, 50 );
 			return;
-		} else if ( ! $pass1.val() ) {
-			// zxcvbn loaded before user entered password.
+		} else if ( ! $pass1.val() || $passwordWrapper.hasClass( 'is-open' ) ) {
+			// zxcvbn loaded before user entered password, or generating new password.
 			$pass1.val( $pass1.data( 'pw' ) );
 			$pass1.trigger( 'pwupdate' );
 			showOrHideWeakPasswordCheckbox();
-		}
-		else {
+		} else {
 			// zxcvbn loaded after the user entered password, check strength.
 			check_pass_strength();
 			showOrHideWeakPasswordCheckbox();
 		}
 
+		/*
+		 * This works around a race condition when zxcvbn loads quickly and
+		 * causes `generatePassword()` to run prior to the toggle button being
+		 * bound.
+		 */
+		bindToggleButton();
+
+		// Install screen.
 		if ( 1 !== parseInt( $toggleButton.data( 'start-masked' ), 10 ) ) {
+			// Show the password not masked if admin_password hasn't been posted yet.
 			$pass1.attr( 'type', 'text' );
 		} else {
+			// Otherwise, mask the password.
 			$toggleButton.trigger( 'click' );
 		}
 
 		// Once zxcvbn loads, passwords strength is known.
-		$( '#pw-weak-text-label' ).html( userProfileL10n.warnWeak );
+		$( '#pw-weak-text-label' ).text( __( 'Confirm use of weak password' ) );
+
+		// Focus the password field.
+		if ( 'mailserver_pass' !== $pass1.prop('id' ) ) {
+			$( $pass1 ).trigger( 'focus' );
+		}
 	}
 
 	function bindPass1() {
@@ -56,6 +76,7 @@
 
 			currentPass = $pass1.val();
 
+			// Refresh password strength area.
 			$pass1.removeClass( 'short bad good strong' );
 			showOrHideWeakPasswordCheckbox();
 		} );
@@ -64,10 +85,10 @@
 	function resetToggle( show ) {
 		$toggleButton
 			.attr({
-				'aria-label': show ? userProfileL10n.ariaShow : userProfileL10n.ariaHide
+				'aria-label': show ? __( 'Show password' ) : __( 'Hide password' )
 			})
 			.find( '.text' )
-				.text( show ? userProfileL10n.show : userProfileL10n.hide )
+				.text( show ? __( 'Show' ) : __( 'Hide' ) )
 			.end()
 			.find( '.dashicons' )
 				.removeClass( show ? 'dashicons-hidden' : 'dashicons-visibility' )
@@ -75,6 +96,10 @@
 	}
 
 	function bindToggleButton() {
+		if ( !! $toggleButton ) {
+			// Do not rebind.
+			return;
+		}
 		$toggleButton = $pass1Row.find('.wp-hide-pw');
 		$toggleButton.show().on( 'click', function () {
 			if ( 'password' === $pass1.attr( 'type' ) ) {
@@ -84,21 +109,78 @@
 				$pass1.attr( 'type', 'password' );
 				resetToggle( true );
 			}
-
-			$pass1.focus();
-
-			if ( ! _.isUndefined( $pass1[0].setSelectionRange ) ) {
-				$pass1[0].setSelectionRange( 0, 100 );
-			}
 		});
 	}
 
+	/**
+	 * Handle the password reset button. Sets up an ajax callback to trigger sending
+	 * a password reset email.
+	 */
+	function bindPasswordResetLink() {
+		$( '#generate-reset-link' ).on( 'click', function() {
+			var $this  = $(this),
+				data = {
+					'user_id': userProfileL10n.user_id, // The user to send a reset to.
+					'nonce':   userProfileL10n.nonce    // Nonce to validate the action.
+				};
+
+				// Remove any previous error messages.
+				$this.parent().find( '.notice-error' ).remove();
+
+				// Send the reset request.
+				var resetAction =  wp.ajax.post( 'send-password-reset', data );
+
+				// Handle reset success.
+				resetAction.done( function( response ) {
+					addInlineNotice( $this, true, response );
+				} );
+
+				// Handle reset failure.
+				resetAction.fail( function( response ) {
+					addInlineNotice( $this, false, response );
+				} );
+
+		});
+
+	}
+
+	/**
+	 * Helper function to insert an inline notice of success or failure.
+	 *
+	 * @param {jQuery Object} $this   The button element: the message will be inserted
+	 *                                above this button
+	 * @param {bool}          success Whether the message is a success message.
+	 * @param {string}        message The message to insert.
+	 */
+	function addInlineNotice( $this, success, message ) {
+		var resultDiv = $( '<div />', {
+			role: 'alert'
+		} );
+
+		// Set up the notice div.
+		resultDiv.addClass( 'notice inline' );
+
+		// Add a class indicating success or failure.
+		resultDiv.addClass( 'notice-' + ( success ? 'success' : 'error' ) );
+
+		// Add the message, wrapping in a p tag, with a fadein to highlight each message.
+		resultDiv.text( $( $.parseHTML( message ) ).text() ).wrapInner( '<p />');
+
+		// Disable the button when the callback has succeeded.
+		$this.prop( 'disabled', success );
+
+		// Remove any previous notices.
+		$this.siblings( '.notice' ).remove();
+
+		// Insert the notice.
+		$this.before( resultDiv );
+	}
+
 	function bindPasswordForm() {
-		var $passwordWrapper,
-			$generateButton,
+		var $generateButton,
 			$cancelButton;
 
-		$pass1Row = $( '.user-pass1-wrap, .user-pass-wrap' );
+		$pass1Row = $( '.user-pass1-wrap, .user-pass-wrap, .mailserver-pass-wrap, .reset-pass-submit' );
 
 		// Hide the confirm password field when JavaScript support is enabled.
 		$('.user-pass2-wrap').hide();
@@ -111,11 +193,11 @@
 
 		$weakRow = $( '.pw-weak' );
 		$weakCheckbox = $weakRow.find( '.pw-checkbox' );
-		$weakCheckbox.change( function() {
+		$weakCheckbox.on( 'change', function() {
 			$submitButtons.prop( 'disabled', ! $weakCheckbox.prop( 'checked' ) );
 		} );
 
-		$pass1 = $('#pass1');
+		$pass1 = $('#pass1, #mailserver_pass');
 		if ( $pass1.length ) {
 			bindPass1();
 		} else {
@@ -123,7 +205,7 @@
 			$pass1 = $( '#user_pass' );
 		}
 
-		/**
+		/*
 		 * Fix a LastPass mismatch issue, LastPass only changes pass2.
 		 *
 		 * This fixes the issue by copying any changes from the hidden
@@ -149,57 +231,54 @@
 
 		bindToggleButton();
 
-		if ( $generateButton.length ) {
-			$passwordWrapper.hide();
-		}
-
 		$generateButton.show();
 		$generateButton.on( 'click', function () {
 			updateLock = true;
 
-			$generateButton.hide();
-			$passwordWrapper.show();
+			// Make sure the password fields are shown.
+			$generateButton.not( '.skip-aria-expanded' ).attr( 'aria-expanded', 'true' );
+			$passwordWrapper
+				.show()
+				.addClass( 'is-open' );
 
 			// Enable the inputs when showing.
 			$pass1.attr( 'disabled', false );
 			$pass2.attr( 'disabled', false );
 
-			if ( $pass1.val().length === 0 ) {
-				generatePassword();
-			}
+			// Set the password to the generated value.
+			generatePassword();
+
+			// Show generated password in plaintext by default.
+			resetToggle ( false );
+
+			// Generate the next password and cache.
+			wp.ajax.post( 'generate-password' )
+				.done( function( data ) {
+					$pass1.data( 'pw', data );
+				} );
 		} );
 
 		$cancelButton = $pass1Row.find( 'button.wp-cancel-pw' );
 		$cancelButton.on( 'click', function () {
 			updateLock = false;
 
-			// Clear any entered password.
-			$pass1.val( '' );
-
-			// Generate a new password.
-			wp.ajax.post( 'generate-password' )
-				.done( function( data ) {
-					$pass1.data( 'pw', data );
-				} );
-
-			$generateButton.show().focus();
-			$passwordWrapper.hide();
-
-			$weakRow.hide( 0, function () {
-				$weakCheckbox.removeProp( 'checked' );
-			} );
-
 			// Disable the inputs when hiding to prevent autofill and submission.
 			$pass1.prop( 'disabled', true );
 			$pass2.prop( 'disabled', true );
 
+			// Clear password field and update the UI.
+			$pass1.val( '' ).trigger( 'pwupdate' );
 			resetToggle( false );
 
-			if ( $pass1Row.closest( 'form' ).is( '#your-profile' ) ) {
-				// Clear password field to prevent update
-				$pass1.val( '' ).trigger( 'pwupdate' );
-				$submitButtons.prop( 'disabled', false );
-			}
+			// Hide password controls.
+			$passwordWrapper
+				.hide()
+				.removeClass( 'is-open' );
+
+			// Stop an empty password from being submitted as a change.
+			$submitButtons.prop( 'disabled', false );
+
+			$generateButton.attr( 'aria-expanded', 'false' );
 		} );
 
 		$pass1Row.closest( 'form' ).on( 'submit', function () {
@@ -215,12 +294,12 @@
 		var pass1 = $('#pass1').val(), strength;
 
 		$('#pass-strength-result').removeClass('short bad good strong empty');
-		if ( ! pass1 ) {
+		if ( ! pass1 || '' ===  pass1.trim() ) {
 			$( '#pass-strength-result' ).addClass( 'empty' ).html( '&nbsp;' );
 			return;
 		}
 
-		strength = wp.passwordStrength.meter( pass1, wp.passwordStrength.userInputBlacklist(), pass1 );
+		strength = wp.passwordStrength.meter( pass1, wp.passwordStrength.userInputDisallowedList(), pass1 );
 
 		switch ( strength ) {
 			case -1:
@@ -239,33 +318,58 @@
 				$('#pass-strength-result').addClass('short').html( pwsL10n.mismatch );
 				break;
 			default:
-				$('#pass-strength-result').addClass('short').html( pwsL10n['short'] );
+				$('#pass-strength-result').addClass('short').html( pwsL10n.short );
 		}
 	}
 
 	function showOrHideWeakPasswordCheckbox() {
-		var passStrength = $('#pass-strength-result')[0];
+		var passStrengthResult = $('#pass-strength-result');
 
-		if ( passStrength.className ) {
-			$pass1.addClass( passStrength.className );
-			if ( $( passStrength ).is( '.short, .bad' ) ) {
-				if ( ! $weakCheckbox.prop( 'checked' ) ) {
-					$submitButtons.prop( 'disabled', true );
-				}
-				$weakRow.show();
-			} else {
-				if ( $( passStrength ).is( '.empty' ) ) {
-					$submitButtons.prop( 'disabled', true );
-					$weakCheckbox.prop( 'checked', false );
+		if ( passStrengthResult.length ) {
+			var passStrength = passStrengthResult[0];
+
+			if ( passStrength.className ) {
+				$pass1.addClass( passStrength.className );
+				if ( $( passStrength ).is( '.short, .bad' ) ) {
+					if ( ! $weakCheckbox.prop( 'checked' ) ) {
+						$submitButtons.prop( 'disabled', true );
+					}
+					$weakRow.show();
 				} else {
-					$submitButtons.prop( 'disabled', false );
+					if ( $( passStrength ).is( '.empty' ) ) {
+						$submitButtons.prop( 'disabled', true );
+						$weakCheckbox.prop( 'checked', false );
+					} else {
+						$submitButtons.prop( 'disabled', false );
+					}
+					$weakRow.hide();
 				}
-				$weakRow.hide();
 			}
 		}
 	}
 
-	$(document).ready( function() {
+	// Debug information copy section.
+	clipboard.on( 'success', function( e ) {
+		var triggerElement = $( e.trigger ),
+			successElement = $( '.success', triggerElement.closest( '.application-password-display' ) );
+
+		// Clear the selection and move focus back to the trigger.
+		e.clearSelection();
+
+		// Show success visual feedback.
+		clearTimeout( successTimeout );
+		successElement.removeClass( 'hidden' );
+
+		// Hide success visual feedback after 3 seconds since last success.
+		successTimeout = setTimeout( function() {
+			successElement.addClass( 'hidden' );
+		}, 3000 );
+
+		// Handle success audible feedback.
+		wp.a11y.speak( __( 'Application password has been copied to your clipboard.' ) );
+	} );
+
+	$( function() {
 		var $colorpicker, $stylesheet, user_id, current_user_id,
 			select       = $( '#display_name' ),
 			current_name = select.val(),
@@ -273,12 +377,12 @@
 
 		$( '#pass1' ).val( '' ).on( 'input' + ' pwupdate', check_pass_strength );
 		$('#pass-strength-result').show();
-		$('.color-palette').click( function() {
+		$('.color-palette').on( 'click', function() {
 			$(this).siblings('input[name="admin_color"]').prop('checked', true);
 		});
 
 		if ( select.length ) {
-			$('#first_name, #last_name, #nickname').bind( 'blur.user_profile', function() {
+			$('#first_name, #last_name, #nickname').on( 'blur.user_profile', function() {
 				var dub = [],
 					inputs = {
 						display_nickname  : $('#nickname').val() || '',
@@ -320,7 +424,7 @@
 					return;
 				}
 
-				var display_name = $.trim( this.value ) || current_name;
+				var display_name = this.value.trim() || current_name;
 
 				greeting.text( display_name );
 			} );
@@ -342,7 +446,7 @@
 			$this.siblings( '.selected' ).removeClass( 'selected' );
 			$this.addClass( 'selected' ).find( 'input[type="radio"]' ).prop( 'checked', true );
 
-			// Set color scheme
+			// Set color scheme.
 			if ( user_id === current_user_id ) {
 				// Load the colors stylesheet.
 				// The default color scheme won't have one, so we'll need to create an element.
@@ -351,10 +455,10 @@
 				}
 				$stylesheet.attr( 'href', $this.children( '.css_url' ).val() );
 
-				// repaint icons
+				// Repaint icons.
 				if ( typeof wp !== 'undefined' && wp.svgPainter ) {
 					try {
-						colors = $.parseJSON( $this.children( '.icon_colors' ).val() );
+						colors = JSON.parse( $this.children( '.icon_colors' ).val() );
 					} catch ( error ) {}
 
 					if ( colors ) {
@@ -363,7 +467,7 @@
 					}
 				}
 
-				// update user option
+				// Update user option.
 				$.post( ajaxurl, {
 					action:       'save-user-color-scheme',
 					color_scheme: $this.children( 'input[name="admin_color"]' ).val(),
@@ -377,6 +481,13 @@
 		});
 
 		bindPasswordForm();
+		bindPasswordResetLink();
+		$submitButtons.on( 'click', function() {
+			isSubmitting = true;
+		});
+
+		$form = $( '#your-profile, #createuser' );
+		originalFormContent = $form.serialize();
 	});
 
 	$( '#destroy-sessions' ).on( 'click', function( e ) {
@@ -388,10 +499,10 @@
 		}).done( function( response ) {
 			$this.prop( 'disabled', true );
 			$this.siblings( '.notice' ).remove();
-			$this.before( '<div class="notice notice-success inline"><p>' + response.message + '</p></div>' );
+			$this.before( '<div class="notice notice-success inline" role="alert"><p>' + response.message + '</p></div>' );
 		}).fail( function( response ) {
 			$this.siblings( '.notice' ).remove();
-			$this.before( '<div class="notice notice-error inline"><p>' + response.message + '</p></div>' );
+			$this.before( '<div class="notice notice-error inline" role="alert"><p>' + response.message + '</p></div>' );
 		});
 
 		e.preventDefault();
@@ -399,11 +510,25 @@
 
 	window.generatePassword = generatePassword;
 
-	/* Warn the user if password was generated but not saved */
+	// Warn the user if password was generated but not saved.
 	$( window ).on( 'beforeunload', function () {
 		if ( true === updateLock ) {
-			return userProfileL10n.warn;
+			return __( 'Your new password has not been saved.' );
 		}
-	} );
+		if ( originalFormContent !== $form.serialize() && ! isSubmitting ) {
+			return __( 'The changes you made will be lost if you navigate away from this page.' );
+		}
+	});
+
+	/*
+	 * We need to generate a password as soon as the Reset Password page is loaded,
+	 * to avoid double clicking the button to retrieve the first generated password.
+	 * See ticket #39638.
+	 */
+	$( function() {
+		if ( $( '.reset-pass-submit' ).length ) {
+			$( '.reset-pass-submit button.wp-generate-pw' ).trigger( 'click' );
+		}
+	});
 
 })(jQuery);
