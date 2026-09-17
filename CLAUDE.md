@@ -13,6 +13,12 @@ served over HTTPS by [portless](https://www.npmjs.com/package/portless).
 - **Pulling *down* from prod is fine** (read-only there): `scripts/sync-from-prod.sh`.
 - Prod is OVH shared hosting: `kcnbfrh@sshcloud.cluster024.hosting.ovh.net`, WordPress root
   at `~/www`. DB creds are read live from prod's `wp-config.php`, never stored in the repo.
+- **Outgoing email goes through OVH authenticated SMTP**, via the `ovh-smtp` mu-plugin. It
+  reads `OVH_SMTP_USER` (`site@kcnb1-france.org`, an MX Plan mailbox on the domain) and
+  `OVH_SMTP_PASSWORD` from prod's `wp-config.php`; without them it does nothing, so local dev
+  is unaffected. Every `wp_mail()` is forced to that From, plugins included. Keep both
+  constants when migrating hosting or rebuilding `wp-config.php` (the mailbox password lives
+  in 1Password). Prod has `WP_DEBUG` off: the debug.log used to bloat backups by 270 MB.
 
 ## Local development
 
