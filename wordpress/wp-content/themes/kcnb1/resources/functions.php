@@ -85,11 +85,14 @@ array_map(function ($file) use ($sage_error) {
  * ├── STYLESHEETPATH         -> /srv/www/example.com/current/web/app/themes/sage/resources/views
  * └── TEMPLATEPATH           -> /srv/www/example.com/current/web/app/themes/sage/resources
  */
-array_map(
-    'add_filter',
-    ['theme_file_path', 'theme_file_uri', 'parent_theme_file_path', 'parent_theme_file_uri'],
-    array_fill(0, 4, 'dirname')
-);
+// Only rewrite the bare theme dir. Since WP 5.8 core also asks for files like
+// theme.json through these filters; dirname() on those would point at a directory.
+$sage_theme_dir = function ($path, $file = '') {
+    return $file === '' ? dirname($path) : $path;
+};
+array_map(function ($hook) use ($sage_theme_dir) {
+    add_filter($hook, $sage_theme_dir, 10, 2);
+}, ['theme_file_path', 'theme_file_uri', 'parent_theme_file_path', 'parent_theme_file_uri']);
 Container::getInstance()
     ->bindIf('config', function () {
         return new Config([

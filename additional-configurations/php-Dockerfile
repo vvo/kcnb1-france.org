@@ -1,4 +1,4 @@
-FROM php:7.3.33-fpm
+FROM php:8.4-fpm
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y \
@@ -8,14 +8,16 @@ RUN apt-get update -y && apt-get install -y \
     libfreetype6-dev \
     libmagickwand-dev \
     zlib1g-dev \
+    libzip-dev \
     git \
     unzip \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN pecl install imagick-3.4.3
-RUN docker-php-ext-install mysqli mbstring gd opcache bcmath exif
+RUN pecl install imagick
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install mysqli gd opcache bcmath exif zip
 RUN docker-php-ext-enable imagick
 
 # Install Composer 2 (Composer 1 is no longer supported by Packagist)

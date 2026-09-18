@@ -1,0 +1,896 @@
+diff -ruN a/brain/hierarchy/src/Branch/BranchPage.php b/brain/hierarchy/src/Branch/BranchPage.php
+--- a/brain/hierarchy/src/Branch/BranchPage.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Branch/BranchPage.php	2026-09-18 01:18:42
+@@ -27,7 +27,7 @@
+     /**
+      * @param \Brain\Hierarchy\PostTemplates|null $postTemplates
+      */
+-    public function __construct(PostTemplates $postTemplates = null)
++    public function __construct(?PostTemplates $postTemplates = null)
+     {
+         $this->postTemplates = $postTemplates ?: new PostTemplates();
+     }
+diff -ruN a/brain/hierarchy/src/Branch/BranchSingle.php b/brain/hierarchy/src/Branch/BranchSingle.php
+--- a/brain/hierarchy/src/Branch/BranchSingle.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Branch/BranchSingle.php	2026-09-18 01:18:42
+@@ -26,7 +26,7 @@
+     /**
+      * @param \Brain\Hierarchy\PostTemplates|null $postTemplates
+      */
+-    public function __construct(PostTemplates $postTemplates = null)
++    public function __construct(?PostTemplates $postTemplates = null)
+     {
+         $this->postTemplates = $postTemplates ?: new PostTemplates();
+     }
+diff -ruN a/brain/hierarchy/src/Finder/LocalizedTemplateFinder.php b/brain/hierarchy/src/Finder/LocalizedTemplateFinder.php
+--- a/brain/hierarchy/src/Finder/LocalizedTemplateFinder.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Finder/LocalizedTemplateFinder.php	2026-09-18 01:18:42
+@@ -47,7 +47,7 @@
+     /**
+      * @param \Brain\Hierarchy\Finder\TemplateFinderInterface $finder
+      */
+-    public function __construct(TemplateFinderInterface $finder = null)
++    public function __construct(?TemplateFinderInterface $finder = null)
+     {
+         $this->finder = $finder ?: new FoldersTemplateFinder();
+         $locale = get_locale();
+diff -ruN a/brain/hierarchy/src/Finder/SymfonyFinderAdapter.php b/brain/hierarchy/src/Finder/SymfonyFinderAdapter.php
+--- a/brain/hierarchy/src/Finder/SymfonyFinderAdapter.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Finder/SymfonyFinderAdapter.php	2026-09-18 01:18:42
+@@ -31,7 +31,7 @@
+     /**
+      * @param \Symfony\Component\Finder\Finder $finder
+      */
+-    public function __construct(Finder $finder = null)
++    public function __construct(?Finder $finder = null)
+     {
+         if (is_null($finder)) {
+             $stylesheet = trailingslashit(get_stylesheet_directory());
+diff -ruN a/brain/hierarchy/src/Hierarchy.php b/brain/hierarchy/src/Hierarchy.php
+--- a/brain/hierarchy/src/Hierarchy.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Hierarchy.php	2026-09-18 01:18:42
+@@ -63,7 +63,7 @@
+      *
+      * @return array
+      */
+-    public function getHierarchy(\WP_Query $query = null)
++    public function getHierarchy(?\WP_Query $query = null)
+     {
+         return $this->parse($query)->hierarchy;
+     }
+@@ -75,7 +75,7 @@
+      *
+      * @return array
+      */
+-    public function getTemplates(\WP_Query $query = null)
++    public function getTemplates(?\WP_Query $query = null)
+     {
+         return $this->parse($query)->templates;
+     }
+@@ -87,7 +87,7 @@
+      *
+      * @return \stdClass
+      */
+-    private function parse(\WP_Query $query = null)
++    private function parse(?\WP_Query $query = null)
+     {
+         (is_null($query) && isset($GLOBALS['wp_query'])) and $query = $GLOBALS['wp_query'];
+ 
+diff -ruN a/brain/hierarchy/src/Loader/ExtensionMapTemplateLoader.php b/brain/hierarchy/src/Loader/ExtensionMapTemplateLoader.php
+--- a/brain/hierarchy/src/Loader/ExtensionMapTemplateLoader.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/Loader/ExtensionMapTemplateLoader.php	2026-09-18 01:18:42
+@@ -50,7 +50,7 @@
+      * @param array                                                    $map
+      * @param \Brain\Hierarchy\Loader\AggregateTemplateLoaderInterface $loader
+      */
+-    public function __construct(array $map, AggregateTemplateLoaderInterface $loader = null)
++    public function __construct(array $map, ?AggregateTemplateLoaderInterface $loader = null)
+     {
+         $this->loader = $loader ?: new CascadeAggregateTemplateLoader();
+ 
+diff -ruN a/brain/hierarchy/src/QueryTemplate.php b/brain/hierarchy/src/QueryTemplate.php
+--- a/brain/hierarchy/src/QueryTemplate.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/QueryTemplate.php	2026-09-18 01:18:42
+@@ -36,7 +36,7 @@
+      *
+      * @return \Brain\Hierarchy\QueryTemplate
+      */
+-    public static function instanceWithLoader(TemplateLoaderInterface $loader = null)
++    public static function instanceWithLoader(?TemplateLoaderInterface $loader = null)
+     {
+         return new static(new FoldersTemplateFinder(), $loader);
+     }
+@@ -49,7 +49,7 @@
+      */
+     public static function instanceWithFolders(
+         array $folders,
+-        TemplateLoaderInterface $loader = null
++        ?TemplateLoaderInterface $loader = null
+     ) {
+         return new static(new FoldersTemplateFinder($folders), $loader);
+     }
+@@ -76,8 +76,8 @@
+      * @param \Brain\Hierarchy\Loader\TemplateLoaderInterface      $loader
+      */
+     public function __construct(
+-        TemplateFinderInterface $finder = null,
+-        TemplateLoaderInterface $loader = null
++        ?TemplateFinderInterface $finder = null,
++        ?TemplateLoaderInterface $loader = null
+     ) {
+         // if no finder provided, let's use the one that simulates core behaviour
+         $this->finder = $finder ?: new FoldersTemplateFinder();
+@@ -91,7 +91,7 @@
+      *
+      * {@inheritdoc}
+      */
+-    public function findTemplate(\WP_Query $query = null, $filters = true)
++    public function findTemplate(?\WP_Query $query = null, $filters = true)
+     {
+         $leaves = (new Hierarchy())->getHierarchy($query);
+ 
+@@ -117,7 +117,7 @@
+      *
+      * {@inheritdoc}
+      */
+-    public function loadTemplate(\WP_Query $query = null, $filters = true, &$found = false)
++    public function loadTemplate(?\WP_Query $query = null, $filters = true, &$found = false)
+     {
+         $template = $this->findTemplate($query, $filters);
+         $filters and $template = $this->applyFilter('template_include', $template, $query);
+@@ -136,7 +136,7 @@
+      *
+      * @return string
+      */
+-    private function applyFilter($filter, $value, \WP_Query $query = null)
++    private function applyFilter($filter, $value, ?\WP_Query $query = null)
+     {
+         $backup = [];
+         global $wp_query, $wp_the_query;
+diff -ruN a/brain/hierarchy/src/QueryTemplateInterface.php b/brain/hierarchy/src/QueryTemplateInterface.php
+--- a/brain/hierarchy/src/QueryTemplateInterface.php	2022-02-08 11:21:43
++++ b/brain/hierarchy/src/QueryTemplateInterface.php	2026-09-18 01:18:42
+@@ -26,7 +26,7 @@
+      *
+      * @return string
+      */
+-    public function findTemplate(\WP_Query $query = null, $filters = true);
++    public function findTemplate(?\WP_Query $query = null, $filters = true);
+ 
+     /**
+      * Find a template for the given query and load it returning the results.
+@@ -37,5 +37,5 @@
+      *
+      * @return string
+      */
+-    public function loadTemplate(\WP_Query $query = null, $filters = true, &$found = false);
++    public function loadTemplate(?\WP_Query $query = null, $filters = true, &$found = false);
+ }
+diff -ruN a/illuminate/config/Repository.php b/illuminate/config/Repository.php
+--- a/illuminate/config/Repository.php	2017-11-07 21:23:51
++++ b/illuminate/config/Repository.php	2026-09-18 01:18:03
+@@ -138,6 +138,7 @@
+      * @param  string  $key
+      * @return bool
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetExists($key)
+     {
+         return $this->has($key);
+@@ -149,6 +150,7 @@
+      * @param  string  $key
+      * @return mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetGet($key)
+     {
+         return $this->get($key);
+@@ -161,6 +163,7 @@
+      * @param  mixed  $value
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetSet($key, $value)
+     {
+         $this->set($key, $value);
+@@ -172,6 +175,7 @@
+      * @param  string  $key
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetUnset($key)
+     {
+         $this->set($key, null);
+diff -ruN a/illuminate/container/BoundMethod.php b/illuminate/container/BoundMethod.php
+--- a/illuminate/container/BoundMethod.php	2018-05-24 15:16:56
++++ b/illuminate/container/BoundMethod.php	2026-09-18 01:18:03
+@@ -152,12 +152,12 @@
+             $dependencies[] = $parameters[$parameter->name];
+ 
+             unset($parameters[$parameter->name]);
+-        } elseif ($parameter->getClass() && array_key_exists($parameter->getClass()->name, $parameters)) {
+-            $dependencies[] = $parameters[$parameter->getClass()->name];
++        } elseif (Container::getParameterClass($parameter) && array_key_exists(Container::getParameterClass($parameter)->name, $parameters)) {
++            $dependencies[] = $parameters[Container::getParameterClass($parameter)->name];
+ 
+-            unset($parameters[$parameter->getClass()->name]);
+-        } elseif ($parameter->getClass()) {
+-            $dependencies[] = $container->make($parameter->getClass()->name);
++            unset($parameters[Container::getParameterClass($parameter)->name]);
++        } elseif (Container::getParameterClass($parameter)) {
++            $dependencies[] = $container->make(Container::getParameterClass($parameter)->name);
+         } elseif ($parameter->isDefaultValueAvailable()) {
+             $dependencies[] = $parameter->getDefaultValue();
+         }
+diff -ruN a/illuminate/container/Container.php b/illuminate/container/Container.php
+--- a/illuminate/container/Container.php	2025-09-12 12:11:39
++++ b/illuminate/container/Container.php	2026-09-18 01:18:42
+@@ -823,7 +823,7 @@
+             // If the class is null, it means the dependency is a string or some other
+             // primitive type which we can not resolve since it is not a class and
+             // we will just bomb out with an error since we have no-where to go.
+-            $results[] = is_null($dependency->getClass())
++            $results[] = is_null(static::getParameterClass($dependency))
+                             ? $this->resolvePrimitive($dependency)
+                             : $this->resolveClass($dependency);
+         }
+@@ -894,10 +894,42 @@
+      *
+      * @throws \Illuminate\Contracts\Container\BindingResolutionException
+      */
++
++    /**
++     * PHP 8 replacement for the removed ReflectionParameter::getClass().
++     *
++     * @param  \ReflectionParameter  $parameter
++     * @return \ReflectionClass|null
++     */
++    public static function getParameterClass(ReflectionParameter $parameter)
++    {
++        $type = $parameter->getType();
++
++        if (! $type instanceof \ReflectionNamedType || $type->isBuiltin()) {
++            return null;
++        }
++
++        $name = $type->getName();
++
++        if ($name === 'self' || $name === 'static') {
++            $class = $parameter->getDeclaringClass();
++
++            return $class ?: null;
++        }
++
++        if ($name === 'parent') {
++            $class = $parameter->getDeclaringClass();
++
++            return $class ? $class->getParentClass() ?: null : null;
++        }
++
++        return new ReflectionClass($name);
++    }
++
+     protected function resolveClass(ReflectionParameter $parameter)
+     {
+         try {
+-            return $this->make($parameter->getClass()->name);
++            return $this->make(static::getParameterClass($parameter)->name);
+         }
+ 
+         // If we can not resolve the class instance, we will check to see if the value
+@@ -955,7 +987,7 @@
+      * @param  \Closure|null  $callback
+      * @return void
+      */
+-    public function resolving($abstract, Closure $callback = null)
++    public function resolving($abstract, ?Closure $callback = null)
+     {
+         if (is_string($abstract)) {
+             $abstract = $this->getAlias($abstract);
+@@ -975,7 +1007,7 @@
+      * @param  \Closure|null  $callback
+      * @return void
+      */
+-    public function afterResolving($abstract, Closure $callback = null)
++    public function afterResolving($abstract, ?Closure $callback = null)
+     {
+         if (is_string($abstract)) {
+             $abstract = $this->getAlias($abstract);
+@@ -1183,7 +1215,7 @@
+      * @param  \Illuminate\Contracts\Container\Container|null  $container
+      * @return \Illuminate\Contracts\Container\Container|static
+      */
+-    public static function setInstance(ContainerContract $container = null)
++    public static function setInstance(?ContainerContract $container = null)
+     {
+         return static::$instance = $container;
+     }
+@@ -1194,6 +1226,7 @@
+      * @param  string  $key
+      * @return bool
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetExists($key)
+     {
+         return $this->bound($key);
+@@ -1205,6 +1238,7 @@
+      * @param  string  $key
+      * @return mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetGet($key)
+     {
+         return $this->make($key);
+@@ -1217,6 +1251,7 @@
+      * @param  mixed   $value
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetSet($key, $value)
+     {
+         $this->bind($key, $value instanceof Closure ? $value : function () use ($value) {
+@@ -1230,6 +1265,7 @@
+      * @param  string  $key
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetUnset($key)
+     {
+         unset($this->bindings[$key], $this->instances[$key], $this->resolved[$key]);
+diff -ruN a/illuminate/contracts/Container/Container.php b/illuminate/contracts/Container/Container.php
+--- a/illuminate/contracts/Container/Container.php	2018-07-31 14:49:53
++++ b/illuminate/contracts/Container/Container.php	2026-09-18 01:18:42
+@@ -140,7 +140,7 @@
+      * @param  \Closure|null  $callback
+      * @return void
+      */
+-    public function resolving($abstract, Closure $callback = null);
++    public function resolving($abstract, ?Closure $callback = null);
+ 
+     /**
+      * Register a new after resolving callback.
+@@ -149,5 +149,5 @@
+      * @param  \Closure|null  $callback
+      * @return void
+      */
+-    public function afterResolving($abstract, Closure $callback = null);
++    public function afterResolving($abstract, ?Closure $callback = null);
+ }
+diff -ruN a/illuminate/events/Dispatcher.php b/illuminate/events/Dispatcher.php
+--- a/illuminate/events/Dispatcher.php	2018-07-23 03:01:28
++++ b/illuminate/events/Dispatcher.php	2026-09-18 01:18:42
+@@ -56,7 +56,7 @@
+      * @param  \Illuminate\Contracts\Container\Container|null  $container
+      * @return void
+      */
+-    public function __construct(ContainerContract $container = null)
++    public function __construct(?ContainerContract $container = null)
+     {
+         $this->container = $container ?: new Container;
+     }
+diff -ruN a/illuminate/support/Arr.php b/illuminate/support/Arr.php
+--- a/illuminate/support/Arr.php	2018-09-06 15:37:53
++++ b/illuminate/support/Arr.php	2026-09-18 01:18:42
+@@ -159,7 +159,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    public static function first($array, callable $callback = null, $default = null)
++    public static function first($array, ?callable $callback = null, $default = null)
+     {
+         if (is_null($callback)) {
+             if (empty($array)) {
+@@ -188,7 +188,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    public static function last($array, callable $callback = null, $default = null)
++    public static function last($array, ?callable $callback = null, $default = null)
+     {
+         if (is_null($callback)) {
+             return empty($array) ? value($default) : end($array);
+diff -ruN a/illuminate/support/Collection.php b/illuminate/support/Collection.php
+--- a/illuminate/support/Collection.php	2018-09-06 15:37:53
++++ b/illuminate/support/Collection.php	2026-09-18 01:18:42
+@@ -114,7 +114,7 @@
+      * @param  callable  $callback
+      * @return static
+      */
+-    public static function times($number, callable $callback = null)
++    public static function times($number, ?callable $callback = null)
+     {
+         if ($number < 1) {
+             return new static;
+@@ -465,7 +465,7 @@
+      * @param  callable|null  $callback
+      * @return static
+      */
+-    public function filter(callable $callback = null)
++    public function filter(?callable $callback = null)
+     {
+         if ($callback) {
+             return new static(Arr::where($this->items, $callback));
+@@ -482,7 +482,7 @@
+      * @param  callable  $default
+      * @return static|mixed
+      */
+-    public function when($value, callable $callback, callable $default = null)
++    public function when($value, callable $callback, ?callable $default = null)
+     {
+         if ($value) {
+             return $callback($this, $value);
+@@ -501,7 +501,7 @@
+      * @param  callable  $default
+      * @return static|mixed
+      */
+-    public function unless($value, callable $callback, callable $default = null)
++    public function unless($value, callable $callback, ?callable $default = null)
+     {
+         return $this->when(! $value, $callback, $default);
+     }
+@@ -652,7 +652,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    public function first(callable $callback = null, $default = null)
++    public function first(?callable $callback = null, $default = null)
+     {
+         return Arr::first($this->items, $callback, $default);
+     }
+@@ -902,7 +902,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    public function last(callable $callback = null, $default = null)
++    public function last(?callable $callback = null, $default = null)
+     {
+         return Arr::last($this->items, $callback, $default);
+     }
+@@ -1441,7 +1441,7 @@
+      * @param  callable|null  $callback
+      * @return static
+      */
+-    public function sort(callable $callback = null)
++    public function sort(?callable $callback = null)
+     {
+         $items = $this->items;
+ 
+@@ -1713,6 +1713,7 @@
+      *
+      * @return array
+      */
++    #[\ReturnTypeWillChange]
+     public function jsonSerialize()
+     {
+         return array_map(function ($value) {
+@@ -1744,6 +1745,7 @@
+      *
+      * @return \ArrayIterator
+      */
++    #[\ReturnTypeWillChange]
+     public function getIterator()
+     {
+         return new ArrayIterator($this->items);
+@@ -1765,6 +1767,7 @@
+      *
+      * @return int
+      */
++    #[\ReturnTypeWillChange]
+     public function count()
+     {
+         return count($this->items);
+@@ -1786,6 +1789,7 @@
+      * @param  mixed  $key
+      * @return bool
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetExists($key)
+     {
+         return array_key_exists($key, $this->items);
+@@ -1797,6 +1801,7 @@
+      * @param  mixed  $key
+      * @return mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetGet($key)
+     {
+         return $this->items[$key];
+@@ -1809,6 +1814,7 @@
+      * @param  mixed  $value
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetSet($key, $value)
+     {
+         if (is_null($key)) {
+@@ -1824,6 +1830,7 @@
+      * @param  string  $key
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetUnset($key)
+     {
+         unset($this->items[$key]);
+diff -ruN a/illuminate/support/helpers.php b/illuminate/support/helpers.php
+--- a/illuminate/support/helpers.php	2018-09-06 15:37:53
++++ b/illuminate/support/helpers.php	2026-09-18 01:18:42
+@@ -109,7 +109,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    function array_first($array, callable $callback = null, $default = null)
++    function array_first($array, ?callable $callback = null, $default = null)
+     {
+         return Arr::first($array, $callback, $default);
+     }
+@@ -181,7 +181,7 @@
+      * @param  mixed  $default
+      * @return mixed
+      */
+-    function array_last($array, callable $callback = null, $default = null)
++    function array_last($array, ?callable $callback = null, $default = null)
+     {
+         return Arr::last($array, $callback, $default);
+     }
+@@ -575,7 +575,7 @@
+             return $value->toHtml();
+         }
+ 
+-        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
++        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+     }
+ }
+ 
+@@ -719,7 +719,7 @@
+      * @param  callable|null  $callback
+      * @return mixed
+      */
+-    function optional($value = null, callable $callback = null)
++    function optional($value = null, ?callable $callback = null)
+     {
+         if (is_null($callback)) {
+             return new Optional($value);
+@@ -1172,7 +1172,7 @@
+      * @param  callable|null  $callback
+      * @return mixed
+      */
+-    function with($value, callable $callback = null)
++    function with($value, ?callable $callback = null)
+     {
+         return is_null($callback) ? $value : $callback($value);
+     }
+diff -ruN a/illuminate/view/FileViewFinder.php b/illuminate/view/FileViewFinder.php
+--- a/illuminate/view/FileViewFinder.php	2018-10-02 15:27:20
++++ b/illuminate/view/FileViewFinder.php	2026-09-18 01:18:42
+@@ -50,7 +50,7 @@
+      * @param  array  $extensions
+      * @return void
+      */
+-    public function __construct(Filesystem $files, array $paths, array $extensions = null)
++    public function __construct(Filesystem $files, array $paths, ?array $extensions = null)
+     {
+         $this->files = $files;
+         $this->paths = $paths;
+diff -ruN a/illuminate/view/View.php b/illuminate/view/View.php
+--- a/illuminate/view/View.php	2018-10-02 15:27:20
++++ b/illuminate/view/View.php	2026-09-18 01:18:42
+@@ -84,7 +84,7 @@
+      *
+      * @throws \Throwable
+      */
+-    public function render(callable $callback = null)
++    public function render(?callable $callback = null)
+     {
+         try {
+             $contents = $this->renderContents();
+@@ -305,6 +305,7 @@
+      * @param  string  $key
+      * @return bool
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetExists($key)
+     {
+         return array_key_exists($key, $this->data);
+@@ -316,6 +317,7 @@
+      * @param  string  $key
+      * @return mixed
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetGet($key)
+     {
+         return $this->data[$key];
+@@ -328,6 +330,7 @@
+      * @param  mixed   $value
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetSet($key, $value)
+     {
+         $this->with($key, $value);
+@@ -339,6 +342,7 @@
+      * @param  string  $key
+      * @return void
+      */
++    #[\ReturnTypeWillChange]
+     public function offsetUnset($key)
+     {
+         unset($this->data[$key]);
+diff -ruN a/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php b/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php
+--- a/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php	2019-06-03 19:56:44
++++ b/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php	2026-09-18 01:18:42
+@@ -38,7 +38,7 @@
+      * @param int             $code
+      * @param \Exception|null $previous
+      */
+-    public function __construct($field, $value, $code = 0, Exception $previous = null)
++    public function __construct($field, $value, $code = 0, ?Exception $previous = null)
+     {
+         $this->field = $field;
+         $this->value = $value;
+diff -ruN a/nesbot/carbon/src/Carbon/Translator.php b/nesbot/carbon/src/Carbon/Translator.php
+--- a/nesbot/carbon/src/Carbon/Translator.php	2019-06-03 19:56:44
++++ b/nesbot/carbon/src/Carbon/Translator.php	2026-09-18 01:18:42
+@@ -36,7 +36,7 @@
+         return static::$singleton;
+     }
+ 
+-    public function __construct($locale, Translation\Formatter\MessageFormatterInterface $formatter = null, $cacheDir = null, $debug = false)
++    public function __construct($locale, ?Translation\Formatter\MessageFormatterInterface $formatter = null, $cacheDir = null, $debug = false)
+     {
+         $this->addLoader('array', new Translation\Loader\ArrayLoader());
+         parent::__construct($locale, $formatter, $cacheDir, $debug);
+diff -ruN a/nesbot/carbon/src/Carbon/Upgrade.php b/nesbot/carbon/src/Carbon/Upgrade.php
+--- a/nesbot/carbon/src/Carbon/Upgrade.php	2019-06-03 19:56:44
++++ b/nesbot/carbon/src/Carbon/Upgrade.php	2026-09-18 01:18:42
+@@ -125,7 +125,7 @@
+         }
+     }
+ 
+-    public static function upgrade(ScriptEvent $event = null)
++    public static function upgrade(?ScriptEvent $event = null)
+     {
+         if (!$event) {
+             $composer = new Composer();
+diff -ruN a/ramsey/uuid/src/Generator/RandomLibAdapter.php b/ramsey/uuid/src/Generator/RandomLibAdapter.php
+--- a/ramsey/uuid/src/Generator/RandomLibAdapter.php	2022-12-19 22:55:10
++++ b/ramsey/uuid/src/Generator/RandomLibAdapter.php	2026-09-18 01:18:42
+@@ -38,7 +38,7 @@
+      *
+      * @param Generator $generator An paragonie/random-lib `Generator`
+      */
+-    public function __construct(Generator $generator = null)
++    public function __construct(?Generator $generator = null)
+     {
+         $this->generator = $generator;
+ 
+diff -ruN a/ramsey/uuid/src/UuidFactory.php b/ramsey/uuid/src/UuidFactory.php
+--- a/ramsey/uuid/src/UuidFactory.php	2022-12-19 22:55:10
++++ b/ramsey/uuid/src/UuidFactory.php	2026-09-18 01:18:42
+@@ -59,7 +59,7 @@
+      *
+      * @param FeatureSet $features A set of features for use when creating UUIDs
+      */
+-    public function __construct(FeatureSet $features = null)
++    public function __construct(?FeatureSet $features = null)
+     {
+         $features = $features ?: new FeatureSet();
+ 
+diff -ruN a/roots/sage-lib/Template/BladeProvider.php b/roots/sage-lib/Template/BladeProvider.php
+--- a/roots/sage-lib/Template/BladeProvider.php	2018-12-28 02:46:28
++++ b/roots/sage-lib/Template/BladeProvider.php	2026-09-18 01:18:42
+@@ -18,7 +18,7 @@
+      * @param array             $config
+      * @SuppressWarnings(PHPMD.StaticAccess)
+      */
+-    public function __construct(ContainerContract $container = null, $config = [])
++    public function __construct(?ContainerContract $container = null, $config = [])
+     {
+         /** @noinspection PhpParamsInspection */
+         parent::__construct($container ?: Container::getInstance());
+diff -ruN a/symfony/debug/DebugClassLoader.php b/symfony/debug/DebugClassLoader.php
+--- a/symfony/debug/DebugClassLoader.php	2022-07-28 18:29:46
++++ b/symfony/debug/DebugClassLoader.php	2026-09-18 01:18:42
+@@ -174,7 +174,7 @@
+         $this->checkClass($class, $file);
+     }
+ 
+-    private function checkClass(string $class, string $file = null)
++    private function checkClass(string $class, ?string $file = null)
+     {
+         $exists = null === $file || class_exists($class, false) || interface_exists($class, false) || trait_exists($class, false);
+ 
+diff -ruN a/symfony/debug/ErrorHandler.php b/symfony/debug/ErrorHandler.php
+--- a/symfony/debug/ErrorHandler.php	2022-07-28 18:29:46
++++ b/symfony/debug/ErrorHandler.php	2026-09-18 01:18:42
+@@ -116,7 +116,7 @@
+      *
+      * @return self The registered error handler
+      */
+-    public static function register(self $handler = null, $replace = true)
++    public static function register(?self $handler = null, $replace = true)
+     {
+         if (null === self::$reservedMemory) {
+             self::$reservedMemory = str_repeat('x', 32768);
+@@ -163,7 +163,7 @@
+         return $handler;
+     }
+ 
+-    public function __construct(BufferingLogger $bootstrappingLogger = null)
++    public function __construct(?BufferingLogger $bootstrappingLogger = null)
+     {
+         if ($bootstrappingLogger) {
+             $this->bootstrappingLogger = $bootstrappingLogger;
+@@ -264,7 +264,7 @@
+      *
+      * @return callable|null The previous exception handler
+      */
+-    public function setExceptionHandler(callable $handler = null)
++    public function setExceptionHandler(?callable $handler = null)
+     {
+         $prev = $this->exceptionHandler;
+         $this->exceptionHandler = $handler;
+@@ -518,7 +518,7 @@
+      *
+      * @internal
+      */
+-    public function handleException($exception, array $error = null)
++    public function handleException($exception, ?array $error = null)
+     {
+         if (null === $error) {
+             self::$exitCode = 255;
+@@ -589,7 +589,7 @@
+      *
+      * @internal
+      */
+-    public static function handleFatalError(array $error = null)
++    public static function handleFatalError(?array $error = null)
+     {
+         if (null === self::$reservedMemory) {
+             return;
+diff -ruN a/symfony/debug/Exception/FatalErrorException.php b/symfony/debug/Exception/FatalErrorException.php
+--- a/symfony/debug/Exception/FatalErrorException.php	2022-07-28 18:29:46
++++ b/symfony/debug/Exception/FatalErrorException.php	2026-09-18 01:18:42
+@@ -22,7 +22,7 @@
+  */
+ class FatalErrorException extends \ErrorException
+ {
+-    public function __construct(string $message, int $code, int $severity, string $filename, int $lineno, int $traceOffset = null, bool $traceArgs = true, array $trace = null, \Throwable $previous = null)
++    public function __construct(string $message, int $code, int $severity, string $filename, int $lineno, ?int $traceOffset = null, bool $traceArgs = true, ?array $trace = null, ?\Throwable $previous = null)
+     {
+         parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
+ 
+diff -ruN a/symfony/debug/Exception/FlattenException.php b/symfony/debug/Exception/FlattenException.php
+--- a/symfony/debug/Exception/FlattenException.php	2022-07-28 18:29:46
++++ b/symfony/debug/Exception/FlattenException.php	2026-09-18 01:18:42
+@@ -47,7 +47,7 @@
+     /**
+      * @return static
+      */
+-    public static function createFromThrowable(\Throwable $exception, int $statusCode = null, array $headers = [])
++    public static function createFromThrowable(\Throwable $exception, ?int $statusCode = null, array $headers = [])
+     {
+         $e = new static();
+         $e->setMessage($exception->getMessage());
+diff -ruN a/symfony/debug/ExceptionHandler.php b/symfony/debug/ExceptionHandler.php
+--- a/symfony/debug/ExceptionHandler.php	2022-07-28 18:29:46
++++ b/symfony/debug/ExceptionHandler.php	2026-09-18 01:18:42
+@@ -52,7 +52,7 @@
+     private $caughtLength;
+     private $fileLinkFormat;
+ 
+-    public function __construct(bool $debug = true, string $charset = null, $fileLinkFormat = null)
++    public function __construct(bool $debug = true, ?string $charset = null, $fileLinkFormat = null)
+     {
+         $this->debug = $debug;
+         $this->charset = $charset ?: \ini_get('default_charset') ?: 'UTF-8';
+@@ -88,7 +88,7 @@
+      *
+      * @return callable|null The previous exception handler if any
+      */
+-    public function setHandler(callable $handler = null)
++    public function setHandler(?callable $handler = null)
+     {
+         $old = $this->handler;
+         $this->handler = $handler;
+diff -ruN a/symfony/translation/Command/XliffLintCommand.php b/symfony/translation/Command/XliffLintCommand.php
+--- a/symfony/translation/Command/XliffLintCommand.php	2022-10-03 17:15:11
++++ b/symfony/translation/Command/XliffLintCommand.php	2026-09-18 01:18:42
+@@ -38,7 +38,7 @@
+     private $isReadableProvider;
+     private $requireStrictFileNames;
+ 
+-    public function __construct(string $name = null, callable $directoryIteratorProvider = null, callable $isReadableProvider = null, bool $requireStrictFileNames = true)
++    public function __construct(?string $name = null, ?callable $directoryIteratorProvider = null, ?callable $isReadableProvider = null, bool $requireStrictFileNames = true)
+     {
+         parent::__construct($name);
+ 
+@@ -114,7 +114,7 @@
+         return $this->display($io, $filesInfo);
+     }
+ 
+-    private function validate(string $content, string $file = null): array
++    private function validate(string $content, ?string $file = null): array
+     {
+         $errors = [];
+ 
+diff -ruN a/symfony/translation/DataCollector/TranslationDataCollector.php b/symfony/translation/DataCollector/TranslationDataCollector.php
+--- a/symfony/translation/DataCollector/TranslationDataCollector.php	2022-10-03 17:15:11
++++ b/symfony/translation/DataCollector/TranslationDataCollector.php	2026-09-18 01:18:42
+@@ -50,7 +50,7 @@
+      *
+      * @param \Throwable|null $exception
+      */
+-    public function collect(Request $request, Response $response/* , \Throwable $exception = null */)
++    public function collect(Request $request, Response $response/* , ?\Throwable $exception = null */)
+     {
+         $this->data['locale'] = $this->translator->getLocale();
+         $this->data['fallback_locales'] = $this->translator->getFallbackLocales();
+diff -ruN a/symfony/translation/Dumper/XliffFileDumper.php b/symfony/translation/Dumper/XliffFileDumper.php
+--- a/symfony/translation/Dumper/XliffFileDumper.php	2022-10-03 17:15:11
++++ b/symfony/translation/Dumper/XliffFileDumper.php	2026-09-18 01:18:42
+@@ -196,7 +196,7 @@
+         return $dom->saveXML();
+     }
+ 
+-    private function hasMetadataArrayInfo(string $key, array $metadata = null): bool
++    private function hasMetadataArrayInfo(string $key, ?array $metadata = null): bool
+     {
+         return is_iterable($metadata[$key] ?? null);
+     }
+diff -ruN a/symfony/translation/Formatter/MessageFormatter.php b/symfony/translation/Formatter/MessageFormatter.php
+--- a/symfony/translation/Formatter/MessageFormatter.php	2022-10-03 17:15:11
++++ b/symfony/translation/Formatter/MessageFormatter.php	2026-09-18 01:18:42
+@@ -30,7 +30,7 @@
+     /**
+      * @param TranslatorInterface|null $translator An identity translator to use as selector for pluralization
+      */
+-    public function __construct($translator = null, IntlFormatterInterface $intlFormatter = null)
++    public function __construct($translator = null, ?IntlFormatterInterface $intlFormatter = null)
+     {
+         if ($translator instanceof MessageSelector) {
+             $translator = new IdentityTranslator($translator);
+diff -ruN a/symfony/translation/IdentityTranslator.php b/symfony/translation/IdentityTranslator.php
+--- a/symfony/translation/IdentityTranslator.php	2022-10-03 17:15:11
++++ b/symfony/translation/IdentityTranslator.php	2026-09-18 01:18:42
+@@ -29,7 +29,7 @@
+ 
+     private $selector;
+ 
+-    public function __construct(MessageSelector $selector = null)
++    public function __construct(?MessageSelector $selector = null)
+     {
+         $this->selector = $selector;
+ 
+diff -ruN a/symfony/translation/Loader/XliffFileLoader.php b/symfony/translation/Loader/XliffFileLoader.php
+--- a/symfony/translation/Loader/XliffFileLoader.php	2022-10-03 17:15:11
++++ b/symfony/translation/Loader/XliffFileLoader.php	2026-09-18 01:18:42
+@@ -171,7 +171,7 @@
+     /**
+      * Convert a UTF8 string to the specified encoding.
+      */
+-    private function utf8ToCharset(string $content, string $encoding = null): string
++    private function utf8ToCharset(string $content, ?string $encoding = null): string
+     {
+         if ('UTF-8' !== $encoding && !empty($encoding)) {
+             return mb_convert_encoding($content, $encoding, 'UTF-8');
+@@ -180,7 +180,7 @@
+         return $content;
+     }
+ 
+-    private function parseNotesMetadata(\SimpleXMLElement $noteElement = null, string $encoding = null): array
++    private function parseNotesMetadata(?\SimpleXMLElement $noteElement = null, ?string $encoding = null): array
+     {
+         $notes = [];
+ 
+diff -ruN a/symfony/translation/Translator.php b/symfony/translation/Translator.php
+--- a/symfony/translation/Translator.php	2022-10-03 17:15:11
++++ b/symfony/translation/Translator.php	2026-09-18 01:18:42
+@@ -88,7 +88,7 @@
+     /**
+      * @throws InvalidArgumentException If a locale contains invalid characters
+      */
+-    public function __construct(?string $locale, MessageFormatterInterface $formatter = null, string $cacheDir = null, bool $debug = false, array $cacheVary = [])
++    public function __construct(?string $locale, ?MessageFormatterInterface $formatter = null, ?string $cacheDir = null, bool $debug = false, array $cacheVary = [])
+     {
+         if (null === $locale) {
+             @trigger_error(sprintf('Passing "null" as the $locale argument to %s() is deprecated since Symfony 4.4.', __METHOD__), \E_USER_DEPRECATED);

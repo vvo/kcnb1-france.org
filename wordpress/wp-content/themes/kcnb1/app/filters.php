@@ -33,7 +33,7 @@ add_filter('excerpt_length', function($length) {
 /**
  * Template Hierarchy should search for .blade.php files
  */
-collect([
+\collect([
     'index', '404', 'archive', 'author', 'category', 'tag', 'taxonomy', 'date', 'home',
     'frontpage', 'page', 'paged', 'search', 'single', 'singular', 'attachment', 'embed'
 ])->map(function ($type) {
@@ -44,7 +44,7 @@ collect([
  * Render page using Blade
  */
 add_filter('template_include', function ($template) {
-    collect(['get_header', 'wp_head'])->each(function ($tag) {
+    \collect(['get_header', 'wp_head'])->each(function ($tag) {
         ob_start();
         do_action($tag);
         $output = ob_get_clean();
@@ -53,7 +53,7 @@ add_filter('template_include', function ($template) {
             echo $output;
         });
     });
-    $data = collect(get_body_class())->reduce(function ($data, $class) use ($template) {
+    $data = \collect(get_body_class())->reduce(function ($data, $class) use ($template) {
         return apply_filters("sage/template/{$class}/data", $data, $template);
     }, []);
     if ($template) {
@@ -73,7 +73,7 @@ add_filter('comments_template', function ($comments_template) {
         $comments_template
     );
 
-    $data = collect(get_body_class())->reduce(function ($data, $class) use ($comments_template) {
+    $data = \collect(get_body_class())->reduce(function ($data, $class) use ($comments_template) {
         return apply_filters("sage/template/{$class}/data", $data, $comments_template);
     }, []);
 

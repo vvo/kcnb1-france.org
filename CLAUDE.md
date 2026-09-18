@@ -32,6 +32,11 @@ to nginx on host port 44000. `wp-config.php` trusts portless's `X-Forwarded-Host
 
 - **Theme build needs Node 14.18.0** (`.nvmrc`); it's Sage 9 / webpack 3 and won't run on
   modern Node. Use `fnm exec --using=14.18.0 npm run build` (or `npm start` to watch).
+- **Local PHP is 8.4** (`additional-configurations/php-Dockerfile`), prod is still 8.0. The
+  site is verified clean on 8.4 (front + wp-admin, empty debug.log) thanks to the theme
+  vendor patch in `wp-content/themes/kcnb1/patches/`. Apply that patch on prod before or
+  when switching prod's PHP version in the OVH panel. Do not `composer update` the theme:
+  its 2019 dependencies no longer resolve.
 - **Local WP core must match prod's version** (currently 6.8.5). A mismatched core makes
   every page 404. To bump: download that version from wordpress.org, replace `wp-admin/`,
   `wp-includes/`, and root `wp-*.php`, leave `wp-content/` and `wp-config.php` alone.
