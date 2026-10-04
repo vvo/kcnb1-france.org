@@ -13,6 +13,9 @@ Kept up to date by whoever works on the site (humans and agents). Remove items o
 - [ ] Optional: rotate the `site@kcnb1-france.org` password (it was shared in a chat), then update
       `OVH_SMTP_PASSWORD` in prod's `wp-config.php`.
 - [ ] Paste the cleaned DNS zone (without `ftp`, `1|www...`, `3|welcome`, `l|fr`) and check the site and MX still resolve.
+- [ ] Switch prod PHP from 8.3 (security fixes until end of 2027) to 8.4 (until end of 2028) in
+      OVH > Hébergement > Informations générales > Configuration. Local already runs 8.4 clean.
+      Do it together with the WordPress 7.1 test below. Not 8.5 yet (too new for the 2019 theme vendor).
 - [ ] Upgrade WordPress from 6.8.x to 7.1.x: test locally first (theme is old Sage 9, check front + wp-admin
       + ACF + Wordfence), then update on prod from wp-admin right after a fresh BackWPup backup.
       6.8.x keeps getting security fixes through automatic minor updates meanwhile.
