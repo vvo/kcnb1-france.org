@@ -10,9 +10,8 @@ Kept up to date by whoever works on the site (humans and agents). Remove items o
 - [ ] Decide what to do with the ~854 plugin files synced from prod and still uncommitted.
 - [ ] 2026-10-05 morning: cancel the old Cloud Web hosting in OVH > Mes offres & services
       (`#/billing/autorenew/services`), `...` > Résilier.
-      - First check the email detach went through: Mes commandes shows the "MX FULL" order as paid,
-        and the `kcnb1-france.org` / MX Plan line now has a renewal date. If not, STOP: cancelling
-        the hosting would delete the mailboxes.
+      - Email detach confirmed on 2026-10-04: Emails > kcnb1-france.org shows offer "MXPLAN 1000"
+        (was "MXPLAN 200 hosting"), with the 3 mailboxes intact. Recheck it still says that before cancelling.
       - Cancel these 3 lines, all named `kcnbfrh.cluster024.hosting.ovh.net`:
         - Hébergement web (renewal 01/01/2027)
         - Shared CDN (renewal 01/01/2027), if not cancelled together with the hosting
