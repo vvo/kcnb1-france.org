@@ -50,7 +50,8 @@ class SucuriScan
      */
     public static function throwException($message, $type = 'error')
     {
-        if (defined('SUCURISCAN_THROW_EXCEPTIONS')
+        if (
+            defined('SUCURISCAN_THROW_EXCEPTIONS')
             && SUCURISCAN_THROW_EXCEPTIONS === true
             && is_string($message)
         ) {
@@ -61,7 +62,7 @@ class SucuriScan
                 $message
             );
 
-            /* throw catchable errors via tests */
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new Exception($message, $code);
         }
 
@@ -183,6 +184,10 @@ class SucuriScan
      */
     public static function humanTime($time = 0)
     {
+        if (!is_numeric($time)) {
+            return 'N/A';
+        }
+
         $now = time();
 
         if ($time === $now) {
@@ -315,9 +320,9 @@ class SucuriScan
     }
 
     /**
-     * Find and retrieve the current version of Wordpress installed.
+     * Find and retrieve the current version of WordPress installed.
      *
-     * @return string The version number of Wordpress installed.
+     * @return string The version number of WordPress installed.
      */
     public static function siteVersion()
     {
@@ -394,7 +399,7 @@ class SucuriScan
      */
     public static function secretKeyPattern()
     {
-        return '/define\(\s*\'([A-Z_]+)\',(\s*)\'(.+)\'\s*\);/';
+        return '/define\(\s*\'([A-Z_]+)\',(\s*)\'([^\\\\\']*)\'\s*\);/';
     }
 
     /**
@@ -471,6 +476,15 @@ class SucuriScan
      */
     private static function orderedHttpHeaders()
     {
+        /*
+         * Proxy headers (X-Sucuri-ClientIP, X-Forwarded-For, etc.) are only used when an
+         * administrator has explicitly enabled reverse proxy mode. Otherwise the client IP
+         * is taken solely from REMOTE_ADDR, the real TCP peer reported by the web server.
+         */
+        if (!self::supportReverseProxy()) {
+            return array('REMOTE_ADDR');
+        }
+
         $ordered = array();
         $allowed = self::allowedHttpHeaders();
         $addr_header = SucuriScanOption::getOption(':addr_header');
@@ -498,10 +512,10 @@ class SucuriScan
         $headers = self::orderedHttpHeaders();
 
         foreach ($headers as $header) {
-            if (array_key_exists($header, $_SERVER)
-                && self::isValidIP($_SERVER[$header])
-            ) {
-                $remote_addr = $_SERVER[$header];
+            $possible_addr = SucuriScanRequest::server($header);
+
+            if (self::isValidIP($possible_addr)) {
+                $remote_addr = $possible_addr;
                 $header_used = $header;
                 break;
             }
@@ -535,11 +549,7 @@ class SucuriScan
      */
     public static function getUserAgent()
     {
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            return self::escape($_SERVER['HTTP_USER_AGENT']);
-        }
-
-        return 'Mozilla/5.0 (KHTML, like Gecko) Safari/537.36';
+        return SucuriScanRequest::server('HTTP_USER_AGENT', 'Mozilla/5.0 (KHTML, like Gecko) Safari/537.36');
     }
 
     /**
@@ -581,32 +591,20 @@ class SucuriScan
     }
 
     /**
-     * Checks if the server IP is part of the Firewall network.
+     * Checks the existence of the HTTP_X_SUCURI_CLIENTIP header in the request headers
      *
-     * Assumming that the website is being protected by the Sucuri Firewall, we
-     * will check if the client IP address is part of the range of addresses
-     * that we know are ours.
+     * Once active, the Sucuri Firewall sends custom headers to the server with information
+     * about the original request.
      *
-     * @return boolean True if the website is using one of our IP addresses.
+     * @return boolean True if the website is being reached with our HTTP_X_SUCURI_CLIENTIP header.
      */
-    private static function isFirewallAddr()
+    private static function hasSucuriClientIPHeader()
     {
-        if (!array_key_exists('HTTP_X_SUCURI_CLIENTIP', $_SERVER)) {
-            return false;
-        }
-
-        if (SucuriScanFirewall::getKey()
-            || preg_match('/^192\.88\.13[45]/', $_SERVER['REMOTE_ADDR'])
-            || preg_match('/^185\.93\.(228|229|230|231)/', $_SERVER['REMOTE_ADDR'])
-        ) {
-            return true;
-        }
-
-        return false;
+        return (bool) SucuriScanRequest::server('HTTP_X_SUCURI_CLIENTIP');
     }
 
     /**
-     * Check whether the site is behind the firewall network.
+     * Checks whether the site is behind the firewall network.
      *
      * @param  bool $verbose Return array with HTTP and HOST information.
      * @return array|bool    True if the firewall is in use, false otherwise.
@@ -614,7 +612,7 @@ class SucuriScan
     public static function isBehindFirewall($verbose = false)
     {
         if (!$verbose) {
-            return (bool) self::isFirewallAddr();
+            return (bool) self::hasSucuriClientIPHeader();
         }
 
         $http_host = self::getTopLevelDomain();
@@ -622,7 +620,7 @@ class SucuriScan
         $host_by_name = @gethostbyaddr($host_by_addr);
 
         return array(
-            'status' => self::isFirewallAddr(),
+            'status' => self::hasSucuriClientIPHeader(),
             'http_host' => self::getTopLevelDomain(),
             'host_name' => $host_by_name,
             'host_addr' => $host_by_addr,
@@ -723,7 +721,8 @@ class SucuriScan
             $timestamp = time();
         }
 
-        if ($length === 9
+        if (
+            $length === 9
             && substr($tz, 0, 3) === 'UTC'
             && ($tz[3] === '-' || $tz[3] === '+')
             && $tz[6] === '.'
@@ -744,7 +743,7 @@ class SucuriScan
             );
         }
 
-        return date($format, (intval($timestamp) + ($diff * 3600)));
+        return gmdate($format, (intval($timestamp) + ($diff * 3600)));
     }
 
     /**
@@ -895,7 +894,9 @@ class SucuriScan
      */
     public static function isNginxServer()
     {
-        return (bool) (stripos(@$_SERVER['SERVER_SOFTWARE'], 'nginx') !== false);
+        $server_software = SucuriScanRequest::server('SERVER_SOFTWARE');
+
+        return (bool) (stripos($server_software, 'nginx') !== false);
     }
 
     /**
@@ -905,7 +906,9 @@ class SucuriScan
      */
     public static function isIISServer()
     {
-        return (bool) (stripos(@$_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false);
+        $server_software = SucuriScanRequest::server('SERVER_SOFTWARE');
+
+        return (bool) (stripos($server_software, 'Microsoft-IIS') !== false);
     }
 
     /**
@@ -917,5 +920,10 @@ class SucuriScan
     public static function fileVersion($file = '')
     {
         return substr(md5_file(SUCURISCAN_PLUGIN_PATH . '/' . $file), 0, 7);
+    }
+
+    public static function issetScanApiUrl()
+    {
+        return defined('SUCURISCAN_API_URL') && !empty(SUCURISCAN_API_URL);
     }
 }

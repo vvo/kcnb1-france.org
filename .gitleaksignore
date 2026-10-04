@@ -1,0 +1,12 @@
+wordpress/wp-content/plugins/akismet/class.akismet-rest-api.php:generic-api-key:424
+wordpress/wp-content/plugins/backwpup/inc/class-destination-dropbox-api.php:dropbox-api-token:114
+wordpress/wp-content/plugins/backwpup/inc/class-destination-dropbox-api.php:dropbox-api-token:122
+wordpress/wp-content/plugins/backwpup/src/Cli/wp-cli-old.md:generic-api-key:74
+wordpress/wp-content/plugins/backwpup/src/Cli/wp-cli-old.md:generic-api-key:93
+wordpress/wp-content/plugins/backwpup/src/Tracking/ServiceProvider.php:generic-api-key:20
+wordpress/wp-content/plugins/backwpup/vendor/aws/aws-sdk-php/src/data/s3/2006-03-01/api-2.json.php:generic-api-key:3
+wordpress/wp-content/plugins/backwpup/vendor/microsoft/azure-storage-common/src/Common/Internal/Resources.php:generic-api-key:57
+wordpress/wp-content/plugins/backwpup/vendor/microsoft/azure-storage-common/src/Common/Internal/Resources.php:generic-api-key:66
+wordpress/wp-content/plugins/backwpup/vendor/phpseclib/phpseclib/phpseclib/Crypt/Common/Formats/Keys/OpenSSH.php:private-key:220
+wordpress/wp-content/plugins/backwpup/vendor/phpseclib/phpseclib/phpseclib/Crypt/Common/Formats/Keys/PKCS8.php:private-key:661
+wordpress/wp-content/plugins/favicon-by-realfavicongenerator/admin/views/appearance.php:generic-api-key:193

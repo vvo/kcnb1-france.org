@@ -17,6 +17,13 @@ class autoptimizeExtra
     protected $options = array();
 
     /**
+     * Singleton instance.
+     *
+     * @var self|null
+     */
+    protected static $instance = null;
+
+    /**
      * Creates an instance and calls run().
      *
      * @param array $options Optional. Allows overriding options without having to specify them via admin options page.
@@ -30,19 +37,47 @@ class autoptimizeExtra
         $this->options = $options;
     }
 
+    /**
+     * Helper for getting a singleton instance. While being an
+     * anti-pattern generally, it comes in handy for now from a
+     * readability/maintainability perspective, until we get some
+     * proper dependency injection going.
+     *
+     * @return self
+     */
+    public static function instance()
+    {
+        if ( null === self::$instance ) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     public function run()
     {
         if ( is_admin() ) {
-            add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+            if ( is_multisite() && is_network_admin() && autoptimizeOptionWrapper::is_ao_active_for_network() ) {
+                add_action( 'network_admin_menu', array( $this, 'admin_menu' ) );
+            } else {
+                add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+            }
             add_filter( 'autoptimize_filter_settingsscreen_tabs', array( $this, 'add_extra_tab' ) );
         } else {
-            $this->run_on_frontend();
+            add_action( 'wp', array( $this, 'run_on_frontend' ) );
         }
+    }
+
+    public function set_options( array $options )
+    {
+        $this->options = $options;
+
+        return $this;
     }
 
     public static function fetch_options()
     {
-        $value = get_option( 'autoptimize_extra_settings' );
+        $value = autoptimizeOptionWrapper::get_option( 'autoptimize_extra_settings' );
         if ( empty( $value ) ) {
             // Fallback to returning defaults when no stored option exists yet.
             $value = autoptimizeConfig::get_ao_extra_default_options();
@@ -66,7 +101,7 @@ class autoptimizeExtra
         add_filter( 'tiny_mce_plugins', array( $this, 'filter_disable_emojis_tinymce' ) );
 
         // Removes emoji dns-preftech.
-        add_filter( 'wp_resource_hints', array( $this, 'filter_remove_emoji_dns_prefetch' ), 10, 2 );
+        add_filter( 'emoji_svg_url', '__return_false' );
     }
 
     public function filter_disable_emojis_tinymce( $plugins )
@@ -80,8 +115,12 @@ class autoptimizeExtra
 
     public function filter_remove_qs( $src )
     {
-        if ( strpos( $src, '?ver=' ) ) {
-            $src = remove_query_arg( 'ver', $src );
+        if ( ! empty( $src ) ) {
+            if ( strpos( $src, '?ver=' ) ) {
+                $src = remove_query_arg( 'ver', $src );
+            } elseif ( strpos( $src, '?v=' ) ) {
+                $src = remove_query_arg( 'v', $src );
+            }
         }
 
         return $src;
@@ -94,7 +133,7 @@ class autoptimizeExtra
             $exclusions = array_fill_keys( array_filter( array_map( 'trim', explode( ',', $in ) ) ), '' );
         }
 
-        $settings = $this->options['autoptimize_extra_text_field_3'];
+        $settings = wp_strip_all_tags( $this->options['autoptimize_extra_text_field_3'] );
         $async    = array_fill_keys( array_filter( array_map( 'trim', explode( ',', $settings ) ) ), '' );
         $attr     = apply_filters( 'autoptimize_filter_extra_async', 'async' );
         foreach ( $async as $k => $v ) {
@@ -107,8 +146,16 @@ class autoptimizeExtra
         return $merged;
     }
 
-    protected function run_on_frontend()
+    public function run_on_frontend()
     {
+        // only run the Extra optimizations on frontend if general conditions
+        // for optimizations are met, this to ensure e.g. removing querystrings
+        // is not done when optimizing for logged in users is off, breaking
+        // some pagebuilders (Divi & Elementor).
+        if ( false === autoptimizeMain::should_buffer() ) {
+            return;
+        }
+
         $options = $this->options;
 
         // Disable emojis if specified.
@@ -133,19 +180,31 @@ class autoptimizeExtra
             add_filter( 'wp_resource_hints', array( $this, 'filter_remove_gfonts_dnsprefetch' ), 10, 2 );
             add_filter( 'autoptimize_html_after_minify', array( $this, 'filter_optimize_google_fonts' ), 10, 1 );
             add_filter( 'autoptimize_extra_filter_tobepreconn', array( $this, 'filter_preconnect_google_fonts' ), 10, 1 );
+
+            if ( '2' === $options['autoptimize_extra_radio_field_4'] ) {
+                // remove Google Fonts, adding filters to also remove Google Fonts from 3rd party themes/ plugins.
+                // inspired by https://wordpress.org/plugins/disable-remove-google-fonts/.
+                remove_action( 'wp_footer', 'et_builder_print_font' ); // Divi.
+                remove_action( 'wp_footer', array( 'RevSliderFront', 'load_google_fonts' ) ); // Revslider.
+                add_filter( 'elementor/frontend/print_google_fonts', '__return_false' ); // Elementor.
+                add_filter( 'fl_builder_google_fonts_pre_enqueue', '__return_empty_array' ); // Beaver Builder.
+            }
         }
 
         // Preconnect!
         if ( ! empty( $options['autoptimize_extra_text_field_2'] ) || has_filter( 'autoptimize_extra_filter_tobepreconn' ) ) {
             add_filter( 'wp_resource_hints', array( $this, 'filter_preconnect' ), 10, 2 );
         }
-    }
 
-    public function filter_remove_emoji_dns_prefetch( $urls, $relation_type )
-    {
-        $emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/' );
+        // Preload!
+        if ( ! empty( $options['autoptimize_extra_text_field_7'] ) || has_filter( 'autoptimize_filter_extra_tobepreloaded' ) || ! empty( autoptimizeConfig::get_post_meta_ao_settings( 'ao_post_preload' ) ) ) {
+            add_filter( 'autoptimize_html_after_minify', array( $this, 'filter_preload' ), 10, 2 );
+        }
 
-        return $this->filter_remove_dns_prefetch( $urls, $relation_type, $emoji_svg_url );
+        // Remove global styles.
+        if ( ! empty( $options['autoptimize_extra_checkbox_field_8'] ) ) {
+            $this->disable_global_styles();
+        }
     }
 
     public function filter_remove_gfonts_dnsprefetch( $urls, $relation_type )
@@ -160,7 +219,16 @@ class autoptimizeExtra
         if ( ! empty( $url_to_remove ) && 'dns-prefetch' === $relation_type ) {
             $cnt = 0;
             foreach ( $urls as $url ) {
-                if ( false !== strpos( $url, $url_to_remove ) ) {
+                // $url can be an array, in which case we need to fetch the value of the href key.
+                if ( is_array( $url ) ) {
+                    if ( isset( $url['href'] ) ) {
+                        $url = $url['href'];
+                    } else {
+                        continue;
+                    }
+                }
+
+                if ( is_string( $url ) && false !== strpos( $url, $url_to_remove ) ) {
                     unset( $urls[ $cnt ] );
                 }
                 $cnt++;
@@ -187,6 +255,12 @@ class autoptimizeExtra
             if ( ! preg_match( '/rel=["\']dns-prefetch["\']/', $matches[0][ $i ] ) ) {
                 // Get fonts name.
                 $font = str_replace( array( '%7C', '%7c' ), '|', $font );
+                if ( strpos( $font, 'fonts.googleapis.com/css2' ) !== false ) {
+                    // (Somewhat) change Google Fonts APIv2 syntax back to v1.
+                    // todo: support for 100..900
+                    $font = rawurldecode( $font );
+                    $font = str_replace( array( 'css2?', 'ital,wght@', 'wght@', 'ital@', '0,', '1,', ':1', ';', '&family=' ), array( 'css?', '', '', '', '', 'italic', ':italic', ',', '%7C' ), $font );
+                }
                 $font = explode( 'family=', $font );
                 $font = ( isset( $font[1] ) ) ? explode( '&', $font[1] ) : array();
                 // Add font to $fonts[$i] but make sure not to pollute with an empty family!
@@ -230,14 +304,18 @@ class autoptimizeExtra
             }
 
             $fonts_string = apply_filters( 'autoptimize_filter_extra_gfont_fontstring', str_replace( '|', '%7C', ltrim( $fonts_string, '|' ) ) );
+            // only add display parameter if there is none in $fonts_string (by virtue of the filter).
+            if ( strpos( $fonts_string, 'display=' ) === false ) {
+                $fonts_string .= apply_filters( 'autoptimize_filter_extra_gfont_display', '&amp;display=swap' );
+            }
 
             if ( ! empty( $fonts_string ) ) {
                 if ( '5' === $options['autoptimize_extra_radio_field_4'] ) {
-                    $rel_string = 'rel="preload" as="style" onload="' . autoptimizeConfig::get_ao_css_preload_onload() . '"';
+                    $rel_string = 'rel="stylesheet" media="print" onload="' . autoptimizeConfig::get_ao_css_preload_onload() . '"';
                 } else {
                     $rel_string = 'rel="stylesheet"';
                 }
-                $fonts_markup = '<link ' . $rel_string . ' id="ao_optimized_gfonts" href="https://fonts.googleapis.com/css?family=' . $fonts_string . '" />';
+                $fonts_markup = '<link ' . $rel_string . ' id="ao_optimized_gfonts" href="https://fonts.googleapis.com/css?family=' . $fonts_string . '">';
             }
         } elseif ( '4' === $options['autoptimize_extra_radio_field_4'] ) {
             // Aggregate & load async (webfont.js impl.)!
@@ -253,9 +331,22 @@ class autoptimizeExtra
                 $fonts_array = array_merge( $fonts_array, $_fonts['fonts'] );
             }
 
-            $fonts_array          = array_map( 'urldecode', $fonts_array );
-            $fonts_markup         = '<script data-cfasync="false" id="ao_optimized_gfonts_config" type="text/javascript">WebFontConfig={google:{families:' . wp_json_encode( $fonts_array ) . ' },classes:false, events:false, timeout:1500};</script>';
-            $fonts_library_markup = '<script data-cfasync="false" id="ao_optimized_gfonts_webfontloader" type="text/javascript">(function() {var wf = document.createElement(\'script\');wf.src=\'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js\';wf.type=\'text/javascript\';wf.async=\'true\';var s=document.getElementsByTagName(\'script\')[0];s.parentNode.insertBefore(wf, s);})();</script>';
+            $fonts_array = array_map( 'urldecode', $fonts_array );
+            $fonts_array = array_map(
+                function( $_f ) {
+                    return trim( $_f, ',' );
+                },
+                $fonts_array
+            );
+
+            // type attrib on <script not added by default.
+            $type_js = '';
+            if ( apply_filters( 'autoptimize_filter_cssjs_addtype', false ) ) {
+                $type_js = 'type="text/javascript" ';
+            }
+
+            $fonts_markup         = '<script ' . $type_js . 'data-cfasync="false" id="ao_optimized_gfonts_config">WebFontConfig={google:{families:' .  wp_json_encode( $fonts_array, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT ) . ' },classes:false, events:false, timeout:1500};</script>';
+            $fonts_library_markup = '<script ' . $type_js . 'data-cfasync="false" id="ao_optimized_gfonts_webfontloader">(function() {var wf = document.createElement(\'script\');wf.src=\'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js\';wf.type=\'text/javascript\';wf.async=\'true\';var s=document.getElementsByTagName(\'script\')[0];s.parentNode.insertBefore(wf, s);})();</script>';
             $in                   = substr_replace( $in, $fonts_library_markup . '</head>', strpos( $in, '</head>' ), strlen( '</head>' ) );
         }
 
@@ -264,28 +355,27 @@ class autoptimizeExtra
         $out          = substr_replace( $in, $fonts_markup . $inject_point, strpos( $in, $inject_point ), strlen( $inject_point ) );
         unset( $fonts_collection );
 
-        // and insert preload polyfill if "link preload" and if the polyfill isn't there yet (courtesy of inline&defer).
-        $preload_polyfill = autoptimizeConfig::get_ao_css_preload_polyfill();
-        if ( '5' === $options['autoptimize_extra_radio_field_4'] && strpos( $out, $preload_polyfill ) === false ) {
-            $out = str_replace( '</body>', $preload_polyfill . '</body>', $out );
-        }
         return $out;
     }
 
     public function filter_preconnect( $hints, $relation_type )
     {
-        $options = $this->options;
+        $options  = $this->options;
+        $preconns = array();
 
         // Get settings and store in array.
-        $preconns = array_filter( array_map( 'trim', explode( ',', $options['autoptimize_extra_text_field_2'] ) ) );
+        if ( array_key_exists( 'autoptimize_extra_text_field_2', $options ) ) {
+            $preconns = array_filter( array_map( 'trim', explode( ',', wp_strip_all_tags( $options['autoptimize_extra_text_field_2'] ) ) ) );
+        }
         $preconns = apply_filters( 'autoptimize_extra_filter_tobepreconn', $preconns );
 
         // Walk array, extract domain and add to new array with crossorigin attribute.
         foreach ( $preconns as $preconn ) {
+            $domain = '';
             $parsed = parse_url( $preconn );
-            if ( is_array( $parsed ) && empty( $parsed['scheme'] ) ) {
+            if ( is_array( $parsed ) && ! empty( $parsed['host'] ) && empty( $parsed['scheme'] ) ) {
                 $domain = '//' . $parsed['host'];
-            } elseif ( is_array( $parsed ) ) {
+            } elseif ( is_array( $parsed ) && ! empty( $parsed['host'] ) ) {
                 $domain = $parsed['scheme'] . '://' . $parsed['host'];
             }
 
@@ -325,28 +415,128 @@ class autoptimizeExtra
         return $in;
     }
 
+    public function filter_preload( $in ) {
+        // make array from comma separated list.
+        $options  = $this->options;
+        $preloads = array();
+        if ( array_key_exists( 'autoptimize_extra_text_field_7', $options ) ) {
+            $preloads = array_filter( array_map( 'trim', explode( ',', wp_strip_all_tags( $options['autoptimize_extra_text_field_7'] ) ) ) );
+        }
+
+        if ( false === autoptimizeImages::imgopt_active() && false === autoptimizeImages::should_lazyload_wrapper() ) {
+            // only do this here if imgopt/ lazyload are not active?
+            $metabox_preloads = array_filter( array_map( 'trim', explode( ',', wp_strip_all_tags( autoptimizeConfig::get_post_meta_ao_settings( 'ao_post_preload' ) ) ) ) );
+            if ( ! empty( $metabox_preloads ) ) {
+                $preloads = array_merge( $preloads, $metabox_preloads );
+            }
+        }
+
+        $preloads = apply_filters( 'autoptimize_filter_extra_tobepreloaded', $preloads );
+
+        // immediately return if nothing to be preloaded.
+        if ( empty( $preloads ) ) {
+            return $in;
+        }
+
+        // iterate through array and add preload link to tmp string.
+        $preload_output = '';
+        foreach ( $preloads as $preload ) {
+            if ( filter_var( $preload, FILTER_VALIDATE_URL ) !== $preload ) {
+                continue;
+            }
+            $preload     = esc_url_raw( $preload );
+            $crossorigin = '';
+            $preload_as  = '';
+            $mime_type   = '';
+            $_preload    = strtok( $preload, '?' );
+
+            if ( autoptimizeUtils::str_ends_in( $_preload, '.css' ) ) {
+                $preload_as = 'style';
+            } elseif ( autoptimizeUtils::str_ends_in( $_preload, '.js' ) ) {
+                $preload_as = 'script';
+            } elseif ( autoptimizeUtils::str_ends_in( $_preload, '.woff' ) || autoptimizeUtils::str_ends_in( $_preload, '.woff2' ) || autoptimizeUtils::str_ends_in( $_preload, '.ttf' ) || autoptimizeUtils::str_ends_in( $_preload, '.eot' ) || autoptimizeUtils::str_ends_in( $_preload, '.otf' ) ) {
+                $preload_as  = 'font';
+                $crossorigin = ' crossorigin';
+                $mime_type   = ' type="font/' . pathinfo( $_preload, PATHINFO_EXTENSION ) . '"';
+                if ( ' type="font/eot"' === $mime_type ) {
+                    $mime_type = 'application/vnd.ms-fontobject';
+                }
+            } elseif ( autoptimizeUtils::str_ends_in( $_preload, '.jpeg' ) || autoptimizeUtils::str_ends_in( $_preload, '.jpg' ) || autoptimizeUtils::str_ends_in( $_preload, '.webp' ) || autoptimizeUtils::str_ends_in( $_preload, '.png' ) || autoptimizeUtils::str_ends_in( $_preload, '.gif' ) || autoptimizeUtils::str_ends_in( $_preload, '.svg' ) ) {
+                $preload_as = 'image';
+            } else {
+                $preload_as = 'other';
+            }
+
+            $preload_output .= '<link rel="preload" fetchpriority="high" href="' . $preload . '" as="' . $preload_as . '"' . $mime_type . $crossorigin . '>';
+        }
+        $preload_output = apply_filters( 'autoptimize_filter_extra_preload_output', $preload_output );
+
+        return $this->inject_preloads( $preload_output, $in );
+    }
+
+    public static function inject_preloads( $preloads, $html ) {
+        // add string to head (before first link node by default).
+        $preload_inject = apply_filters( 'autoptimize_filter_extra_preload_inject', '<link' );
+        $position       = autoptimizeUtils::strpos( $html, $preload_inject );
+
+        return autoptimizeUtils::substr_replace( $html, $preloads . $preload_inject, $position, strlen( $preload_inject ) );
+    }
+
+    public function disable_global_styles()
+    {
+        remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
+        remove_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
+        remove_action( 'wp_body_open', 'wp_global_styles_render_svg_filters' );
+
+        if ( true === apply_filters( 'autoptimize_filter_extra_global_styles_and_block_css', true ) ) {
+            add_action(
+                'wp_enqueue_scripts',
+                function() {
+                    wp_dequeue_style( 'wp-block-library' );
+                    wp_dequeue_style( 'wp-block-library-theme' );
+                }
+            );
+        }
+
+        if ( true === apply_filters( 'autoptimize_filter_extra_remove_woocommerce_block_css', true ) ) {
+            add_action(
+                'wp_enqueue_scripts',
+                function() {
+                    wp_dequeue_style( 'wc-blocks-style' );
+                }
+            );
+        }
+    }
+
     public function admin_menu()
     {
-        add_submenu_page(
-            null,
-            'autoptimize_extra',
-            'autoptimize_extra',
-            'manage_options',
-            'autoptimize_extra',
-            array( $this, 'options_page' )
-        );
+        // no acces if multisite and not network admin and no site config allowed.
+        if ( autoptimizeConfig::should_show_menu_tabs() ) {
+            add_submenu_page(
+                '',
+                'autoptimize_extra',
+                'autoptimize_extra',
+                'manage_options',
+                'autoptimize_extra',
+                array( $this, 'options_page' )
+            );
+        }
         register_setting( 'autoptimize_extra_settings', 'autoptimize_extra_settings' );
     }
 
     public function add_extra_tab( $in )
     {
-        $in = array_merge( $in, array( 'autoptimize_extra' => __( 'Extra', 'autoptimize' ) ) );
+        if ( autoptimizeConfig::should_show_menu_tabs() ) {
+            $in = array_merge( $in, array( 'autoptimize_extra' => esc_html__( 'Extra', 'autoptimize' ) ) );
+        }
 
         return $in;
     }
 
     public function options_page()
     {
+        // phpcs:disable Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+
         // Working with actual option values from the database here.
         // That way any saves are still processed as expected, but we can still
         // override behavior by using `new autoptimizeExtra($custom_options)` and not have that custom
@@ -359,88 +549,113 @@ class autoptimizeExtra
         #ao_settings_form .form-table th {font-weight: normal;}
         #autoptimize_extra_descr{font-size: 120%;}
     </style>
+    <script>document.title = "Autoptimize: <?php esc_html_e( 'Extra', 'autoptimize' ); ?> " + document.title;</script>
     <div class="wrap">
-    <h1><?php _e( 'Autoptimize Settings', 'autoptimize' ); ?></h1>
+    <h1><?php apply_filters( 'autoptimize_filter_settings_is_pro', false ) ? esc_html_e( 'Autoptimize Pro Settings', 'autoptimize' ) : esc_html_e( 'Autoptimize Settings', 'autoptimize' ); ?></h1>
         <?php echo autoptimizeConfig::ao_admin_tabs(); ?>
-        <?php if ( 'on' !== get_option( 'autoptimize_js' ) && 'on' !== get_option( 'autoptimize_css' ) && 'on' !== get_option( 'autoptimize_html' ) && ! autoptimizeImages::imgopt_active() ) { ?>
+        <?php if ( 'on' !== autoptimizeOptionWrapper::get_option( 'autoptimize_js' ) && 'on' !== autoptimizeOptionWrapper::get_option( 'autoptimize_css' ) && 'on' !== autoptimizeOptionWrapper::get_option( 'autoptimize_html' ) && ! autoptimizeImages::imgopt_active() ) { ?>
             <div class="notice-warning notice"><p>
-            <?php _e( 'Most of below Extra optimizations require at least one of HTML, JS, CSS or Image autoptimizations being active.', 'autoptimize' ); ?>
+            <?php esc_html_e( 'Most of below Extra optimizations require at least one of HTML, JS, CSS or Image autoptimizations being active.', 'autoptimize' ); ?>
             </p></div>
         <?php } ?>
 
-    <form id='ao_settings_form' action='options.php' method='post'>
+    <form id='ao_settings_form' action='<?php echo admin_url( 'options.php' ); ?>' method='post'>
         <?php settings_fields( 'autoptimize_extra_settings' ); ?>
-        <h2><?php _e( 'Extra Auto-Optimizations', 'autoptimize' ); ?></h2>
-        <span id='autoptimize_extra_descr'><?php _e( 'The following settings can improve your site\'s performance even more.', 'autoptimize' ); ?></span>
+        <h2><?php esc_html_e( 'Extra Auto-Optimizations', 'autoptimize' ); ?></h2>
+        <span id='autoptimize_extra_descr'><?php esc_html_e( 'The following settings can improve your site\'s performance even more.', 'autoptimize' ); ?></span>
         <table class="form-table">
             <tr>
-                <th scope="row"><?php _e( 'Google Fonts', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Google Fonts', 'autoptimize' ); ?></th>
                 <td>
-                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="1" <?php if ( ! in_array( $gfonts, array( 2, 3, 4, 5 ) ) ) { echo 'checked'; } ?> ><?php _e( 'Leave as is', 'autoptimize' ); ?><br/>
-                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="2" <?php checked( 2, $gfonts, true ); ?> ><?php _e( 'Remove Google Fonts', 'autoptimize' ); ?><br/>
-                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="3" <?php checked( 3, $gfonts, true ); ?> ><?php _e( 'Combine and link in head (fonts load fast but are render-blocking)', 'autoptimize' ); ?><br/>
-                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="5" <?php checked( 5, $gfonts, true ); ?> ><?php _e( 'Combine and preload in head (fonts load late, but are not render-blocking)', 'autoptimize' ); ?><br/>
-                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="4" <?php checked( 4, $gfonts, true ); ?> ><?php _e( 'Combine and load fonts asynchronously with <a href="https://github.com/typekit/webfontloader#readme" target="_blank">webfont.js</a>', 'autoptimize' ); ?><br/>
+                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="1" <?php if ( ! in_array( $gfonts, array( 2, 3, 4, 5 ) ) ) { echo 'checked'; } ?> ><?php esc_html_e( 'Leave as is', 'autoptimize' ); ?><br/>
+                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="2" <?php checked( 2, $gfonts, true ); ?> ><?php esc_html_e( 'Remove Google Fonts', 'autoptimize' ); ?><br/>
+                    <?php // translators: "display:swap" should remain untranslated, will be shown in code tags. ?>
+                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="3" <?php checked( 3, $gfonts, true ); ?> ><?php echo esc_html__( 'Combine and link in head (fonts load fast but are render-blocking)', 'autoptimize' ) . ', ' . sprintf( esc_html__( 'includes %1$sdisplay:swap%2$s.', 'autoptimize' ), '<code>', '</code>' ); ?><br/>
+                    <?php // translators: "display:swap" should remain untranslated, will be shown in code tags. ?>
+                    <input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="5" <?php checked( 5, $gfonts, true ); ?> ><?php echo esc_html__( 'Combine and link deferred in head (fonts load late, but are not render-blocking)', 'autoptimize' ) . ', ' . sprintf( esc_html__( 'includes %1$sdisplay:swap%2$s.', 'autoptimize' ), '<code>', '</code>' ); ?>
+                    <span <?php if ( '4' !== $gfonts ){ echo "style='display:none;' "; } ?> ><br/><input type="radio" name="autoptimize_extra_settings[autoptimize_extra_radio_field_4]" value="4" <?php checked( 4, $gfonts, true ); ?> ><?php echo sprintf( esc_html__( 'Combine and load fonts asynchronously with %1$swebfont.js%2$s', 'autoptimize' ), '<a href="https://github.com/typekit/webfontloader#readme" target="_blank">', '</a>' ) . ' ' . esc_html__( '(deprecated)', 'autoptimize' ); ?></span><br/>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e( 'Remove emojis', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Remove emojis', 'autoptimize' ); ?></th>
                 <td>
-                    <label><input type='checkbox' name='autoptimize_extra_settings[autoptimize_extra_checkbox_field_1]' <?php if ( ! empty( $options['autoptimize_extra_checkbox_field_1'] ) && '1' === $options['autoptimize_extra_checkbox_field_1'] ) { echo 'checked="checked"'; } ?> value='1'><?php _e( 'Removes WordPress\' core emojis\' inline CSS, inline JavaScript, and an otherwise un-autoptimized JavaScript file.', 'autoptimize' ); ?></label>
+                    <label><input type='checkbox' name='autoptimize_extra_settings[autoptimize_extra_checkbox_field_1]' <?php if ( ! empty( $options['autoptimize_extra_checkbox_field_1'] ) && '1' === $options['autoptimize_extra_checkbox_field_1'] ) { echo 'checked="checked"'; } ?> value='1'><?php esc_html_e( 'Removes WordPress\' core emojis\' inline CSS, inline JavaScript, and an otherwise un-autoptimized JavaScript file.', 'autoptimize' ); ?></label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e( 'Remove query strings from static resources', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Remove query strings from static resources', 'autoptimize' ); ?></th>
                 <td>
-                    <label><input type='checkbox' name='autoptimize_extra_settings[autoptimize_extra_checkbox_field_0]' <?php if ( ! empty( $options['autoptimize_extra_checkbox_field_0'] ) && '1' === $options['autoptimize_extra_checkbox_field_0'] ) { echo 'checked="checked"'; } ?> value='1'><?php _e( 'Removing query strings (or more specifically the <code>ver</code> parameter) will not improve load time, but might improve performance scores.', 'autoptimize' ); ?></label>
+                    <label><input type='checkbox' name='autoptimize_extra_settings[autoptimize_extra_checkbox_field_0]' <?php if ( ! empty( $options['autoptimize_extra_checkbox_field_0'] ) && '1' === $options['autoptimize_extra_checkbox_field_0'] ) { echo 'checked="checked"'; } ?> value='1'>
+                    <?php 
+                    // translators: just a code tag around "ver" which is the parameter added to CSS/ JS URL's by wordpress.
+                    printf( esc_html__( 'Removing query strings (or more specifically the %1$sver%2$s parameter) will not improve load time, but might improve performance scores.', 'autoptimize' ), '<code>', '</code>' );
+                    ?>
+                    </label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e( 'Preconnect to 3rd party domains <em>(advanced users)</em>', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Remove WordPress block CSS', 'autoptimize' ); ?></th>
                 <td>
-                    <label><input type='text' style='width:80%' name='autoptimize_extra_settings[autoptimize_extra_text_field_2]' value='<?php if ( array_key_exists( 'autoptimize_extra_text_field_2', $options ) ) { echo esc_attr( $options['autoptimize_extra_text_field_2'] ); } ?>'><br /><?php _e( 'Add 3rd party domains you want the browser to <a href="https://www.keycdn.com/support/preconnect/#primary" target="_blank">preconnect</a> to, separated by comma\'s. Make sure to include the correct protocol (HTTP or HTTPS).', 'autoptimize' ); ?></label>
+                    <label><input type='checkbox' name='autoptimize_extra_settings[autoptimize_extra_checkbox_field_8]' <?php if ( ! empty( $options['autoptimize_extra_checkbox_field_8'] ) && '1' === $options['autoptimize_extra_checkbox_field_8'] ) { echo 'checked="checked"'; } ?> value='1'><?php esc_html_e( 'WordPress adds block CSS and global styles to improve easy styling of block-based sites, but which can add a significant amount of CSS and SVG. If you are sure your site can do without the block CSS and "global styles", you can disable them here.', 'autoptimize' ); ?></label>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e( 'Async Javascript-files <em>(advanced users)</em>', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Preconnect to 3rd party domains (advanced users)', 'autoptimize' ); ?></th>
+                <td>
+                    <label><input type='text' style='width:80%' name='autoptimize_extra_settings[autoptimize_extra_text_field_2]' value='<?php if ( array_key_exists( 'autoptimize_extra_text_field_2', $options ) ) { echo esc_attr( $options['autoptimize_extra_text_field_2'] ); } ?>'><br />
+                    <?php
+                    // Translators; link to a page on keycdn blog about preconnecting.
+                    printf( esc_html__( 'Add 3rd party domains you want the browser to %1$spreconnect%2$s to, separated by comma\'s. Make sure to include the correct protocol (HTTP or HTTPS).', 'autoptimize' ), '<a href="https://www.keycdn.com/support/preconnect/#primary" target="_blank">', '</a>' );
+                    ?>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><?php esc_html_e( 'Preload specific requests (advanced users)', 'autoptimize' ); ?></th>
+                <td>
+                    <label><input type='text' style='width:80%' name='autoptimize_extra_settings[autoptimize_extra_text_field_7]' value='<?php if ( array_key_exists( 'autoptimize_extra_text_field_7', $options ) ) { echo esc_attr( $options['autoptimize_extra_text_field_7'] ); } ?>'><br /><?php esc_html_e( 'Comma-separated list with full URL\'s of to to-be-preloaded resources. To be used sparingly!', 'autoptimize' ); ?></label>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><?php esc_html_e( 'Async Javascript-files (advanced users)', 'autoptimize' ); ?></th>
                 <td>
                     <?php
                     if ( autoptimizeUtils::is_plugin_active( 'async-javascript/async-javascript.php' ) ) {
                         // translators: link points Async Javascript settings page.
-                        printf( __( 'You have "Async JavaScript" installed, %1$sconfiguration of async javascript is best done there%2$s.', 'autoptimize' ), '<a href="' . 'options-general.php?page=async-javascript' . '">', '</a>' );
+                        printf( esc_html__( 'You have "Async JavaScript" installed, %1$sconfiguration of async javascript is best done there%2$s.', 'autoptimize' ), '<a href="' . 'options-general.php?page=async-javascript' . '">', '</a>' );
                     } else {
-                    ?>
+                        ?>
                         <input type='text' style='width:80%' name='autoptimize_extra_settings[autoptimize_extra_text_field_3]' value='<?php if ( array_key_exists( 'autoptimize_extra_text_field_3', $options ) ) { echo esc_attr( $options['autoptimize_extra_text_field_3'] ); } ?>'>
                         <br />
                         <?php
-                            _e( 'Comma-separated list of local or 3rd party JS-files that should loaded with the <code>async</code> flag. JS-files from your own site will be automatically excluded if added here. ', 'autoptimize' );
+                            printf( esc_html__( 'Comma-separated list of local or 3rd party JS-files that should loaded with the %1$sasync%2$s flag. JS-files from your own site will be automatically excluded if added here. ', 'autoptimize' ), '<code>', '</code>' );
                             // translators: %s will be replaced by a link to the "async javascript" plugin.
-                            echo sprintf( __( 'Configuration of async javascript is easier and more flexible using the %s plugin.', 'autoptimize' ), '"<a href="https://wordpress.org/plugins/async-javascript" target="_blank">Async Javascript</a>"' );
+                            echo sprintf( esc_html__( 'Configuration of async javascript is easier and more flexible using the %s plugin.', 'autoptimize' ), '"<a href="https://wordpress.org/plugins/async-javascript" target="_blank">Async Javascript</a>"' );
                             $asj_install_url = network_admin_url() . 'plugin-install.php?s=async+javascript&tab=search&type=term';
-                            echo sprintf( ' <a href="' . $asj_install_url . '">%s</a>', __( 'Click here to install and activate it.', 'autoptimize' ) );
+                            echo sprintf( ' <a href="' . $asj_install_url . '">%s</a>', esc_html__( 'Click here to install and activate it.', 'autoptimize' ) );
                     }
                     ?>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><?php _e( 'Optimize YouTube videos', 'autoptimize' ); ?></th>
+                <th scope="row"><?php esc_html_e( 'Optimize YouTube videos', 'autoptimize' ); ?></th>
                 <td>
                     <?php
                     if ( autoptimizeUtils::is_plugin_active( 'wp-youtube-lyte/wp-youtube-lyte.php' ) ) {
-                        _e( 'Great, you have WP YouTube Lyte installed.', 'autoptimize' );
+                        esc_html_e( 'Great, you have WP YouTube Lyte installed.', 'autoptimize' );
                         $lyte_config_url = 'options-general.php?page=lyte_settings_page';
-                        echo sprintf( ' <a href="' . $lyte_config_url . '">%s</a>', __( 'Click here to configure it.', 'autoptimize' ) );
+                        echo sprintf( ' <a href="' . $lyte_config_url . '">%s</a>', esc_html__( 'Click here to configure it.', 'autoptimize' ) );
                     } else {
                         // translators: %s will be replaced by a link to "wp youtube lyte" plugin.
-                        echo sprintf( __( '%s allows you to “lazy load” your videos, by inserting responsive “Lite YouTube Embeds". ', 'autoptimize' ), '<a href="https://wordpress.org/plugins/wp-youtube-lyte" target="_blank">WP YouTube Lyte</a>' );
+                        echo sprintf( esc_html__( '%s allows you to “lazy load” your videos, by inserting responsive “Lite YouTube Embeds". ', 'autoptimize' ), '<a href="https://wordpress.org/plugins/wp-youtube-lyte" target="_blank">WP YouTube Lyte</a>' );
                         $lyte_install_url = network_admin_url() . 'plugin-install.php?s=lyte&tab=search&type=term';
-                        echo sprintf( ' <a href="' . $lyte_install_url . '">%s</a>', __( 'Click here to install and activate it.', 'autoptimize' ) );
+                        echo sprintf( ' <a href="' . $lyte_install_url . '">%s</a>', esc_html__( 'Click here to install and activate it.', 'autoptimize' ) );
                     }
                     ?>
                 </td>
             </tr>
         </table>
-        <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Save Changes', 'autoptimize' ); ?>" /></p>
+        <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_html_e( 'Save Changes', 'autoptimize' ); ?>" /></p>
     </form>
         <?php
     }

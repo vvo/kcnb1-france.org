@@ -30,42 +30,56 @@ if (!defined('SUCURISCAN_INIT') || SUCURISCAN_INIT !== true) {
  */
 function sucuriscan_settings_apiservice_status($nonce)
 {
-    $params = array();
+    $api_url_is_set = SucuriScan::issetScanApiUrl();
 
-    $params['ApiStatus.StatusNum'] = '1';
-    $params['ApiStatus.Status'] = __('Enabled', 'sucuri-scanner');
-    $params['ApiStatus.SwitchText'] = __('Disable', 'sucuri-scanner');
-    $params['ApiStatus.SwitchValue'] = 'disable';
-    $params['ApiStatus.WarningVisibility'] = 'visible';
-    $params['ApiStatus.ErrorVisibility'] = 'hidden';
-    $params['ApiStatus.ServiceURL'] = SUCURISCAN_API_URL;
-    $params['ApiStatus.ApiKey'] = '';
+    $params = array();
 
     if ($nonce) {
         // Enable or disable the API service communication.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $api_service = SucuriScanRequest::post(':api_service', '(en|dis)able');
 
         if ($api_service) {
-            $action_d = $api_service . 'd';
-            $message = sprintf(__('API service communication was <code>%s</code>', 'sucuri-scanner'), $action_d);
+            if (!$api_url_is_set) {
+                SucuriScanInterface::error(__('The status of the API service could not be enabled because the required SUCURISCAN_API_URL configuration was not found.', 'sucuri-scanner'));
+            } else {
+                $action_d = $api_service . 'd';
+                /* translators: %s: status of the API (enabled/disabled) */
+                $message = sprintf(__('API service communication was <code>%s</code>', 'sucuri-scanner'), $action_d);
 
-            SucuriScanEvent::reportInfoEvent($message);
-            SucuriScanEvent::notifyEvent('plugin_change', $message);
-            SucuriScanOption::updateOption(':api_service', $action_d);
-            SucuriScanInterface::info(__('The status of the API service has been changed', 'sucuri-scanner'));
+                SucuriScanEvent::reportInfoEvent($message);
+                SucuriScanEvent::notifyEvent('plugin_change', $message);
+                SucuriScanOption::updateOption(':api_service', $action_d);
+                SucuriScanInterface::info(__('The status of the API service has been changed', 'sucuri-scanner'));
+            }
         }
     }
 
-    $api_service = SucuriScanOption::getOption(':api_service');
+    $api_service_option = SucuriScanOption::getOption(':api_service');
 
-    if ($api_service === 'disabled') {
-        $params['ApiStatus.StatusNum'] = '0';
+    if ($api_service_option === 'enabled') {
+        $params['ApiStatus.StatusNum'] = '1';
+        $params['ApiStatus.Status'] = __('Enabled', 'sucuri-scanner');
+        $params['ApiStatus.SwitchText'] = __('Disable', 'sucuri-scanner');
+        $params['ApiStatus.SwitchValue'] = 'disable';
+        $params['ApiStatus.WarningVisibility'] = 'visible';
+        $params['ApiStatus.ErrorVisibility'] = 'hidden';
+    }
+
+    if ($api_service_option === 'disabled' || !$api_url_is_set) {
+        $params['ApiStatus.StatusNum'] = '2';
         $params['ApiStatus.Status'] = __('Disabled', 'sucuri-scanner');
         $params['ApiStatus.SwitchText'] = __('Enable', 'sucuri-scanner');
         $params['ApiStatus.SwitchValue'] = 'enable';
         $params['ApiStatus.WarningVisibility'] = 'hidden';
         $params['ApiStatus.ErrorVisibility'] = 'visible';
     }
+
+    if ($api_service_option === 'disabled' && $api_url_is_set) {
+        $params['ApiStatus.StatusNum'] = '0';
+    }
+
+    $params['ApiStatus.ServiceURL'] = !$api_url_is_set ? __('Service API URL not set. To enable the API service, add your custom API service URL as the SUCURISCAN_API_URL constant value to the main configuration file (wp-config.php). If you do not have a custom API to store the audit logs, the plugin will still store these logs on your hosting environment.', 'sucuri-scanner') : __('Service API URL: ', 'sucuri-scanner'). SUCURISCAN_API_URL;
 
     $api_key = SucuriScanAPI::getPluginKey();
     $params['ApiStatus.ApiKey'] = $api_key ? $api_key : __('NONE', 'sucuri-scanner');
@@ -128,6 +142,7 @@ function sucuriscan_settings_apiservice_checksums($nonce)
         if (@preg_match($pattern, $url, $match)) {
             SucuriScanOption::updateOption(':checksum_api', $match[2]);
 
+            /* translators: %s: URL of the checksum API */
             $message = sprintf(__('Core integrity API changed: %s', 'sucuri-scanner'), SucuriScanAPI::checksumAPI());
             SucuriScanEvent::reportInfoEvent($message);
             SucuriScanEvent::notifyEvent('plugin_change', $message);
@@ -135,6 +150,7 @@ function sucuriscan_settings_apiservice_checksums($nonce)
         } else {
             SucuriScanOption::deleteOption(':checksum_api');
 
+            /* translators: %s: URL of the checksum API */
             $message = sprintf(__('Core integrity API changed: %s', 'sucuri-scanner'), SucuriScanAPI::checksumAPI());
             SucuriScanEvent::reportInfoEvent($message);
             SucuriScanEvent::notifyEvent('plugin_change', $message);

@@ -66,10 +66,11 @@ class SucuriScanOption extends SucuriScanRequest
             'sucuriscan_addr_header' => 'HTTP_X_SUCURI_CLIENTIP',
             'sucuriscan_api_key' => false,
             'sucuriscan_api_protocol' => 'https',
-            'sucuriscan_api_service' => 'enabled',
+            'sucuriscan_api_service' => 'disabled',
             'sucuriscan_auto_clear_cache' => 'disabled',
             'sucuriscan_checksum_api' => '',
             'sucuriscan_cloudproxy_apikey' => '',
+            'sucuriscan_waf_prompt_dismissed_users' => array(),
             'sucuriscan_diff_utility' => 'disabled',
             'sucuriscan_dns_lookups' => 'enabled',
             'sucuriscan_email_subject' => '',
@@ -112,9 +113,1494 @@ class SucuriScanOption extends SucuriScanRequest
             'sucuriscan_sitecheck_target' => '',
             'sucuriscan_timezone' => 'UTC+00.00',
             'sucuriscan_use_wpmail' => 'enabled',
+            'sucuriscan_twofactor_mode' => 'disabled',
+            'sucuriscan_twofactor_users' => array(),
+            'sucuriscan_preferred_theme' => 'dark',
+            'sucuriscan_hardening_xmlrpc' => 'disabled',
+            'sucuriscan_headers_cache_control' => 'disabled',
+            'sucuriscan_headers_cache_control_options' => array(
+                'front_page' => array(
+                    'id' => 'front_page',
+                    'title' => __('Front Page', 'sucuri-scanner'),
+                    'max_age' => 21600,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'posts' => array(
+                    'id' => 'posts',
+                    'title' => __('Posts', 'sucuri-scanner'),
+                    'max_age' => 43200,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => true,
+                ),
+
+                'pages' => array(
+                    'id' => 'pages',
+                    'title' => __('Pages', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'main_index' => array(
+                    'id' => 'main_index',
+                    'title' => __('Main Index', 'sucuri-scanner'),
+                    'max_age' => 21600,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 5,
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'categories' => array(
+                    'id' => 'categories',
+                    'title' => __('Categories', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 8,
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'tags' => array(
+                    'id' => 'tags',
+                    'title' => __('Tags', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 10,
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'authors' => array(
+                    'id' => 'authors',
+                    'title' => __('Authors', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 10,
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'archives' => array(
+                    'id' => 'archives',
+                    'title' => __('Archives', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'feeds' => array(
+                    'id' => 'feeds',
+                    'title' => __('Feeds', 'sucuri-scanner'),
+                    'max_age' => 21600,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'attachment_pages' => array(
+                    'id' => 'attachment_pages',
+                    'title' => __('Attachment Pages', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'search_results' => array(
+                    'id' => 'search_results',
+                    'title' => __('Search Results', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                '404_not_found' => array(
+                    'id' => '404_not_found',
+                    'title' => __('404 Not Found', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'redirects' => array(
+                    'id' => 'attachment',
+                    'title' => __('Redirects', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'woocommerce_products' => array(
+                    'id' => 'woocommerce_products',
+                    'title' => __('Woocommerce Products', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+
+                'woocommerce_categories' => array(
+                    'id' => 'woocommerce_categories',
+                    'title' => __('Woocommerce Categories', 'sucuri-scanner'),
+                    'max_age' => 86400,
+                    's_maxage' => 0,
+                    'stale_if_error' => 0,
+                    'stale_while_revalidate' => 0,
+                    'pagination_factor' => 'unavailable',
+                    'old_age_multiplier' => 'unavailable',
+                ),
+            ),
+            'sucuriscan_headers_csp' => 'disabled',
+            'sucuriscan_headers_csp_options' => array(
+                'base_uri' => array(
+                    'id' => 'base_uri',
+                    'title' => __('Base URI', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Restricts the URLs that can appear in the document’s <base> element. Commonly \'self\'.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'child_src' => array(
+                    'id' => 'child_src',
+                    'title' => __('Child Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for frames and nested browsing contexts.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'connect_src' => array(
+                    'id' => 'connect_src',
+                    'title' => __('Connect Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed endpoints for fetch/XHR/WebSocket connections.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'default_src' => array(
+                    'id' => 'default_src',
+                    'title' => __('Default Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Fallback policy for resources if no other directive is defined.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'font_src' => array(
+                    'id' => 'font_src',
+                    'title' => __('Font Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed font sources (e.g. self or font CDNs).', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'form_action' => array(
+                    'id' => 'form_action',
+                    'title' => __('Form Action', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Restricts the URLs to which forms can be submitted.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'frame_ancestors' => array(
+                    'id' => 'frame_ancestors',
+                    'title' => __('Frame Ancestors', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Restricts which sites can embed this page in a frame.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'img_src' => array(
+                    'id' => 'img_src',
+                    'title' => __('Image Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed image sources. Often includes self and possibly data: URIs.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'manifest_src' => array(
+                    'id' => 'manifest_src',
+                    'title' => __('Manifest Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for web app manifests.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'media_src' => array(
+                    'id' => 'media_src',
+                    'title' => __('Media Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for audio and video content.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'navigate_to' => array(
+                    'id' => 'navigate_to',
+                    'title' => __('Navigate To', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Restricts which URLs the document can navigate to (e.g., links).',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'object_src' => array(
+                    'id' => 'object_src',
+                    'title' => __('Object Source', 'sucuri-scanner'),
+                    'value' => "'none'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed sources for <object>, <embed>, or <applet>. Usually \'none\'.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'script_src' => array(
+                    'id' => 'script_src',
+                    'title' => __('Script Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed script sources. Avoid \'unsafe-inline\'; consider nonces.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'script_src_attr' => array(
+                    'id' => 'script_src_attr',
+                    'title' => __('Script Source Attribute', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed sources for inline event handlers.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'script_src_elem' => array(
+                    'id' => 'script_src_elem',
+                    'title' => __('Script Source Element', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed sources for <script> elements. Falls back to script-src if missing.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'style_src' => array(
+                    'id' => 'style_src',
+                    'title' => __('Style Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __(
+                        'Allowed style sources. Avoid \'unsafe-inline\'; consider nonces.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'style_src_attr' => array(
+                    'id' => 'style_src_attr',
+                    'title' => __('Style Source Attribute', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for inline style attributes.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'style_src_elem' => array(
+                    'id' => 'style_src_elem',
+                    'title' => __('Style Source Element', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for <style> and <link> elements.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'worker_src' => array(
+                    'id' => 'worker_src',
+                    'title' => __('Worker Source', 'sucuri-scanner'),
+                    'value' => "'self'",
+                    'type' => 'text',
+                    'description' => __('Allowed sources for web and service workers.', 'sucuri-scanner'),
+                    'enforced' => false
+                ),
+                'sandbox' => array(
+                    'id' => 'sandbox',
+                    'title' => __('Sandbox', 'sucuri-scanner'),
+                    'type' => 'multi_checkbox',
+                    'options' => array(
+                        'allow-downloads' => array(
+                            'title' => __('Allow Downloads', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-forms' => array(
+                            'title' => __('Allow Forms', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-modals' => array(
+                            'title' => __('Allow Modals', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-orientation-lock' => array(
+                            'title' => __('Allow Orientation Lock', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-pointer-lock' => array(
+                            'title' => __('Allow Pointer Lock', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-popups' => array(
+                            'title' => __('Allow Popups', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-popups-to-escape-sandbox' => array(
+                            'title' => __('Allow Popups to Escape Sandbox', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-presentation' => array(
+                            'title' => __('Allow Presentation', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-same-origin' => array(
+                            'title' => __('Allow Same Origin', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-scripts' => array(
+                            'title' => __('Allow Scripts', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'allow-top-navigation' => array(
+                            'title' => __('Allow Top Navigation', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                    ),
+                    'description' => __(
+                        'Applies a sandbox to the page. Select tokens to allow exceptions.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'upgrade_insecure_requests' => array(
+                    'id' => 'upgrade_insecure_requests',
+                    'title' => __('Upgrade Insecure Requests', 'sucuri-scanner'),
+                    'type' => 'multi_checkbox',
+                    'options' => array(
+                        'upgrade-insecure-requests' => array(
+                            'title' => __('Upgrade Insecure Requests', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                    ),
+                    'description' => __(
+                        'Upgrade insecure requests to HTTPS. This is a security feature that prevents mixed content.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+            ),
+            'sucuriscan_headers_cors' => 'disabled',
+            'sucuriscan_headers_cors_options' => array(
+                'Access-Control-Allow-Origin' => array(
+                    'id' => 'access_control_allow_origin',
+                    'title' => __('Access-Control-Allow-Origin', 'sucuri-scanner'),
+                    'value' => '*',
+                    'type' => 'text',
+                    'description' => __(
+                        'Specifies the origin that is allowed to access the resource.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'Access-Control-Expose-Headers' => array(
+                    'id' => 'access_control_expose_headers',
+                    'title' => __('Access-Control-Expose-Headers', 'sucuri-scanner'),
+                    'value' => '',
+                    'type' => 'text',
+                    'description' => __(
+                        'Specifies the headers that can be exposed when accessing the resource.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false,
+                ),
+                'Access-Control-Allow-Methods' => array(
+                    'id' => 'access_control_allow_methods',
+                    'title' => __('Access-Control-Allow-Methods', 'sucuri-scanner'),
+                    'options' => array(
+                        'GET' => array(
+                            'title' => __('Allow GET method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'POST' => array(
+                            'title' => __('Allow POST method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'PUT' => array(
+                            'title' => __('Allow PUT method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'DELETE' => array(
+                            'title' => __('Allow DELETE method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'OPTIONS' => array(
+                            'title' => __('Allow OPTIONS method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'PATCH' => array(
+                            'title' => __('Allow PATCH method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'HEAD' => array(
+                            'title' => __('Allow HEAD method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'TRACE' => array(
+                            'title' => __('Allow TRACE method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                        'CONNECT' => array(
+                            'title' => __('Allow CONNECT method', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                    ),
+                    'type' => 'multi_checkbox',
+                    'description' => __(
+                        'Specifies the methods allowed when accessing the resource.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'Access-Control-Allow-Headers' => array(
+                    'id' => 'access_control_allow_headers',
+                    'title' => __('Access-Control-Allow-Headers', 'sucuri-scanner'),
+                    'value' => '',
+                    'type' => 'text',
+                    'description' => __(
+                        'Specifies the headers allowed when accessing the resource.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'Access-Control-Allow-Credentials' => array(
+                    'id' => 'access_control_allow_credentials',
+                    'title' => __('Access-Control-Allow-Credentials', 'sucuri-scanner'),
+                    'type' => 'multi_checkbox',
+                    'options' => array(
+                        'Access-Control-Allow-Credentials' => array(
+                            'title' => __('Allow Credentials', 'sucuri-scanner'),
+                            'enforced' => false,
+                        ),
+                    ),
+                    'description' => __(
+                        'Specifies whether credentials are allowed when accessing the resource.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+                'Access-Control-Max-Age' => array(
+                    'id' => 'access_control_max_age',
+                    'title' => __('Access-Control-Max-Age', 'sucuri-scanner'),
+                    'value' => '86400',
+                    'type' => 'text',
+                    'description' => __(
+                        'Specifies how long the results of a preflight request can be cached.',
+                        'sucuri-scanner'
+                    ),
+                    'enforced' => false
+                ),
+            ),
         );
 
         return (array) apply_filters('sucuriscan_option_defaults', $defaults);
+    }
+
+    /**
+     * Map of options that must be stored as secrets.
+     *
+     * @return array
+     */
+    private static function getSecretOptionMap()
+    {
+        return array(
+            'sucuriscan_cloudproxy_apikey' => 'sucuriscan_secret_cloudproxy_apikey',
+        );
+    }
+
+    /**
+     * Check whether an option is stored as a secret.
+     *
+     * @param string $option Option name.
+     * @return bool
+     */
+    private static function isSecretOption($option = '')
+    {
+        $option = self::varPrefix($option);
+        $map = self::getSecretOptionMap();
+
+        return array_key_exists($option, $map);
+    }
+
+    /**
+     * Resolve the storage name for a secret option.
+     *
+     * @param string $option Option name.
+     * @return string
+     */
+    private static function getSecretStorageName($option = '')
+    {
+        $option = self::varPrefix($option);
+        $map = self::getSecretOptionMap();
+
+        return array_key_exists($option, $map) ? $map[$option] : $option;
+    }
+
+    /**
+     * Resolve the storage name for encrypted secret payloads.
+     *
+     * @param string $option Option name.
+     * @return string
+     */
+    private static function getSecretEncryptedStorageName($option = '')
+    {
+        return self::getSecretStorageName($option) . '_enc';
+    }
+
+    /**
+     * Check whether secret encryption can be enabled.
+     *
+     * @return bool
+     */
+    private static function canEncryptSecrets()
+    {
+        if (!function_exists('openssl_encrypt') || !function_exists('openssl_decrypt')) {
+            return false;
+        }
+
+        if (!function_exists('openssl_get_cipher_methods') || !function_exists('wp_salt')) {
+            return false;
+        }
+
+        $methods = openssl_get_cipher_methods();
+
+        return is_array($methods) && in_array('aes-256-gcm', $methods, true);
+    }
+
+    /**
+     * Remove any existing SUCURI_PLUG_KEY and SUCURI_PLUG_SALT define() lines
+     * from wp-config.php.
+     *
+     * @return bool True when the file was written (or had nothing to remove).
+     */
+    private static function removePluginSaltFromConfig()
+    {
+        $config_path = self::getConfigPath();
+
+        if (!$config_path || !is_writable($config_path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
+            return false;
+        }
+
+        $content = (string) file_get_contents($config_path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+        if (!preg_match('/^\s*define\s*\(\s*[\'"]SUCURI_PLUG_(?:KEY|SALT)[\'"]/m', $content)) {
+            return true; // Nothing to remove.
+        }
+
+        $new_content = preg_replace(
+            '/^[^\n]*define\s*\(\s*[\'"]SUCURI_PLUG_(?:KEY|SALT)[\'"][^\n]*\n?/m',
+            '',
+            $content
+        );
+
+        return (bool) file_put_contents($config_path, $new_content, LOCK_EX); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+    }
+
+    /**
+     * Determine whether a byte offset within $content falls inside a PHP block.
+     *
+     * Uses token_get_all() so it correctly accounts for nested open/close tags.
+     *
+     * @param string $content Full file content.
+     * @param int    $offset  Byte offset to test.
+     * @return bool
+     */
+    private static function isOffsetInsidePhp($content, $offset)
+    {
+        $tokens = @token_get_all($content);
+        $pos = 0;
+        $in_php = false;
+
+        foreach ($tokens as $token) {
+            $text = is_array($token) ? $token[1] : $token;
+            $len = strlen($text);
+
+            // Return the pre-token state: if the offset falls inside this token,
+            // the state change it triggers has not yet taken effect at that position.
+            if ($pos + $len > $offset) {
+                return $in_php;
+            }
+
+            if (is_array($token)) {
+                if ($token[0] === T_OPEN_TAG || $token[0] === T_OPEN_TAG_WITH_ECHO) {
+                    $in_php = true;
+                } elseif ($token[0] === T_CLOSE_TAG) {
+                    $in_php = false;
+                }
+            }
+
+            $pos += $len;
+        }
+
+        return $in_php;
+    }
+
+    /**
+     * Returns the byte offset of the last T_CLOSE_TAG token that begins strictly
+     * before $before_offset, or null if no such token exists.
+     *
+     * Used to find an existing PHP close tag so inserts can be placed just before
+     * it, keeping the new code inside the preceding PHP block.
+     *
+     * @param string $content       Full file content.
+     * @param int    $before_offset Upper bound (exclusive).
+     * @return int|null
+     */
+    private static function lastPhpCloseTagBefore($content, $before_offset)
+    {
+        $tokens = @token_get_all($content);
+        $pos = 0;
+        $last_close = null;
+
+        foreach ($tokens as $token) {
+            if ($pos >= $before_offset) {
+                break;
+            }
+            $text = is_array($token) ? $token[1] : $token;
+            if (is_array($token) && $token[0] === T_CLOSE_TAG) {
+                $last_close = $pos;
+            }
+            $pos += strlen($text);
+        }
+
+        return $last_close;
+    }
+
+    /**
+     * Return true when any SUCURI_PLUG_KEY or SUCURI_PLUG_SALT define() line
+     * exists outside a PHP block in $content.
+     *
+     * @param string $content Full file content.
+     * @return bool
+     */
+    private static function hasPluginSaltOutsidePhp($content)
+    {
+        preg_match_all(
+            '/^[^\n]*define\s*\(\s*[\'"]SUCURI_PLUG_(?:KEY|SALT)[\'"][^\n]*/m',
+            $content,
+            $matches,
+            PREG_OFFSET_CAPTURE
+        );
+
+        foreach ($matches[0] as $match) {
+            if (!self::isOffsetInsidePhp($content, $match[1])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * One-time migration: detect and fix SUCURI_PLUG_* constants that were written
+     * outside PHP context in wp-config.php by a previous version of the plugin.
+     *
+     * A previous bug caused the define() lines to be appended after a PHP close
+     * tag (?>), which made PHP emit them as literal HTML text on every page load,
+     * leaking the key value to site visitors.
+     *
+     * Detection: the constants exist as text in the file but are not defined as
+     * PHP constants (because PHP never executed those lines).
+     *
+     * Fix: delegates to regeneratePluginSaltRaw(), which removes the misplaced
+     * lines and rewrites them in the correct position via the now-fixed
+     * writePluginSaltToConfig().
+     *
+     * A WordPress option flag is set on success so this check never runs again.
+     * If wp-config.php is not writable the flag is left unset so the next
+     * admin_init will retry automatically.
+     *
+     * @return void
+     */
+    public static function maybeHealMisplacedPluginSalt()
+    {
+        if (function_exists('wp_doing_ajax') && wp_doing_ajax()) {
+            return;
+        }
+
+        if (function_exists('wp_doing_cron') && wp_doing_cron()) {
+            return;
+        }
+        if (!SucuriScanPermissions::canManagePlugin()) {
+            return;
+        }
+
+        // Already processed — skip immediately (option is cached by WordPress).
+        if (get_option('sucuriscan_plug_salt_position_healed')) {
+            return;
+        }
+
+        // Constants are loaded from PHP context — the file position is correct.
+        // Mark done so this check never runs again.
+        if (defined('SUCURI_PLUG_KEY') && defined('SUCURI_PLUG_SALT')) {
+            update_option('sucuriscan_plug_salt_position_healed', true, false);
+            return;
+        }
+
+        // Use token-based detection to find define() lines placed outside PHP context.
+        // This covers full misplacement (both defines outside) and mixed states
+        // (one define inside, one outside).
+        $config_path = self::getConfigPath();
+
+        if (!$config_path || !file_exists($config_path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_exists
+            // No config file accessible — nothing we can fix.
+            update_option('sucuriscan_plug_salt_position_healed', true, false);
+            return;
+        }
+
+        $content = (string) file_get_contents($config_path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+        if (!self::hasPluginSaltOutsidePhp($content)) {
+            // All define() lines are inside PHP (or absent) — nothing to fix.
+            update_option('sucuriscan_plug_salt_position_healed', true, false);
+            return;
+        }
+
+        // At least one define() line is outside PHP context.  Remove and rewrite.
+        $result = self::regeneratePluginSaltRaw();
+
+        if ($result !== false) {
+            update_option('sucuriscan_plug_salt_position_healed', true, false);
+        }
+        // If the fix failed (e.g. wp-config.php not writable), leave the flag
+        // unset so the next admin_init will retry.
+    }
+
+    /**
+     * Regenerate the SUCURI_PLUG_* salt pair.
+     *
+     * Removes the existing constants from wp-config.php, derives a fresh pair
+     * from the current WordPress AUTH salts, and writes them back.
+     *
+     * Because PHP constants cannot be re-defined within the same request, the
+     * newly derived raw string is returned directly so callers can use it
+     * without relying on the still-stale in-memory constants.
+     *
+     * @return string|bool New combined plug-key + plug-salt string, or false on failure.
+     */
+    private static function regeneratePluginSaltRaw()
+    {
+        if (!function_exists('wp_salt')) {
+            return false;
+        }
+
+        if (!self::removePluginSaltFromConfig()) {
+            return false;
+        }
+
+        $auth_raw = wp_salt('auth');
+        $plug_key = hash_hmac('sha256', 'sucuri_plug_key_v1', $auth_raw);
+        $plug_salt = hash_hmac('sha256', 'sucuri_plug_salt_v1', $auth_raw);
+
+        if (!self::writePluginSaltToConfig($plug_key, $plug_salt)) {
+            return false;
+        }
+
+        return $plug_key . $plug_salt;
+    }
+
+    /**
+     * Append SUCURI_PLUG_KEY and SUCURI_PLUG_SALT define() lines to wp-config.php.
+     *
+     * Insertion is attempted in this order:
+     *  1. Just before the English stop-editing comment ("That's all, stop editing!").
+     *  2. Just before the ABSPATH guard (language-independent, present in all WP).
+     *  3. Just before the wp-settings.php require/include line.
+     *  4. End of file, but before any trailing PHP close tag (?>), so the block
+     *     is never placed outside PHP context.
+     *
+     * Returns true when the constants are already present (no write needed) or when
+     * the file was updated successfully.
+     *
+     * @param string $plug_key  64-char hex string.
+     * @param string $plug_salt 64-char hex string.
+     * @return bool
+     */
+    private static function writePluginSaltToConfig($plug_key, $plug_salt)
+    {
+        $config_path = self::getConfigPath();
+
+        if (!$config_path || !is_writable($config_path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
+            return false;
+        }
+
+        $content = (string) file_get_contents($config_path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+        if ($content === '') {
+            return false;
+        }
+
+        $has_key  = (bool) preg_match('/^\s*define\s*\(\s*[\'"]SUCURI_PLUG_KEY[\'"]/m', $content);
+        $has_salt = (bool) preg_match('/^\s*define\s*\(\s*[\'"]SUCURI_PLUG_SALT[\'"]/m', $content);
+
+        if ($has_key && $has_salt) {
+            return true; // Already present — nothing to do.
+        }
+
+        if ($has_key || $has_salt) {
+            // Partial state: strip the orphaned define(s) in-memory so a
+            // complete, correct block can be written atomically below.
+            $content = (string) preg_replace(
+                '/^[^\n]*define\s*\(\s*[\'"]SUCURI_PLUG_(?:KEY|SALT)[\'"][^\n]*\n?/m',
+                '',
+                $content
+            );
+        }
+
+        $block = sprintf(
+            "define('SUCURI_PLUG_KEY',  '%s');\ndefine('SUCURI_PLUG_SALT', '%s');\n",
+            $plug_key,
+            $plug_salt
+        );
+
+        // Insert before the canonical stop-editing marker (English).
+        $stop_marker = "/* That's all, stop editing!";
+        $stop_pos = strpos($content, $stop_marker);
+
+        if ($stop_pos !== false) {
+            if (self::isOffsetInsidePhp($content, $stop_pos)) {
+                $new_content = substr($content, 0, $stop_pos)
+                    . $block
+                    . substr($content, $stop_pos);
+            } else {
+                // Stop marker is outside PHP — insert before the preceding close tag.
+                $close_pos = self::lastPhpCloseTagBefore($content, $stop_pos);
+                if ($close_pos === null) {
+                    return false;
+                }
+                $new_content = substr($content, 0, $close_pos)
+                    . $block
+                    . substr($content, $close_pos);
+            }
+        } else {
+            // Fallback: insert before the ABSPATH guard (language-independent,
+            // always in the user-config section, never after the bootstrap code).
+            $lines = explode("\n", $content);
+            $insert_at = null;
+            $insert_offset = null;
+            $cum_len = 0;
+
+            foreach ($lines as $i => $line) {
+                if (preg_match('/if\s*\(\s*!?\s*defined\s*\(\s*[\'"]ABSPATH[\'"]/i', $line)) {
+                    $insert_at = $i;
+                    $insert_offset = $cum_len;
+                    break;
+                }
+                $cum_len += strlen($line) + 1; // +1 for the "\n" separator
+            }
+
+            if ($insert_at === null) {
+                return false; // No safe insertion point found.
+            }
+
+            if (self::isOffsetInsidePhp($content, $insert_offset)) {
+                array_splice($lines, $insert_at, 0, array(rtrim($block)));
+                $new_content = implode("\n", $lines);
+            } else {
+                // Insertion point is outside PHP — insert before the preceding close tag.
+                $close_pos = self::lastPhpCloseTagBefore($content, $insert_offset);
+                if ($close_pos === null) {
+                    return false;
+                }
+                $new_content = substr($content, 0, $close_pos)
+                    . $block
+                    . substr($content, $close_pos);
+            }
+        }
+
+        return (bool) file_put_contents($config_path, $new_content, LOCK_EX); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+    }
+
+    /**
+     * Get or initialize the plugin-specific raw salt string.
+     *
+     * Priority:
+     *  1. PHP constants SUCURI_PLUG_KEY and SUCURI_PLUG_SALT are already defined
+     *     (written to wp-config.php on a previous run, or user-managed).
+     *  2. First run: derive from the current WordPress AUTH salts, write the
+     *     constants to wp-config.php, and return the combined string.
+     *
+     * @return string|bool Combined plug-key and plug-salt string, or false on failure.
+     */
+    private static function getPluginSaltRaw()
+    {
+        // Constants already available — either loaded from wp-config.php or
+        // defined by the site owner before the plugin loaded.
+        if (defined('SUCURI_PLUG_KEY') && defined('SUCURI_PLUG_SALT')) {
+            return SUCURI_PLUG_KEY . SUCURI_PLUG_SALT;
+        }
+
+        // First run: derive plugin-specific values from WordPress AUTH salts and
+        // persist them in wp-config.php so they survive future WP salt rotations.
+        if (!function_exists('wp_salt')) {
+            return false;
+        }
+
+        $auth_raw = wp_salt('auth');
+        $plug_key = hash_hmac('sha256', 'sucuri_plug_key_v1', $auth_raw);
+        $plug_salt = hash_hmac('sha256', 'sucuri_plug_salt_v1', $auth_raw);
+
+        if (!self::writePluginSaltToConfig($plug_key, $plug_salt)) {
+            return false;
+        }
+
+        return $plug_key . $plug_salt;
+    }
+
+    /**
+     * Build encryption key from WordPress AUTH salts (legacy scheme, payload v:1).
+     *
+     * @return string|bool 32-byte key, or false on failure.
+     */
+    private static function getAuthEncryptionKey()
+    {
+        if (!function_exists('wp_salt')) {
+            return false;
+        }
+
+        $context = 'sucuriscan_waf_key_v1';
+
+        return substr(hash_hmac('sha256', $context, wp_salt('auth'), true), 0, 32);
+    }
+
+    /**
+     * Build encryption key from plugin-specific SUCURI_PLUG_* salts (payload v:2).
+     *
+     * @return string|bool 32-byte key, or false on failure.
+     */
+    private static function getSecretEncryptionKey()
+    {
+        $plug_raw = self::getPluginSaltRaw();
+
+        if ($plug_raw === false) {
+            return false;
+        }
+
+        $context = 'sucuriscan_waf_key_v1';
+
+        return substr(hash_hmac('sha256', $context, $plug_raw, true), 0, 32);
+    }
+
+    /**
+     * Generate random bytes for encryption.
+     *
+     * @param int $length Number of bytes.
+     * @return string|bool
+     */
+    private static function getSecretRandomBytes($length)
+    {
+        try {
+            return random_bytes($length);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Encrypt a secret value with AES-256-GCM.
+     *
+     * @param string      $plaintext Secret value.
+     * @param string|null $raw_salt  Optional raw plug salt to use instead of
+     *                               reading the runtime constants.  Pass this
+     *                               when the constants have just been regenerated
+     *                               and the new values are not yet available as
+     *                               PHP constants (constants cannot be redefined
+     *                               within the same request).
+     * @return array|bool
+     */
+    private static function encryptSecretValue($plaintext, $raw_salt = null)
+    {
+        if (!self::canEncryptSecrets()) {
+            return false;
+        }
+
+        if ($raw_salt !== null) {
+            $context = 'sucuriscan_waf_key_v1';
+            $key = substr(hash_hmac('sha256', $context, $raw_salt, true), 0, 32);
+        } else {
+            $key = self::getSecretEncryptionKey();
+        }
+
+        if (!$key) {
+            return false;
+        }
+
+        $iv = self::getSecretRandomBytes(12);
+        if (!$iv) {
+            return false;
+        }
+
+        $tag = '';
+        $ciphertext = openssl_encrypt(
+            $plaintext,
+            'aes-256-gcm',
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag
+        );
+
+        if ($ciphertext === false || $tag === '') {
+            return false;
+        }
+
+        return array(
+            'v' => 2,
+            'alg' => 'aes-256-gcm',
+            'iv' => base64_encode($iv),
+            'tag' => base64_encode($tag),
+            'ct' => base64_encode($ciphertext),
+        );
+    }
+
+    /**
+     * Decrypt a secret payload.
+     *
+     * @param array $payload Encrypted payload.
+     * @return string|bool
+     */
+    private static function decryptSecretValue($payload, $raw_salt = null)
+    {
+        if (!self::canEncryptSecrets()) {
+            return false;
+        }
+
+        if (!is_array($payload)
+            || !isset($payload['v'])
+            || !isset($payload['alg'])
+            || !isset($payload['iv'])
+            || !isset($payload['tag'])
+            || !isset($payload['ct'])
+        ) {
+            return false;
+        }
+
+        $version = (int) $payload['v'];
+
+        if ($payload['alg'] !== 'aes-256-gcm') {
+            return false;
+        }
+
+        // Route decryption key by payload version:
+        //   v:1 — legacy, encrypted with WordPress AUTH_SALT via wp_salt('auth').
+        //   v:2 — current, encrypted with plugin-specific SUCURI_PLUG_* salt.
+        // An explicit $raw_salt overrides version-based routing (used for fallback recovery).
+        if ($raw_salt !== null) {
+            $key = substr(hash_hmac('sha256', 'sucuriscan_waf_key_v1', $raw_salt, true), 0, 32);
+        } elseif ($version === 1) {
+            $key = self::getAuthEncryptionKey();
+        } elseif ($version === 2) {
+            $key = self::getSecretEncryptionKey();
+        } else {
+            return false;
+        }
+
+        if (!$key) {
+            return false;
+        }
+
+        $iv = base64_decode($payload['iv']);
+        $tag = base64_decode($payload['tag']);
+        $ct = base64_decode($payload['ct']);
+
+        if ($iv === false || $tag === false || $ct === false) {
+            return false;
+        }
+
+        return openssl_decrypt(
+            $ct,
+            'aes-256-gcm',
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag
+        );
+    }
+
+    /**
+     * Return the option name for decrypt error flags.
+     *
+     * @return string
+     */
+    private static function wafKeyDecryptErrorOption()
+    {
+        return 'sucuriscan_waf_key_decrypt_error';
+    }
+
+    /**
+     * Return the option name for the no-salt-encryption flag.
+     *
+     * When this flag is set the WAF key is stored as plaintext in the DB
+     * because wp-config.php could not be written on the initial save.
+     *
+     * @return string
+     */
+    private static function noSaltEncryptionOption()
+    {
+        return 'sucuriscan_no_salt_encryption';
+    }
+
+    /**
+     * Set a decryption error flag for the WAF key.
+     *
+     * @param string $message Error detail for logging.
+     * @return void
+     */
+    private static function setWafKeyDecryptError($message = '')
+    {
+        if (!function_exists('get_option') || !function_exists('update_option')) {
+            return;
+        }
+
+        if ($message) {
+            $message = sprintf(
+                /* translators: %s: error message */
+                __('Firewall API key decryption failed: %s', 'sucuri-scanner'),
+                $message
+            );
+        }
+
+        $option = self::wafKeyDecryptErrorOption();
+        $current = get_option($option, array());
+        $timestamp = isset($current['ts']) ? (int) $current['ts'] : 0;
+
+        if ($timestamp && (time() - $timestamp) < 3600) {
+            return;
+        }
+
+        update_option($option, array('ts' => time(), 'message' => (string) $message), false);
+
+        if ($message) {
+            SucuriScanEvent::reportWarningEvent($message);
+        }
+    }
+
+    /**
+     * Clear the WAF key decryption error flag.
+     *
+     * @return void
+     */
+    private static function clearWafKeyDecryptError()
+    {
+        if (function_exists('delete_option')) {
+            delete_option(self::wafKeyDecryptErrorOption());
+        }
+    }
+
+    /**
+     * Render a decryption error notice on selected admin pages.
+     *
+     * @return void
+     */
+    public static function renderWafKeyDecryptNotice()
+    {
+        if (!function_exists('get_option')) {
+            return;
+        }
+
+        if (!SucuriScanPermissions::canManagePlugin()) {
+            return;
+        }
+
+        $flag = get_option(self::wafKeyDecryptErrorOption(), array());
+        if (empty($flag) || !is_array($flag)) {
+            return;
+        }
+
+        SucuriScanInterface::error(
+            __('The Sucuri WAF API key could not be decrypted. Please re-save the key in the Firewall settings to restore functionality.', 'sucuri-scanner')
+        );
+    }
+
+    /**
+     * Retrieve a secret option from the database.
+     *
+     * @param string $option Option name.
+     * @return mixed|null
+     */
+    private static function getSecretOption($option = '')
+    {
+        if (!function_exists('get_option')) {
+            return null;
+        }
+
+        $option = self::varPrefix($option);
+        $storage = self::getSecretStorageName($option);
+        $encrypted_storage = self::getSecretEncryptedStorageName($option);
+
+        if (get_option(self::noSaltEncryptionOption(), false)) {
+            return get_option($storage, null);
+        }
+
+        $encrypted_payload = get_option($encrypted_storage, null);
+        if ($encrypted_payload !== null) {
+            $payload = is_array($encrypted_payload) ? $encrypted_payload : @json_decode($encrypted_payload, true);
+            $decrypted = self::decryptSecretValue($payload);
+
+            if ($decrypted !== false) {
+                // Auto-migrate v:1 payloads (AUTH_SALT scheme) to v:2 (SUCURI_PLUG_* scheme).
+                if (is_array($payload) && isset($payload['v']) && (int) $payload['v'] === 1
+                    && self::canEncryptSecrets()
+                ) {
+                    $new_payload = self::encryptSecretValue($decrypted);
+                    if ($new_payload !== false) {
+                        update_option($encrypted_storage, $new_payload, false);
+                    }
+                }
+
+                self::clearWafKeyDecryptError();
+                return $decrypted;
+            }
+
+            // Fallback: the payload may have been encrypted with the raw salt derived
+            // directly from wp_salt('auth') — this happens when SUCURI_PLUG_* constants
+            // in wp-config.php were stale or user-defined (e.g. conditional defines that
+            // survived the removal step), so the in-memory constants diverged from what
+            // regeneratePluginSaltRaw() used during the save.  Try that key so the
+            // system can self-heal without requiring a manual re-save.
+            if (function_exists('wp_salt')
+                && is_array($payload)
+                && isset($payload['v'])
+                && (int) $payload['v'] === 2
+            ) {
+                $auth_raw     = wp_salt('auth');
+                $fallback_raw = hash_hmac('sha256', 'sucuri_plug_key_v1', $auth_raw)
+                              . hash_hmac('sha256', 'sucuri_plug_salt_v1', $auth_raw);
+                $decrypted = self::decryptSecretValue($payload, $fallback_raw);
+
+                if ($decrypted !== false) {
+                    // Re-encrypt with the constants-based key so subsequent reads succeed.
+                    if (self::canEncryptSecrets()) {
+                        $new_payload = self::encryptSecretValue($decrypted);
+                        if ($new_payload !== false) {
+                            update_option($encrypted_storage, $new_payload, false);
+                        }
+                    }
+                    self::clearWafKeyDecryptError();
+                    return $decrypted;
+                }
+            }
+
+            self::setWafKeyDecryptError('decryption failed; please re-save the key.');
+            return false;
+        }
+
+        $value = get_option($storage, null);
+
+        if ($value !== null) {
+            if (self::canEncryptSecrets()) {
+                $payload = self::encryptSecretValue($value);
+                if ($payload !== false) {
+                    $updated = update_option($encrypted_storage, $payload, false);
+                    if ($updated) {
+                        delete_option($storage);
+                    }
+                }
+            }
+
+            self::clearWafKeyDecryptError();
+            return $value;
+        }
+
+        // Backward compatibility: migrate legacy DB value to secret storage.
+        $legacy = get_option($option, null);
+        if ($legacy !== null) {
+            self::updateSecretOption($option, $legacy);
+            delete_option($option);
+            return $legacy;
+        }
+
+        return null;
+    }
+
+    /**
+     * Update a secret option in the database (non-autoloaded).
+     *
+     * Encrypts the value with the stable SUCURI_PLUG_* salt (written to
+     * wp-config.php once on first run via getPluginSaltRaw()).  The salt is
+     * never rotated on save — doing so rewrote wp-config.php on every key
+     * insert and caused within-request key mismatches.
+     *
+     * @param string $option Option name.
+     * @param mixed $value Option value.
+     * @return bool
+     */
+    private static function updateSecretOption($option = '', $value = '')
+    {
+        if (!function_exists('update_option')) {
+            return false;
+        }
+
+        $option = self::varPrefix($option);
+        $storage = self::getSecretStorageName($option);
+        $encrypted_storage = self::getSecretEncryptedStorageName($option);
+
+        if (self::canEncryptSecrets()) {
+            // Use the stable plugin-specific salt (written to wp-config.php once on
+            // first run, never rotated).  Rotating on every save caused wp-config.php
+            // to be rewritten on every key insert and created within-request key
+            // mismatches because PHP constants cannot be redefined.
+            $payload = self::encryptSecretValue($value);
+
+            if ($payload !== false) {
+                $encrypted_result = update_option($encrypted_storage, $payload, false);
+                if ($encrypted_result) {
+                    delete_option($storage);
+                    delete_option(self::noSaltEncryptionOption());
+                    self::clearWafKeyDecryptError();
+                    return true;
+                }
+            }
+        }
+
+        delete_option($encrypted_storage);
+        $result = update_option($storage, $value, false);
+        if ($result) {
+            update_option(self::noSaltEncryptionOption(), true, false);
+        }
+        self::clearWafKeyDecryptError();
+        return $result;
+    }
+
+    /**
+     * Delete a secret option from the database.
+     *
+     * @param string $option Option name.
+     * @return bool
+     */
+    private static function deleteSecretOption($option = '')
+    {
+        if (!function_exists('delete_option')) {
+            return false;
+        }
+
+        $option = self::varPrefix($option);
+        $storage = self::getSecretStorageName($option);
+        $encrypted_storage = self::getSecretEncryptedStorageName($option);
+
+        delete_option($encrypted_storage);
+        $deleted = delete_option($storage);
+
+        // Remove legacy storage if still present.
+        delete_option($option);
+
+        delete_option(self::noSaltEncryptionOption());
+        self::clearWafKeyDecryptError();
+
+        return $deleted;
+    }
+
+    /**
+     * Delete an option from the settings file only.
+     *
+     * @param string $option Option name.
+     * @return bool
+     */
+    private static function deleteOptionFromFile($option = '')
+    {
+        $options = self::getAllOptions();
+        $option = self::varPrefix($option);
+
+        if (array_key_exists($option, $options)) {
+            unset($options[$option]);
+            return self::writeNewOptions($options);
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieve a secret option value from the DB or settings file.
+     *
+     * @param string $option Option name.
+     * @param array $options Settings file options.
+     * @return mixed
+     */
+    private static function getSecretOptionValue($option, $options)
+    {
+        $value = self::getSecretOption($option);
+
+        if ($value !== null) {
+            return $value;
+        }
+
+        if (array_key_exists($option, $options)) {
+            $value = $options[$option];
+            if (self::updateSecretOption($option, $value)) {
+                self::deleteOptionFromFile($option);
+            }
+            return $value;
+        }
+
+        if (strpos($option, SUCURISCAN . '_') === 0) {
+            $value = self::getDefaultOptions($option);
+            // Only promote to secret storage when there is a real value.
+            // An empty default must not trigger wp-config.php writes.
+            if ($value !== '' && $value !== false && $value !== null) {
+                self::updateSecretOption($option, $value);
+            }
+            return $value;
+        }
+
+        return false;
     }
 
     /**
@@ -133,7 +1619,7 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Retrieve the default values for some specific options.
      *
-     * @param  string $option List of options, or single option name.
+     * @param string $option List of options, or single option name.
      * @return mixed          The default values for the specified options.
      */
     private static function getDefaultOptions($option = '')
@@ -145,7 +1631,13 @@ class SucuriScanOption extends SucuriScanRequest
             $admin_email = get_option('admin_email');
             $default['sucuriscan_account'] = $admin_email;
             $default['sucuriscan_notify_to'] = $admin_email;
-            $default['sucuriscan_email_subject'] = sprintf(__('Sucuri Alert, %s, %s, %s', 'sucuri-scanner'), ':domain', ':event', ':remoteaddr');
+            $default['sucuriscan_email_subject'] = sprintf(
+                /* translators: %1$s: domain, %2$s: event, %3$s: remote address */
+                __('Sucuri Alert, %1$s, %2$s, %3$s', 'sucuri-scanner'),
+                ':domain',
+                ':event',
+                ':remoteaddr'
+            );
         }
 
         return @$default[$option];
@@ -211,7 +1703,7 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Write new options into the external options file.
      *
-     * @param  array $options Array with plugins options.
+     * @param array $options Array with plugins options.
      * @return bool           True if the new options were saved, false otherwise.
      */
     public static function writeNewOptions($options = array())
@@ -241,13 +1733,17 @@ class SucuriScanOption extends SucuriScanRequest
      *
      * @see https://developer.wordpress.org/reference/functions/get_option/
      *
-     * @param  string $option Name of the option.
+     * @param string $option Name of the option.
      * @return mixed          Value associated to the option.
      */
     public static function getOption($option = '')
     {
         $options = self::getAllOptions();
         $option = self::varPrefix($option);
+
+        if (self::isSecretOption($option)) {
+            return self::getSecretOptionValue($option, $options);
+        }
 
         if (array_key_exists($option, $options)) {
             return $options[$option];
@@ -313,12 +1809,16 @@ class SucuriScanOption extends SucuriScanRequest
      *
      * @see https://developer.wordpress.org/reference/functions/update_option/
      *
-     * @param  string $option Name of the option.
-     * @param  mixed  $value  New value for the option.
+     * @param string $option Name of the option.
+     * @param mixed $value New value for the option.
      * @return bool           True if option has been updated, false otherwise.
      */
     public static function updateOption($option = '', $value = '')
     {
+        if (self::isSecretOption($option)) {
+            return self::updateSecretOption($option, $value);
+        }
+
         if (strpos($option, ':') === 0 || strpos($option, SUCURISCAN) === 0) {
             $options = self::getAllOptions();
             $option = self::varPrefix($option);
@@ -337,11 +1837,15 @@ class SucuriScanOption extends SucuriScanRequest
      *
      * @see https://developer.wordpress.org/reference/functions/delete_option/
      *
-     * @param  string $option Name of the option to be deleted.
+     * @param string $option Name of the option to be deleted.
      * @return bool           True if option is successfully deleted, false otherwise.
      */
     public static function deleteOption($option = '')
     {
+        if (self::isSecretOption($option)) {
+            return self::deleteSecretOption($option);
+        }
+
         if (strpos($option, ':') === 0 || strpos($option, SUCURISCAN) === 0) {
             $options = self::getAllOptions();
             $option = self::varPrefix($option);
@@ -360,7 +1864,7 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Check whether a setting is enabled or not.
      *
-     * @param  string $option Name of the option to be deleted.
+     * @param string $option Name of the option to be deleted.
      * @return bool           True if the option is enabled, false otherwise.
      */
     public static function isEnabled($option = '')
@@ -371,7 +1875,7 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Check whether a setting is disabled or not.
      *
-     * @param  string $option Name of the option to be deleted.
+     * @param string $option Name of the option to be deleted.
      * @return bool           True if the option is disabled, false otherwise.
      */
     public static function isDisabled($option = '')
@@ -414,7 +1918,7 @@ class SucuriScanOption extends SucuriScanRequest
      * Check what Wordpress options were changed comparing the values in the database
      * with the values sent through a simple request using a GET or POST method.
      *
-     * @param  array $request The content of the global variable GET or POST considering SERVER[REQUEST_METHOD].
+     * @param array $request The content of the global variable GET or POST considering SERVER[REQUEST_METHOD].
      * @return array          A list of all the options that were changes through this request.
      */
     public static function whatOptionsWereChanged($request = array())
@@ -427,11 +1931,12 @@ class SucuriScanOption extends SucuriScanRequest
         $site_options = self::getSiteOptions();
 
         foreach ($request as $req_name => $req_value) {
-            if (array_key_exists($req_name, $site_options)
-                && $site_options[ $req_name ] != $req_value
+            if (
+                array_key_exists($req_name, $site_options)
+                && $site_options[$req_name] != $req_value
             ) {
-                $options_changed['original'][ $req_name ] = $site_options[ $req_name ];
-                $options_changed['changed'][ $req_name ] = $req_value;
+                $options_changed['original'][$req_name] = $site_options[$req_name];
+                $options_changed['changed'][$req_name] = $req_value;
             }
         }
 
@@ -478,7 +1983,7 @@ class SucuriScanOption extends SucuriScanRequest
         return (bool) (
             !empty($action)
             && isset($_REQUEST[$nonce])
-            && wp_verify_nonce($_REQUEST[$nonce], $action)
+            && wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST[$nonce])), $action)
         );
     }
 
@@ -536,7 +2041,7 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Check whether an event is being ignored to send alerts or not.
      *
-     * @param  string $event Unique post-type name.
+     * @param string $event Unique post-type name.
      * @return bool          Whether an event is being ignored or not.
      */
     public static function isIgnoredEvent($event = '')
@@ -593,12 +2098,12 @@ class SucuriScanOption extends SucuriScanRequest
                 $key_value = constant($key_name);
 
                 if (stripos($key_value, 'unique phrase') !== false) {
-                    $response['bad'][ $key_name ] = $key_value;
+                    $response['bad'][$key_name] = $key_value;
                 } else {
-                    $response['good'][ $key_name ] = $key_value;
+                    $response['good'][$key_name] = $key_value;
                 }
             } else {
-                $response['missing'][ $key_name ] = false;
+                $response['missing'][$key_name] = false;
             }
         }
 
@@ -614,8 +2119,8 @@ class SucuriScanOption extends SucuriScanRequest
      * firewall page is activated as it assumes that the proxy is creating a
      * custom HTTP header for the real IP.
      *
-     * @param  string $action Enable or disable the reverse proxy.
-     * @param  bool   $silent Hide admin notices on success.
+     * @param string $action Enable or disable the reverse proxy.
+     * @param bool $silent Hide admin notices on success.
      * @return void
      */
     public static function setRevProxy($action = 'disable', $silent = false)
@@ -647,8 +2152,8 @@ class SucuriScanOption extends SucuriScanRequest
     /**
      * Change the HTTP header to retrieve the real IP address.
      *
-     * @param  string $header Valid HTTP header name.
-     * @param  bool   $silent Hide admin notices on success.
+     * @param string $header Valid HTTP header name.
+     * @param bool $silent Hide admin notices on success.
      * @return void
      */
     public static function setAddrHeader($header = 'REMOTE_ADDR', $silent = false)

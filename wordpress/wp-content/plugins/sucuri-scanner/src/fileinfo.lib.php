@@ -224,6 +224,7 @@ class SucuriScanFileInfo extends SucuriScan
                 } else {
                     $objects = new DirectoryIterator($directory);
                 }
+            // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch -- an unreadable directory is skipped, not an error.
             } catch (RuntimeException $exception) {
                 /* ignore failure */
             }
@@ -380,11 +381,11 @@ class SucuriScanFileInfo extends SucuriScan
             $dir_tree = array_unique($dir_tree);
             usort($dir_tree, array('SucuriScanFileInfo', 'sortByLength'));
             foreach ($dir_tree as $dir_path) {
-                @rmdir($dir_path);
+                @rmdir($dir_path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
             }
         }
 
-        @rmdir($directory); /* attempt to delete parent */
+        @rmdir($directory); /* attempt to delete parent */ // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
 
         /* check if we deleted all the files and sub-directories */
         return (bool) !($this->getDirectoryTree($directory));

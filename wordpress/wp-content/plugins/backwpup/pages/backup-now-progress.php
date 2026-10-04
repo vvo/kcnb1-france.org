@@ -1,0 +1,24 @@
+<?php
+use BackWPup\Utils\BackWPupHelpers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<div class="max-w-[800px] flex flex-col gap-4 backwpup-typography">
+
+  <?php BackWPupHelpers::component("app/header", []); ?>
+
+  <?php
+  BackWPupHelpers::component("containers/grey-box", [
+    "padding_size" => "large",
+    "children" => "now/progress",
+  ]);
+  ?>
+</div>
+
+<?php
+BackWPupHelpers::component("containers/sidebar");
+BackWPupHelpers::component("containers/modal");
+?>

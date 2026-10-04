@@ -56,8 +56,8 @@ function sucuriscan_settings_webinfo_details()
         $info_vars['Memory_usage'] = round(memory_get_usage() / 1024 / 1024, 2).' MB';
     }
 
-    if (isset($_SERVER['SERVER_SOFTWARE'])) {
-        $info_vars['Server'] = $_SERVER['SERVER_SOFTWARE'];
+    if (SucuriScanRequest::server('SERVER_SOFTWARE')) {
+        $info_vars['Server'] = SucuriScanRequest::server('SERVER_SOFTWARE');
     }
 
     /* PHP INI Settings */
@@ -117,17 +117,22 @@ function sucuriscan_settings_webinfo_details()
  */
 function sucuriscan_settings_webinfo_htaccess()
 {
+
     $htaccess = SucuriScan::getHtaccessPath();
     $params = array(
         'HTAccess.Content' => '',
         'HTAccess.TextareaVisible' => 'hidden',
         'HTAccess.StandardVisible' => 'hidden',
         'HTAccess.NotFoundVisible' => 'hidden',
+        'HTAccess.NotApache' => 'hidden',
         'HTAccess.FoundVisible' => 'hidden',
         'HTAccess.Fpath' => 'unknown',
     );
 
-    if ($htaccess) {
+    // If it's not Apache, do not based the analysis on htaccess file.
+    if (SucuriScan::isNginxServer() || SucuriScan::isIISServer()) {
+        $params['HTAccess.NotApache'] = 'visible';
+    } elseif ($htaccess) {
         $rules = SucuriScanFileInfo::fileContent($htaccess);
 
         $params['HTAccess.TextareaVisible'] = 'visible';

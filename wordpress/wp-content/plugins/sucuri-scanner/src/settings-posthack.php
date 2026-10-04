@@ -48,6 +48,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
     {
         $params = array();
 
+	    $params['URL.PostHack'] = admin_url('admin.php?page=sucuriscan_post_hack_actions');
         $params['SecurityKeys.List'] = '';
         $params['WPConfigUpdate.NewConfig'] = '';
         $params['WPConfigUpdate.Visibility'] = 'hidden';
@@ -60,7 +61,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
                 $wpconfig_process = SucuriScanEvent::setNewConfigKeys();
 
                 if (!$wpconfig_process) {
-                    SucuriScanInterface::error(__('WordPress configuration file was not found.', 'sucuri-scanner'));
+                    SucuriScanInterface::error(__('WordPress configuration file was not found or new keys could not be created.', 'sucuri-scanner'));
                 } elseif ($wpconfig_process['updated']) {
                     SucuriScanEvent::reportNoticeEvent(__('Generate new security keys (success)', 'sucuri-scanner'));
                     SucuriScanInterface::info(__('Secret keys updated successfully (summary of the operation bellow).', 'sucuri-scanner'));
@@ -110,6 +111,66 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
                             'SecurityKey.KeyStatusText' => $key_status_text,
                         )
                     );
+                }
+            }
+        }
+
+        // Automatic Secret Keys Updater
+        $cronName = 'sucuriscan_autoseckeyupdater';
+        $params['SecurityKeys.AutoStatusNum'] = 0;
+        $params['SecurityKeys.AutoStatus'] = "Disabled";
+        $params['SecurityKeys.Schedules'] = '';
+        $availableSchedules = array('disabled', 'daily', 'weekly', 'monthly', 'quarterly');
+
+        // Populate frequency selection box
+        foreach ($availableSchedules as $freq) {
+            $params['SecurityKeys.Schedules'] .= sprintf('<option value="%s">%s</option>', $freq, ucfirst($freq));
+        }
+        // Set to enabled if cron is found
+        if (wp_next_scheduled($cronName)) {
+            $params['SecurityKeys.AutoStatusNum'] = 1;
+            $params['SecurityKeys.AutoStatus'] = "Enabled";
+        }
+
+        // Activate/Deactivate the Automatic Secret Keys Updater
+        if (SucuriScanInterface::checkNonce() && SucuriScanRequest::post(':autoseckeyupdater')) {
+            $cronFrequency = SucuriScanRequest::post(':autoseckeyupdater_frequency');
+
+            // Deny action if cron frequency is invalid
+            if (empty($cronFrequency) || !in_array($cronFrequency, $availableSchedules)) {
+                SucuriScanInterface::error(__('No frequency selected for the automatic secret key updater.', 'sucuri-scanner'));
+            } elseif ($cronFrequency === "disabled") {
+                // Disable Automatic Secret Keys Updater
+                if (SucuriScanEvent::deleteScheduledTask($cronName)) {
+                    $params['SecurityKeys.Schedules'] = str_replace('option value="'.$cronFrequency.'"', 'option value="'.$cronFrequency.'" selected', $params['SecurityKeys.Schedules']);
+                    $params['SecurityKeys.AutoStatusNum'] = 0;
+                    $params['SecurityKeys.AutoStatus'] = "Disabled";
+                    SucuriScanInterface::info(__('Automatic Secret Keys Updater disabled.', 'sucuri-scanner'));
+                    SucuriScanEvent::reportNoticeEvent(__('Automatic Secret Keys Updater disabled.', 'sucuri-scanner'));
+                } else {
+                    SucuriScanInterface::error(__('Something went wrong.', 'sucuri-scanner'));
+                }
+            } else {
+                // Enable Automatic Secret Keys Updater
+                if (SucuriScanEvent::addScheduledTask($cronName, $cronFrequency)) {
+                    $params['SecurityKeys.Schedules'] = str_replace('option value="'.$cronFrequency.'"', 'option value="'.$cronFrequency.'" selected', $params['SecurityKeys.Schedules']);
+                    $params['SecurityKeys.AutoStatusNum'] = 1;
+                    $params['SecurityKeys.AutoStatus'] = "Enabled";
+                    SucuriScanInterface::info(__('Automatic Secret Keys Updater enabled.', 'sucuri-scanner'));
+                    SucuriScanEvent::reportNoticeEvent(__('Automatic Secret Keys Updater enabled.', 'sucuri-scanner'));
+                } else {
+                    SucuriScanInterface::error(__('Something went wrong.', 'sucuri-scanner'));
+                }
+            }
+        } else {
+            // Re-order selection box with the current cron frequency
+            if (wp_next_scheduled($cronName)) {
+                $activeSchedules = SucuriScanEvent::activeSchedules();
+
+                if ( isset($activeSchedules[$cronName]) && isset($activeSchedules[$cronName]['schedule'])) {
+                    $currentCronFrequency = $activeSchedules[$cronName]['schedule'];
+
+                    $params['SecurityKeys.Schedules'] = str_replace('option value="'.$currentCronFrequency.'"', 'option value="'.$currentCronFrequency.'" selected', $params['SecurityKeys.Schedules']);
                 }
             }
         }
@@ -198,8 +259,20 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
         $response = 'Error';
         $user_id = intval(SucuriScanRequest::post('user_id'));
 
+        /*
+         * Confirm the current user is allowed to edit the target account before resetting
+         * its password. setNewPassword() resolves the user by numeric ID with
+         * get_userdata(), and current_user_can('edit_user') enforces the appropriate
+         * capability and multisite boundaries for that user.
+         */
+        if (!current_user_can('edit_user', $user_id)) {
+            wp_send_json($response, 403);
+            return;
+        }
+
         if (SucuriScanEvent::setNewPassword($user_id)) {
             $response = 'Done';
+            /* translators: %d: user ID */
             SucuriScanEvent::reportNoticeEvent(sprintf(__('Password changed for user #%d', 'sucuri-scanner'), $user_id));
         }
 
@@ -252,8 +325,8 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
         $allPlugins = SucuriScanAPI::getPlugins();
 
         foreach ($allPlugins as $plugin_path => $plugin_data) {
-            $plugin_type_class = ( $plugin_data['PluginType'] == 'free' ) ? 'primary' : 'warning';
-            $input_disabled = ( $plugin_data['PluginType'] == 'free' ) ? '' : 'disabled="disabled"';
+            $plugin_type_class = ($plugin_data['PluginType'] == 'free') ? 'primary' : 'warning';
+            $input_disabled = ($plugin_data['PluginType'] == 'free') ? '' : 'disabled="disabled"';
             $plugin_status_class = $plugin_data['IsPluginActive'] ? 'success' : 'default';
             $plugin_status = $plugin_data['IsPluginActive'] ? 'active' : 'not active';
 
@@ -303,7 +376,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
             // we can verify if the installation of the new code will work or not.
             $response = '<span class="sucuriscan-label-danger">'
             . __('Plugin is Premium', 'sucuri-scanner') . '</span>';
-        } elseif (!is_writable($allPlugins[$plugin]['InstallationPath'])) {
+        } elseif (!is_writable($allPlugins[$plugin]['InstallationPath'])) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
             $response = '<span class="sucuriscan-label-danger">'
             . __('Not Writable', 'sucuri-scanner') . '</span>';
         } elseif (!class_exists('SucuriScanPluginInstallerSkin')) {
@@ -319,7 +392,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
             if (!$info) {
                 $response = '<span class="sucuriscan-label-danger">'
                 . __('Cannot Download', 'sucuri-scanner') . '</span>';
-            } elseif (!rename($data['InstallationPath'], $newpath)) {
+            } elseif (!rename($data['InstallationPath'], $newpath)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename
                 $response = '<span class="sucuriscan-label-danger">'
                 . __('Cannot Backup', 'sucuri-scanner') . '</span>';
             } else {
@@ -332,7 +405,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
 
                 if (!file_exists($data['InstallationPath'])) {
                     /* Revert backup to its original location */
-                    @rename($newpath, $data['InstallationPath']);
+                    @rename($newpath, $data['InstallationPath']); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename
                     $response = '<span class="sucuriscan-label-danger">'
                     . __('Cannot Install', 'sucuri-scanner') . '</span>';
                 } else {
@@ -343,6 +416,7 @@ class SucuriScanSettingsPosthack extends SucuriScanSettings
                     $fifo->skip_directories = false;
                     $fifo->removeDirectoryTree($newpath);
 
+                    /* translators: %s: version number */
                     $installed = sprintf(__('Installed v%s', 'sucuri-scanner'), SucuriScan::escape($info['version']));
                     $response = '<span class="sucuriscan-label-success">' . $installed . '</span>';
                 }

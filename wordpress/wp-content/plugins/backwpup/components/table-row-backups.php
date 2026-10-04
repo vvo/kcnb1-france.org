@@ -1,0 +1,378 @@
+<?php
+use BackWPup\Utils\BackWPupHelpers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Use WordPress date formatting so the history table matches the site timezone.
+$formatted_date = wp_date( get_option( 'date_format' ), (int) $backup['time'] );
+$formatted_time = wp_date( get_option( 'time_format' ), (int) $backup['time'] );
+$type_icon      = 'clock';
+$backup_trigger = $backup['backup_trigger'] ?? '';
+$type           = $backup['type'];
+$status         = $backup['status'] ?? 'completed';
+$is_failed      = 'failed' === $status;
+$is_aborted     = 'aborted' === $status;
+$storage_label  = '';
+$failure_reason = '';
+$failure_message = '';
+$error_code      = isset( $backup['error_code'] ) ? trim( (string) $backup['error_code'] ) : '';
+$backup_id       = isset( $backup['backup_id'] ) ? (int) $backup['backup_id'] : 0;
+$job_id          = isset( $backup['id'] ) ? (int) $backup['id'] : 0;
+$can_view_logs   = current_user_can( 'backwpup_logs' );
+$log_modal_style = 'width:90vw; max-width:860px; max-height:90vh;';
+
+if ( $is_failed ) {
+	$storage_code        = $backup['stored_on'] ?? '';
+	$failure_destination = '';
+	if ( is_array( $storage_code ) ) {
+		$storage_code = reset( $storage_code );
+	}
+	$storage_code            = strtoupper( (string) $storage_code );
+	$failure_destination     = $storage_code;
+	$registered_destinations = BackWPup::get_registered_destinations();
+	if ( 'FTP' === $failure_destination && $job_id > 0 ) {
+		$job = BackWPup_Option::get_job( $job_id );
+
+		if ( is_array( $job ) && ! empty( $job['ftpssh'] ) ) {
+			$failure_destination = 'SFTP';
+		}
+	}
+
+	if ( 'SFTP' === $failure_destination ) {
+		$storage_label = __( 'SFTP', 'backwpup' );
+	} elseif ( 'FOLDER' === $storage_code ) {
+		$storage_label = __( 'Website Server', 'backwpup' );
+	} elseif ( isset( $registered_destinations[ $storage_code ]['info']['name'] ) ) {
+		$storage_label = (string) $registered_destinations[ $storage_code ]['info']['name'];
+	} else {
+		$storage_label = ucwords( strtolower( str_replace( '_', ' ', $failure_destination ) ) );
+	}
+	$failure_reason = isset( $backup['error_message'] ) ? trim( (string) $backup['error_message'] ) : '';
+
+	if ( '' !== $error_code ) {
+		$container = wpm_apply_filters_typed( '?object', 'backwpup_container', null );
+
+		if ( $container ) {
+			$display_details_resolver = $container->get( 'failure_display_details_resolver' );
+
+			if ( $display_details_resolver ) {
+				$display_details = $display_details_resolver->resolve( $error_code, $failure_destination );
+
+				if ( ! empty( $display_details['label'] ) ) {
+					$failure_reason = (string) $display_details['label'];
+				}
+			}
+		}
+	}
+
+	if ( '' !== $failure_reason ) {
+		/* translators: 1: storage label. 2: failure reason. */
+		$failure_message = sprintf( __( '%1$s backup failed – %2$s', 'backwpup' ), $storage_label, $failure_reason );
+	} else {
+		/* translators: %s: storage label. */
+		$failure_message = sprintf( __( '%s backup failed', 'backwpup' ), $storage_label );
+	}
+}
+
+if ( $is_aborted ) {
+	$failure_message = __( 'Aborted by user', 'backwpup' );
+}
+
+	if ( 'link' === $backup_trigger ) {
+		$type_icon = 'link';
+		$type = __( 'Link', 'backwpup' );
+	} elseif( '' === $backup['type'] ) {
+		$type_icon = 'user-settings';
+		$type = __( 'Manual', 'backwpup' );
+	}
+$actions = [];
+$view_log_action = [];
+
+if ( $can_view_logs && $backup_id > 0 ) {
+	$view_log_action = [
+		"name" => __( "View log", 'backwpup' ),
+		"icon" => "info",
+		"trigger" => "load-and-open-modal",
+		"display" => "backup-log",
+		"dataset" => [
+			"data-block-name" => "modal/backup-log",
+			"data-block-type" => "children",
+			"data-backup-id" => $backup_id,
+			"data-job-id" => $job_id,
+			"data-modal-style" => $log_modal_style,
+		],
+	];
+}
+
+if ( ( $is_failed || $is_aborted ) && $backup_id > 0 ) {
+    if ( $view_log_action ) {
+        $actions[] = $view_log_action;
+    }
+	$actions[] = [
+		"name" => __( "Delete", 'backwpup' ),
+		"icon" => "trash",
+		"trigger" => "load-and-open-modal",
+		"display" => "delete-failed-backup",
+		"dataset" => [
+			"data-block-name" => "modal/delete-failed-backup",
+			"data-block-type" => "children",
+			"data-backup-id" => $backup_id,
+		],
+	];
+} else {
+	if ( $view_log_action ) {
+		$actions[] = $view_log_action;
+	}
+	//Add the download and restore action
+	//If we can't restore the backup, we can't download it either.
+	if (isset($backup['dataset-download'])) {
+		$actions[] = ["name" => __("Download", 'backwpup'), "icon" => "download", "trigger" => $backup["download-trigger"], "dataset" => $backup['dataset-download']];
+	}
+
+	if (isset($backup['dataset-restore'])) {
+		$actions[] = ["name" => $backup['dataset-restore']['label'], "icon" => "restore", "trigger" => "open-modal", "display" => "restore-backup","dataset" => $backup['dataset-restore']];
+	}
+
+	// Add the delete action
+	if (isset($backup['dataset-delete'])) {
+	  $actions[] = [
+	    "name" => __("Delete", 'backwpup'),
+	    "icon" => "trash", 
+	    "trigger" => "open-modal", 
+	    "display" => "delete-backup", 
+	    "dataset" => $backup['dataset-delete']
+	  ];
+	}
+}
+
+$delete_dataset = null;
+if ( ( $is_failed || $is_aborted ) && $backup_id > 0 ) {
+	$delete_dataset = [ 'backup_id' => $backup_id ];
+} elseif ( isset( $backup['dataset-delete'] ) ) {
+	$delete_dataset = $backup['dataset-delete'];
+}
+
+// Start output buffering
+ob_start();
+?>
+
+<tr class="*:py-6 *:border-b *:border-grey-300 max-md:bg-grey-100 max-md:rounded-lg max-md:block max-md:p-4"<?php
+if ( $backup_id > 0 ) {
+	echo ' data-backup-id="' . esc_attr( $backup_id ) . '"';
+}
+?>>
+  <td class="p-0 max-md:hidden">
+    <?php
+      BackWPupHelpers::component("form/checkbox", [
+        "name" => "select_backup",
+        "style" => "light",
+        "trigger" => "select-backup",
+        "data" => [
+          "delete" => wp_json_encode( $delete_dataset ),
+        ]
+      ]);
+    ?>
+  </td>
+
+  <td class="px-8 max-md:py-4 max-md:px-6 max-md:flex max-md:items-baseline max-md:gap-1 max-md:bg-white max-md:rounded max-md:border-none">
+    <p class="text-sm font-bold"><?php echo esc_html( $formatted_date ); ?></p>
+    <p class="text-base">at <?php echo esc_html( $formatted_time ); ?></p>
+  </td>
+
+  <td class="px-8 max-md:block max-md:px-2 max-md:py-3">
+    <div class="flex items-center md:justify-center max-md:justify-between">
+      <p class="text-base font-semibold md:hidden"><?php esc_html_e("Type", "backwpup"); ?></p>
+      <?php
+        BackWPupHelpers::component("tooltip", [
+          "content" => $type,
+          "icon_name" => $type_icon,
+          "icon_size" => "large",
+          "position" => "center",
+        ]);
+      ?>
+    </div>
+  </td>
+
+  <?php if ( $is_failed || $is_aborted ) : ?>
+    <td class="px-8 max-md:px-2 max-md:py-3 max-md:flex max-md:justify-between max-md:items-center">
+      <p class="text-base font-semibold md:hidden"><?php esc_html_e("Stored on", "backwpup"); ?></p>
+      <?php
+        BackWPupHelpers::component("storage-list-compact", [
+          "storages" => (array) ( $backup['stored_on'] ?? [] ),
+          "style" => "alt"
+        ]);
+      ?>
+    </td>
+
+    <td class="px-8 max-md:px-2 max-md:py-3 max-md:flex max-md:flex-col max-md:gap-2">
+      <p class="text-base font-semibold md:hidden"><?php esc_html_e("Status", "backwpup"); ?></p>
+      <div class="flex items-center gap-2">
+        <span class="<?php echo $is_aborted ? 'inline-flex items-center justify-center text-alert' : 'backwpup-failure-icon'; ?>">
+          <?php
+            BackWPupHelpers::component("icon", [
+              "name" => $is_aborted ? "alert" : "danger",
+              "size" => "large",
+              "position" => "top",
+            ]);
+          ?>
+        </span>
+        <span class="text-base <?php echo $is_aborted ? 'text-alert' : 'text-danger-strong'; ?>"><?php echo esc_html( $failure_message ); ?></span>
+      </div>
+    </td>
+  <?php else : ?>
+    <td class="px-8 max-md:px-2 max-md:py-3 max-md:flex max-md:justify-between max-md:items-center">
+      <p class="text-base font-semibold md:hidden"><?php esc_html_e("Stored on", "backwpup"); ?></p>
+      <?php
+        BackWPupHelpers::component("storage-list-compact", [
+          "storages" => (array)$backup['stored_on'],
+          "style" => "alt"
+        ]);
+      ?>
+    </td>
+
+    <td class="px-8 max-md:px-2 max-md:py-3 max-md:flex max-md:justify-between max-md:items-center">
+      <p class="text-base font-semibold md:hidden"><?php esc_html_e("Data", "backwpup"); ?></p>
+      <div class="flex gap-2">
+      <?php
+        foreach ( (array) $backup['data'] as $data) {
+          switch ($data) {
+            case 'FILE':
+              $icon = 'file-alt';
+              $label = __( 'Files', 'backwpup' );
+              break;
+            case 'DBDUMP':
+              $icon = 'database';
+              $label = __( 'Database', 'backwpup' );
+              break;
+            case 'WPPLUGIN':
+              $icon = 'file';
+              $label = __( 'Plugins', 'backwpup' );
+              break;
+            default:
+              $icon = 'dots';
+              $label = $data;
+              break;
+          }
+          BackWPupHelpers::component("tooltip", [
+            "content" => $label,
+            "icon_name" => $icon,
+            "icon_size" => "large",
+            "position" => "center",
+          ]);
+        }
+      ?>
+      </div>
+    </td>
+  <?php endif; ?>
+
+  <td class="px-8 max-md:block max-md:p-0 max-md:border-none">
+    <?php
+      BackWPupHelpers::component("navigation/menu", [
+        "class" => "max-md:hidden",
+        "actions" => $actions,
+      ]);
+    ?>
+    <ul class="md:hidden flex flex-col">
+	      <?php if ( ( $is_failed || $is_aborted ) && $backup_id > 0 ) : ?>
+	        <li class="py-4 flex justify-end border-b border-grey-400">
+	          <?php
+	            BackWPupHelpers::component("form/button", [
+	              "type" => "link",
+	              "label" => __( "View log", "backwpup" ),
+	              "icon_name" => "info",
+	              "icon_position" => "after",
+	              "trigger" => "load-and-open-modal",
+	              "display" => "backup-log",
+	              "data" => [
+	                "block-name" => "modal/backup-log",
+	                "block-type" => "children",
+	                "backup-id" => $backup_id,
+	                "job-id" => $job_id,
+	                "modal-style" => $log_modal_style,
+	              ],
+	            ]);
+	          ?>
+	        </li>
+        <li class="py-4 flex justify-end">
+          <?php
+            BackWPupHelpers::component("form/button", [
+              "type" => "link",
+              "label" => __( "Delete", "backwpup" ),
+              "icon_name" => "trash",
+              "icon_position" => "after",
+              "trigger" => "load-and-open-modal",
+              "display" => "delete-failed-backup",
+              "data" => [
+                "block-name" => "modal/delete-failed-backup",
+                "block-type" => "children",
+                "backup-id" => $backup_id,
+              ],
+            ]);
+          ?>
+        </li>
+      <?php else : ?>
+			<?php if ( $can_view_logs && $backup_id > 0 ) : ?>
+				<li class="py-4 flex justify-end border-b border-grey-400">
+					<?php
+						BackWPupHelpers::component("form/button", [
+							"type" => "link",
+							"label" => __( "View log", "backwpup" ),
+							"icon_name" => "info",
+							"icon_position" => "after",
+							"trigger" => "load-and-open-modal",
+							"display" => "backup-log",
+							"data" => [
+								"block-name" => "modal/backup-log",
+								"block-type" => "children",
+								"backup-id" => $backup_id,
+								"job-id" => $job_id,
+								"modal-style" => $log_modal_style,
+							],
+						]);
+					?>
+			</li>
+		<?php endif; ?>
+        <?php if ( isset( $backup['dataset-download'] ) ) : ?>
+        <li class="py-4 flex justify-end border-b border-grey-400">
+          <?php
+            $download_data = array_combine(
+              array_map( static fn( $key ) => substr( $key, 5 ), array_keys( $backup['dataset-download'] ) ),
+              array_values( $backup['dataset-download'] )
+            );
+            BackWPupHelpers::component("form/button", [
+              "type" => "link",
+              "label" => __("Download", "backwpup"),
+              "icon_name" => "download",
+              "icon_position" => "after",
+              "trigger" => "download-backup",
+              "data" => $download_data,
+            ]);
+          ?>
+        </li>
+        <?php endif; ?>
+        <li class="py-4 flex justify-end">
+          <?php
+            BackWPupHelpers::component("form/button", [
+              "type" => "link",
+              "label" => __("Restore", "backwpup"),
+              "icon_name" => "restore",
+              "icon_position" => "after",
+              "trigger" => "open-modal",
+              "display" => "restore-backup"
+            ]);
+          ?>
+        </li>
+      <?php endif; ?>
+    </ul>
+  </td>
+</tr>
+
+<?php
+// End output buffering and capture the output
+$tableRowHtml = ob_get_clean();
+
+// Return the HTML to use or echo it when needed
+echo $tableRowHtml; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+?>

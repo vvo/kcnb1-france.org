@@ -27,19 +27,36 @@
             </tbody>
         </table>
 
-        <form action="%%SUCURI.URL.Settings%%#posthack" method="post">
+        <form action="%%SUCURI.URL.PostHack%%" method="post">
             <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
             <input type="hidden" name="sucuriscan_update_wpconfig" value="1" />
 
             <p>
                 <label>
                     <input type="hidden" name="sucuriscan_process_form" value="0" />
-                    <input type="checkbox" name="sucuriscan_process_form" value="1" />
+                    <input type="checkbox" name="sucuriscan_process_form" value="1" data-cy="sucuriscan_security_keys_checkbox" />
                     <span>{{I understand that this operation cannot be reverted.}}</span>
                 </label>
             </p>
 
-            <input type="submit" value="{{Generate New Security Keys}}" class="button button-primary" />
+            <input type="submit" value="{{Generate New Security Keys}}" class="button button-primary" data-cy="sucuriscan_security_keys_submit" />
         </form>
+
+        <div class="sucuriscan-double-box sucuriscan-hstatus sucuriscan-hstatus-%%SUCURI.SecurityKeys.AutoStatusNum%%" data-cy="sucuriscan_security_keys_autoupdater">
+            <p>
+                <strong>{{Automatic Secret Keys Updater}}</strong> &mdash; %%SUCURI.SecurityKeys.AutoStatus%%<br />
+                {{Changing the Secret Keys frequently will decrease the chances of misuse of sessions left open on unprotected devices.}}
+            </p>
+
+            <form action="%%SUCURI.URL.PostHack%%" method="post">
+                <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
+                <input type="hidden" name="sucuriscan_autoseckeyupdater" value="1" />
+                <label><strong>{{Frequency:}}</strong></label>
+                <select name="sucuriscan_autoseckeyupdater_frequency" data-cy="sucuriscan_security_keys_autoupdater_select">
+                    %%%SUCURI.SecurityKeys.Schedules%%%
+                </select>
+                <input type="submit" value="{{Submit}}" class="button button-primary" data-cy="sucuriscan_security_keys_autoupdater_submit" />
+            </form>
+        </div>
     </div>
 </div>

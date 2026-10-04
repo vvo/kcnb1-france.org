@@ -1,6 +1,6 @@
 <?php
 
-/* Taken from OSSDL CDN off-linker, a plugin by W-Mark Kubacki (http://mark.ossdl.de/) and used with permission */
+/* Taken from OSSDL CDN off-linker, a plugin by W-Mark Kubacki and used with permission */
 
 if ( ! isset( $ossdlcdn ) ) {
 	$ossdlcdn = 1; // have to default to on for existing users.
@@ -37,11 +37,19 @@ function scossdl_off_get_options() {
 		$ossdl_off_blog_url = untrailingslashit( apply_filters( 'ossdl_off_blog_url', $ossdl_off_blog_url ) );
 	}
 
+	/*
+	 * esc_url_raw() on the way out of the option, not just on the way in. These
+	 * values are substituted into src/href attributes of every rewritten asset URL
+	 * by scossdl_off_rewriter(), so one carrying a quote or an angle bracket escapes
+	 * the attribute. Sanitising on read means a value stored before this was fixed
+	 * is neutralised without needing a migration.
+	 */
 	$ossdl_off_cdn_url = get_option( 'ossdl_off_cdn_url' );
 	if ( false === $ossdl_off_cdn_url ) {
 		$ossdl_off_cdn_url = untrailingslashit( get_site_url() );
 		add_option( 'ossdl_off_cdn_url', $ossdl_off_cdn_url );
 	}
+	$ossdl_off_cdn_url = esc_url_raw( $ossdl_off_cdn_url );
 
 	$include_dirs = get_option( 'ossdl_off_include_dirs' );
 	if ( false !== $include_dirs ) {
@@ -66,7 +74,10 @@ function scossdl_off_get_options() {
 		$ossdl_cname = '';
 		add_option( 'ossdl_cname', $ossdl_cname );
 	}
-	$ossdl_arr_of_cnames = array_filter( array_map( 'trim', explode( ',', $ossdl_cname ) ) );
+	// Same reason as $ossdl_off_cdn_url above: every entry here is a substitution
+	// target in scossdl_off_rewriter(), and sanitize_text_field() on save leaves
+	// quotes intact.
+	$ossdl_arr_of_cnames = array_filter( array_map( 'esc_url_raw', array_map( 'trim', explode( ',', $ossdl_cname ) ) ) );
 
 	$ossdl_https = intval( get_option( 'ossdl_https' ) );
 }
@@ -141,7 +152,7 @@ function scossdl_off_rewriter( $match ) {
 		$include_dirs = scossdl_off_additional_directories();
 	}
 
-	if ( $ossdl_https && 0 === strpos( $match[0], 'https' ) ) {
+	if ( $ossdl_https && str_starts_with( $match[0], 'https' ) ) {
 		return $match[0];
 	}
 
@@ -237,8 +248,15 @@ function scossdl_off_update() {
 		&& 'update_ossdl_off' === $_POST['action'] // WPCS: sanitization ok.
 		&& wp_verify_nonce( $_POST['_wpnonce'], 'wp-cache' )
 	) {
-		update_option( 'ossdl_off_cdn_url', untrailingslashit( wp_unslash( $_POST['ossdl_off_cdn_url'] ) ) ); // WPSC: sanitization ok.
-		update_option( 'ossdl_off_blog_url', untrailingslashit( wp_unslash( $_POST['ossdl_off_blog_url'] ) ) ); // WPSC: sanitization ok.
+		// esc_url_raw() wraps the unslashed value directly, with untrailingslashit()
+		// applied to the result: it never appends a slash, so the order is free, and
+		// this way the sanitiser is visible to both the reader and phpcs. The isset()
+		// guards are new — a POST without these fields used to raise a notice here.
+		$cdn_url  = isset( $_POST['ossdl_off_cdn_url'] ) ? esc_url_raw( wp_unslash( $_POST['ossdl_off_cdn_url'] ) ) : '';
+		$blog_url = isset( $_POST['ossdl_off_blog_url'] ) ? esc_url_raw( wp_unslash( $_POST['ossdl_off_blog_url'] ) ) : '';
+
+		update_option( 'ossdl_off_cdn_url', untrailingslashit( $cdn_url ) );
+		update_option( 'ossdl_off_blog_url', untrailingslashit( $blog_url ) );
 
 		if ( empty( $_POST['ossdl_off_include_dirs'] ) ) {
 			$include_dirs = implode( ',', scossdl_off_default_inc_dirs() );
@@ -278,6 +296,7 @@ function scossdl_off_options() {
 	$example_cdn_uri .= '/wp-includes/js/jquery/jquery-migrate.js';
 	$example_cdn_uri  = esc_url( $example_cdn_uri );
 	?>
+		<div class="wpsc-card">
 		<h3><?php _e( 'Jetpack CDN' ); ?></h3>
 		<p><?php printf(
 			__( 'The free %1$sJetpack plugin%2$s has a %3$sSite Accelerator%2$s feature that is easier to use than the CDN functionality in this plugin. However files will be cached "forever" and will not update if you update the local file. Files will need to be renamed to refresh them. The %3$sJetpack documentation%2$s explains more about this.', 'wp-super-cache' ),
@@ -310,11 +329,12 @@ function scossdl_off_options() {
 			); ?></strong></p><?php
 	}
 	if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'photon' ) ) {
+		echo '</div>'; // close wpsc-card
 		return;
 	}
 	?>
 		<h3><?php _e( 'Simple CDN' ); ?></h3>
-		<p><?php _e( 'Your website probably uses lots of static files. Image, Javascript and CSS files are usually static files that could just as easily be served from another site or CDN. Therefore, this plugin replaces any links in the <code>wp-content</code> and <code>wp-includes</code> directories (except for PHP files) on your site with the URL you provide below. That way you can either copy all the static content to a dedicated host or mirror the files to a CDN by <a href="https://knowledgelayer.softlayer.com/faq/how-does-origin-pull-work" target="_blank">origin pull</a>.', 'wp-super-cache' ); ?></p>
+		<p><?php _e( 'Your website probably uses lots of static files. Image, Javascript and CSS files are usually static files that could just as easily be served from another site or CDN. Therefore, this plugin replaces any links in the <code>wp-content</code> and <code>wp-includes</code> directories (except for PHP files) on your site with the URL you provide below. That way you can either copy all the static content to a dedicated host or mirror the files to a CDN by <a href="https://www.google.com/search?q=cdn+origin+pull" target="_blank">origin pull</a>.', 'wp-super-cache' ); ?></p>
 		<p><?php printf( __( '<strong style="color: red">WARNING:</strong> Test some static urls e.g., %s  to ensure your CDN service is fully working before saving changes.', 'wp-super-cache' ), '<code>' . esc_html( $example_cdn_uri ) . '</code>' ); ?></p>
 
 	<?php if ( get_home_url() !== $ossdl_off_blog_url ) { ?>
@@ -372,6 +392,15 @@ function scossdl_off_options() {
 		<input type="hidden" name="action" value="update_ossdl_off" />
 		<p class="submit"><input type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'wp-super-cache' ); ?>" /></p>
 		</form></p>
-		<p><?php _e( 'CDN functionality provided by <a href="https://wordpress.org/plugins/ossdl-cdn-off-linker/">OSSDL CDN Off Linker</a> by <a href="http://mark.ossdl.de/">Mark Kubacki</a>', 'wp-super-cache' ); ?></p>
+		<p>
+		<?php
+			printf(
+				/* Translators: placeholder is a link to OSSDL CDN Off Linker plugin on WordPress.org */
+				esc_html__( 'CDN functionality provided by %s by Mark Kubacki', 'wp-super-cache' ),
+				'<a href="https://wordpress.org/plugins/ossdl-cdn-off-linker/">OSSDL CDN Off Linker</a>'
+			);
+		?>
+		</p>
+		</div> <!-- Close .wpsc-card -->
 	<?php
 }

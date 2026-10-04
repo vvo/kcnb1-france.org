@@ -46,6 +46,158 @@ if (!defined('SUCURISCAN_INIT') || SUCURISCAN_INIT !== true) {
 class SucuriScanEvent extends SucuriScan
 {
     /**
+     * Check whether a field name commonly contains credentials.
+     *
+     * @param mixed $key Field or option name.
+     * @return bool Whether values for this key must not be logged.
+     */
+    public static function isSensitiveKey($key)
+    {
+        return (bool) (
+            is_string($key)
+            && preg_match(
+                '/password|passwd|(?:^|[_-])pass(?:$|[_-])|pwd|(?:^|[_-])pw(?:$|[_-])'
+                . '|secret|token|api[_-]?key|access[_-]?key|private[_-]?key'
+                . '|client[_-]?secret|authorization|cookie|salt/i',
+                $key
+            )
+        );
+    }
+
+    /**
+     * Redact common credential fields from audit trail text.
+     *
+     * @param mixed $value Audit message or detail value.
+     * @return mixed Redacted value with the original shape.
+     */
+    public static function redactSensitiveData($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key => $item) {
+                $value[$key] = self::isSensitiveKey($key)
+                    ? '[redacted]'
+                    : self::redactSensitiveData($item);
+            }
+
+            return $value;
+        }
+
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        $redacted = self::maskCredentialFields($value);
+
+        /**
+         * Credentials also arrive encoded: backslash escaped inside JSON, or
+         * HTML escaped by the callers that build messages out of values passed
+         * through SucuriScan::escape(). A second pass over a decoded copy
+         * catches those, but its result is only used when it actually found
+         * something the first pass missed -- otherwise every message would be
+         * silently un-escaped, and an innocuous "R&amp;D" rewritten to "R&D",
+         * on its way to storage.
+         */
+        $decoded = html_entity_decode(
+            str_replace(array('\\"', "\\'"), array('"', "'"), $value),
+            ENT_QUOTES,
+            'UTF-8'
+        );
+        $decoded_redacted = self::maskCredentialFields($decoded);
+
+        if (self::decodeForMatching($redacted) === $decoded_redacted) {
+            return $redacted;
+        }
+
+        /**
+         * The encoding was hiding a credential, so the decoded copy is the only
+         * safe thing to emit. Escape it on the way out: decoding can turn
+         * stored entities back into live markup, and this value is rendered on
+         * the audit trail page.
+         */
+        return esc_attr($decoded_redacted);
+    }
+
+    /**
+     * Decode the escapings a credential can hide behind.
+     *
+     * @param string $value Audit message or detail value.
+     * @return string Decoded copy, used only for matching.
+     */
+    private static function decodeForMatching($value)
+    {
+        return html_entity_decode(
+            str_replace(array('\\"', "\\'"), array('"', "'"), $value),
+            ENT_QUOTES,
+            'UTF-8'
+        );
+    }
+
+    /**
+     * Replace the value of every credential-looking field in a string.
+     *
+     * @param string $value Audit message or detail value.
+     * @return string Value with credential fields masked.
+     */
+    private static function maskCredentialFields($value)
+    {
+        /**
+         * The optional prefixes are length-bounded on purpose. Unbounded
+         * "[a-z0-9_-]*" segments in front of an alternation backtrack
+         * catastrophically on long runs of those same characters (a file-change
+         * event listing many long paths is enough), and preg_replace then
+         * returns null with PREG_BACKTRACK_LIMIT_ERROR.
+         */
+        $keys = 'password|passwd|(?:[a-z0-9_-]{0,32}[_-])?pass|pwd'
+            . '|(?:[a-z0-9_-]{0,32}[_-])?pw|secret|token|api[_-]?key'
+            . '|access[_-]?key|private[_-]?key|client[_-]?secret|authorization'
+            . '|cookie|salt';
+        $field = '(?:[a-z0-9_-]{0,32}[_-])?(?:' . $keys . ')';
+
+        /**
+         * An unquoted value runs to the end of the field, but a message often
+         * packs many fields together -- hookOptionsChanges() joins every option
+         * changed in one save with a comma. Without the lookahead the mask
+         * would swallow each following field as if it were part of the
+         * credential, deleting the record of everything that changed after it.
+         * A comma inside the value itself is still covered, because only a
+         * comma that introduces another "name:" pair ends the match.
+         */
+        $boundary = '(?:(?!,\s*["\']?[a-z0-9_-]{1,64}["\']?\s*[:=])[^;&}\r\n])*';
+        $quoted = '/((?:^|[,{;\s])["\']?' . $field . '["\']?\s*[:=]\s*)(["\'])(.*?)\2/i';
+
+        /**
+         * Whitespace is excluded from the lookahead as well as the quotes it
+         * guards against. Without it the engine backtracks the preceding "\s*"
+         * to nothing, finds a space rather than a quote, and matches after all
+         * -- which re-masks a value the quoted pattern has already handled and
+         * strips the quotes off it on the way through.
+         */
+        $plain = '/((?:^|[;,&?\s{])["\']?' . $field . '["\']?\s*[:=]\s*)(?![\s"\'])(' . $boundary . ')/i';
+
+        /**
+         * Each result is checked before it is reused as the next subject: PHP
+         * coerces a null subject to an empty string, so chaining the calls
+         * without a guard turns a single failed match into a wiped audit entry.
+         */
+        $redacted = preg_replace($quoted, '$1$2[redacted]$2', $value);
+
+        if ($redacted === null) {
+            /* nothing has been masked yet, so the original is still intact */
+            return $value;
+        }
+
+        $plain_redacted = preg_replace($plain, '$1[redacted]', $redacted);
+
+        /**
+         * A failed second pass must not throw away what the first one masked.
+         * Returning the original here would put a credential that the quoted
+         * pattern had already replaced back into the audit trail: the failure
+         * mode of a redaction routine must never be "emit the secret".
+         */
+        return ($plain_redacted === null) ? $redacted : $plain_redacted;
+    }
+
+    /**
      * Creates a cronjob to run the file system scanner.
      *
      * Right after a fresh installation of the plugin, it will create a cronjob
@@ -86,7 +238,8 @@ class SucuriScanEvent extends SucuriScan
 
         foreach ($jobs as $unique => $info) {
             $schedules[$unique] = sprintf(
-                __('%s (every %d seconds)', 'sucuri-scanner'),
+                /* translators: %1$s: display name, %2$d: time interval */
+                __('%1$s (every %2$d seconds)', 'sucuri-scanner'),
                 $info['display'],
                 $info['interval']
             );
@@ -95,6 +248,112 @@ class SucuriScanEvent extends SucuriScan
         $schedules['_oneoff'] = __('Never (no execution)', 'sucuri-scanner');
 
         return $schedules;
+    }
+
+    /**
+     * Returns a list of active cronjobs.
+     *
+     * This method will return not only the default WordPress cronjobs but also
+     * the custom ones defined by 3rd-party plugins or themes.
+     *
+     * @see https://developer.wordpress.org/reference/functions/_get_cron_array/
+     *
+     * @return array List of available cronjobs.
+     */
+    public static function activeSchedules()
+    {
+        $activeCrons = array();
+        foreach ((array)_get_cron_array() as $timestamp => $cronhooks) {
+            foreach ((array)$cronhooks as $hook => $events) {
+                foreach ((array)$events as $key => $event) {
+                    if (empty($event['args'])) {
+                        $event['args'] = array('[]');
+                    }
+                    $activeCrons[$hook] = array(
+                        'schedule' => $event['schedule'],
+                        'nextTime' => SucuriScan::datetime($timestamp),
+                        'nextTimeHuman' => SucuriScan::humanTime($timestamp),
+                        'arguments' => json_encode($event['args']),
+                    );
+                }
+            }
+        }
+        return $activeCrons;
+    }
+
+    /**
+     * Creates the cronjob weekly, monthly and quarterly frequencies.
+     *
+     * A few Sucuri services require additional cronjob frequencies that are not
+     * available on WordPress by default. This function will add these schedules
+     * frequency if they were not yet register by any a 3rd party extension.
+     *
+     * @return void
+     */
+    public static function additionalSchedulesFrequencies($schedules)
+    {
+        if (!defined('MONTH_IN_SECONDS')) {
+            define('MONTH_IN_SECONDS', 30 * DAY_IN_SECONDS);
+        }
+        if (!isset($schedules['weekly'])) {
+            $schedules['weekly'] = array(
+                'display' => __('Weekly', 'sucuri-scanner'),
+                'interval' => WEEK_IN_SECONDS,
+            );
+        }
+        if (!isset($schedules['monthly'])) {
+            $schedules['monthly'] = array(
+                'display' => __('Monthly', 'sucuri-scanner'),
+                'interval' => MONTH_IN_SECONDS,
+            );
+        }
+        if (!isset($schedules['quarterly'])) {
+            $schedules['quarterly'] = array(
+                'display' => __('Quarterly', 'sucuri-scanner'),
+                'interval' => 3 * MONTH_IN_SECONDS,
+            );
+        }
+        return $schedules;
+    }
+
+    /**
+     * Creates a cronjob.
+     *
+     * @return bool True if the cronjob is correctly created.
+     */
+    public static function addScheduledTask($hookName, $frequency)
+    {
+        // Return false if schedule frequency does not exist.
+        if (!in_array($frequency, array_keys(self::availableSchedules()))) {
+            return false;
+        }
+
+        // Remove cron first if already exists.
+        if (wp_next_scheduled($hookName)) {
+            self::deleteScheduledTask($hookName);
+        }
+
+        // Add cron job hook.
+        wp_schedule_event(time() + 10, $frequency, $hookName);
+        return true;
+    }
+
+    /**
+     * Deletes a cronjob.
+     *
+     * @return bool True if the cronjob is correctly removed.
+     */
+    public static function deleteScheduledTask($hookName)
+    {
+        // Return false if task does not exist.
+        if (!wp_next_scheduled($hookName)) {
+            return false;
+        }
+
+        // Remove cron job hook.
+        wp_clear_scheduled_hook($hookName);
+
+        return true;
     }
 
     /**
@@ -116,6 +375,7 @@ class SucuriScanEvent extends SucuriScan
             return self::throwException(__('WordPress version was already reported', 'sucuri-scanner'));
         }
 
+        /* translators: %s: WordPress version */
         SucuriScanEvent::reportInfoEvent(sprintf(__('WordPress version detected %s', 'sucuri-scanner'), $wp_version));
 
         return SucuriScanOption::updateOption(':site_version', $wp_version);
@@ -124,7 +384,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Decides if the file system scanner can run or not.
      *
-     * @param  bool $force_scan Force the execution of the scanner.
+     * @param bool $force_scan Force the execution of the scanner.
      * @return bool             True if the scanner can run, false otherwise.
      */
     private static function runFileScanner($force_scan = false)
@@ -134,7 +394,7 @@ class SucuriScanEvent extends SucuriScan
         }
 
         $current_time = time();
-        $runtime = (int) SucuriScanOption::getOption(':runtime');
+        $runtime = (int)SucuriScanOption::getOption(':runtime');
         $diff = abs($current_time - $runtime);
 
         if ($diff < SUCURISCAN_SCANNER_FREQUENCY) {
@@ -149,7 +409,7 @@ class SucuriScanEvent extends SucuriScan
      * analyze them using the Sucuri Monitoring service, this will generate the
      * audit logs for this site and be part of the integrity checks.
      *
-     * @param  bool $force_scan Whether the filesystem scan was forced by an administrator user or not.
+     * @param bool $force_scan Whether the filesystem scan was forced by an administrator user or not.
      * @return bool             True if the filesystem scan was successful, false otherwise.
      */
     public static function filesystemScan($force_scan = false)
@@ -174,7 +434,7 @@ class SucuriScanEvent extends SucuriScan
      * Sends information of a security event to the API.
      *
      * If the website owner has enabled the security log exporter, this method
-     * will also write the information about the security event to taht file.
+     * will also write the information about the security event to that file.
      * This allows to integrate with different monitoring systems like OSSEC or
      * OpenVAS.
      *
@@ -183,9 +443,9 @@ class SucuriScanEvent extends SucuriScan
      * in a failure. However, this procedure depends on the ability of the plugin
      * to write the log into the queue when the previous request failed.
      *
-     * @param  string     $message   Information about the event.
-     * @param  string|int $timestamp Time when the event was triggered.
-     * @param  int        $timeout   Maximum time in seconds to connect to the API.
+     * @param string $message Information about the event.
+     * @param string|int $timestamp Time when the event was triggered.
+     * @param int $timeout Maximum time in seconds to connect to the API.
      * @return bool                  True if the event was logged, false otherwise.
      */
     private static function sendLogToAPI($message = '', $timestamp = '', $timeout = 1)
@@ -202,7 +462,7 @@ class SucuriScanEvent extends SucuriScan
 
         $resp = SucuriScanAPI::apiCallWordpress('POST', $params, true, $args);
 
-        return (bool) (
+        return (bool)(
             is_array($resp)
             && array_key_exists('status', $resp)
             && intval($resp['status']) === 1
@@ -216,11 +476,18 @@ class SucuriScanEvent extends SucuriScan
      * but it could be private and be mocked by the test bootstrap script. Take
      * this in consideration during the static analysis of the code.
      *
-     * @param  string $message Information about the security event.
+     * @param string $message Information about the security event.
      * @return bool            True if the operation succeeded, false otherwise.
      */
     public static function sendLogToQueue($message = '')
     {
+        /**
+         * Backstop, not a duplicate of the redaction reportEvent() already ran:
+         * stripping tags there can reveal a key name that was previously broken
+         * up by markup, and this is the last point before the value is written.
+         */
+        $message = self::redactSensitiveData($message);
+
         /* create storage directory if necessary */
         SucuriScanInterface::createStorageFolder();
 
@@ -251,22 +518,9 @@ class SucuriScanEvent extends SucuriScan
             }
         }
 
-        /**
-         * Send event to the API if possible.
-         *
-         * If the user have not disabled the communication with the API service,
-         * the plugin will send a message with information about every triggered
-         * event in the website in realtime with a maximum connection time of
-         * two seconds. If the API service does not responds on time the plugin
-         * will insert the event into the local queue system and it will try to
-         * send the message again with a scheduled task every 24 hours, once the
-         * operation succeeds the event will be deleted from the queue.
-         */
-        if (SucuriScanOption::isEnabled(':api_service')) {
-            $cache = new SucuriScanCache('auditqueue');
-            $key = str_replace('.', '_', microtime(true));
-            $written = $cache->add($key, $message);
-        }
+        $cache = new SucuriScanCache('auditqueue');
+        $key = str_replace('.', '_', microtime(true));
+        $written = $cache->add($key, $message);
 
         return true;
     }
@@ -278,7 +532,7 @@ class SucuriScanEvent extends SucuriScan
      */
     public static function sendLogsFromQueue()
     {
-        if (SucuriScanOption::isDisabled(':api_service')) {
+        if (SucuriScanOption::isDisabled(':api_service') || !defined('SUCURISCAN_API_URL') || empty(SUCURISCAN_API_URL)) {
             return false;
         }
 
@@ -310,7 +564,7 @@ class SucuriScanEvent extends SucuriScan
          * will try to send as much logs as possible to the API service in less
          * than 25 seconds.
          */
-        $maxtime = (int) SucuriScan::iniGet('max_execution_time');
+        $maxtime = (int)SucuriScan::iniGet('max_execution_time');
         $timeout = ($maxtime > 1) ? ($maxtime - 6) : 30;
 
         /* record some statistics */
@@ -349,13 +603,15 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Generates an audit event log (to be sent later).
      *
-     * @param  int    $severity Importance of the event that will be reported.
-     * @param  string $message  The explanation of the event.
+     * @param int $severity Importance of the event that will be reported.
+     * @param string $message The explanation of the event.
      * @return bool             True if the event was logged, false otherwise.
      */
     private static function reportEvent($severity = 0, $message = '')
     {
-        if (!function_exists('wp_get_current_user')) return;
+        if (!function_exists('wp_get_current_user')) {
+            return;
+        }
 
         $user = wp_get_current_user();
         $remote_ip = self::getRemoteAddr();
@@ -369,23 +625,48 @@ class SucuriScanEvent extends SucuriScan
             $username = sprintf("\x20%s,", $user->user_login);
         }
 
+        /**
+         * The severity prefix is part of the stored record, not of the user
+         * interface. parseAuditLogs() reads it back and discards any entry
+         * whose level it does not recognise, so translating it here would make
+         * every trail written by a non-English site vanish from the audit page
+         * and from the CSV export. Nothing user facing is lost: the page uses
+         * the parsed level as a CSS class, and the severity names shown in the
+         * filter dropdown are translated by SucuriScanAPI::getFilters().
+         */
         $severity = intval($severity);
-        $severity_name = __('Info', 'sucuri-scanner');
+        $severity_name = 'Info';
         $severities = array(
-            /* 0 */ __('Debug', 'sucuri-scanner'),
-            /* 1 */ __('Notice', 'sucuri-scanner'),
-            /* 2 */ __('Info', 'sucuri-scanner'),
-            /* 3 */ __('Warning', 'sucuri-scanner'),
-            /* 4 */ __('Error', 'sucuri-scanner'),
-            /* 5 */ __('Critical', 'sucuri-scanner'),
+            /* 0 */
+            'Debug',
+            /* 1 */
+            'Notice',
+            /* 2 */
+            'Info',
+            /* 3 */
+            'Warning',
+            /* 4 */
+            'Error',
+            /* 5 */
+            'Critical',
         );
 
         if (isset($severities[$severity])) {
             $severity_name = $severities[$severity];
         }
 
-        /* remove unnecessary characters */
-        $message = strip_tags($message);
+        /**
+         * Stripping before redacting stops markup from splitting a key name
+         * apart, which would hide it from the pattern ("<b>pass</b>word:
+         * secret").
+         *
+         * A "<" with no ">" after it is text, not an unterminated tag, and is
+         * escaped rather than handed to the stripper: strip_tags() deletes from
+         * such a bracket to the end of the string, so a site title or option
+         * value containing one silently truncated the audit entry.
+         */
+        $message = preg_replace('/<(?![^<]*>)/', '&lt;', (string) $message);
+        $message = self::redactSensitiveData(wp_strip_all_tags($message));
         $message = str_replace("\r", '', $message);
         $message = str_replace("\n", '', $message);
         $message = str_replace("\t", '', $message);
@@ -404,7 +685,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a debug event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportDebugEvent($message = '')
@@ -415,7 +696,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a notice event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportNoticeEvent($message = '')
@@ -426,7 +707,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a info event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportInfoEvent($message = '')
@@ -437,7 +718,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a warning event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportWarningEvent($message = '')
@@ -448,7 +729,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a error event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportErrorEvent($message = '')
@@ -459,7 +740,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Reports a critical event on the website.
      *
-     * @param  string $message Text witht the explanation of the event or action performed.
+     * @param string $message Text witht the explanation of the event or action performed.
      * @return bool            Either true or false depending on the success of the operation.
      */
     public static function reportCriticalEvent($message = '')
@@ -471,8 +752,8 @@ class SucuriScanEvent extends SucuriScan
      * Send a notification to the administrator of the specified events, only if
      * the administrator accepted to receive alerts for this type of events.
      *
-     * @param  string $event   The name of the event that was triggered.
-     * @param  string $content Body of the email that will be sent to the administrator.
+     * @param string $event The name of the event that was triggered.
+     * @param string $content Body of the email that will be sent to the administrator.
      * @return bool            True if the email was apparently sent, false otherwise.
      */
     public static function notifyEvent($event = '', $content = '')
@@ -484,8 +765,8 @@ class SucuriScanEvent extends SucuriScan
         /**
          * Skip if the IP address is trusted.
          *
-         * Ignore event if the website owner has whitelisted the IP address of
-         * the current user in session. This is useful if the administrator is
+         * Ignore event if the website owner has the IP address of the current
+         * user in session in the allowlist. This is useful if the administrator is
          * working in an office and they want to allow every person in the office
          * (aka. the same LAN) to execute any task without triggering a security
          * alert.
@@ -507,7 +788,12 @@ class SucuriScanEvent extends SucuriScan
             case 'failed_login':
                 $settings_url = SucuriScanTemplate::getUrl('settings');
                 $content .= "\n" . sprintf(
-                    __("<br><br>\n\n<em>Explanation: Someone failed to login to your site. If you are getting too many of these messages, it is likely your site is under a password guessing brute-force attack [1]. You can disable the failed login alerts from here [2]. Alternatively, you can consider to install a firewall between your website and your visitors to filter out these and other attacks, take a look at Sucuri Firewall [3].</em><br><br>\n\n[1] <a href='https://kb.sucuri.net/definitions/attacks/brute-force/password-guessing'>https://kb.sucuri.net/definitions/attacks/brute-force/password-guessing</a><br>\n[2] <a href='%s'>%s</a> <br>\n[3] <a href='https://sucuri.net/website-firewall/?wpalert'>https://sucuri.net/website-firewall/</a><br>\n", 'sucuri-scanner'),
+                    /* translators: %1$s: settings url, %2$s: settings url */
+                    __(
+                        /* phpcs:ignore WordPress.WP.I18n.UnorderedPlaceholdersText */
+                        "<br><br>\n\n<em>Explanation: Someone failed to login to your site. If you are getting too many of these messages, it is likely your site is under a password guessing brute-force attack [1]. You can disable the failed login alerts from here [2]. Alternatively, you can consider to install a firewall between your website and your visitors to filter out these and other attacks, take a look at Sucuri Firewall [3].</em><br><br>\n\n[1] <a href='https://docs.sucuri.net/definitions/attacks/brute-force/password-guessing-brute-force-attacks/'>https://docs.sucuri.net/definitions/attacks/brute-force/password-guessing-brute-force-attacks/</a><br>\n[2] <a href='%s'>%s</a> <br>\n[3] <a href='https://sucuri.net/website-firewall/?wpalert'>https://sucuri.net/website-firewall/</a><br>\n",
+                        'sucuri-scanner'
+                    ),
                     $settings_url,
                     $settings_url
                 );
@@ -541,7 +827,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Check whether an IP address is being trusted or not.
      *
-     * @param  string $addr The supposed ip address that will be checked.
+     * @param string $addr The supposed ip address that will be checked.
      * @return bool         True if the user IP is trusted, false otherwise.
      */
     public static function isTrustedIP($addr = '')
@@ -557,7 +843,7 @@ class SucuriScanEvent extends SucuriScan
             return false;
         }
 
-        /* check if exact IP address match is whitelisted */
+        /* check if exact IP address match is in the allowlist */
         if (array_key_exists(md5($addr), $trusted_ips)) {
             return true;
         }
@@ -608,7 +894,7 @@ class SucuriScanEvent extends SucuriScan
     /**
      * Generate and set a new password for a specific user not in session.
      *
-     * @param  int $user_id User account identifier.
+     * @param int $user_id User account identifier.
      * @return bool         True if the process exit clean, false otherwise.
      */
     public static function setNewPassword($user_id = 0)
@@ -619,17 +905,30 @@ class SucuriScanEvent extends SucuriScan
             return false;
         }
 
+        /* invalidates the password for the given user */
+        $new_password = wp_generate_password(15, true, false);
+        wp_set_password($new_password, $user_id);
+
         $website = SucuriScan::getDomain();
         $user_login = $user->user_login;
         $display_name = $user->display_name;
-        $new_password = wp_generate_password(15, true, false);
+        $key = self::GetPasswordResetKey($user);
+
+        if (is_wp_error($key)) {
+            return false;
+        }
+
+        $reset_password_url = network_site_url(
+            "wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login),
+            'https'
+        );
 
         $message = SucuriScanTemplate::getSection(
             'settings-posthack-reset-password-alert',
             array(
                 'ResetPassword.UserName' => $user_login,
                 'ResetPassword.DisplayName' => $display_name,
-                'ResetPassword.Password' => $new_password,
+                'ResetPassword.ResetURL' => $reset_password_url,
                 'ResetPassword.Website' => $website,
             )
         );
@@ -644,10 +943,71 @@ class SucuriScanEvent extends SucuriScan
             $data_set
         );
 
-        /* send email before changing the password */
-        wp_set_password($new_password, $user_id);
-
         return true;
+    }
+
+    /**
+     * Gets a new password reset key.
+     *
+     * @param WP_User $user WP_User object.
+     * @return string|WP_Error Returns a password reset key as a string, WP_Error otherwise.
+     * @since 1.8.25
+     *
+     */
+    private static function GetPasswordResetKey($user)
+    {
+        global $wp_hasher;
+
+        $key_error = new WP_Error('no_password_reset');
+
+        if (!($user instanceof WP_User)) {
+            return $key_error;
+        }
+
+        /**
+         * As of version 1.8.25 of this plugin, we still support WordPress version 3.6 and up
+         * and for that reason we can't take advantage of the native function get_password_reset_key
+         * (https://developer.wordpress.org/reference/functions/get_password_reset_key/), introduced in
+         * WordPress 4.4.
+         *
+         * When we drop support for versions prior to WordPress 4.4, we can use get_password_reset_key
+         * instead of this function.
+         */
+        if (version_compare(SucuriScan::siteVersion(), '4.4', '>=')
+            && function_exists('get_password_reset_key')
+        ) {
+            $key = get_password_reset_key($user);
+
+            return $key;
+        }
+
+        if (is_multisite() && is_user_spammy($user)) {
+            return $key_error;
+        }
+
+        // Generate something random for a password reset key.
+        $key = wp_generate_password(20, false);
+
+        if (empty($wp_hasher)) {
+            require_once ABSPATH . WPINC . '/class-phpass.php';
+            // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- lazily populating $wp_hasher is how core itself primes it.
+            $wp_hasher = PasswordHash(8, true);
+        }
+
+        $hashed = time() . ':' . $wp_hasher->HashPassword($key);
+
+        $key_saved = wp_update_user(
+            array(
+                'ID' => $user->ID,
+                'user_activation_key' => $hashed,
+            )
+        );
+
+        if (is_wp_error($key_saved)) {
+            return $key_saved;
+        }
+
+        return $key;
     }
 
     /**
@@ -675,6 +1035,10 @@ class SucuriScanEvent extends SucuriScan
         $content = SucuriScanFileInfo::fileContent($config_path);
         $config_lines = explode("\n", $content); /* maintain new lines */
         $new_keys = SucuriScanAPI::getNewSecretKeys();
+        if (!$new_keys) {
+            return false;
+        }
+
         $new_keys_string = '';
         $old_keys_string = '';
         $old_keys = array();
@@ -708,7 +1072,7 @@ class SucuriScanEvent extends SucuriScan
         }
 
         $resp = array(
-            'updated' => is_writable($config_path),
+            'updated' => is_writable($config_path), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
             'old_keys' => $old_keys,
             'old_keys_string' => $old_keys_string,
             'new_keys' => $new_keys,
@@ -721,5 +1085,54 @@ class SucuriScanEvent extends SucuriScan
         }
 
         return $resp;
+    }
+
+    /**
+     * Clear last logins or failed login logs.
+     *
+     * This can also be done via Sucuri Security -> Settings -> Data Storage,
+     * however to improve the user experience, a button on Last Logins  and on
+     * Failed logins sections was added and it triggers the removal of
+     * sucuri/sucuri-lastlogins.php and sucuri/sucuri-failedlogins.php.
+     *
+     * @param array $files Name of the file to be deleted.
+     *
+     * @return HTML Message with the delete action outcome.
+     */
+    public static function clearLastLogs($files)
+    {
+        if (!is_array($files)) {
+            $files = array($files);
+        }
+
+        $filesDeleted = array();
+
+        foreach ($files as $file) {
+            $filepath = SucuriScan::dataStorePath($file);
+
+            // Do not proceed if not possible.
+            if (!is_writable(dirname($filepath)) || is_dir($filepath)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
+                return SucuriScanInterface::error(
+                    sprintf(
+                        /* translators: %s: file path */
+                        __('%s cannot be deleted.', 'sucuri-scanner'),
+                        $file
+                    )
+                );
+            }
+
+            @unlink($filepath);
+            $filesDeleted[] = $file;
+        }
+
+        $message = count($files) > 1 ?
+            /* translators: %s: comma-separated list of filenames */
+            sprintf(__('%s log files were deleted.', 'sucuri-scanner'), implode(', ', $filesDeleted)) :
+            /* translators: %s: filename */
+            sprintf(__('%s log file was deleted.', 'sucuri-scanner'), $filesDeleted[0]);
+
+        SucuriScanEvent::reportInfoEvent($message);
+
+        return SucuriScanInterface::info($message);
     }
 }

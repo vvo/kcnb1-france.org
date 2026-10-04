@@ -1,0 +1,542 @@
+<?php
+declare(strict_types=1);
+
+namespace WPMedia\BackWPup\Tracking;
+
+use WPMedia\BackWPup\Adapters\OptionAdapter;
+use WPMedia\BackWPup\Dependencies\WPMedia\Mixpanel\Optin;
+use WPMedia\BackWPup\Dependencies\WPMedia\Mixpanel\TrackingPlugin as MixpanelTracking;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class Tracking extends BaseTracking {
+	/**
+	 * Option Adapter instance.
+	 *
+	 * @var OptionAdapter
+	 */
+	private $option_adapter;
+
+	/**
+	 * Tracking constructor.
+	 *
+	 * @param Optin            $optin Optin instance.
+	 * @param MixpanelTracking $mixpanel Mixpanel Tracking instance.
+	 * @param OptionAdapter    $option_adapter Option Adapter instance.
+	 */
+	public function __construct( Optin $optin, MixpanelTracking $mixpanel, OptionAdapter $option_adapter ) {
+		parent::__construct( $optin, $mixpanel );
+		$this->option_adapter = $option_adapter;
+	}
+
+	/**
+	 * Update the Mixpanel opt-in setting.
+	 *
+	 * @return void
+	 */
+	public function update_setting(): void {
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['_wpnonce'] ), 'backwpup_page' ) ) {
+			return;
+		}
+
+		if ( get_site_option( 'backwpup_onboarding', false ) ) {
+			return;
+		}
+
+		$value = isset( $_POST['mixpanel'] ) ? 1 : 0;
+
+		if ( 0 === $value ) {
+			if ( $this->optin->is_enabled() ) {
+				$this->optin->disable();
+			}
+
+			return;
+		}
+
+		if ( 1 === $value ) {
+			$this->optin->enable();
+		}
+	}
+
+	/**
+	 * Track an opt-in change event.
+	 *
+	 * @param bool $optin The new opt-in value.
+	 *
+	 * @return void
+	 */
+	public function track_optin_change( $optin ): void {
+		$user = wp_get_current_user();
+
+		$this->mixpanel->identify( $user->user_email );
+		$this->mixpanel->track_optin( $optin );
+	}
+
+	/**
+	 * Track the beta opt-in change event.
+	 *
+	 * @param int $optin The new opt-in value.
+	 *
+	 * @return void
+	 */
+	public function track_beta_optin_change( $optin ): void {
+		if ( ! $this->optin->is_enabled() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		$this->mixpanel->identify( $user->user_email );
+
+		$properties                  = $this->get_default_event_properties();
+		$properties['opt_in_status'] = (bool) $optin;
+
+		$this->mixpanel->track(
+			'WordPress Plugin Beta Opt-in Changed',
+			$properties
+		);
+	}
+
+	/**
+	 * Track the addition of a new job.
+	 *
+	 * @param array $job The job data.
+	 *
+	 * @return void
+	 */
+	public function track_add_job( $job ) {
+		if ( ! $this->optin->is_enabled() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		$this->mixpanel->identify( $user->user_email );
+
+		$this->mixpanel->track(
+			'Scheduled Backup Job Created',
+			array_merge( $this->get_default_event_properties(), $this->get_event_properties( $job, true ) )
+		);
+	}
+
+	/**
+	 * Track the deletion of a job.
+	 *
+	 * @param int $job_id The ID of the job to delete.
+	 *
+	 * @return void
+	 */
+	public function track_delete_job( $job_id ) {
+		if ( ! $this->optin->is_enabled() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		$this->mixpanel->identify( $user->user_email );
+
+		$job = $this->option_adapter->get_job( $job_id );
+
+		$this->mixpanel->track(
+			'Scheduled Backup Job Deleted',
+			array_merge( $this->get_default_event_properties(), $this->get_event_properties( $job ) )
+		);
+	}
+
+	/**
+	 * Track the start of a job.
+	 *
+	 * @param array  $job The Job data.
+	 * @param string $trigger The backup trigger.
+	 *
+	 * @return void
+	 */
+	public function track_start_job( array $job, $trigger ): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user       = wp_get_current_user();
+		$email      = $user->user_email ?? $job['mailaddresslog'];
+		$properties = array_merge( $this->get_default_event_properties(), $this->get_backup_event_properties( $job ) );
+
+		$this->mixpanel->identify( $email );
+
+		$properties['backup_trigger'] = $trigger;
+
+		// @todo Refactor it when the Mixpanel library supports system capabilities.
+		$this->with_system_cap(
+				function () use ( $job, $properties ) {
+					$this->mixpanel->track(
+					'Scheduled Backup Job Started',
+					$properties,
+					'bwu_mixpanel_send_event'
+					);
+				}
+			);
+	}
+
+	/**
+	 * Track end of job.
+	 *
+	 * @param int    $job_id The job id.
+	 * @param array  $job_details The status of the job.
+	 * @param string $trigger Backup trigger.
+	 * @param string $context Mixpanel context (wp_plugin or wp_plugin_mcp).
+	 *
+	 * @return void
+	 */
+	public function track_end_job( $job_id, array $job_details, $trigger, string $context = 'wp_plugin' ): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$job   = $this->option_adapter->get_job( $job_id );
+		$user  = wp_get_current_user();
+		$email = $user->user_email ?? $job['mailaddresslog'];
+
+		$this->mixpanel->identify( $email );
+		$status = true;
+
+		$properties                   = array_merge( $this->get_default_event_properties( $context ), $this->get_backup_event_properties( $job, true ) );
+		$properties['backup_trigger'] = $trigger;
+
+		foreach ( $job_details as $job ) {
+			$properties[ 'storage_' . $job['storage'] ] = [
+				'storage'       => $job['storage'],
+				'status'        => $job['status'],
+				'error_code'    => $job['error_code'],
+				'error_message' => $job['error_message'],
+			];
+
+			if ( 'completed' !== $job['status'] ) {
+				$status = false;
+			}
+		}
+
+		$properties['job_completed'] = $status;
+
+		// @todo Refactor it when the Mixpanel library supports system capabilities.
+		$this->with_system_cap(
+				function () use ( $properties ) {
+					$this->mixpanel->track(
+					'Scheduled Backup Job Ended',
+					$properties,
+					'bwu_mixpanel_send_event'
+					);
+				}
+			);
+	}
+
+	/**
+	 * Get backup event properties.
+	 *
+	 * @param array $job The job data.
+	 * @param bool  $included_job_completion Include job completion info.
+	 *
+	 * @return array
+	 */
+	private function get_backup_event_properties( array $job, bool $included_job_completion = false ): array {
+		$legacy_job = ! empty( $job['legacy'] );
+
+		$properties = [
+			'legacy_job' => $legacy_job,
+		];
+
+		if ( $included_job_completion ) {
+			$properties['duration'] = $job['lastruntime'];
+		}
+
+		return array_merge( $this->get_event_properties( $job, false ), $properties );
+	}
+
+	/**
+	 * Get the properties for the event.
+	 *
+	 * @param array $job The job data.
+	 * @param bool  $exclude_scheduled_info Exclude some scheduled info.
+	 *
+	 * @return array
+	 */
+	private function get_event_properties( array $job, bool $exclude_scheduled_info = false ): array {
+		if ( empty( $job['archiveformat'] ) ) {
+			$job['archiveformat'] = get_site_option( 'backwpup_archiveformat', '.tar' );
+		}
+
+		$properties = [
+			'job_id'                 => $job['jobid'],
+			'storage'                => $job['destinations'],
+			'format'                 => $job['archiveformat'],
+			'manually_excluded_data' => $this->has_manual_exclude( $job ),
+		];
+
+		if ( ! $exclude_scheduled_info ) {
+			$properties['frequency'] = $job['frequency'];
+			$properties['type']      = $job['type'];
+		}
+
+		return $properties;
+	}
+
+	/**
+	 * Check if the job has manual exclusions.
+	 *
+	 * @param array $job The job data.
+	 *
+	 * @return bool
+	 */
+	private function has_manual_exclude( array $job ): bool {
+		$defaults  = $this->option_adapter->defaults_job();
+		$job_types = $job['type'] ?? [];
+
+		// Define exclusions by backup type.
+		$database_exclusions = [
+			'dbdumpexclude',
+		];
+
+		$file_exclusions = [
+			'backuprootexcludedirs',
+			'backupcontentexcludedirs',
+			'backuppluginsexcludedirs',
+			'backupthemesexcludedirs',
+			'backupuploadsexcludedirs',
+			'fileexclude',
+			'backuproot',
+			'backupuploads',
+			'backupthemes',
+			'backupplugins',
+			'backupcontent',
+			'backupspecialfiles',
+		];
+
+		$exclusions = [];
+
+		// Only check database exclusions if DBDUMP is in job types.
+		if ( in_array( 'DBDUMP', $job_types, true ) ) {
+			$exclusions = array_merge( $exclusions, $database_exclusions );
+		}
+
+		// Only check file exclusions if FILE is in job types.
+		if ( in_array( 'FILE', $job_types, true ) ) {
+			$exclusions = array_merge( $exclusions, $file_exclusions );
+		}
+
+		foreach ( $exclusions as $exclusion ) {
+			if ( is_array( $job[ $exclusion ] ) && is_array( $defaults[ $exclusion ] ) ) {
+				if ( ! empty( array_diff( $job[ $exclusion ], $defaults[ $exclusion ] ) ) ) {
+					return true;
+				}
+			} elseif ( $job[ $exclusion ] !== $defaults[ $exclusion ] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Handle the AJAX request for the opt-in notice.
+	 *
+	 * @return void
+	 */
+	public function notice_optin_callback(): void {
+		check_ajax_referer( 'backwpup_analytics_optin' );
+
+		if ( ! isset( $_POST['value'] ) ) {
+			wp_send_json_error( __( 'Missing opt-in value', 'backwpup' ) );
+		}
+
+		$value = sanitize_text_field( wp_unslash( $_POST['value'] ) );
+
+		if ( 'no' === $value ) {
+			wp_send_json_success();
+		}
+
+		$this->optin->enable();
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Track link clicked event.
+	 *
+	 * @param string $event The event name property.
+	 * @param array  $properties Additional event properties.
+	 *
+	 * @return void
+	 */
+	public function track_link_clicked( string $event, array $properties = [] ): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		$this->mixpanel->identify( $user->user_email );
+		// Merge default properties.
+		$properties = array_merge( $this->get_default_event_properties(), $properties );
+		// Track link clicked event.
+		$this->mixpanel->track(
+			$event,
+			$properties
+		);
+	}
+
+	/**
+	 * Run a callback with the system capability to send events.
+	 * The system capability is only granted to the callback and removed afterwards.
+	 * The capability is only granted if the current capability check is for sending events with no user (0) and to the capability bwu_mixpanel_send_event.
+	 * The capability is granted via the 'user_has_cap' filter.
+	 * This is to allow sending events from contexts where no user is logged in, such as cron jobs.
+	 *
+	 * @param callable $cb The callback to run.
+	 *
+	 * @return void
+	 */
+	private function with_system_cap( callable $cb ) {
+		$grant_cap = static function ( $allcaps, $caps, $args ) {
+			if ( isset( $args[0], $args[1] ) && 'bwu_mixpanel_send_event' === $args[0] ) {
+				$allcaps['bwu_mixpanel_send_event'] = true;
+			}
+			return $allcaps;
+		};
+
+		add_filter( 'user_has_cap', $grant_cap, 10, 3 );
+		try {
+			$cb();
+		} finally {
+			remove_filter( 'user_has_cap', $grant_cap, 10 );
+		}
+	}
+
+	/**
+	 * Track support tool button displayed event.
+	 *
+	 * @return void
+	 */
+	public function track_support_tool_button_displayed(): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+		if ( $user->exists() ) {
+			$this->mixpanel->identify( $user->user_email );
+		}
+
+		$this->mixpanel->track(
+			'Support button shown',
+			$this->get_default_event_properties()
+		);
+	}
+
+	/**
+	 * Track support tool button clicked event.
+	 *
+	 * @return void
+	 */
+	public function track_support_tool_button_clicked(): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+		if ( $user->exists() ) {
+			$this->mixpanel->identify( $user->user_email );
+		}
+
+		$this->mixpanel->track(
+			'Support button clicked',
+			$this->get_default_event_properties()
+		);
+	}
+
+	/**
+	 * Track Expired banner shown.
+	 *
+	 * @param string $license_state The license state when the banner is shown.
+	 *
+	 * @return void
+	 */
+	public function track_expired_banner_shown( $license_state ): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		if ( $user->exists() ) {
+			$this->mixpanel->identify( $user->user_email );
+		}
+
+		$properties                  = $this->get_default_event_properties();
+		$properties['license_state'] = $license_state;
+
+		$this->mixpanel->track(
+			'Expired license update payment method banner shown',
+			$properties
+		);
+	}
+
+	/**
+	 * Track dashboard viewed event.
+	 *
+	 * @return void
+	 */
+	public function track_dashboard_viewed(): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+		$properties = $this->get_default_event_properties();
+		$user       = wp_get_current_user();
+		if ( $user->exists() ) {
+			$this->mixpanel->identify( $user->user_email );
+			$properties['user_id'] = $user->ID;
+		}
+
+		$this->mixpanel->track(
+			'Dashboard viewed',
+			$properties
+		);
+	}
+
+	/**
+	 * Track log opened event.
+	 *
+	 * @param string $error_message The error message associated with the log, if any.
+	 * @param int    $backup_id The ID of the backup.
+	 * @param int    $job_id The ID of the job.
+	 * @param bool   $job_completed Whether the job was completed or failed.
+	 *
+	 * @return void
+	 */
+	public function track_log_opened( $error_message, $backup_id, $job_id, $job_completed ): void {
+		if ( ! $this->optin->can_track() ) {
+			return;
+		}
+
+		$user = wp_get_current_user();
+
+		$properties = array_merge(
+			$this->get_default_event_properties(),
+			[
+				'backup_id'      => $backup_id,
+				'job_id'         => $job_id,
+				'job_completed'  => $job_completed,
+				'failure_reason' => $error_message,
+			]
+		);
+
+		if ( $user->exists() ) {
+			$this->mixpanel->identify( $user->user_email );
+			$properties['user_id'] = $user->ID;
+		}
+
+		$this->mixpanel->track(
+			'Backup log opened',
+			$properties
+		);
+	}
+}

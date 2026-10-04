@@ -1,0 +1,4768 @@
+# Copyright (C) 2026 SigmaPlugin
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Advanced Database Cleaner - Premium 4.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/advanced-database-cleaner-premium\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-13T22:56:12+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: advanced-database-cleaner\n"
+
+#. Plugin Name of the plugin
+#: advanced-db-cleaner.php
+msgid "Advanced Database Cleaner - Premium"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: advanced-db-cleaner.php
+msgid "https://sigmaplugin.com/downloads/wordpress-advanced-database-cleaner"
+msgstr ""
+
+#. Description of the plugin
+#: advanced-db-cleaner.php
+msgid "The most advanced Database Cleaner for WordPress. Clean database by deleting orphaned items such as old \"revisions\", \"old drafts\", optimize database, and more."
+msgstr ""
+
+#. Author of the plugin
+#: advanced-db-cleaner.php
+msgid "SigmaPlugin"
+msgstr ""
+
+#. Author URI of the plugin
+#: advanced-db-cleaner.php
+msgid "https://sigmaplugin.com"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:418
+#: assets/js/translations.js:548
+msgid "Once hourly"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:424
+#: assets/js/translations.js:549
+msgid "Twice daily"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:430
+#: assets/js/translations.js:550
+msgid "Once daily"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:436
+#: assets/js/translations.js:551
+msgid "Once weekly"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:442
+#: assets/js/translations.js:552
+msgid "Once monthly"
+msgstr ""
+
+#. translators: 1: Plugin name with link
+#: includes/classes/class-adbc-admin-init.php:471
+#, php-format
+msgid "You have been using %s for more than 1 week. Would you mind taking a few seconds to give it a 5-star rating on WordPress? Thank you in advance :)"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:476
+msgid "You have been using the \"Advanced DB Cleaner\" for more than 1 week. Would you mind taking a few seconds to give it a 5-star rating on WordPress? Thank you in advance :)"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:515
+msgid "Awesome!"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:518
+msgid "Ok, you deserved it"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:519
+msgid "I already did"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:520
+msgid "No, not good enough"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:521
+msgid "Remind me later"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:522
+#: includes/classes/class-adbc-admin-init.php:574
+#: assets/js/translations.js:382
+msgid "Dismiss"
+msgstr ""
+
+#. translators: 1: opening <a> tag, 2: closing </a> tag
+#: includes/classes/class-adbc-admin-init.php:531
+#, php-format
+msgid "Your %1$sAdvanced DB Cleaner Pro%2$s has been upgraded to version 4.x, a major update featuring a new architecture, a redesigned interface, and many new features."
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:537
+msgid "Your \"Advanced DB Cleaner Pro\" has been upgraded to version 4.x, a major update featuring a new architecture, a redesigned interface, and many new features."
+msgstr ""
+
+#. translators: 1: opening <strong> tag, 2: closing </strong> tag
+#: includes/classes/class-adbc-admin-init.php:541
+#, php-format
+msgid "We have introduced a new Remote Scan feature, designed to detect orphaned database items with much higher accuracy. Because this feature requires ongoing infrastructure and maintenance costs, %1$sit is not included in the lifetime plan%2$s."
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:549
+msgid "To access it, we created a separate plugin version under an annual pricing model, bundled with the Remote Scan feature and upcoming AI and cloud capabilities. As a lifetime customer, you can benefit from a 50% discount on the first purchase and all renewals (discount available for a limited time)."
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:556
+msgid "Advanced DB Cleaner Pro V4 is finally here!"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:565
+msgid "How to get to the full version - 50% OFF forever"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:569
+msgid "Remind me in a week"
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:795
+msgid "The free version of Advanced DB Cleaner has been de-activated since the premium version is active."
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:806
+msgid "The free version of Advanced DB Cleaner has been de-activated since the pro version is active."
+msgstr ""
+
+#: includes/classes/class-adbc-admin-init.php:817
+msgid "The pro version of Advanced DB Cleaner has been de-activated since the newest premium version is active."
+msgstr ""
+
+#: includes/classes/class-adbc-hardcoded-items.php:1151
+#: includes/classes/class-adbc-hardcoded-items.php:1198
+#: includes/premium/classes/scan/class-adbc-scan-results.php:86
+#: includes/premium/classes/scan/class-adbc-scan-results.php:144
+msgid "WordPress core"
+msgstr ""
+
+#: includes/classes/class-adbc-routes.php:151
+#: includes/classes/class-adbc-routes.php:157
+msgid "Security check failed! Invalid nonce."
+msgstr ""
+
+#: includes/classes/class-adbc-routes.php:161
+msgid "Unauthorized! You should be logged in."
+msgstr ""
+
+#: includes/classes/class-adbc-routes.php:165
+msgid "Unauthorized! Insufficient permissions."
+msgstr ""
+
+#: includes/endpoints/class-adbc-automation-endpoints.php:87
+#: includes/endpoints/class-adbc-general-cleanup-endpoints.php:174
+msgid "Upgrade Now"
+msgstr ""
+
+#: includes/endpoints/class-adbc-common-endpoints.php:102
+msgid "Failed to dismiss the notification."
+msgstr ""
+
+#: includes/endpoints/class-adbc-cron-jobs-endpoints.php:66
+#: includes/endpoints/class-adbc-options-endpoints.php:209
+#: includes/endpoints/class-adbc-post-types-endpoints.php:76
+#: includes/endpoints/class-adbc-posts-meta-endpoints.php:66
+#: includes/endpoints/class-adbc-tables-endpoints.php:285
+#: includes/endpoints/class-adbc-transients-endpoints.php:209
+#: includes/endpoints/class-adbc-users-meta-endpoints.php:66
+#: includes/premium/classes/scan/class-adbc-scan-utils.php:27
+msgid "A scan is in progress. Please wait until it finishes before performing this action."
+msgstr ""
+
+#: includes/endpoints/class-adbc-cron-jobs-endpoints.php:85
+msgid "The selected cron jobs could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-cron-jobs-endpoints.php:91
+#: includes/endpoints/class-adbc-cron-jobs-endpoints.php:118
+#: includes/endpoints/class-adbc-options-endpoints.php:87
+#: includes/endpoints/class-adbc-options-endpoints.php:107
+#: includes/endpoints/class-adbc-options-endpoints.php:158
+#: includes/endpoints/class-adbc-options-endpoints.php:178
+#: includes/endpoints/class-adbc-options-endpoints.php:234
+#: includes/endpoints/class-adbc-options-endpoints.php:260
+#: includes/endpoints/class-adbc-post-types-endpoints.php:100
+#: includes/endpoints/class-adbc-post-types-endpoints.php:120
+#: includes/endpoints/class-adbc-posts-meta-endpoints.php:91
+#: includes/endpoints/class-adbc-posts-meta-endpoints.php:117
+#: includes/endpoints/class-adbc-tables-endpoints.php:172
+#: includes/endpoints/class-adbc-tables-endpoints.php:233
+#: includes/endpoints/class-adbc-tables-endpoints.php:254
+#: includes/endpoints/class-adbc-tables-endpoints.php:311
+#: includes/endpoints/class-adbc-tables-endpoints.php:336
+#: includes/endpoints/class-adbc-transients-endpoints.php:87
+#: includes/endpoints/class-adbc-transients-endpoints.php:107
+#: includes/endpoints/class-adbc-transients-endpoints.php:158
+#: includes/endpoints/class-adbc-transients-endpoints.php:178
+#: includes/endpoints/class-adbc-transients-endpoints.php:234
+#: includes/endpoints/class-adbc-transients-endpoints.php:260
+#: includes/endpoints/class-adbc-users-meta-endpoints.php:91
+#: includes/endpoints/class-adbc-users-meta-endpoints.php:116
+msgid "Check setting"
+msgstr ""
+
+#: includes/endpoints/class-adbc-cron-jobs-endpoints.php:113
+msgid "Some cron jobs were deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:43
+#: assets/js/translations.js:1105
+msgid "WordPress"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:46
+#: includes/endpoints/class-adbc-info-endpoints.php:74
+msgid "Version"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:47
+msgid "Site URL"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:48
+msgid "Home URL"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:49
+msgid "Multisite"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:49
+#: includes/endpoints/class-adbc-info-endpoints.php:86
+#: includes/endpoints/class-adbc-info-endpoints.php:92
+#: includes/endpoints/class-adbc-info-endpoints.php:93
+#: includes/endpoints/class-adbc-info-endpoints.php:94
+#: includes/endpoints/class-adbc-info-endpoints.php:107
+#: assets/js/translations.js:346
+msgid "Yes"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:49
+#: includes/endpoints/class-adbc-info-endpoints.php:86
+#: includes/endpoints/class-adbc-info-endpoints.php:92
+#: includes/endpoints/class-adbc-info-endpoints.php:93
+#: includes/endpoints/class-adbc-info-endpoints.php:94
+#: includes/endpoints/class-adbc-info-endpoints.php:107
+#: assets/js/translations.js:351
+msgid "No"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:50
+msgid "Sites"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:51
+msgid "Language"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:52
+#: assets/js/translations.js:1135
+msgid "Theme"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:53
+msgid "Parent theme"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:54
+msgid "Memory limit"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:55
+msgid "Autoload warning threshold"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:59
+#: assets/js/translations.js:719
+msgid "Database"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:61
+#: assets/js/translations.js:495
+msgid "Database size"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:62
+#: assets/js/translations.js:496
+msgid "Total tables"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:62
+msgid "with invalid prefix"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:63
+msgid "Total options"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:64
+msgid "Total cron jobs"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:65
+msgid "Total transients"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:66
+msgid "Total user meta"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:67
+msgid "Total post meta"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:68
+msgid "Total post types"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:75
+msgid "Installed on"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:76
+#: assets/js/translations.js:1265
+msgid "License status"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:77
+msgid "License plan"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:78
+msgid "License expiry/renewal"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:82
+#: assets/js/translations.js:51
+msgid "Settings"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:84
+#: assets/js/translations.js:1350
+msgid "Cleanup method"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:85
+#: assets/js/translations.js:1351
+msgid "Database rows batches"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:86
+msgid "Reduce CPU usage"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:87
+#: assets/js/translations.js:1442
+msgid "CPU work time"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:88
+msgid "CPU rest time"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:89
+#: assets/js/translations.js:1452
+msgid "File line batches"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:90
+msgid "File content chunks"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:91
+msgid "Scan max execution time"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:92
+msgid "Analytics enabled"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:93
+msgid "Addons activity enabled"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:94
+#: assets/js/translations.js:1310
+msgid "Show tables with invalid prefix"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:95
+msgid "Last successful analytics execution"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:96
+msgid "Last failed analytics execution"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:97
+msgid "Last successful addons activity execution"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:98
+msgid "Last failed addons activity execution"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:102
+msgid "Webserver"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:104
+msgid "PHP version"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:105
+msgid "MySQL version"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:106
+msgid "Server"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:111
+msgid "PHP"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:113
+msgid "Memory Limit"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:114
+msgid "Upload Max Filesize"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:115
+msgid "Post Max Size"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:116
+#: assets/js/translations.js:1462
+msgid "Max execution time"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:117
+msgid "Supported"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:117
+msgid "Not supported"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:121
+msgid "Drop-ins"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:125
+msgid "Must-use plugins"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:129
+msgid "Active plugins"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:133
+msgid "Inactive plugins"
+msgstr ""
+
+#: includes/endpoints/class-adbc-info-endpoints.php:141
+msgid "Network active plugins"
+msgstr ""
+
+#: includes/endpoints/class-adbc-logs-endpoints.php:57
+msgid "Cannot clear the log file content."
+msgstr ""
+
+#: includes/endpoints/class-adbc-logs-endpoints.php:62
+#: includes/utils/class-adbc-rest.php:97
+#: includes/utils/class-adbc-rest.php:127
+msgid "Check the logs"
+msgstr ""
+
+#: includes/endpoints/class-adbc-options-endpoints.php:81
+#: includes/endpoints/class-adbc-options-endpoints.php:153
+msgid "The selected options could not have their autoload edited because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-options-endpoints.php:102
+#: includes/endpoints/class-adbc-options-endpoints.php:173
+msgid "Some options were updated successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-options-endpoints.php:228
+msgid "The selected options could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-options-endpoints.php:255
+msgid "Some options were deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-post-types-endpoints.php:94
+msgid "The selected post types could not be purged because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-post-types-endpoints.php:115
+msgid "Some post types were purged successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-posts-meta-endpoints.php:85
+msgid "The selected post meta could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-posts-meta-endpoints.php:112
+msgid "Some post meta was deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:144
+msgid "The InnoDB storage engine is not supported by your MySQL server. Conversion cannot be performed."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:166
+msgid "This table cannot be converted because it belongs to WordPress core and is protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:185
+msgid "This table is currently being converted in the background. Please check back later."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:188
+msgid "The table could not be converted. Please try again later."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:227
+msgid "The selected tables could not be emptied because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:249
+msgid "Some tables were emptied successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:305
+msgid "The selected tables could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:331
+msgid "Some tables were deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-tables-endpoints.php:453
+#: includes/endpoints/class-adbc-tables-endpoints.php:481
+msgid "The table is corrupted and cannot be accessed."
+msgstr ""
+
+#: includes/endpoints/class-adbc-transients-endpoints.php:81
+#: includes/endpoints/class-adbc-transients-endpoints.php:152
+msgid "The selected transients could not have their autoload edited because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-transients-endpoints.php:102
+#: includes/endpoints/class-adbc-transients-endpoints.php:173
+msgid "Some transients were updated successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-transients-endpoints.php:228
+msgid "The selected transients could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-transients-endpoints.php:255
+msgid "Some transients were deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-users-meta-endpoints.php:85
+msgid "The selected user meta could not be deleted because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/endpoints/class-adbc-users-meta-endpoints.php:111
+msgid "Some user meta was deleted successfully; others were skipped because they belong to WordPress core and are protected."
+msgstr ""
+
+#: includes/models/class-adbc-cron-jobs.php:218
+#: assets/js/translations.js:547
+msgid "Once"
+msgstr ""
+
+#: includes/models/class-adbc-cron-jobs.php:396
+msgid "Anonymous function"
+msgstr ""
+
+#: includes/models/class-adbc-cron-jobs.php:401
+msgid "Unknown action"
+msgstr ""
+
+#: includes/models/class-adbc-sites.php:121
+msgid "1 site"
+msgstr ""
+
+#. translators: 1: Number of sites
+#: includes/models/class-adbc-sites.php:128
+#, php-format
+msgid "%s site"
+msgid_plural "%s sites"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:121
+msgid "License activated successfully."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:147
+msgid "License deactivated successfully."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:166
+msgid "No license key found to check."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:192
+msgid "Your license key is invalid."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:193
+msgid "License check completed."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:239
+msgid "An error occurred, please try again."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:262
+msgid "Your license key has expired."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:263
+#: includes/premium/classes/class-adbc-license-manager.php:264
+msgid "Your license key has been disabled."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:265
+msgid "Invalid license key."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:266
+msgid "Your license is not active for this URL."
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/premium/classes/class-adbc-license-manager.php:269
+#: includes/premium/classes/class-adbc-license-manager.php:274
+#: includes/premium/classes/class-adbc-license-manager.php:279
+#: includes/premium/classes/class-adbc-license-manager.php:284
+#, php-format
+msgid "This appears to be an invalid license key for %s."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:287
+msgid "Your license key has reached its activation limit. Please deactivate it on any unused sites to be able to use it again, or consider upgrading your license to allow more activations."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:288
+msgid "The key you entered belongs to a bundle, please use the product specific license key."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:289
+msgid "Your license key has been deactivated."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:292
+msgid "An error has occurred, please try again."
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:365
+#: includes/premium/classes/class-adbc-license-manager.php:378
+#: assets/js/translations.js:1253
+msgid "Starter plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:367
+#: includes/premium/classes/class-adbc-license-manager.php:382
+#: assets/js/translations.js:1254
+msgid "Business plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:369
+msgid "Unlimited plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:371
+#: includes/premium/classes/class-adbc-license-manager.php:394
+#: assets/js/translations.js:1261
+msgid "Unknown plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:380
+#: assets/js/translations.js:1255
+msgid "Standard plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:384
+#: assets/js/translations.js:1256
+msgid "Agency plan"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:386
+#: assets/js/translations.js:1257
+msgid "Starter plan (lifetime)"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:388
+#: assets/js/translations.js:1258
+msgid "Standard plan (lifetime)"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:390
+#: assets/js/translations.js:1259
+msgid "Business plan (lifetime)"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:392
+#: assets/js/translations.js:1260
+msgid "Agency plan (lifetime)"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:418
+#: assets/js/translations.js:1223
+msgid "Lifetime"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:436
+#: assets/js/translations.js:1224
+msgctxt "License expiration date format (e.g. December 10, 2025)"
+msgid "F j, Y"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:468
+#: assets/js/translations.js:605
+msgid "Active"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:470
+#: assets/js/translations.js:970
+msgid "Expired"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:472
+#: assets/js/translations.js:1218
+msgid "Invalid"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:474
+#: assets/js/translations.js:1219
+msgid "Disabled"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:476
+#: assets/js/translations.js:1220
+msgid "Invalid item ID"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:478
+#: assets/js/translations.js:1221
+msgid "Item name mismatch"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:480
+#: assets/js/translations.js:1015
+msgid "Inactive"
+msgstr ""
+
+#: includes/premium/classes/class-adbc-license-manager.php:482
+#: assets/js/translations.js:1222
+msgid "Site inactive"
+msgstr ""
+
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-actions-handler.php:191
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-logs-handler.php:201
+msgid "complete"
+msgstr ""
+
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-actions-handler.php:212
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-logs-handler.php:221
+msgid "failed"
+msgstr ""
+
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-actions-handler.php:233
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-logs-handler.php:241
+msgid "canceled"
+msgstr ""
+
+#: includes/premium/classes/general-cleanup/type-handlers/class-adbc-actionscheduler-logs-handler.php:267
+msgid "orphaned"
+msgstr ""
+
+#: includes/premium/classes/scan/class-adbc-scan-results.php:62
+#: includes/premium/classes/scan/class-adbc-scan-results.php:364
+#: assets/js/translations.js:1106
+msgid "Orphan"
+msgstr ""
+
+#: includes/premium/classes/scan/class-adbc-scan-results.php:318
+#: includes/premium/classes/scan/class-adbc-scan-results.php:332
+#: assets/js/translations.js:1468
+msgid "Unknown"
+msgstr ""
+
+#: includes/premium/classes/scan/class-adbc-scan-utils.php:51
+msgid "The selected items could not be edited because they belong to WordPress core or Advanced Database Cleaner plugin."
+msgstr ""
+
+#: includes/premium/classes/scan/class-adbc-scan-utils.php:66
+msgid "Some items were updated successfully; others were skipped because they belong to WordPress core or Advanced Database Cleaner plugin and cannot be categorized manually."
+msgstr ""
+
+#: includes/utils/class-adbc-common-utils.php:151
+msgctxt "Friendly date format (e.g. December 10, 2025)"
+msgid "F j, Y"
+msgstr ""
+
+#: includes/utils/class-adbc-common-utils.php:188
+msgctxt "Friendly date and time format (e.g. December 10, 2025 3:45 PM)"
+msgid "F j, Y g:i A"
+msgstr ""
+
+#: includes/utils/class-adbc-logging.php:103
+msgid "The Log file is not readable or does not exist."
+msgstr ""
+
+#. translators: 1: Log file path
+#: includes/utils/class-adbc-logging.php:111
+#, php-format
+msgid "The log file cannot be loaded since its size exceeds the limit. You can access it directly via: %s"
+msgstr ""
+
+#: includes/utils/class-adbc-logging.php:120
+msgid "Failed to get the file content."
+msgstr ""
+
+#. translators: 1: PHP version
+#: includes/utils/class-adbc-notifications.php:362
+#, php-format
+msgid "Please upgrade your PHP to %s or higher to use the plugin without issues."
+msgstr ""
+
+#. translators: 1: WordPress version
+#: includes/utils/class-adbc-notifications.php:367
+#, php-format
+msgid "Please upgrade WordPress to %s or higher to use the plugin without issues."
+msgstr ""
+
+#: includes/utils/class-adbc-notifications.php:370
+msgid "Uploads folder is not writable. Check permissions."
+msgstr ""
+
+#: includes/utils/class-adbc-notifications.php:373
+msgid "WordPress file system API is not initialized."
+msgstr ""
+
+#: assets/js/translations.js:11
+msgid "New!"
+msgstr ""
+
+#: assets/js/translations.js:12
+msgid "Collapse sidebar"
+msgstr ""
+
+#: assets/js/translations.js:13
+msgid "Expand sidebar"
+msgstr ""
+
+#: assets/js/translations.js:14
+msgid "Free"
+msgstr ""
+
+#: assets/js/translations.js:15
+msgid "Pro-lifetime"
+msgstr ""
+
+#: assets/js/translations.js:16
+msgid "Premium"
+msgstr ""
+
+#: assets/js/translations.js:17
+msgid "By"
+msgstr ""
+
+#: assets/js/translations.js:18
+msgid "Support"
+msgstr ""
+
+#: assets/js/translations.js:19
+msgid "Docs"
+msgstr ""
+
+#: assets/js/translations.js:20
+msgid "Pro - lifetime"
+msgstr ""
+
+#: assets/js/translations.js:21
+msgid "Please activate your license key to receive plugin updates."
+msgstr ""
+
+#: assets/js/translations.js:22
+msgid "Activate now"
+msgstr ""
+
+#: assets/js/translations.js:23
+msgid "There is an issue with your license. Please check your license status in the settings."
+msgstr ""
+
+#: assets/js/translations.js:27
+msgid "Check license status"
+msgstr ""
+
+#: assets/js/translations.js:28
+msgid "You are now using the newest premium version of the plugin, would you like to import your data from the previous version?"
+msgstr ""
+
+#: assets/js/translations.js:32
+msgid "For technical reasons, all automation tasks imported from the previous version have been paused. Please review your tasks and reactivate those you wish to continue using."
+msgstr ""
+
+#: assets/js/translations.js:36
+msgid "Go to automation"
+msgstr ""
+
+#: assets/js/translations.js:37
+msgid "Help"
+msgstr ""
+
+#: assets/js/translations.js:38
+msgid "General cleanup"
+msgstr ""
+
+#: assets/js/translations.js:39
+msgid "Tables"
+msgstr ""
+
+#: assets/js/translations.js:40
+msgid "Options"
+msgstr ""
+
+#: assets/js/translations.js:41
+msgid "Post meta"
+msgstr ""
+
+#: assets/js/translations.js:42
+msgid "User meta"
+msgstr ""
+
+#: assets/js/translations.js:43
+msgid "Transients"
+msgstr ""
+
+#: assets/js/translations.js:44
+msgid "Cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:45
+msgid "Post types"
+msgstr ""
+
+#: assets/js/translations.js:46
+msgid "WooCommerce"
+msgstr ""
+
+#: assets/js/translations.js:47
+msgid "Automation"
+msgstr ""
+
+#: assets/js/translations.js:48
+msgid "DB analytics"
+msgstr ""
+
+#: assets/js/translations.js:49
+msgid "Addons activity"
+msgstr ""
+
+#: assets/js/translations.js:50
+msgid "Info & logs"
+msgstr ""
+
+#: assets/js/translations.js:52
+#: assets/js/translations.js:272
+msgid "Orphaned product variations"
+msgstr ""
+
+#: assets/js/translations.js:53
+msgid "Variations no longer attached to any parent product."
+msgstr ""
+
+#: assets/js/translations.js:54
+#: assets/js/translations.js:273
+msgid "Orphaned customer analytics"
+msgstr ""
+
+#: assets/js/translations.js:55
+msgid "WooCommerce customer-lookup rows referencing users that no longer exist."
+msgstr ""
+
+#: assets/js/translations.js:59
+msgid "Expired customer sessions"
+msgstr ""
+
+#: assets/js/translations.js:60
+msgid "Customer session rows in wp_woocommerce_sessions whose expiry date has passed."
+msgstr ""
+
+#. translators: %s is the REST URL the plugin tried to reach.
+#: assets/js/translations.js:66
+#, js-format
+msgid "The plugin could not reach the WordPress REST API at %s. This usually means the REST URL prefix has been customized on your site (for example /wp-json/ changed to /api/) without applying the 'rest_url_prefix' filter. Please contact your developer or hosting support."
+msgstr ""
+
+#. translators: %d: number of tables
+#: assets/js/translations.js:74
+#, js-format
+msgid "Empty %d table?"
+msgid_plural "Empty %d tables?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:77
+msgid "Once emptied, this action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:78
+msgid "Empty"
+msgstr ""
+
+#: assets/js/translations.js:79
+msgid "Convert table to InnoDB?"
+msgstr ""
+
+#: assets/js/translations.js:80
+msgid "Converting a table to InnoDB will alter its storage engine. Are you sure you want to proceed?"
+msgstr ""
+
+#: assets/js/translations.js:84
+msgid "Convert"
+msgstr ""
+
+#. translators: %d: number of items
+#: assets/js/translations.js:87
+#, js-format
+msgid "Delete %d item?"
+msgid_plural "Delete %d items?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:90
+msgid "Once deleted, this action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:91
+msgid "Delete"
+msgstr ""
+
+#: assets/js/translations.js:92
+msgid "Completed successfully!"
+msgstr ""
+
+#. translators: %d: number of items that could not be processed
+#: assets/js/translations.js:95
+#, js-format
+msgid " %d item could not be processed."
+msgid_plural " %d items could not be processed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:103
+msgid "year"
+msgstr ""
+
+#: assets/js/translations.js:104
+msgid "years"
+msgstr ""
+
+#: assets/js/translations.js:105
+msgid "month"
+msgstr ""
+
+#: assets/js/translations.js:106
+msgid "months"
+msgstr ""
+
+#: assets/js/translations.js:107
+msgid "week"
+msgstr ""
+
+#: assets/js/translations.js:108
+msgid "weeks"
+msgstr ""
+
+#: assets/js/translations.js:109
+msgid "day"
+msgstr ""
+
+#: assets/js/translations.js:110
+msgid "days"
+msgstr ""
+
+#: assets/js/translations.js:111
+msgid "hour"
+msgstr ""
+
+#: assets/js/translations.js:112
+msgid "hours"
+msgstr ""
+
+#: assets/js/translations.js:113
+msgid "min"
+msgstr ""
+
+#: assets/js/translations.js:114
+msgid "mins"
+msgstr ""
+
+#: assets/js/translations.js:115
+msgid "sec"
+msgstr ""
+
+#: assets/js/translations.js:116
+msgid "secs"
+msgstr ""
+
+#: assets/js/translations.js:117
+msgid "just now"
+msgstr ""
+
+#. translators: %1$d: number of days
+#: assets/js/translations.js:120
+#, js-format
+msgid "%1$d day"
+msgid_plural "%1$d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d: number of hours
+#: assets/js/translations.js:125
+#, js-format
+msgid "%1$d hour"
+msgid_plural "%1$d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d: number of minutes
+#: assets/js/translations.js:130
+#, js-format
+msgid "%1$d minute"
+msgid_plural "%1$d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %1$d: number of seconds
+#: assets/js/translations.js:135
+#, js-format
+msgid "%1$d second"
+msgid_plural "%1$d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: time units string (e.g., "2 hours 30 minutes")
+#: assets/js/translations.js:140
+#, js-format
+msgid "%s ago"
+msgstr ""
+
+#. translators: %d: number of years
+#: assets/js/translations.js:145
+#, js-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of months
+#: assets/js/translations.js:150
+#, js-format
+msgid "%d month"
+msgid_plural "%d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of days
+#: assets/js/translations.js:155
+#, js-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of hours
+#: assets/js/translations.js:160
+#, js-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of minutes
+#: assets/js/translations.js:165
+#, js-format
+msgid "%d min"
+msgid_plural "%d mins"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of seconds
+#: assets/js/translations.js:170
+#, js-format
+msgid "%d sec"
+msgid_plural "%d secs"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of seconds (always 0 in this case)
+#: assets/js/translations.js:175
+#, js-format
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:178
+msgid "All tables"
+msgstr ""
+
+#: assets/js/translations.js:179
+msgid "Plugins tables"
+msgstr ""
+
+#: assets/js/translations.js:180
+msgid "Themes tables"
+msgstr ""
+
+#: assets/js/translations.js:181
+msgid "WP tables"
+msgstr ""
+
+#: assets/js/translations.js:182
+msgid "All options"
+msgstr ""
+
+#: assets/js/translations.js:183
+msgid "Plugins options"
+msgstr ""
+
+#: assets/js/translations.js:184
+msgid "Themes options"
+msgstr ""
+
+#: assets/js/translations.js:185
+msgid "WP options"
+msgstr ""
+
+#: assets/js/translations.js:186
+msgid "All post meta"
+msgstr ""
+
+#: assets/js/translations.js:187
+msgid "Plugins meta"
+msgstr ""
+
+#: assets/js/translations.js:188
+msgid "Themes meta"
+msgstr ""
+
+#: assets/js/translations.js:189
+msgid "WP meta"
+msgstr ""
+
+#: assets/js/translations.js:190
+msgid "All user meta"
+msgstr ""
+
+#: assets/js/translations.js:191
+msgid "All transients"
+msgstr ""
+
+#: assets/js/translations.js:192
+msgid "Plugins transients"
+msgstr ""
+
+#: assets/js/translations.js:193
+msgid "Themes transients"
+msgstr ""
+
+#: assets/js/translations.js:194
+msgid "WP transients"
+msgstr ""
+
+#: assets/js/translations.js:195
+msgid "All cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:196
+msgid "Plugins cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:197
+msgid "Themes cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:198
+msgid "WP cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:199
+msgid "All post types"
+msgstr ""
+
+#: assets/js/translations.js:200
+msgid "Plugins post types"
+msgstr ""
+
+#: assets/js/translations.js:201
+msgid "Themes post types"
+msgstr ""
+
+#: assets/js/translations.js:202
+msgid "WP post types"
+msgstr ""
+
+#: assets/js/translations.js:203
+msgid "All items"
+msgstr ""
+
+#: assets/js/translations.js:204
+msgid "Plugins items"
+msgstr ""
+
+#: assets/js/translations.js:205
+msgid "Themes items"
+msgstr ""
+
+#: assets/js/translations.js:206
+msgid "WP items"
+msgstr ""
+
+#: assets/js/translations.js:207
+msgid "[Filter]"
+msgstr ""
+
+#: assets/js/translations.js:208
+msgid "No data found"
+msgstr ""
+
+#: assets/js/translations.js:209
+msgid "Try changing the filters or search term"
+msgstr ""
+
+#: assets/js/translations.js:210
+msgid "Loading data..."
+msgstr ""
+
+#: assets/js/translations.js:211
+msgid "Site"
+msgstr ""
+
+#: assets/js/translations.js:212
+msgid "ID"
+msgstr ""
+
+#: assets/js/translations.js:213
+msgid "Title"
+msgstr ""
+
+#: assets/js/translations.js:214
+msgid "Content"
+msgstr ""
+
+#: assets/js/translations.js:215
+msgid "Size"
+msgstr ""
+
+#: assets/js/translations.js:216
+msgid "Date (UTC)"
+msgstr ""
+
+#: assets/js/translations.js:217
+msgid "Author"
+msgstr ""
+
+#: assets/js/translations.js:218
+msgid "Post ID"
+msgstr ""
+
+#: assets/js/translations.js:219
+msgid "Meta key"
+msgstr ""
+
+#: assets/js/translations.js:220
+msgid "Meta value"
+msgstr ""
+
+#: assets/js/translations.js:221
+msgid "Customer lookup ID"
+msgstr ""
+
+#: assets/js/translations.js:222
+msgid "Missing user ID"
+msgstr ""
+
+#: assets/js/translations.js:223
+msgid "Email address"
+msgstr ""
+
+#: assets/js/translations.js:224
+msgid "Username"
+msgstr ""
+
+#: assets/js/translations.js:225
+msgid "Object ID"
+msgstr ""
+
+#: assets/js/translations.js:226
+msgid "Term taxonomy ID"
+msgstr ""
+
+#: assets/js/translations.js:227
+msgid "Term order"
+msgstr ""
+
+#: assets/js/translations.js:228
+msgid "Name"
+msgstr ""
+
+#: assets/js/translations.js:229
+msgid "Value"
+msgstr ""
+
+#: assets/js/translations.js:230
+msgid "Autoload"
+msgstr ""
+
+#: assets/js/translations.js:231
+msgid "Indicates whether a transient is autoloaded or not. Values to autoload are: yes, on, auto, auto-on. Values to not autoload are: no, off, auto-off"
+msgstr ""
+
+#: assets/js/translations.js:235
+msgid "Expired at"
+msgstr ""
+
+#: assets/js/translations.js:236
+msgid "All dates/times are in your local time zone"
+msgstr ""
+
+#: assets/js/translations.js:237
+msgid "Found in"
+msgstr ""
+
+#: assets/js/translations.js:238
+msgid "Hook"
+msgstr ""
+
+#: assets/js/translations.js:239
+msgid "Args"
+msgstr ""
+
+#: assets/js/translations.js:240
+msgid "Scheduled at (UTC)"
+msgstr ""
+
+#: assets/js/translations.js:241
+msgid "Status"
+msgstr ""
+
+#: assets/js/translations.js:242
+msgid "Log ID"
+msgstr ""
+
+#: assets/js/translations.js:243
+msgid "Action ID"
+msgstr ""
+
+#: assets/js/translations.js:244
+msgid "Message"
+msgstr ""
+
+#: assets/js/translations.js:245
+msgid "Log date (UTC)"
+msgstr ""
+
+#: assets/js/translations.js:246
+msgid "Revisions"
+msgstr ""
+
+#: assets/js/translations.js:247
+msgid "Auto drafts"
+msgstr ""
+
+#: assets/js/translations.js:248
+msgid "Trashed posts"
+msgstr ""
+
+#: assets/js/translations.js:249
+msgid "Unapproved comments"
+msgstr ""
+
+#: assets/js/translations.js:250
+msgid "Spam comments"
+msgstr ""
+
+#: assets/js/translations.js:251
+msgid "Trashed comments"
+msgstr ""
+
+#: assets/js/translations.js:252
+msgid "Pingbacks"
+msgstr ""
+
+#: assets/js/translations.js:253
+msgid "Trackbacks"
+msgstr ""
+
+#: assets/js/translations.js:254
+msgid "Unused postmeta"
+msgstr ""
+
+#: assets/js/translations.js:255
+msgid "Duplicated postmeta"
+msgstr ""
+
+#: assets/js/translations.js:256
+msgid "Unused commentmeta"
+msgstr ""
+
+#: assets/js/translations.js:257
+msgid "Duplicated commentmeta"
+msgstr ""
+
+#: assets/js/translations.js:258
+msgid "Unused usermeta"
+msgstr ""
+
+#: assets/js/translations.js:259
+msgid "Duplicated usermeta"
+msgstr ""
+
+#: assets/js/translations.js:260
+msgid "Unused termmeta"
+msgstr ""
+
+#: assets/js/translations.js:261
+msgid "Duplicated termmeta"
+msgstr ""
+
+#: assets/js/translations.js:262
+msgid "Unused relationships"
+msgstr ""
+
+#: assets/js/translations.js:263
+msgid "Expired transients"
+msgstr ""
+
+#: assets/js/translations.js:264
+msgid "oEmbed caches"
+msgstr ""
+
+#: assets/js/translations.js:265
+msgid "Actionscheduler completed actions"
+msgstr ""
+
+#: assets/js/translations.js:266
+msgid "Actionscheduler failed actions"
+msgstr ""
+
+#: assets/js/translations.js:267
+msgid "Actionscheduler canceled actions"
+msgstr ""
+
+#: assets/js/translations.js:268
+msgid "Actionscheduler completed logs"
+msgstr ""
+
+#: assets/js/translations.js:269
+msgid "Actionscheduler failed logs"
+msgstr ""
+
+#: assets/js/translations.js:270
+msgid "Actionscheduler canceled logs"
+msgstr ""
+
+#: assets/js/translations.js:271
+msgid "Actionscheduler orphan logs"
+msgstr ""
+
+#: assets/js/translations.js:274
+msgid "Repair tables"
+msgstr ""
+
+#: assets/js/translations.js:275
+msgid "Optimize tables"
+msgstr ""
+
+#: assets/js/translations.js:276
+msgid "Completed actions"
+msgstr ""
+
+#: assets/js/translations.js:277
+msgid "Failed actions"
+msgstr ""
+
+#: assets/js/translations.js:278
+msgid "Canceled actions"
+msgstr ""
+
+#: assets/js/translations.js:279
+msgid "Completed logs"
+msgstr ""
+
+#: assets/js/translations.js:280
+msgid "Failed logs"
+msgstr ""
+
+#: assets/js/translations.js:281
+msgid "Canceled logs"
+msgstr ""
+
+#: assets/js/translations.js:282
+msgid "Orphan logs"
+msgstr ""
+
+#: assets/js/translations.js:283
+msgid "KB"
+msgstr ""
+
+#: assets/js/translations.js:284
+msgid "0 days"
+msgstr ""
+
+#: assets/js/translations.js:285
+msgid "Run cleanup"
+msgstr ""
+
+#: assets/js/translations.js:286
+msgid "Success!"
+msgstr ""
+
+#: assets/js/translations.js:287
+msgid "Done!"
+msgstr ""
+
+#: assets/js/translations.js:288
+msgid "Successfully saved!"
+msgstr ""
+
+#: assets/js/translations.js:289
+msgid "Error!"
+msgstr ""
+
+#: assets/js/translations.js:290
+msgid "Unknown error occurred!"
+msgstr ""
+
+#: assets/js/translations.js:291
+msgid "Info!"
+msgstr ""
+
+#: assets/js/translations.js:292
+msgid "Start a scan for tables"
+msgstr ""
+
+#: assets/js/translations.js:293
+msgid "Start a scan for options"
+msgstr ""
+
+#: assets/js/translations.js:294
+msgid "Start a scan for post meta"
+msgstr ""
+
+#: assets/js/translations.js:295
+msgid "Start a scan for user meta"
+msgstr ""
+
+#: assets/js/translations.js:296
+msgid "Start a scan for transients"
+msgstr ""
+
+#: assets/js/translations.js:297
+msgid "Start a scan for cron jobs"
+msgstr ""
+
+#: assets/js/translations.js:298
+msgid "Start a scan for post types"
+msgstr ""
+
+#: assets/js/translations.js:299
+msgid "We couldn't verify your license. Please check that your license key is active for the current website."
+msgstr ""
+
+#: assets/js/translations.js:303
+msgid "You don't have enough credits to send additional remote requests."
+msgstr ""
+
+#: assets/js/translations.js:307
+msgid "The remote database cannot scan such a large number of items. Contact the plugin developer for more information."
+msgstr ""
+
+#: assets/js/translations.js:311
+msgid "An error occurred during the remote request. Check the logs for more details."
+msgstr ""
+
+#: assets/js/translations.js:315
+msgid "The remote server is being prepared for maintenance. Please try again later."
+msgstr ""
+
+#: assets/js/translations.js:319
+msgid "The remote server is under maintenance. Please try again later."
+msgstr ""
+
+#: assets/js/translations.js:323
+msgid "Invalid credit code. Please check and try again."
+msgstr ""
+
+#: assets/js/translations.js:324
+msgid "This credit code has already been redeemed. Please close this pop-up and click the 'Refresh credits info' button to refresh your credit balance"
+msgstr ""
+
+#: assets/js/translations.js:328
+msgid "Invalid or empty system information"
+msgstr ""
+
+#: assets/js/translations.js:329
+msgid "Generated on:"
+msgstr ""
+
+#: assets/js/translations.js:330
+msgid "[Server time]"
+msgstr ""
+
+#: assets/js/translations.js:331
+msgid "No data available"
+msgstr ""
+
+#: assets/js/translations.js:332
+msgid "Invalid table prefix!"
+msgstr ""
+
+#: assets/js/translations.js:333
+msgid "(to optimize)"
+msgstr ""
+
+#: assets/js/translations.js:334
+msgid "Name not found!"
+msgstr ""
+
+#. translators: %s: percentage value (e.g. "12.5") - meaning this table's size vs total database size
+#: assets/js/translations.js:337
+#, js-format
+msgid "%s%% of total database size"
+msgstr ""
+
+#. translators: %s: formatted time interval
+#: assets/js/translations.js:342
+#, js-format
+msgid "Every %s"
+msgstr ""
+
+#: assets/js/translations.js:345
+msgid "Defined in:"
+msgstr ""
+
+#: assets/js/translations.js:347
+msgid "Expires at:"
+msgstr ""
+
+#: assets/js/translations.js:348
+msgid "(local time)"
+msgstr ""
+
+#: assets/js/translations.js:349
+msgid "In"
+msgstr ""
+
+#: assets/js/translations.js:350
+msgid "Never expires"
+msgstr ""
+
+#: assets/js/translations.js:352
+msgid "Current Database Size"
+msgstr ""
+
+#: assets/js/translations.js:353
+#: assets/js/translations.js:1153
+msgid "You must first activate your plugin license before synchronizing your balance."
+msgstr ""
+
+#: assets/js/translations.js:357
+msgid "No remote scan credits available. Buy or redeem credits to use remote scan."
+msgstr ""
+
+#: assets/js/translations.js:361
+msgid "Remote scan daily limit reached. Wait for reset or upgrade for higher limits."
+msgstr ""
+
+#: assets/js/translations.js:365
+msgid "Remote Scan Credits"
+msgstr ""
+
+#: assets/js/translations.js:366
+msgid "Remote Scan Credits:"
+msgstr ""
+
+#: assets/js/translations.js:367
+msgid "Recommended for WooCommerce stores"
+msgstr ""
+
+#: assets/js/translations.js:368
+msgid "Speed up & clean your WooCommerce store with WOptimize"
+msgstr ""
+
+#: assets/js/translations.js:369
+msgid "WOptimize is the ultimate solution to clean and speed up your WooCommerce store, it removes old orders, expired sessions, orphaned product and customer data, stale carts and caches, then optimizes what remains, all on autopilot."
+msgstr ""
+
+#: assets/js/translations.js:373
+msgid "Exclusive deal for you"
+msgstr ""
+
+#: assets/js/translations.js:374
+msgid "Need more WooCommerce optimization?"
+msgstr ""
+
+#: assets/js/translations.js:375
+msgid "We built WOptimize, an advanced cleaner that hunts down WooCommerce bloat and clears it in one click: Old orders, Orphaned products/customers meta, expired sessions, etc."
+msgstr ""
+
+#: assets/js/translations.js:379
+msgid "Faster checkout"
+msgstr ""
+
+#: assets/js/translations.js:380
+msgid "Lighter database"
+msgstr ""
+
+#: assets/js/translations.js:381
+msgid "Safe one-click cleanup"
+msgstr ""
+
+#: assets/js/translations.js:383
+msgid "Launch offer"
+msgstr ""
+
+#. translators: %d: discount percentage.
+#: assets/js/translations.js:386
+#, js-format
+msgid "%d%% OFF"
+msgstr ""
+
+#: assets/js/translations.js:389
+msgid "Use code"
+msgstr ""
+
+#: assets/js/translations.js:390
+msgid "I want to try it"
+msgstr ""
+
+#: assets/js/translations.js:391
+msgid "Not supported!"
+msgstr ""
+
+#: assets/js/translations.js:392
+msgid "Cancel"
+msgstr ""
+
+#: assets/js/translations.js:393
+msgid "Don't forget to make a backup of your database first!"
+msgstr ""
+
+#: assets/js/translations.js:394
+msgid "Successful"
+msgstr ""
+
+#: assets/js/translations.js:395
+msgid "Failed"
+msgstr ""
+
+#: assets/js/translations.js:396
+msgid "Partially successful"
+msgstr ""
+
+#: assets/js/translations.js:397
+msgid "The Free and old Pro versions can be uninstalled since you are using the newest Premium version"
+msgstr ""
+
+#: assets/js/translations.js:401
+msgid "The Free version can be uninstalled since you are using the Premium version"
+msgstr ""
+
+#: assets/js/translations.js:405
+msgid "The old Pro version can be uninstalled since you are using the newest Premium version"
+msgstr ""
+
+#: assets/js/translations.js:409
+msgid "Manual corrections"
+msgstr ""
+
+#: assets/js/translations.js:410
+msgid "Keep Last"
+msgstr ""
+
+#: assets/js/translations.js:411
+msgid "Automation tasks"
+msgstr ""
+
+#: assets/js/translations.js:412
+msgid "Uninstall old versions"
+msgstr ""
+
+#: assets/js/translations.js:413
+msgid "Import completed"
+msgstr ""
+
+#: assets/js/translations.js:414
+msgid "Here are the results of your data import"
+msgstr ""
+
+#: assets/js/translations.js:415
+msgid "Close"
+msgstr ""
+
+#: assets/js/translations.js:416
+msgid "No data to import. You can uninstall the previous version(s)"
+msgstr ""
+
+#: assets/js/translations.js:417
+msgid "Import data from previous version"
+msgstr ""
+
+#: assets/js/translations.js:418
+msgid "Select the items you want to import or actions to perform"
+msgstr ""
+
+#: assets/js/translations.js:419
+msgid "Import manual corrections"
+msgstr ""
+
+#: assets/js/translations.js:420
+msgid "Import your custom manual corrections you made in the previous version"
+msgstr ""
+
+#: assets/js/translations.js:424
+msgid "Import Keep Last"
+msgstr ""
+
+#: assets/js/translations.js:425
+msgid "Preserve your -Keep Last- settings and configurations"
+msgstr ""
+
+#: assets/js/translations.js:426
+msgid "Import tasks"
+msgstr ""
+
+#: assets/js/translations.js:427
+msgid "Import all your automation tasks and schedules."
+msgstr ""
+
+#: assets/js/translations.js:428
+msgid "(For technical reasons, tasks will be deactivated after import and you will need to activate them again)"
+msgstr ""
+
+#: assets/js/translations.js:432
+msgid "Uninstall previous versions?"
+msgstr ""
+
+#: assets/js/translations.js:433
+msgid "Processing ..."
+msgstr ""
+
+#: assets/js/translations.js:434
+msgid "Proceed"
+msgstr ""
+
+#: assets/js/translations.js:435
+msgid "Processing, please wait..."
+msgstr ""
+
+#: assets/js/translations.js:436
+msgid "View documentation"
+msgstr ""
+
+#: assets/js/translations.js:437
+msgid "Access comprehensive guides and tutorials"
+msgstr ""
+
+#: assets/js/translations.js:438
+msgid "Find answers to common questions"
+msgstr ""
+
+#: assets/js/translations.js:439
+msgid "Contact us"
+msgstr ""
+
+#: assets/js/translations.js:440
+msgid "Contact us for personalized assistance"
+msgstr ""
+
+#: assets/js/translations.js:441
+msgid "Get help with technical issues, billing ..."
+msgstr ""
+
+#: assets/js/translations.js:442
+msgid "Read more"
+msgstr ""
+
+#: assets/js/translations.js:443
+msgid "Confirm"
+msgstr ""
+
+#: assets/js/translations.js:444
+msgid "All"
+msgstr ""
+
+#: assets/js/translations.js:445
+msgid "Activation"
+msgstr ""
+
+#: assets/js/translations.js:446
+msgid "Deactivation"
+msgstr ""
+
+#: assets/js/translations.js:447
+msgid "Uninstall"
+msgstr ""
+
+#: assets/js/translations.js:448
+msgid "No activity found!"
+msgstr ""
+
+#: assets/js/translations.js:449
+msgid "No activity found for the applied filters. Try different filters."
+msgstr ""
+
+#: assets/js/translations.js:453
+msgid "Once you activate, deactivate or uninstall addons, they will appear here."
+msgstr ""
+
+#: assets/js/translations.js:457
+msgid "This module tracks plugin and theme activity, including activation, deactivation, and uninstallation, and provides a complete history for debugging and site analysis."
+msgstr ""
+
+#: assets/js/translations.js:461
+msgid "(Only the current site will be monitored. Activities on child sites will not be tracked)."
+msgstr ""
+
+#: assets/js/translations.js:465
+msgid "You disabled this module. Please enable it in the settings to start recording addon activities."
+msgstr ""
+
+#: assets/js/translations.js:469
+msgid "Go to settings"
+msgstr ""
+
+#: assets/js/translations.js:470
+msgid "Search for"
+msgstr ""
+
+#: assets/js/translations.js:471
+msgid "Addon name or slug"
+msgstr ""
+
+#: assets/js/translations.js:472
+msgid "Activity type"
+msgstr ""
+
+#: assets/js/translations.js:473
+msgid "Filter"
+msgstr ""
+
+#: assets/js/translations.js:474
+msgid "Total activities"
+msgstr ""
+
+#: assets/js/translations.js:475
+msgid "Refresh"
+msgstr ""
+
+#: assets/js/translations.js:476
+msgid "Reset filters"
+msgstr ""
+
+#: assets/js/translations.js:477
+msgid "(All dates/times are in your local time zone)"
+msgstr ""
+
+#: assets/js/translations.js:478
+msgid "Unlock Addons Activity Timeline"
+msgstr ""
+
+#: assets/js/translations.js:479
+msgid "Upgrade to the Premium to access the addons activity timeline."
+msgstr ""
+
+#: assets/js/translations.js:480
+msgid "Complete activity timeline"
+msgstr ""
+
+#: assets/js/translations.js:481
+msgid "See when an addon was activated or removed"
+msgstr ""
+
+#: assets/js/translations.js:482
+msgid "Search and filter activities"
+msgstr ""
+
+#: assets/js/translations.js:483
+msgid "Upgrade to Premium"
+msgstr ""
+
+#: assets/js/translations.js:484
+msgid "Learn more about Premium features"
+msgstr ""
+
+#: assets/js/translations.js:485
+msgid "Overview"
+msgstr ""
+
+#: assets/js/translations.js:486
+msgid "Tables analytics"
+msgstr ""
+
+#: assets/js/translations.js:487
+msgid "Last analytics execution was successful on:"
+msgstr ""
+
+#: assets/js/translations.js:488
+msgid "Last analytics execution failed on:"
+msgstr ""
+
+#: assets/js/translations.js:489
+msgid "You disabled this module. Please enable it in the settings to track database changes."
+msgstr ""
+
+#: assets/js/translations.js:493
+msgid " (local time)"
+msgstr ""
+
+#: assets/js/translations.js:494
+msgid "Note: Analytics data is refreshed every 24 hours."
+msgstr ""
+
+#: assets/js/translations.js:497
+msgid "Tables added"
+msgstr ""
+
+#: assets/js/translations.js:498
+msgid "Tables deleted"
+msgstr ""
+
+#: assets/js/translations.js:499
+msgid "Daily"
+msgstr ""
+
+#: assets/js/translations.js:500
+msgid "Monthly"
+msgstr ""
+
+#: assets/js/translations.js:501
+msgid "Last 7 days"
+msgstr ""
+
+#: assets/js/translations.js:502
+msgid "Last 30 days"
+msgstr ""
+
+#: assets/js/translations.js:503
+msgid "Last 90 days"
+msgstr ""
+
+#: assets/js/translations.js:504
+msgid "Please select valid start and end dates."
+msgstr ""
+
+#: assets/js/translations.js:505
+msgid "Start date cannot be after end date."
+msgstr ""
+
+#: assets/js/translations.js:506
+msgid "Quick ranges"
+msgstr ""
+
+#: assets/js/translations.js:507
+msgid "From"
+msgstr ""
+
+#: assets/js/translations.js:508
+msgid "To"
+msgstr ""
+
+#: assets/js/translations.js:509
+msgid "Apply"
+msgstr ""
+
+#: assets/js/translations.js:510
+msgid "Refresh analytics"
+msgstr ""
+
+#: assets/js/translations.js:511
+msgid "Tables count"
+msgstr ""
+
+#: assets/js/translations.js:512
+msgid "Raw data"
+msgstr ""
+
+#: assets/js/translations.js:513
+msgid "Date"
+msgstr ""
+
+#: assets/js/translations.js:514
+msgid "DB size (MB)"
+msgstr ""
+
+#: assets/js/translations.js:515
+msgid "Tables added on:"
+msgstr ""
+
+#: assets/js/translations.js:516
+msgid "view"
+msgstr ""
+
+#: assets/js/translations.js:517
+msgid "Tables deleted on:"
+msgstr ""
+
+#: assets/js/translations.js:518
+msgid "Unlock Database Analytics"
+msgstr ""
+
+#: assets/js/translations.js:519
+msgid "Upgrade to the Premium to access comprehensive database analytics."
+msgstr ""
+
+#: assets/js/translations.js:523
+msgid "Database size chart"
+msgstr ""
+
+#: assets/js/translations.js:524
+msgid "Tables count chart"
+msgstr ""
+
+#: assets/js/translations.js:525
+msgid "See exactly tables added/deleted"
+msgstr ""
+
+#: assets/js/translations.js:526
+msgid "Custom date range filtering"
+msgstr ""
+
+#: assets/js/translations.js:527
+msgid "View charts by day or month"
+msgstr ""
+
+#: assets/js/translations.js:528
+msgid "Select tables ..."
+msgstr ""
+
+#: assets/js/translations.js:529
+msgid "Search..."
+msgstr ""
+
+#: assets/js/translations.js:530
+msgid "Unselect all"
+msgstr ""
+
+#: assets/js/translations.js:531
+msgid "No tables match your search."
+msgstr ""
+
+#: assets/js/translations.js:532
+msgid "Total rows"
+msgstr ""
+
+#: assets/js/translations.js:533
+msgid "Total columns"
+msgstr ""
+
+#: assets/js/translations.js:534
+msgid "Rows"
+msgstr ""
+
+#: assets/js/translations.js:535
+msgid "Columns"
+msgstr ""
+
+#: assets/js/translations.js:536
+msgid "Table size"
+msgstr ""
+
+#: assets/js/translations.js:537
+msgid "Please select a table!"
+msgstr ""
+
+#: assets/js/translations.js:538
+msgid "Select one or more tables to view analytics."
+msgstr ""
+
+#: assets/js/translations.js:539
+msgid "Unlock Tables Analytics"
+msgstr ""
+
+#: assets/js/translations.js:540
+msgid "Upgrade to the Premium to access comprehensive tables analytics."
+msgstr ""
+
+#: assets/js/translations.js:544
+msgid "Tables size charts"
+msgstr ""
+
+#: assets/js/translations.js:545
+msgid "Individual or multiple table selection"
+msgstr ""
+
+#: assets/js/translations.js:546
+msgid "Track tables rows & columns changes"
+msgstr ""
+
+#: assets/js/translations.js:553
+msgid "Days"
+msgstr ""
+
+#: assets/js/translations.js:554
+msgid "Preserve items from the last X days from being cleaned."
+msgstr ""
+
+#: assets/js/translations.js:555
+msgid "Items"
+msgstr ""
+
+#: assets/js/translations.js:556
+msgid "(premium)"
+msgstr ""
+
+#: assets/js/translations.js:557
+msgid "Keep the last X items for each parent (e.g., the last 5 revisions per post). If an item has no parent, keep the last X items globally."
+msgstr ""
+
+#: assets/js/translations.js:561
+msgid "Available in the premium version."
+msgstr ""
+
+#. translators: %s: WooCommerce cleanup item label.
+#: assets/js/translations.js:564
+#, js-format
+msgid "WooCommerce: %s"
+msgstr ""
+
+#: assets/js/translations.js:567
+msgid "Action Scheduler completed actions"
+msgstr ""
+
+#: assets/js/translations.js:568
+msgid "Action Scheduler failed actions"
+msgstr ""
+
+#: assets/js/translations.js:569
+msgid "Action Scheduler canceled actions"
+msgstr ""
+
+#: assets/js/translations.js:570
+msgid "Action Scheduler completed logs"
+msgstr ""
+
+#: assets/js/translations.js:571
+msgid "Action Scheduler failed logs"
+msgstr ""
+
+#: assets/js/translations.js:572
+msgid "Action Scheduler canceled logs"
+msgstr ""
+
+#: assets/js/translations.js:573
+msgid "Action Scheduler orphan logs"
+msgstr ""
+
+#: assets/js/translations.js:574
+msgid "Name & start date are required"
+msgstr ""
+
+#: assets/js/translations.js:575
+msgid "Updated successfully!"
+msgstr ""
+
+#: assets/js/translations.js:576
+msgid "Created successfully!"
+msgstr ""
+
+#: assets/js/translations.js:577
+msgid "'Keep last' not applicable"
+msgstr ""
+
+#: assets/js/translations.js:578
+msgid "Keep last"
+msgstr ""
+
+#: assets/js/translations.js:579
+msgid "Back"
+msgstr ""
+
+#: assets/js/translations.js:580
+msgid "Select items to clean"
+msgstr ""
+
+#: assets/js/translations.js:581
+msgid "Select items…"
+msgstr ""
+
+#: assets/js/translations.js:582
+msgid "items selected"
+msgstr ""
+
+#: assets/js/translations.js:583
+msgid "Unselect All"
+msgstr ""
+
+#: assets/js/translations.js:584
+msgid "Select All"
+msgstr ""
+
+#: assets/js/translations.js:585
+msgid "In premium"
+msgstr ""
+
+#: assets/js/translations.js:586
+msgid "Premium Features Selected"
+msgstr ""
+
+#: assets/js/translations.js:587
+msgid "The following operations are only available in the premium version and will not be cleaned:"
+msgstr ""
+
+#: assets/js/translations.js:591
+msgid "Premium only"
+msgstr ""
+
+#: assets/js/translations.js:592
+msgid "Will not be cleaned"
+msgstr ""
+
+#: assets/js/translations.js:593
+msgid "Select actions to do"
+msgstr ""
+
+#: assets/js/translations.js:594
+msgid "Update task"
+msgstr ""
+
+#: assets/js/translations.js:595
+msgid "Create task"
+msgstr ""
+
+#. translators: %d: number of selected items
+#: assets/js/translations.js:598
+#, js-format
+msgid "%d selected"
+msgstr ""
+
+#: assets/js/translations.js:601
+msgid "Task name"
+msgstr ""
+
+#: assets/js/translations.js:602
+msgid "Frequency"
+msgstr ""
+
+#: assets/js/translations.js:603
+msgid "Start time"
+msgstr ""
+
+#: assets/js/translations.js:604
+msgid "Local time"
+msgstr ""
+
+#: assets/js/translations.js:606
+msgid "Paused"
+msgstr ""
+
+#: assets/js/translations.js:607
+msgid "Summary"
+msgstr ""
+
+#: assets/js/translations.js:608
+msgid "Items to clean"
+msgstr ""
+
+#: assets/js/translations.js:609
+msgid "Premium items (won't be cleaned)"
+msgstr ""
+
+#: assets/js/translations.js:610
+msgid "Actions to do"
+msgstr ""
+
+#: assets/js/translations.js:611
+msgid "No operations selected yet"
+msgstr ""
+
+#: assets/js/translations.js:612
+msgid "more"
+msgstr ""
+
+#: assets/js/translations.js:613
+msgid "Deleted successfully!"
+msgstr ""
+
+#: assets/js/translations.js:614
+msgid "Delete task?"
+msgstr ""
+
+#. translators: %s: task name
+#: assets/js/translations.js:617
+#, js-format
+msgid "Task to delete: %s"
+msgstr ""
+
+#: assets/js/translations.js:620
+msgid "New automated task"
+msgstr ""
+
+#: assets/js/translations.js:621
+msgid "Free Plan"
+msgstr ""
+
+#. translators: 1: number of tasks used, 2: total task limit
+#: assets/js/translations.js:624
+#, js-format
+msgid "%1$d/%2$d tasks used"
+msgstr ""
+
+#: assets/js/translations.js:631
+msgid "Upgrade"
+msgstr ""
+
+#: assets/js/translations.js:632
+msgid "Total Tasks"
+msgstr ""
+
+#: assets/js/translations.js:633
+msgid "Active Tasks"
+msgstr ""
+
+#: assets/js/translations.js:634
+msgid "Paused Tasks"
+msgstr ""
+
+#: assets/js/translations.js:635
+msgid "No tasks found!"
+msgstr ""
+
+#: assets/js/translations.js:636
+msgid "You don't have any tasks matching the selected filter."
+msgstr ""
+
+#: assets/js/translations.js:637
+msgid "Get started by creating your first automated cleaning task."
+msgstr ""
+
+#: assets/js/translations.js:638
+msgid "Unlock Premium Automation"
+msgstr ""
+
+#: assets/js/translations.js:639
+msgid "Upgrade to create unlimited tasks with advanced features."
+msgstr ""
+
+#: assets/js/translations.js:640
+msgid "Unlimited Automated Tasks"
+msgstr ""
+
+#: assets/js/translations.js:641
+msgid "Create as many automation tasks as you need."
+msgstr ""
+
+#: assets/js/translations.js:642
+msgid "Many Premium Features"
+msgstr ""
+
+#: assets/js/translations.js:643
+msgid "Access advanced cleaning options, analytics, and more."
+msgstr ""
+
+#: assets/js/translations.js:644
+msgid "Priority Support"
+msgstr ""
+
+#: assets/js/translations.js:645
+msgid "Get expert assistance and early access to new features."
+msgstr ""
+
+#: assets/js/translations.js:646
+msgid "Maybe Later"
+msgstr ""
+
+#: assets/js/translations.js:647
+msgid "30-day money-back guarantee. No questions asked."
+msgstr ""
+
+#: assets/js/translations.js:648
+msgid "Start date:"
+msgstr ""
+
+#: assets/js/translations.js:649
+msgid "Frequency:"
+msgstr ""
+
+#: assets/js/translations.js:650
+msgid "Last run:"
+msgstr ""
+
+#. translators: %s: time ago string
+#: assets/js/translations.js:653
+#, js-format
+msgid "Executed %s"
+msgstr ""
+
+#: assets/js/translations.js:656
+msgid "Next run:"
+msgstr ""
+
+#. translators: %s: remaining time string
+#: assets/js/translations.js:659
+#, js-format
+msgid "Runs in %s"
+msgstr ""
+
+#: assets/js/translations.js:662
+msgid "Running now"
+msgstr ""
+
+#: assets/js/translations.js:663
+msgid "Items to clean:"
+msgstr ""
+
+#: assets/js/translations.js:664
+msgid "Created:"
+msgstr ""
+
+#: assets/js/translations.js:665
+msgid "Edited:"
+msgstr ""
+
+#: assets/js/translations.js:666
+msgid "never"
+msgstr ""
+
+#: assets/js/translations.js:667
+msgid "Edit"
+msgstr ""
+
+#: assets/js/translations.js:668
+msgid "Events log"
+msgstr ""
+
+#: assets/js/translations.js:669
+msgid "premium"
+msgstr ""
+
+#: assets/js/translations.js:670
+msgid "Cleared successfully!"
+msgstr ""
+
+#: assets/js/translations.js:671
+msgid "Clear these events log?"
+msgstr ""
+
+#: assets/js/translations.js:672
+msgid "Clear"
+msgstr ""
+
+#: assets/js/translations.js:673
+msgid "Cleanup events log for:"
+msgstr ""
+
+#: assets/js/translations.js:674
+msgid "items cleaned"
+msgstr ""
+
+#: assets/js/translations.js:675
+msgid "No events recorded"
+msgstr ""
+
+#: assets/js/translations.js:676
+msgid "Events will appear here when the task runs."
+msgstr ""
+
+#: assets/js/translations.js:677
+msgid "Unlock Cleanup Events Log"
+msgstr ""
+
+#: assets/js/translations.js:678
+msgid "Upgrade to the Premium to access detailed logs of your cleanup tasks."
+msgstr ""
+
+#: assets/js/translations.js:682
+msgid "Detailed tasks events logging"
+msgstr ""
+
+#: assets/js/translations.js:683
+msgid "See what was cleaned and when"
+msgstr ""
+
+#: assets/js/translations.js:684
+msgid "Clear events log anytime you want"
+msgstr ""
+
+#: assets/js/translations.js:685
+msgid "Priority support"
+msgstr ""
+
+#: assets/js/translations.js:686
+msgid "Clear log"
+msgstr ""
+
+#: assets/js/translations.js:687
+msgid "Next run"
+msgstr ""
+
+#: assets/js/translations.js:688
+msgid "Action"
+msgstr ""
+
+#: assets/js/translations.js:689
+msgid "Interval"
+msgstr ""
+
+#: assets/js/translations.js:690
+msgid "Belongs to"
+msgstr ""
+
+#: assets/js/translations.js:691
+#: assets/js/translations.js:785
+msgid "The plugin or theme the item belongs to, determined after running a scan. If uncertain, an estimated likelihood (%) is shown, the higher the percentage, the more likely the item belongs to that plugin/theme."
+msgstr ""
+
+#: assets/js/translations.js:695
+msgid "Bulk actions"
+msgstr ""
+
+#: assets/js/translations.js:696
+msgid "Scan"
+msgstr ""
+
+#: assets/js/translations.js:697
+#: assets/js/translations.js:789
+msgid "The scan allows the identification of the plugins or themes to which the items belong."
+msgstr ""
+
+#: assets/js/translations.js:701
+msgid "Edit -Belongs to-"
+msgstr ""
+
+#: assets/js/translations.js:702
+#: assets/js/translations.js:793
+msgid "You can edit the scan results to correctly associate items with their respective plugins or themes if you are certain of their belonging."
+msgstr ""
+
+#: assets/js/translations.js:706
+msgid "Delete the selected items."
+msgstr ""
+
+#: assets/js/translations.js:707
+msgid "Posts"
+msgstr ""
+
+#: assets/js/translations.js:708
+msgid "Comments"
+msgstr ""
+
+#: assets/js/translations.js:709
+msgid "Meta / relations"
+msgstr ""
+
+#: assets/js/translations.js:710
+msgid "Unused post meta"
+msgstr ""
+
+#: assets/js/translations.js:711
+msgid "Duplicated post meta"
+msgstr ""
+
+#: assets/js/translations.js:712
+msgid "Unused comment meta"
+msgstr ""
+
+#: assets/js/translations.js:713
+msgid "Duplicated comment meta"
+msgstr ""
+
+#: assets/js/translations.js:714
+msgid "Unused user meta"
+msgstr ""
+
+#: assets/js/translations.js:715
+msgid "Duplicated user meta"
+msgstr ""
+
+#: assets/js/translations.js:716
+msgid "Unused term meta"
+msgstr ""
+
+#: assets/js/translations.js:717
+msgid "Duplicated term meta"
+msgstr ""
+
+#: assets/js/translations.js:718
+msgid "Action Scheduler"
+msgstr ""
+
+#: assets/js/translations.js:720
+msgid "Run selected cleanups"
+msgstr ""
+
+#: assets/js/translations.js:721
+msgid "Cleanup completed successfully!"
+msgstr ""
+
+#. translators: %s: item label in lowercase
+#: assets/js/translations.js:724
+#, js-format
+msgid "Clean all %s?"
+msgstr ""
+
+#: assets/js/translations.js:727
+msgid "Once cleaned, this action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:728
+msgid "Clean up"
+msgstr ""
+
+#. translators: %d: number of selected items
+#: assets/js/translations.js:731
+#, js-format
+msgid "Clean %d selected items?"
+msgstr ""
+
+#: assets/js/translations.js:734
+msgid "items to clean up"
+msgstr ""
+
+#: assets/js/translations.js:735
+msgid "You can save:"
+msgstr ""
+
+#: assets/js/translations.js:736
+msgid "Calculating..."
+msgstr ""
+
+#: assets/js/translations.js:737
+msgid "All items cleaned!"
+msgstr ""
+
+#: assets/js/translations.js:738
+msgid "Auto count"
+msgstr ""
+
+#: assets/js/translations.js:739
+msgid "When enabled, the plugin automatically counts cleanable items and estimates the potential space savings. You can disable it for items with a large number of entries to improve performance."
+msgstr ""
+
+#: assets/js/translations.js:743
+msgid "Count"
+msgstr ""
+
+#: assets/js/translations.js:744
+msgid "Lost space"
+msgstr ""
+
+#: assets/js/translations.js:745
+msgid "View"
+msgstr ""
+
+#: assets/js/translations.js:746
+msgid "Keep data from the last X days from being displayed or cleaned. The plugin will only show and clean data older than the number of days or items you specify."
+msgstr ""
+
+#: assets/js/translations.js:750
+msgid "0 KB"
+msgstr ""
+
+#: assets/js/translations.js:751
+msgid "N/A"
+msgstr ""
+
+#: assets/js/translations.js:752
+msgid "Unlock the Action Scheduler Cleanup"
+msgstr ""
+
+#: assets/js/translations.js:753
+msgid "Upgrade to the Premium to clean up old or unused Action Scheduler data."
+msgstr ""
+
+#: assets/js/translations.js:757
+msgid "Loading settings..."
+msgstr ""
+
+#: assets/js/translations.js:758
+msgid "Enter number"
+msgstr ""
+
+#: assets/js/translations.js:759
+msgid "of data"
+msgstr ""
+
+#: assets/js/translations.js:760
+msgid "per post"
+msgstr ""
+
+#: assets/js/translations.js:761
+msgid "in total"
+msgstr ""
+
+#: assets/js/translations.js:762
+msgid "No items are kept with this configuration."
+msgstr ""
+
+#: assets/js/translations.js:763
+msgid "Apply this to all other items (if applicable)"
+msgstr ""
+
+#: assets/js/translations.js:764
+msgid "Saving..."
+msgstr ""
+
+#: assets/js/translations.js:765
+msgid "Save"
+msgstr ""
+
+#: assets/js/translations.js:766
+msgid "The retention by items is available in the premium version."
+msgstr ""
+
+#: assets/js/translations.js:767
+msgid "System info"
+msgstr ""
+
+#: assets/js/translations.js:768
+msgid "Errors log"
+msgstr ""
+
+#: assets/js/translations.js:769
+msgid "WP debug"
+msgstr ""
+
+#: assets/js/translations.js:770
+msgid "Clear the log?"
+msgstr ""
+
+#: assets/js/translations.js:771
+msgid "Are you sure you want to clear the log?"
+msgstr ""
+
+#: assets/js/translations.js:772
+msgid "Empty!"
+msgstr ""
+
+#: assets/js/translations.js:773
+msgid "Download file"
+msgstr ""
+
+#: assets/js/translations.js:774
+msgid "Copied"
+msgstr ""
+
+#: assets/js/translations.js:775
+msgid "Copy"
+msgstr ""
+
+#: assets/js/translations.js:776
+msgid "(All dates/times in the logs are shown in your server's time zone)"
+msgstr ""
+
+#: assets/js/translations.js:780
+msgid "Option name"
+msgstr ""
+
+#: assets/js/translations.js:781
+msgid "Indicates whether an option is autoloaded or not. Values to autoload are: yes, on, auto, auto-on. Values to not autoload are: no, off, auto-off"
+msgstr ""
+
+#: assets/js/translations.js:797
+msgid "Set autoload to Yes"
+msgstr ""
+
+#: assets/js/translations.js:798
+msgid "Setting autoload to Yes can decrease the performance of your website if you have a lot of options set to autoload."
+msgstr ""
+
+#: assets/js/translations.js:802
+msgid "Set autoload to No"
+msgstr ""
+
+#: assets/js/translations.js:803
+msgid "Setting autoload to No can improve the performance of your website by reducing the number of options loaded on each page."
+msgstr ""
+
+#: assets/js/translations.js:807
+msgid "Post type"
+msgstr ""
+
+#: assets/js/translations.js:808
+msgid "Posts count"
+msgstr ""
+
+#: assets/js/translations.js:809
+msgid "Visibility"
+msgstr ""
+
+#: assets/js/translations.js:810
+msgid "Whether a post type is intended for use publicly either via the admin interface or by front-end users"
+msgstr ""
+
+#: assets/js/translations.js:814
+msgid "Delete posts"
+msgstr ""
+
+#: assets/js/translations.js:815
+msgid "Delete all posts of the selected post types."
+msgstr ""
+
+#: assets/js/translations.js:816
+msgid "19 standard cleanup tools"
+msgstr ""
+
+#: assets/js/translations.js:817
+msgid "Revisions, Auto drafts, unused postmeta, unused usermeta, expired transients, and more."
+msgstr ""
+
+#: assets/js/translations.js:821
+msgid "Preview before you clean"
+msgstr ""
+
+#: assets/js/translations.js:822
+msgid "Inspect revisions, unused post meta, and other items with full context prior to deletion."
+msgstr ""
+
+#: assets/js/translations.js:826
+msgid "Retention by date"
+msgstr ""
+
+#: assets/js/translations.js:827
+msgid "Keep the latest items per day and delete older ones."
+msgstr ""
+
+#: assets/js/translations.js:828
+msgid "6 data managers"
+msgstr ""
+
+#: assets/js/translations.js:829
+msgid "Manage and deeply clean Tables, Options, Post Meta, User Meta, Transients, and Cron Jobs."
+msgstr ""
+
+#: assets/js/translations.js:833
+msgid "Autoload health check"
+msgstr ""
+
+#: assets/js/translations.js:834
+msgid "Check autoloaded options and spot heavy offenders. Then flip autoload on/off as needed."
+msgstr ""
+
+#: assets/js/translations.js:838
+msgid "Basic filters"
+msgstr ""
+
+#: assets/js/translations.js:839
+msgid "Quickly locate items to clean, optimize, or manage with preset filters."
+msgstr ""
+
+#: assets/js/translations.js:843
+msgid "Retention by count"
+msgstr ""
+
+#: assets/js/translations.js:844
+msgid "Keep the last N items per post or entity and delete the rest."
+msgstr ""
+
+#: assets/js/translations.js:845
+msgid "Advanced filters"
+msgstr ""
+
+#: assets/js/translations.js:846
+msgid "Filter items by name patterns, metadata, and precise criteria."
+msgstr ""
+
+#: assets/js/translations.js:847
+msgid "Local scan"
+msgstr ""
+
+#: assets/js/translations.js:848
+msgid "Scan options, tables, post meta, and more to identify their plugin/theme owners and detect orphans."
+msgstr ""
+
+#: assets/js/translations.js:852
+msgid "Remote SmartScan™"
+msgstr ""
+
+#: assets/js/translations.js:853
+msgid "Cross-check your items with a curated cloud database for improved ownership accuracy."
+msgstr ""
+
+#: assets/js/translations.js:857
+msgid "Who uses this item?"
+msgstr ""
+
+#: assets/js/translations.js:858
+msgid "After a remote scan, see which plugins/themes rely on a given option, table, etc."
+msgstr ""
+
+#: assets/js/translations.js:862
+msgid "Assign specific items to the correct plugin/theme when needed."
+msgstr ""
+
+#: assets/js/translations.js:863
+msgid "Contribute corrections"
+msgstr ""
+
+#: assets/js/translations.js:864
+msgid "Submit your verified corrections to improve global scan accuracy."
+msgstr ""
+
+#: assets/js/translations.js:868
+msgid "Action Scheduler cleaners"
+msgstr ""
+
+#: assets/js/translations.js:869
+msgid "7 dedicated tools for canceled, failed, and completed actions and logs."
+msgstr ""
+
+#: assets/js/translations.js:873
+msgid "Create scheduled tasks"
+msgstr ""
+
+#: assets/js/translations.js:874
+msgid "Automate routine cleanups exactly when you want them."
+msgstr ""
+
+#: assets/js/translations.js:875
+msgid "Up to 5 tasks"
+msgstr ""
+
+#: assets/js/translations.js:876
+msgid "Unlimited"
+msgstr ""
+
+#: assets/js/translations.js:877
+msgid "Execution logs for scheduled tasks"
+msgstr ""
+
+#: assets/js/translations.js:878
+msgid "View detailed logs for every scheduled task you create."
+msgstr ""
+
+#: assets/js/translations.js:879
+msgid "Database analytics overview"
+msgstr ""
+
+#: assets/js/translations.js:880
+msgid "Track total DB size and table count over time; drill into daily or monthly changes."
+msgstr ""
+
+#: assets/js/translations.js:884
+msgid "Tables growth analytics"
+msgstr ""
+
+#: assets/js/translations.js:885
+msgid "Monitor per-table size and row count trends to spot issues early."
+msgstr ""
+
+#: assets/js/translations.js:889
+msgid "Add-ons activity monitor"
+msgstr ""
+
+#: assets/js/translations.js:890
+msgid "See when plugins are activated, deactivated, or uninstalled, then filter the timeline."
+msgstr ""
+
+#: assets/js/translations.js:894
+msgid "Multisite support"
+msgstr ""
+
+#: assets/js/translations.js:895
+msgid "Designed for networks, manage cleanup across sites."
+msgstr ""
+
+#: assets/js/translations.js:896
+msgid "Limited"
+msgstr ""
+
+#: assets/js/translations.js:897
+msgid "Full"
+msgstr ""
+
+#: assets/js/translations.js:898
+msgid "Multisite: filter by site"
+msgstr ""
+
+#: assets/js/translations.js:899
+msgid "Target specific sub-sites when reviewing or cleaning data."
+msgstr ""
+
+#: assets/js/translations.js:900
+msgid "Advanced scan settings & CPU control"
+msgstr ""
+
+#: assets/js/translations.js:901
+msgid "Tune scan depth and resource usage to fit your hosting limits."
+msgstr ""
+
+#: assets/js/translations.js:902
+msgid "Priority email support"
+msgstr ""
+
+#: assets/js/translations.js:903
+msgid "Skip the queue and get help from the developers faster."
+msgstr ""
+
+#: assets/js/translations.js:904
+msgid "You're using the Free version"
+msgstr ""
+
+#: assets/js/translations.js:905
+msgid "You're using the Premium version"
+msgstr ""
+
+#: assets/js/translations.js:906
+msgid "Upgrade to Premium for the most accurate, safe database cleanup"
+msgstr ""
+
+#: assets/js/translations.js:910
+msgid "FAQ"
+msgstr ""
+
+#: assets/js/translations.js:911
+msgid "Pre-sale Question"
+msgstr ""
+
+#: assets/js/translations.js:912
+msgid "Features"
+msgstr ""
+
+#: assets/js/translations.js:913
+msgid "Installed"
+msgstr ""
+
+#: assets/js/translations.js:914
+msgid "Upgrade now"
+msgstr ""
+
+#: assets/js/translations.js:915
+msgid "All premium plans include a 30-day money-back guarantee"
+msgstr ""
+
+#: assets/js/translations.js:916
+msgid "License"
+msgstr ""
+
+#: assets/js/translations.js:917
+msgid "Manage your license from this section."
+msgstr ""
+
+#: assets/js/translations.js:918
+msgid "Menu placement"
+msgstr ""
+
+#: assets/js/translations.js:919
+msgid "Select where to display the plugin menu."
+msgstr ""
+
+#: assets/js/translations.js:920
+msgid "Hide/show tabs"
+msgstr ""
+
+#: assets/js/translations.js:921
+msgid "Select which tabs to hide or show in the plugin menu."
+msgstr ""
+
+#: assets/js/translations.js:922
+msgid "Performance settings"
+msgstr ""
+
+#: assets/js/translations.js:923
+msgid "Configure performance-related settings for database cleanup operations and optimization."
+msgstr ""
+
+#: assets/js/translations.js:927
+msgid "Scan settings"
+msgstr ""
+
+#: assets/js/translations.js:928
+msgid "The scan process identifies to which plugin/theme a table, option, or other element belongs. You can customize this process using the scan settings below."
+msgstr ""
+
+#: assets/js/translations.js:932
+msgid "Other settings"
+msgstr ""
+
+#: assets/js/translations.js:933
+msgid "Other settings to configure the plugin behavior."
+msgstr ""
+
+#: assets/js/translations.js:934
+msgid "Remote scan credits"
+msgstr ""
+
+#: assets/js/translations.js:935
+#: assets/js/translations.js:1182
+msgid "Enhancing local scan accuracy via remote server analysis. Each credit enables one request to improve detection of tables, options, and other elements linked to specific plugins and themes."
+msgstr ""
+
+#: assets/js/translations.js:939
+msgid "Table name"
+msgstr ""
+
+#: assets/js/translations.js:940
+msgid "Type"
+msgstr ""
+
+#: assets/js/translations.js:941
+msgid "Overhead"
+msgstr ""
+
+#: assets/js/translations.js:942
+msgid "Total disk space wasted by table overhead, which can be recovered by optimizing the table."
+msgstr ""
+
+#: assets/js/translations.js:946
+msgid "Optimize"
+msgstr ""
+
+#: assets/js/translations.js:947
+msgid "The optimization reorganizes the physical storage of table data to reduce storage space and improve efficiency when accessing the table"
+msgstr ""
+
+#: assets/js/translations.js:951
+msgid "Repair"
+msgstr ""
+
+#: assets/js/translations.js:952
+msgid "Repair a possibly corrupted table (for certain storage engines only)."
+msgstr ""
+
+#: assets/js/translations.js:956
+msgid "Convert to InnoDB"
+msgstr ""
+
+#: assets/js/translations.js:957
+msgid "Convert the table storage engine to InnoDB."
+msgstr ""
+
+#: assets/js/translations.js:958
+msgid "Refresh the statistics for the selected tables."
+msgstr ""
+
+#: assets/js/translations.js:959
+msgid "Empty rows"
+msgstr ""
+
+#: assets/js/translations.js:960
+msgid "Delete all data from a table without deleting the table itself."
+msgstr ""
+
+#: assets/js/translations.js:964
+msgid "Delete the table with all its data."
+msgstr ""
+
+#: assets/js/translations.js:965
+msgid "Transient name"
+msgstr ""
+
+#: assets/js/translations.js:966
+msgid "Indicates whether an transient is autoloaded or not. Values to autoload are: yes, on, auto, auto-on. Values to not autoload are: no, off, auto-off"
+msgstr ""
+
+#: assets/js/translations.js:971
+msgid "Setting autoload to Yes can decrease the performance of your website if you have a lot of transients set to autoload."
+msgstr ""
+
+#: assets/js/translations.js:975
+msgid "Setting autoload to No can improve the performance of your website by reducing the number of transients loaded on each page."
+msgstr ""
+
+#: assets/js/translations.js:979
+msgid "User ID"
+msgstr ""
+
+#. translators: %s: cleanup item label.
+#: assets/js/translations.js:982
+#, js-format
+msgid "Purge %s?"
+msgstr ""
+
+#: assets/js/translations.js:985
+msgid "This action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:986
+msgid "All items will be permanently deleted. This action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:990
+msgid "Purge"
+msgstr ""
+
+#: assets/js/translations.js:991
+msgid "Purge all item types?"
+msgstr ""
+
+#: assets/js/translations.js:992
+msgid "All matching items will be permanently deleted. This action cannot be undone!"
+msgstr ""
+
+#: assets/js/translations.js:996
+msgid "Purge all"
+msgstr ""
+
+#: assets/js/translations.js:997
+msgid "Purge completed successfully!"
+msgstr ""
+
+#: assets/js/translations.js:998
+msgid "WooCommerce is not installed or activated. Please install and activate WooCommerce to use this feature."
+msgstr ""
+
+#: assets/js/translations.js:1002
+msgid "Refresh all"
+msgstr ""
+
+#: assets/js/translations.js:1003
+msgid "Purging…"
+msgstr ""
+
+#: assets/js/translations.js:1004
+msgid "No count"
+msgstr ""
+
+#: assets/js/translations.js:1005
+msgid "Scanning…"
+msgstr ""
+
+#. translators: 1: item count, 2: human-readable size.
+#: assets/js/translations.js:1008
+#, js-format
+msgid "View %1$s items (%2$s)"
+msgstr ""
+
+#: assets/js/translations.js:1012
+msgid "items"
+msgstr ""
+
+#: assets/js/translations.js:1013
+msgid "n/a"
+msgstr ""
+
+#: assets/js/translations.js:1014
+msgid "All clean"
+msgstr ""
+
+#: assets/js/translations.js:1016
+msgid "Not installed"
+msgstr ""
+
+#: assets/js/translations.js:1017
+msgid "Known plugins using this item"
+msgstr ""
+
+#: assets/js/translations.js:1018
+msgid "Known themes using this item"
+msgstr ""
+
+#: assets/js/translations.js:1019
+msgid "No data available!"
+msgstr ""
+
+#: assets/js/translations.js:1020
+msgid "Name:"
+msgstr ""
+
+#: assets/js/translations.js:1021
+msgid "Belongs to:"
+msgstr ""
+
+#: assets/js/translations.js:1022
+msgid "Not scanned yet!"
+msgstr ""
+
+#: assets/js/translations.js:1023
+msgid "[scan]"
+msgstr ""
+
+#: assets/js/translations.js:1024
+msgid "upgrade"
+msgstr ""
+
+#: assets/js/translations.js:1025
+msgid "Belongs to WordPress"
+msgstr ""
+
+#: assets/js/translations.js:1026
+msgid "Cannot be deleted or edited!"
+msgstr ""
+
+#: assets/js/translations.js:1027
+msgid "You manually corrected this items!"
+msgstr ""
+
+#: assets/js/translations.js:1028
+msgid "More info"
+msgstr ""
+
+#: assets/js/translations.js:1029
+msgid "No action selected!"
+msgstr ""
+
+#: assets/js/translations.js:1030
+msgid "Please select an action to apply!"
+msgstr ""
+
+#: assets/js/translations.js:1031
+msgid "No items selected!"
+msgstr ""
+
+#: assets/js/translations.js:1032
+msgid "Please select at least one item to apply the action!"
+msgstr ""
+
+#. translators: %1s: number of selected items
+#: assets/js/translations.js:1035
+#, js-format
+msgid "Apply to selected (%1s)"
+msgstr ""
+
+#. translators: %1s: number of selected items
+#: assets/js/translations.js:1040
+#, js-format
+msgid "Apply (%1s)"
+msgstr ""
+
+#: assets/js/translations.js:1043
+msgid "Items below have invalid prefixes, indicating they likely originate from other WordPress installations or unrelated projects."
+msgstr ""
+
+#: assets/js/translations.js:1047
+msgid "Items below seem to be orphaned. However, please ensure you only delete entries you are certain are safe to remove."
+msgstr ""
+
+#: assets/js/translations.js:1051
+msgid "Upgrade to Premium to scan the items below and identify which plugin or theme they belong to."
+msgstr ""
+
+#: assets/js/translations.js:1055
+msgid "Items below have not been scanned yet. Click the button above to scan them and identify their associated plugin or theme."
+msgstr ""
+
+#: assets/js/translations.js:1059
+msgid "Items below are non-public post types with a high number of posts. Only delete them if you are sure they are safe to remove."
+msgstr ""
+
+#. translators: %1$s: autoload size, %2$s: autoload limit
+#: assets/js/translations.js:1065
+#, js-format
+msgid "Your autoload size (%1$s) exceeds your WordPress recommendation (%2$s). Reducing it may improve performance."
+msgstr ""
+
+#: assets/js/translations.js:1072
+msgid "Items below exceed 150KB, which is considered large! Please review them."
+msgstr ""
+
+#: assets/js/translations.js:1076
+msgid "Transients below are expired. You can safely delete them."
+msgstr ""
+
+#: assets/js/translations.js:1077
+msgid "Items below are duplicate post meta entries. You can safely delete them, as the original entries will be preserved automatically."
+msgstr ""
+
+#: assets/js/translations.js:1081
+msgid "Items below are unused post meta (linked to missing posts). You can safely delete them."
+msgstr ""
+
+#: assets/js/translations.js:1085
+msgid "Items below are duplicate user meta entries. You can safely delete them, as the original entries will be preserved automatically."
+msgstr ""
+
+#: assets/js/translations.js:1089
+msgid "Items below are unused user meta (linked to missing users). You can safely delete them."
+msgstr ""
+
+#: assets/js/translations.js:1093
+msgid "The cron jobs below have no registered actions. Review and delete those that are obsolete."
+msgstr ""
+
+#: assets/js/translations.js:1097
+msgid "Note:"
+msgstr ""
+
+#: assets/js/translations.js:1098
+msgid "Transients with autoload enabled also increase the autoload size. Check the Transients tab as well."
+msgstr ""
+
+#: assets/js/translations.js:1102
+msgid "Items per page"
+msgstr ""
+
+#: assets/js/translations.js:1103
+msgid "Installed plugin"
+msgstr ""
+
+#: assets/js/translations.js:1104
+msgid "Installed theme"
+msgstr ""
+
+#: assets/js/translations.js:1107
+msgid "Don't assign to any category"
+msgstr ""
+
+#: assets/js/translations.js:1108
+msgid "Assign to custom addon"
+msgstr ""
+
+#: assets/js/translations.js:1109
+msgid "Select a plugin"
+msgstr ""
+
+#: assets/js/translations.js:1110
+msgid "Select a theme"
+msgstr ""
+
+#: assets/js/translations.js:1111
+msgid "A scan is in progress. Please wait until it finishes before performing this action"
+msgstr ""
+
+#: assets/js/translations.js:1115
+msgid "Use a maximum of 200 lowercase letters, numbers, hyphens, and underscores only."
+msgstr ""
+
+#: assets/js/translations.js:1119
+msgid "Enter the addon's name using a maximum of 200 characters."
+msgstr ""
+
+#. translators: %d: number of selected items
+#: assets/js/translations.js:1122
+#, js-format
+msgid "Assign the %d selected item(s) to:"
+msgstr ""
+
+#: assets/js/translations.js:1125
+msgid "Items will not be assigned to any plugin/theme and will be marked as 'not scanned'"
+msgstr ""
+
+#: assets/js/translations.js:1129
+msgid "Assign items to a plugin or theme that is no longer installed."
+msgstr ""
+
+#: assets/js/translations.js:1130
+msgid "Saved custom addons"
+msgstr ""
+
+#: assets/js/translations.js:1131
+msgid "Search saved custom addons"
+msgstr ""
+
+#: assets/js/translations.js:1132
+msgid "No custom addons found."
+msgstr ""
+
+#: assets/js/translations.js:1133
+msgid "Addon type"
+msgstr ""
+
+#: assets/js/translations.js:1134
+msgid "Plugin"
+msgstr ""
+
+#: assets/js/translations.js:1136
+msgid "Slug"
+msgstr ""
+
+#: assets/js/translations.js:1137
+msgid "e.g. my-custom-plugin"
+msgstr ""
+
+#: assets/js/translations.js:1138
+msgid "Addon's name"
+msgstr ""
+
+#: assets/js/translations.js:1139
+msgid "e.g. My Custom Plugin"
+msgstr ""
+
+#: assets/js/translations.js:1140
+msgid "This correction will be sent anonymously to our server"
+msgstr ""
+
+#: assets/js/translations.js:1141
+msgid "You have chosen to submit your manual corrections to the plugin server. To change this, please navigate to the plugin settings page"
+msgstr ""
+
+#: assets/js/translations.js:1145
+msgid "Send this correction anonymously to the plugin server?"
+msgstr ""
+
+#: assets/js/translations.js:1146
+msgid "Post type:"
+msgstr ""
+
+#: assets/js/translations.js:1147
+msgid "No data found."
+msgstr ""
+
+#: assets/js/translations.js:1148
+msgid "Show all"
+msgstr ""
+
+#: assets/js/translations.js:1149
+msgid "Hide all"
+msgstr ""
+
+#: assets/js/translations.js:1150
+msgid "No credits found associated with your license."
+msgstr ""
+
+#: assets/js/translations.js:1151
+msgid "Failed to sync balance."
+msgstr ""
+
+#: assets/js/translations.js:1152
+msgid "Synchronize balance"
+msgstr ""
+
+#: assets/js/translations.js:1157
+msgid "Go to settings to activate license"
+msgstr ""
+
+#: assets/js/translations.js:1158
+msgid "Synchronizing your balance..."
+msgstr ""
+
+#. translators: %d: number of remaining credits
+#: assets/js/translations.js:1161
+#, js-format
+msgid "You have %d remaining credits to use."
+msgstr ""
+
+#: assets/js/translations.js:1164
+msgid "Your balance has been synchronized."
+msgstr ""
+
+#: assets/js/translations.js:1165
+msgid "OK"
+msgstr ""
+
+#: assets/js/translations.js:1166
+msgid "Please enter a credit code."
+msgstr ""
+
+#: assets/js/translations.js:1167
+msgid "An error occurred."
+msgstr ""
+
+#: assets/js/translations.js:1168
+msgid "Failed to update balance."
+msgstr ""
+
+#: assets/js/translations.js:1169
+msgid "Redeem credit code"
+msgstr ""
+
+#: assets/js/translations.js:1170
+msgid "You must first activate your plugin license before redeeming a credit code."
+msgstr ""
+
+#: assets/js/translations.js:1174
+msgid "Credit code"
+msgstr ""
+
+#: assets/js/translations.js:1175
+msgid "Enter your credit code"
+msgstr ""
+
+#: assets/js/translations.js:1176
+msgid "Redeeming..."
+msgstr ""
+
+#: assets/js/translations.js:1177
+msgid "Redeem"
+msgstr ""
+
+#: assets/js/translations.js:1178
+msgid "Where to find my credit codes?"
+msgstr ""
+
+#: assets/js/translations.js:1179
+msgid "Done"
+msgstr ""
+
+#: assets/js/translations.js:1180
+msgid "Updating balance..."
+msgstr ""
+
+#: assets/js/translations.js:1181
+msgid "Update balance"
+msgstr ""
+
+#: assets/js/translations.js:1186
+msgid "Table:"
+msgstr ""
+
+#: assets/js/translations.js:1187
+msgid "Table Rows"
+msgstr ""
+
+#: assets/js/translations.js:1188
+msgid "Table Structure"
+msgstr ""
+
+#: assets/js/translations.js:1189
+msgid "No structure data available."
+msgstr ""
+
+#: assets/js/translations.js:1190
+msgid "Indexes"
+msgstr ""
+
+#: assets/js/translations.js:1191
+msgid "Table Status"
+msgstr ""
+
+#: assets/js/translations.js:1192
+msgid "Create Statement"
+msgstr ""
+
+#: assets/js/translations.js:1193
+msgid "No columns found."
+msgstr ""
+
+#: assets/js/translations.js:1194
+msgid "Primary key"
+msgstr ""
+
+#: assets/js/translations.js:1195
+msgid "Index"
+msgstr ""
+
+#: assets/js/translations.js:1196
+msgid "No indexes found."
+msgstr ""
+
+#. translators: %d is the number of columns in this index
+#: assets/js/translations.js:1199
+#, js-format
+msgid "%d column(s) in this index"
+msgstr ""
+
+#: assets/js/translations.js:1202
+msgid "Unique"
+msgstr ""
+
+#: assets/js/translations.js:1203
+msgid "No status data available."
+msgstr ""
+
+#: assets/js/translations.js:1204
+msgid "Property"
+msgstr ""
+
+#: assets/js/translations.js:1205
+msgid "No create statement available."
+msgstr ""
+
+#: assets/js/translations.js:1206
+msgid "The SQL statement used to create this table. Useful for documentation or recreating the table structure elsewhere."
+msgstr ""
+
+#: assets/js/translations.js:1210
+msgid "Show original value"
+msgstr ""
+
+#: assets/js/translations.js:1211
+msgid "Show formatted value"
+msgstr ""
+
+#: assets/js/translations.js:1212
+msgid "Refresh data"
+msgstr ""
+
+#: assets/js/translations.js:1213
+msgid "item"
+msgid_plural "items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:1214
+msgid "[Filter applied]"
+msgstr ""
+
+#: assets/js/translations.js:1215
+msgid "of"
+msgstr ""
+
+#: assets/js/translations.js:1216
+msgid "Public"
+msgstr ""
+
+#: assets/js/translations.js:1217
+msgid "Non-public"
+msgstr ""
+
+#: assets/js/translations.js:1229
+msgid "Your license has expired. Please renew it to continue receiving updates and support. Click the 'My Account' link below to access your account and renew your license."
+msgstr ""
+
+#: assets/js/translations.js:1233
+msgid "Your license is expiring soon. It should automatically renew if your payment method is valid."
+msgstr ""
+
+#: assets/js/translations.js:1237
+msgid "Your license is invalid. Please deactivate and enter a valid license key."
+msgstr ""
+
+#: assets/js/translations.js:1241
+msgid "Your license has been disabled. Please note that this license will no longer receive updates. (contact support if you think this is a mistake)"
+msgstr ""
+
+#: assets/js/translations.js:1245
+msgid "Your license does not match this product. Please deactivate and enter a valid license key for Advanced Database Cleaner."
+msgstr ""
+
+#: assets/js/translations.js:1249
+msgid "Your license is inactive for this site. Please deactivate it and activate it again."
+msgstr ""
+
+#: assets/js/translations.js:1262
+msgid "License key"
+msgstr ""
+
+#: assets/js/translations.js:1263
+msgid "Deactivate license"
+msgstr ""
+
+#: assets/js/translations.js:1264
+msgid "Activate license"
+msgstr ""
+
+#: assets/js/translations.js:1266
+msgid "Expiration date"
+msgstr ""
+
+#. translators: %s is the plan name for the license key
+#: assets/js/translations.js:1269
+#, js-format
+msgid "You are on the %s."
+msgstr ""
+
+#: assets/js/translations.js:1272
+msgid "If you need more activations, you can upgrade by paying the difference between plans."
+msgstr ""
+
+#: assets/js/translations.js:1276
+msgid "Refreshing .."
+msgstr ""
+
+#: assets/js/translations.js:1277
+msgid "Refresh info"
+msgstr ""
+
+#: assets/js/translations.js:1278
+msgid "My account"
+msgstr ""
+
+#: assets/js/translations.js:1279
+msgid "[In main site]"
+msgstr ""
+
+#: assets/js/translations.js:1280
+msgid "At least one menu position must be enabled."
+msgstr ""
+
+#: assets/js/translations.js:1281
+msgid "Network admin menu"
+msgstr ""
+
+#: assets/js/translations.js:1282
+msgid "Places the plugin menu on the left side of your WP Network Admin."
+msgstr ""
+
+#: assets/js/translations.js:1286
+msgid "Left sidebar menu"
+msgstr ""
+
+#: assets/js/translations.js:1287
+msgid "Places the plugin menu on the left side of your WP Admin"
+msgstr ""
+
+#: assets/js/translations.js:1288
+msgid "Submenu under tools"
+msgstr ""
+
+#: assets/js/translations.js:1289
+msgid "Places the plugin menu under the WP Tools menu"
+msgstr ""
+
+#: assets/js/translations.js:1290
+msgid "Disable confirmation on cleanup actions?"
+msgstr ""
+
+#: assets/js/translations.js:1291
+msgid "If you disable this, all cleanup actions (like delete and empty) will be executed immediately after you click on the clean button, without showing a confirmation modal. This could lead to accidental data loss, as you won't have the chance to review your action. Are you sure?"
+msgstr ""
+
+#: assets/js/translations.js:1295
+msgid "Allow actions on WordPress items?"
+msgstr ""
+
+#: assets/js/translations.js:1296
+msgid "If you disable this, you will be able to take actions (like delete) on items that belong to WordPress core. This could break your site. Are you sure?"
+msgstr ""
+
+#: assets/js/translations.js:1300
+msgid "Enable analytics"
+msgstr ""
+
+#: assets/js/translations.js:1301
+msgid "If enabled, the plugin will run a daily task to analyze your database and tables locally, so you can view relevant statistics in the plugin dashboard."
+msgstr ""
+
+#: assets/js/translations.js:1305
+msgid "Enable addons activity"
+msgstr ""
+
+#: assets/js/translations.js:1306
+msgid "If enabled, the plugin will track the activity of your plugins/themes when they get activated, deactivated or uninstalled. Providing a complete history of your addons activity."
+msgstr ""
+
+#: assets/js/translations.js:1311
+msgid "If enabled, the plugin will list every table in your database, including those with invalid prefix, typically belonging to other WordPress installations or unrelated projects. If you're unsure, keep this option disabled."
+msgstr ""
+
+#: assets/js/translations.js:1315
+msgid "Prevent taking action on WordPress items"
+msgstr ""
+
+#: assets/js/translations.js:1316
+msgid "If enabled, the plugin will prevent taking dangerous actions (like delete) on items that belong to WordPress core, in order to prevent breaking the site. We recommend keeping this enabled for safety reasons."
+msgstr ""
+
+#: assets/js/translations.js:1320
+msgid "Always show confirmation on dangerous actions"
+msgstr ""
+
+#: assets/js/translations.js:1321
+msgid "If disabled, dangerous actions (like delete and empty) will be executed immediately after you click on the corresponding clean button, without showing a confirmation modal. This could lead to accidental data loss, as you won't have the chance to review your action. We recommend keeping this enabled for safety reasons."
+msgstr ""
+
+#: assets/js/translations.js:1325
+msgid "Disable"
+msgstr ""
+
+#: assets/js/translations.js:1326
+msgid "Please enter a valid number"
+msgstr ""
+
+#. translators: 1: minimum value, 2: maximum value
+#: assets/js/translations.js:1329
+#: assets/js/translations.js:1391
+#: assets/js/translations.js:1400
+#: assets/js/translations.js:1409
+#: assets/js/translations.js:1418
+#, js-format
+msgid "Value must be between %1$s and %2$s"
+msgstr ""
+
+#: assets/js/translations.js:1336
+msgid "Direct SQL queries"
+msgstr ""
+
+#: assets/js/translations.js:1337
+msgid "This method uses direct SQL queries for cleanup operations. This can be faster but may bypass some WordPress mechanisms. For example, when deleting trashed posts, this method will directly remove the posts from the database without triggering associated hooks and actions, which may leave related metadata, taxonomies, and other linked data intact and potentially lead to extra orphaned items."
+msgstr ""
+
+#: assets/js/translations.js:1341
+msgid "Native WP functions"
+msgstr ""
+
+#: assets/js/translations.js:1342
+msgid "This method uses WordPress native functions for cleanup operations. This ensures compatibility with WordPress but may be slower. For example, when deleting trashed posts, this method will trigger all associated hooks and actions to delete related metadata, taxonomies, and other linked data, ensuring a thorough cleanup."
+msgstr ""
+
+#: assets/js/translations.js:1346
+msgid "Choose the method used for database cleanup operations. SQL offers direct database manipulation, while Native uses WordPress functions."
+msgstr ""
+
+#: assets/js/translations.js:1352
+msgid "Specifies the number of rows to process in each batch when reading database tables. Reducing this value can help optimize performance and memory usage when dealing with large tables."
+msgstr ""
+
+#: assets/js/translations.js:1356
+msgid "Save settings"
+msgstr ""
+
+#: assets/js/translations.js:1357
+msgid "Today's usage"
+msgstr ""
+
+#: assets/js/translations.js:1358
+msgid "Total credits used:"
+msgstr ""
+
+#. translators: %s is the number of remaining credits
+#: assets/js/translations.js:1361
+#, js-format
+msgid "(You have %s credits left)"
+msgstr ""
+
+#: assets/js/translations.js:1364
+msgid "(You have used all your credits)"
+msgstr ""
+
+#: assets/js/translations.js:1365
+msgid "Credits used today:"
+msgstr ""
+
+#: assets/js/translations.js:1366
+msgid "Daily limit will reset in:"
+msgstr ""
+
+#: assets/js/translations.js:1367
+msgid "Last info refresh:"
+msgstr ""
+
+#: assets/js/translations.js:1368
+msgid "Refreshing..."
+msgstr ""
+
+#: assets/js/translations.js:1369
+msgid "Refresh credits info"
+msgstr ""
+
+#: assets/js/translations.js:1370
+msgid "Buy credits"
+msgstr ""
+
+#: assets/js/translations.js:1371
+msgid "You have reached your daily limit for remote server requests. Please wait for your credits to reset."
+msgstr ""
+
+#: assets/js/translations.js:1375
+msgid "You have reached your daily limit for remote server requests. Please wait for your credits to reset or upgrade your license for a higher limit."
+msgstr ""
+
+#: assets/js/translations.js:1379
+msgid "Upgrade my license"
+msgstr ""
+
+#: assets/js/translations.js:1380
+msgid "You have used all your total credits. Buy more credits or redeem a credit code to continue using the remote scan."
+msgstr ""
+
+#: assets/js/translations.js:1384
+msgid "No credits found for your Pro license. Please buy or redeem credits to use the remote scan feature."
+msgstr ""
+
+#: assets/js/translations.js:1388
+msgid "Where to track my credits usage?"
+msgstr ""
+
+#. translators: 1: minimum value, 2: maximum value
+#: assets/js/translations.js:1427
+#, js-format
+msgid "Value must be between %1$s and %2$s, or 0 for the default value."
+msgstr ""
+
+#: assets/js/translations.js:1437
+msgid "Use full CPU power"
+msgstr ""
+
+#: assets/js/translations.js:1438
+msgid "When enabled, the plugin will utilize the full CPU power during scans, which may lead to faster scan times but could impact server performance. Disabling this option will make the plugin use less CPU, potentially reducing performance impact on your server during scans."
+msgstr ""
+
+#: assets/js/translations.js:1443
+msgid "Specifies the duration (in milliseconds) for which the plugin can utilize the CPU before pausing. Try decreasing this value if you notice performance issues during scans, especially on shared hosting environments."
+msgstr ""
+
+#: assets/js/translations.js:1447
+msgid "CPU pause time"
+msgstr ""
+
+#: assets/js/translations.js:1448
+msgid "Specifies the duration (in milliseconds) for which the plugin pauses to allow other processes to utilize the CPU. Try increasing this value if you notice performance issues during scans, especially on shared hosting environments."
+msgstr ""
+
+#: assets/js/translations.js:1453
+msgid "Specifies the number of lines to process in each batch when reading files. Adjusting this value can help optimize performance and memory usage."
+msgstr ""
+
+#: assets/js/translations.js:1457
+msgid "File content chunks (in KB)"
+msgstr ""
+
+#: assets/js/translations.js:1458
+msgid "Specifies the size (in kilobytes) of the content chunk read from a file in each iteration. Reducing this value may help prevent memory issues when processing large files."
+msgstr ""
+
+#: assets/js/translations.js:1463
+msgid "Specifies the maximum execution time for scan operations in seconds. Adjusting this value can help prevent long-running scans from causing timeout issues. Default is 0, which means the plugin will decide the best value."
+msgstr ""
+
+#: assets/js/translations.js:1467
+msgid "Orphans"
+msgstr ""
+
+#: assets/js/translations.js:1469
+msgid "Not scanned"
+msgstr ""
+
+#: assets/js/translations.js:1470
+msgid "Show manual corrections only"
+msgstr ""
+
+#: assets/js/translations.js:1471
+msgid "Local scan only"
+msgstr ""
+
+#: assets/js/translations.js:1472
+msgid "Less accurate"
+msgstr ""
+
+#: assets/js/translations.js:1473
+msgid "The plugin will only scan your items against your local files; no data will be sent to the remote database."
+msgstr ""
+
+#: assets/js/translations.js:1477
+msgid "Local & remote scan"
+msgstr ""
+
+#: assets/js/translations.js:1478
+msgid "More accurate"
+msgstr ""
+
+#: assets/js/translations.js:1479
+msgid "The plugin will begin by scanning items against your local files, then it will anonymously send the scan results to a secure remote database for more accurate results."
+msgstr ""
+
+#: assets/js/translations.js:1483
+msgid "Buy V4 bundled with remote scan"
+msgstr ""
+
+#: assets/js/translations.js:1484
+msgid "Use credits"
+msgstr ""
+
+#: assets/js/translations.js:1485
+msgid "Selected"
+msgstr ""
+
+#: assets/js/translations.js:1486
+msgid "A scan is already in progress. Please reload the page to see the current scan status."
+msgstr ""
+
+#: assets/js/translations.js:1490
+msgid "Select the scan configuration"
+msgstr ""
+
+#: assets/js/translations.js:1491
+msgid "The scan will identify which plugins or themes your items are associated with"
+msgstr ""
+
+#: assets/js/translations.js:1495
+msgid "Scan type"
+msgstr ""
+
+#: assets/js/translations.js:1496
+msgid "Recommended"
+msgstr ""
+
+#: assets/js/translations.js:1497
+msgid "The remote scan is a powerful feature that enhances largely the accuracy of the scan results. Since it costs ongoing charges to maintain, it is not included in the lifetime plan. There are two ways to use it:"
+msgstr ""
+
+#: assets/js/translations.js:1501
+msgid "You can upgrade to the full Version 4, which includes the Remote Scan and Cloud features, available on an annual subscription."
+msgstr ""
+
+#: assets/js/translations.js:1505
+msgid "As a lifetime license holder, you'll receive a permanent 50% discount, applied to your first purchase and all future renewals."
+msgstr ""
+
+#: assets/js/translations.js:1509
+msgid "Get the full version 4"
+msgstr ""
+
+#: assets/js/translations.js:1510
+msgid "Buy credits to use the Remote Scan feature and pay only when you need it. Or simply redeem a credit code if you already have one."
+msgstr ""
+
+#: assets/js/translations.js:1514
+msgid "Please activate your plugin license first to perform a remote scan."
+msgstr ""
+
+#: assets/js/translations.js:1518
+msgid "Items to scan"
+msgstr ""
+
+#: assets/js/translations.js:1519
+msgid "Override manual corrections?"
+msgstr ""
+
+#: assets/js/translations.js:1520
+msgid "This will override any manual 'belongs to' corrections you have made. If you are unsure, leave this option disabled."
+msgstr ""
+
+#: assets/js/translations.js:1524
+msgid "Start the scan"
+msgstr ""
+
+#: assets/js/translations.js:1525
+msgid "By starting this scan, you agree to anonymously send the local scan results to our secure remote database to improve your scan accuracy. No personal data is collected."
+msgstr ""
+
+#: assets/js/translations.js:1529
+msgid "Preparing items to scan"
+msgstr ""
+
+#: assets/js/translations.js:1530
+msgid "Collecting PHP files to scan"
+msgstr ""
+
+#: assets/js/translations.js:1531
+msgid "Regex scan (skipped)"
+msgstr ""
+
+#: assets/js/translations.js:1532
+msgid "Exact match scan"
+msgstr ""
+
+#: assets/js/translations.js:1533
+msgid "Partial match scan"
+msgstr ""
+
+#: assets/js/translations.js:1534
+msgid "skipped"
+msgstr ""
+
+#: assets/js/translations.js:1535
+msgid "Preparing local scan results"
+msgstr ""
+
+#: assets/js/translations.js:1536
+msgid "Requesting remote scan"
+msgstr ""
+
+#: assets/js/translations.js:1537
+msgid "Remote scan"
+msgstr ""
+
+#: assets/js/translations.js:1538
+msgid "corrected items:"
+msgstr ""
+
+#: assets/js/translations.js:1539
+msgid "The scan cannot start!"
+msgstr ""
+
+#: assets/js/translations.js:1540
+msgid "check logs"
+msgstr ""
+
+#: assets/js/translations.js:1541
+msgid "Scan started"
+msgstr ""
+
+#: assets/js/translations.js:1542
+msgid "Too many items to send due to your server limitation. Trimmed items:"
+msgstr ""
+
+#: assets/js/translations.js:1546
+msgid "Timeouts occurred:"
+msgstr ""
+
+#: assets/js/translations.js:1547
+msgid "Forced timeouts occurred:"
+msgstr ""
+
+#: assets/js/translations.js:1548
+msgid "Retry sending the request"
+msgstr ""
+
+#: assets/js/translations.js:1549
+msgid "Max retries reached"
+msgstr ""
+
+#: assets/js/translations.js:1550
+msgid "Request failed"
+msgstr ""
+
+#: assets/js/translations.js:1551
+msgid "Show balance"
+msgstr ""
+
+#. translators: %d: queue position number
+#: assets/js/translations.js:1554
+#, js-format
+msgid "You are at position %d in the queue."
+msgstr ""
+
+#: assets/js/translations.js:1557
+msgid "The server is scanning your items..."
+msgstr ""
+
+#: assets/js/translations.js:1558
+msgid "Info: the remote scan is taking more than expected!"
+msgstr ""
+
+#: assets/js/translations.js:1559
+msgid "Scan completed"
+msgstr ""
+
+#: assets/js/translations.js:1560
+msgid "Scan stopped"
+msgstr ""
+
+#: assets/js/translations.js:1561
+msgid "Scan timeout occurred!"
+msgstr ""
+
+#: assets/js/translations.js:1562
+msgid "Server is under maintenance. Please retry again after few minutes"
+msgstr ""
+
+#: assets/js/translations.js:1566
+msgid "An error occurred while getting the results from the server. Check the logs for more details"
+msgstr ""
+
+#: assets/js/translations.js:1570
+msgid "Scan in progress"
+msgstr ""
+
+#: assets/js/translations.js:1571
+msgid "Stopping scan..."
+msgstr ""
+
+#: assets/js/translations.js:1572
+msgid "Stop the scan"
+msgstr ""
+
+#: assets/js/translations.js:1573
+msgid "Hide scan process details"
+msgstr ""
+
+#: assets/js/translations.js:1574
+msgid "Scan progress"
+msgstr ""
+
+#: assets/js/translations.js:1575
+msgid "Step 1"
+msgstr ""
+
+#: assets/js/translations.js:1576
+msgid "Collecting files"
+msgstr ""
+
+#: assets/js/translations.js:1577
+msgid "Collecting the PHP files to be scanned. This process may take some time, depending on the number of plugin and theme files you have."
+msgstr ""
+
+#: assets/js/translations.js:1581
+msgid "Step 2"
+msgstr ""
+
+#: assets/js/translations.js:1582
+msgid "Exact match"
+msgstr ""
+
+#: assets/js/translations.js:1583
+msgid "The scan will attempt to find exact matches for items names in the previously collected files."
+msgstr ""
+
+#: assets/js/translations.js:1587
+msgid "Step 3"
+msgstr ""
+
+#: assets/js/translations.js:1588
+msgid "Partial match"
+msgstr ""
+
+#: assets/js/translations.js:1589
+msgid "For any remaining items from the previous step, the scan will attempt to find partial matches for items names."
+msgstr ""
+
+#: assets/js/translations.js:1593
+msgid "Step 4"
+msgstr ""
+
+#: assets/js/translations.js:1594
+msgid "The local scan results will be transmitted to a remote database to enhance the accuracy of results and provide more detailed information about the items. No sensitive data is sent."
+msgstr ""
+
+#: assets/js/translations.js:1598
+msgid "Scan details"
+msgstr ""
+
+#: assets/js/translations.js:1599
+msgid "Retrying..."
+msgstr ""
+
+#: assets/js/translations.js:1600
+msgid "Retry"
+msgstr ""
+
+#: assets/js/translations.js:1601
+msgid "Total timeouts:"
+msgstr ""
+
+#: assets/js/translations.js:1602
+msgid "Total forced timeouts:"
+msgstr ""
+
+#: assets/js/translations.js:1603
+msgid "files"
+msgstr ""
+
+#: assets/js/translations.js:1604
+msgid "Show filters"
+msgstr ""
+
+#: assets/js/translations.js:1605
+msgid "Hide filters"
+msgstr ""
+
+#. translators: %s: number of cron jobs with no action
+#: assets/js/translations.js:1608
+#, js-format
+msgid "%s cron job with no action"
+msgid_plural "%s cron jobs with no action"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of cron jobs not scanned
+#: assets/js/translations.js:1618
+#, js-format
+msgid "%s cron job not scanned"
+msgid_plural "%s cron jobs not scanned"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:1626
+msgid "Search in"
+msgstr ""
+
+#: assets/js/translations.js:1627
+msgid "Loading ..."
+msgstr ""
+
+#: assets/js/translations.js:1628
+msgid "Interval (secs)"
+msgstr ""
+
+#: assets/js/translations.js:1629
+msgid "Has action"
+msgstr ""
+
+#: assets/js/translations.js:1630
+msgid "Unlock Advanced Filters:"
+msgstr ""
+
+#: assets/js/translations.js:1631
+msgid "Term ID"
+msgstr ""
+
+#: assets/js/translations.js:1632
+msgid "Size big than"
+msgstr ""
+
+#: assets/js/translations.js:1633
+msgid "Unlock Advanced Filters"
+msgstr ""
+
+#. translators: %s: autoload size
+#: assets/js/translations.js:1636
+#, js-format
+msgid "Autoload size is good (%s)"
+msgstr ""
+
+#. translators: %s: autoload size
+#: assets/js/translations.js:1641
+#, js-format
+msgid "Autoload size is big (%s)"
+msgstr ""
+
+#. translators: %s: number of big options
+#: assets/js/translations.js:1646
+#, js-format
+msgid "%s big option detected"
+msgid_plural "%s big options detected"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of options not scanned
+#: assets/js/translations.js:1651
+#, js-format
+msgid "%s option not scanned"
+msgid_plural "%s options not scanned"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of unused post meta
+#: assets/js/translations.js:1656
+#, js-format
+msgid "%s unused post meta"
+msgstr ""
+
+#. translators: %s: number of duplicated post meta
+#: assets/js/translations.js:1661
+#, js-format
+msgid "%s duplicated post meta"
+msgstr ""
+
+#. translators: %s: number of big post meta
+#: assets/js/translations.js:1666
+#, js-format
+msgid "%s big post meta detected"
+msgstr ""
+
+#. translators: %s: number of post meta not scanned
+#: assets/js/translations.js:1671
+#, js-format
+msgid "%s post meta not scanned"
+msgstr ""
+
+#: assets/js/translations.js:1674
+msgid "Unused"
+msgstr ""
+
+#: assets/js/translations.js:1675
+msgid "Duplicated"
+msgstr ""
+
+#. translators: %s: number of post types not scanned
+#: assets/js/translations.js:1678
+#, js-format
+msgid "%s post types not scanned"
+msgstr ""
+
+#. translators: %s: number of non-public post types
+#: assets/js/translations.js:1683
+#, js-format
+msgid "%s non-public post types with many posts"
+msgstr ""
+
+#: assets/js/translations.js:1686
+msgid "Posts count >"
+msgstr ""
+
+#: assets/js/translations.js:1687
+msgid "To optimize"
+msgstr ""
+
+#: assets/js/translations.js:1688
+msgid "To repair"
+msgstr ""
+
+#: assets/js/translations.js:1689
+msgid "Valid prefix"
+msgstr ""
+
+#: assets/js/translations.js:1690
+msgid "Invalid prefix"
+msgstr ""
+
+#. translators: %s: number of tables to optimize
+#: assets/js/translations.js:1693
+#, js-format
+msgid "%s table to optimize"
+msgid_plural "%s tables to optimize"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of tables to repair
+#: assets/js/translations.js:1698
+#, js-format
+msgid "%s table to repair"
+msgid_plural "%s tables to repair"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of tables with invalid prefix
+#: assets/js/translations.js:1703
+#, js-format
+msgid "%s table with invalid prefix"
+msgid_plural "%s tables with invalid prefix"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of tables not scanned
+#: assets/js/translations.js:1713
+#, js-format
+msgid "%s table not scanned"
+msgid_plural "%s tables not scanned"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/js/translations.js:1716
+msgid "Table status"
+msgstr ""
+
+#: assets/js/translations.js:1717
+msgid "Prefix status"
+msgstr ""
+
+#. translators: %s: number of expired transients
+#: assets/js/translations.js:1720
+#, js-format
+msgid "%s expired transient detected"
+msgid_plural "%s expired transients detected"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of big transients
+#: assets/js/translations.js:1730
+#, js-format
+msgid "%s big transient detected"
+msgid_plural "%s big transients detected"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of transients not scanned
+#: assets/js/translations.js:1740
+#, js-format
+msgid "%s transient not scanned"
+msgid_plural "%s transients not scanned"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of unused user meta
+#: assets/js/translations.js:1750
+#, js-format
+msgid "%s unused user meta"
+msgstr ""
+
+#. translators: %s: number of duplicated user meta
+#: assets/js/translations.js:1755
+#, js-format
+msgid "%s duplicated user meta"
+msgstr ""
+
+#. translators: %s: number of big user meta
+#: assets/js/translations.js:1760
+#, js-format
+msgid "%s big user meta detected"
+msgstr ""
+
+#. translators: %s: number of user meta not scanned
+#: assets/js/translations.js:1765
+#, js-format
+msgid "%s user meta not scanned"
+msgstr ""

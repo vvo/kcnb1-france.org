@@ -12,7 +12,12 @@ function domain_mapping_gc_cache( $function, $directory ) {
 		return;
 	}
 
-	$sitedir = trailingslashit( preg_replace( '`^(https?:)?//`', '', $siteurl ) );
+	// Lowercased to match the directory the serving side writes.
+	// get_current_url_supercache_dir() builds the host segment from
+	// $WPSC_HTTP_HOST, which wp-cache-base.php has already lowercased, so a mapped
+	// domain carrying any uppercase was looked for in a directory that was never
+	// written. See #1081.
+	$sitedir = trailingslashit( strtolower( preg_replace( '`^(https?:)?//`', '', $siteurl ) ) );
 
 	if ( 'homepage' === $directory ) {
 		$directory = '';
@@ -40,7 +45,12 @@ function domain_mapping_supercachedir( $dir ) {
 		return $dir;
 	}
 
-	$sitedir = trailingslashit( preg_replace( '`^(https?:)?//`', '', $siteurl ) );
+	// Lowercased to match the directory the serving side writes.
+	// get_current_url_supercache_dir() builds the host segment from
+	// $WPSC_HTTP_HOST, which wp-cache-base.php has already lowercased, so a mapped
+	// domain carrying any uppercase was looked for in a directory that was never
+	// written. See #1081.
+	$sitedir = trailingslashit( strtolower( preg_replace( '`^(https?:)?//`', '', $siteurl ) ) );
 
 	return trailingslashit( $cache_path . 'supercache/' . $sitedir );
 }
@@ -68,7 +78,7 @@ function wp_supercache_domain_mapping_admin() {
 	if ( null !== $requested_state && $valid_nonce ) {
 		$cache_domain_mapping = $requested_state;
 
-		wp_cache_replace_line( '^\s*\$cache_domain_mapping\s*=', '$cache_domain_mapping = ' . intval( $cache_domain_mapping ) . ';', $wp_cache_config_file );
+		wp_cache_replace_line( '^\s*\$cache_domain_mapping\s*=', '$cache_domain_mapping = ' . $cache_domain_mapping . ';', $wp_cache_config_file );
 		$changed = true;
 	}
 

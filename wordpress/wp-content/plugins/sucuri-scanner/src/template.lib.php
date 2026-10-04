@@ -50,8 +50,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      *
      * @see http://php.net/manual/en/function.gettype.php
      *
-     * @param  string $content The content of a template file which contains pseudo-variables.
-     * @param  array  $params  List of pseudo-variables that will be replaced in the template.
+     * @param string $content The content of a template file which contains pseudo-variables.
+     * @param array $params List of pseudo-variables that will be replaced in the template.
      * @return string          The content of the template with the pseudo-variables replated.
      */
     private static function replacePseudoVars($content = '', $params = array())
@@ -85,10 +85,11 @@ class SucuriScanTemplate extends SucuriScanRequest
 
         preg_match_all('~{{(.+?)}}~', $content, $matches);
 
-        if ( ! empty( $matches[1] ) ) {
-            foreach($matches[1] as $index => $string) {
-                $search  = $matches[0][$index];
-                $replace = ('en_US' !== $locale) ? translate($string, 'sucuri-scanner') : $string;
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $index => $string) {
+                $search = $matches[0][$index];
+                /* phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText */
+                $replace = ('en_US' !== $locale) ? __($string, 'sucuri-scanner') : $string;
                 $content = str_replace($search, $replace, $content);
             }
         }
@@ -99,8 +100,8 @@ class SucuriScanTemplate extends SucuriScanRequest
     /**
      * Gather and generate the information required globally by all the template files.
      *
-     * @param  string $target Scenario where the params are going to be replaced.
-     * @param  array  $params Key-value array with variables shared with the template.
+     * @param string $target Scenario where the params are going to be replaced.
+     * @param array $params Key-value array with variables shared with the template.
      * @return array          Additional list of variables for the template files.
      */
     private static function sharedParams($target = null, $params = array())
@@ -117,33 +118,33 @@ class SucuriScanTemplate extends SucuriScanRequest
         $params['WordPressVersion'] = self::siteVersion();
         $params['PluginVersion'] = SUCURISCAN_VERSION;
         $params['CleanDomain'] = self::getDomain();
-        $params['Year'] = date('Y');
+        $params['Year'] = gmdate('Y');
+        $params['FreemiumVisibility'] = SucuriScanInterface::isPremium() ? 'sucuriscan-hidden' : '';
 
         if (!array_key_exists('PageStyleClass', $params)) {
             $params['PageStyleClass'] = 'base';
         }
 
-        if ($target === 'base'
-            && current_user_can('manage_options')
-            && !SucuriScanAPI::getPluginKey()
-        ) {
-            $params['GenerateAPIKey.Visibility'] = 'visible';
-            $params['GenerateAPIKey.Modal'] = /* register-site */
+        if ($target === 'base' && SucuriScanPermissions::canManagePlugin()) {
+            $_page = self::get('page', '_page');
+            $isDashboard = ($_page == 'sucuriscan' || empty($_page));
+            $hasWafKey = (bool) SucuriScanFirewall::getKey();
 
-            SucuriScanTemplate::getModal(
-                'register-site',
-                array(
-                    'Title' => __('Generate API Key', 'sucuri-scanner'),
-                    'Identifier' => 'register-site',
-                    'Visibility' => 'hidden',
-                )
-            );
-        }
+            $cookieDismissed = (SucuriScanCookie::get('sucuriscan_waf_dismissed') === '1');
 
-        // Get a list of admin users for the API key generation.
-        if ($target === 'modal' && !SucuriScanAPI::getPluginKey()) {
-            $admin_users = SucuriScan::getUsersForAPIKey();
-            $params['AdminEmails'] = self::selectOptions($admin_users);
+            if ($isDashboard && !$hasWafKey && !$cookieDismissed) {
+                $params['GenerateAPIKey.Visibility'] = 'visible';
+                $params['GenerateAPIKey.Modal'] =
+                    SucuriScanTemplate::getModal(
+                        'activate-your-waf-key-modal',
+                        array(
+                            'Title' => __('Activate Your Firewall API Key', 'sucuri-scanner'),
+                            'Identifier' => 'activate-your-waf-key-modal',
+                            'Visibility' => 'visible',
+                            'FirewallManagementLink' => '',
+                        )
+                    );
+            }
         }
 
         return $params;
@@ -152,7 +153,7 @@ class SucuriScanTemplate extends SucuriScanRequest
     /**
      * Return a string indicating the visibility of a HTML component.
      *
-     * @param  bool $visible Whether the condition executed returned a positive value or not.
+     * @param bool $visible Whether the condition executed returned a positive value or not.
      * @return string        A string indicating the visibility of a HTML component.
      */
     public static function visibility($visible = false)
@@ -164,8 +165,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      * Generate an URL pointing to the page indicated in the method and that must
      * be loaded through the administrator panel.
      *
-     * @param  string $page Short name of the page that will be generated.
-     * @param  bool   $ajax True if the URL should point to the Ajax handler.
+     * @param string $page Short name of the page that will be generated.
+     * @param bool $ajax True if the URL should point to the Ajax handler.
      * @return string       Full string containing the link of the page.
      */
     public static function getUrl($page = '', $ajax = false)
@@ -191,7 +192,7 @@ class SucuriScanTemplate extends SucuriScanRequest
      * Generate an URL pointing to the page indicated in the method and that must
      * be loaded through the Ajax handler of the administrator panel.
      *
-     * @param  string $page Short name of the page that will be generated.
+     * @param string $page Short name of the page that will be generated.
      * @return string       Full string containing the link of the page.
      */
     public static function getAjaxUrl($page = '')
@@ -204,7 +205,7 @@ class SucuriScanTemplate extends SucuriScanRequest
      * template files, this will also generate the navigation bar and detect which
      * items in it are selected by the current page.
      *
-     * @param  array $params Key-value array with pseudo-variables shared with the template.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
      * @return array         A complementary list of pseudo-variables for the template files.
      */
     private static function linksAndNavbar($params = array())
@@ -239,8 +240,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      * by the dynamic variables provided by the developer through one of the parameters
      * of the function.
      *
-     * @param  string $html   The HTML content of a template file with its pseudo-variables parsed.
-     * @param  array  $params Key-value array with pseudo-variables shared with the template.
+     * @param string $html The HTML content of a template file with its pseudo-variables parsed.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
      * @return string         The formatted HTML content of the base template.
      */
     public static function getBaseTemplate($html = '', $params = array())
@@ -258,13 +259,16 @@ class SucuriScanTemplate extends SucuriScanRequest
      * by the dynamic variables provided by the developer through one of the parameters
      * of the function.
      *
-     * @param  string $template Filename of the template that will be used to generate the page.
-     * @param  array  $params   Key-value array with pseudo-variables shared with the template.
-     * @param  string $type     Template type; either page, section or snippet.
+     * @param string $template Filename of the template that will be used to generate the page.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
+     * @param string $type Template type; either page, section or snippet.
      * @return string           Formatted HTML code after pseudo-variables replacement.
      */
     public static function getTemplate($template = '', $params = array(), $type = 'page')
     {
+        $api_key = SucuriScanFirewall::getOption(':cloudproxy_apikey');
+        $dark_theme = SucuriScanInterface::getPreferredTheme() === 'dark';
+
         $params = is_array($params) ? $params : array();
 
         $filenames = array(
@@ -282,13 +286,18 @@ class SucuriScanTemplate extends SucuriScanRequest
         $params['PluginURL'] = SUCURISCAN_URL;
         $trailing = $_page ? 'admin.php?page=' . $_page : '';
         $params['CurrentURL'] = SucuriScan::adminURL($trailing);
+        $params['DashboardButtonVisibility'] = $_page == 'sucuriscan' ? 'hidden' : 'visible';
+        $params['SettingsButtonVisibility'] = $_page == 'sucuriscan_settings' ? 'hidden' : 'visible';
+        $params['FirewallButtonVisibility'] = $_page == 'sucuriscan_firewall' ? 'hidden' : 'visible';
+        $params['SucuriLogo'] = $dark_theme ? 'pluginlogo-darktheme.png' : 'pluginlogo.png';
 
         /* load raw content from the specified template file */
         $fpath = sprintf($filenames[$type], SUCURISCAN_PLUGIN_PATH, $template);
         $output = SucuriScanFileInfo::fileContent($fpath);
 
         /* replace the global pseudo-variables in the section/snippets templates. */
-        if ($template == 'base'
+        if (
+            $template == 'base'
             && array_key_exists('PageContent', $params)
             && strpos($params['PageContent'], '%%SUCURI.') !== false
         ) {
@@ -309,8 +318,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      * by the dynamic variables provided by the developer through one of the parameters
      * of the function.
      *
-     * @param  string $template Filename of the template that will be used to generate the page.
-     * @param  array  $params   Key-value array with pseudo-variables shared with the template.
+     * @param string $template Filename of the template that will be used to generate the page.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
      * @return string           The formatted HTML page after replace all the pseudo-variables.
      */
     public static function getSection($template = '', $params = array())
@@ -325,8 +334,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      * by the dynamic variables provided by the developer through one of the parameters
      * of the function.
      *
-     * @param  string $template Filename of the template that will be used to generate the page.
-     * @param  array  $params   Key-value array with pseudo-variables shared with the template.
+     * @param string $template Filename of the template that will be used to generate the page.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
      * @return string           The formatted HTML page after replace all the pseudo-variables.
      */
     public static function getModal($template = '', $params = array())
@@ -337,13 +346,13 @@ class SucuriScanTemplate extends SucuriScanRequest
             'Identifier' => 'foobar',
             'CssClass' => '',
             'Content' => '<p>Lorem ipsum dolor sit amet, consectetur adipisici'
-            . 'ng elit, sed do eiusmod tempor incididunt ut labore et dolore m'
-            . 'agna aliqua. Ut enim ad minim veniam, quis nostrud exercitation'
-            . ' ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis '
-            . 'aute irure dolor in reprehenderit in voluptate velit esse cillu'
-            . 'm dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupi'
-            . 'datat non proident, sunt in culpa qui officia deserunt mollit a'
-            . 'nim id est laborum.</p>',
+                . 'ng elit, sed do eiusmod tempor incididunt ut labore et dolore m'
+                . 'agna aliqua. Ut enim ad minim veniam, quis nostrud exercitation'
+                . ' ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis '
+                . 'aute irure dolor in reprehenderit in voluptate velit esse cillu'
+                . 'm dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupi'
+                . 'datat non proident, sunt in culpa qui officia deserunt mollit a'
+                . 'nim id est laborum.</p>',
         );
 
         if (!empty($template) && $template !== 'none') {
@@ -368,8 +377,8 @@ class SucuriScanTemplate extends SucuriScanRequest
      * by the dynamic variables provided by the developer through one of the parameters
      * of the function.
      *
-     * @param  string $template Filename of the template that will be used to generate the page.
-     * @param  array  $params   Key-value array with pseudo-variables shared with the template.
+     * @param string $template Filename of the template that will be used to generate the page.
+     * @param array $params Key-value array with pseudo-variables shared with the template.
      * @return string           The formatted HTML page after replace all the pseudo-variables.
      */
     public static function getSnippet($template = '', $params = array())
@@ -382,8 +391,8 @@ class SucuriScanTemplate extends SucuriScanRequest
     /**
      * Generate the HTML code necessary to render a list of options in a form.
      *
-     * @param  array      $allowed  Key-value array with allowed options.
-     * @param  string|int $selected Optional selected value from the list.
+     * @param array $allowed Key-value array with allowed options.
+     * @param string|int $selected Optional selected value from the list.
      * @return string               HTML code for the select box.
      */
     public static function selectOptions($allowed = array(), $selected = '')
@@ -423,12 +432,12 @@ class SucuriScanTemplate extends SucuriScanRequest
     /**
      * Generate the HTML code to display a pagination.
      *
-     * @param  string $base_url     Base URL for the links before the page number.
-     * @param  int    $total_items  Total quantity of items retrieved from a query.
-     * @param  int    $max_per_page Maximum number of items that will be shown per page.
+     * @param string $base_url Base URL for the links before the page number.
+     * @param int $total_items Total quantity of items retrieved from a query.
+     * @param int $max_per_page Maximum number of items that will be shown per page.
      * @return string               HTML code for a pagination generated using the provided data.
      */
-    public static function pagination($base_url = '', $total_items = 0, $max_per_page = 1)
+    public static function pagination($base_url = '', $total_items = 0, $max_per_page = 1, $query_params = array())
     {
         /* calculate the number of links for the pagination */
         $html_links = '';
@@ -449,13 +458,26 @@ class SucuriScanTemplate extends SucuriScanRequest
 
         /* keep the number of pagination buttons at limit */
         if ($max_pages > SUCURISCAN_MAX_PAGINATION_BUTTONS) {
-            $final_page = SUCURISCAN_MAX_PAGINATION_BUTTONS;
-            $middle = $final_page / 2; /* middle point */
+            $middle = floor(SUCURISCAN_MAX_PAGINATION_BUTTONS / 2);
 
             if ($page_number > $middle) {
-                $start_page = $page_number - ($middle - 1);
-                $final_page = $page_number + $middle;
+                $start_page = max(1, $page_number - $middle);
+                $final_page = min($max_pages, $page_number + $middle);
+
+                if ($final_page - $start_page + 1 < SUCURISCAN_MAX_PAGINATION_BUTTONS) {
+                    $start_page = max(1, $final_page - SUCURISCAN_MAX_PAGINATION_BUTTONS + 1);
+                }
+            } else {
+                $final_page = SUCURISCAN_MAX_PAGINATION_BUTTONS;
             }
+        } else {
+            $final_page = $max_pages;
+        }
+
+        $query_params_str = http_build_query($query_params);
+
+        if (!empty($query_params) && !empty($query_params_str)) {
+            $extra_url .= '&' . $query_params_str;
         }
 
         /* generate the HTML links for the pagination */

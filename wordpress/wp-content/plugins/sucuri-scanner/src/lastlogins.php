@@ -66,7 +66,8 @@ function sucuriscan_lastlogins_admins()
             'AdminUsers.NoLastLoginsTable' => 'hidden',
         );
 
-        if ($last_logins
+        if (
+            $last_logins
             && isset($last_logins['entries'])
             && !empty($last_logins['entries'])
         ) {
@@ -119,8 +120,14 @@ function sucuriscan_lastlogins_all()
         'UserList.NoItemsVisibility' => 'visible',
     );
 
+    // Clear last login logins when delete button is pressed.
+    if (SucuriScanInterface::checkNonce() && SucuriScanRequest::post(':delete_lastlogins')) {
+        SucuriScanEvent::clearLastLogs('sucuri-lastlogins.php');
+    }
+
     if (!sucuriscan_lastlogins_datastore_is_writable()) {
         $fpath = SucuriScan::escape(sucuriscan_lastlogins_datastore_filepath());
+        /* translators: %s: file path */
         SucuriScanInterface::error(sprintf(__('Last-logins data file is not writable: <code>%s</code>', 'sucuri-scanner'), $fpath));
     }
 
@@ -147,7 +154,7 @@ function sucuriscan_lastlogins_all()
                 'UserList.Registered' => '',
                 'UserList.RemoteAddr' => $user['user_remoteaddr'],
                 'UserList.Hostname' => $user['user_hostname'],
-                'UserList.Datetime' => $user['user_lastlogin'],
+                'UserList.Datetime' => SucuriScan::datetime($user['user_lastlogin_timestamp']),
                 'UserList.TimeAgo' => SucuriScan::humanTime($user['user_lastlogin_timestamp']),
                 'UserList.UserURL' => SucuriScan::adminURL('user-edit.php?user_id=' . $user['user_id']),
             );
@@ -211,11 +218,11 @@ function sucuriscan_lastlogins_datastore_is_writable()
     $datastore_filepath = sucuriscan_lastlogins_datastore_exists();
 
     if ($datastore_filepath) {
-        if (!is_writable($datastore_filepath)) {
-            @chmod($datastore_filepath, 0644);
+        if (!is_writable($datastore_filepath)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
+            @chmod($datastore_filepath, 0644); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
         }
 
-        if (is_writable($datastore_filepath)) {
+        if (is_writable($datastore_filepath)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
             return $datastore_filepath;
         }
     }
@@ -329,7 +336,7 @@ function sucuriscan_get_logins($limit = 10, $offset = 0, $user_id = 0)
      */
     $user_ids = array();
     $current_user = wp_get_current_user();
-    $is_admin_user = (bool) current_user_can('manage_options');
+    $is_admin_user = (bool) SucuriScanPermissions::canManagePlugin();
 
     for ($i = $offset; $i < $total_lines; $i++) {
         $line = $reversed_lines[$i] ? trim($reversed_lines[$i]) : '';
@@ -412,7 +419,8 @@ if (!function_exists('sucuriscan_login_redirect')) {
     {
         $login_url = !empty($redirect_to) ? $redirect_to : SucuriScan::adminURL();
 
-        if ($user instanceof WP_User
+        if (
+            $user instanceof WP_User
             && in_array('administrator', $user->roles)
             && SucuriScanOption::isEnabled(':lastlogin_redirection')
         ) {
@@ -435,20 +443,23 @@ if (!function_exists('sucuriscan_get_user_lastlogin')) {
      */
     function sucuriscan_get_user_lastlogin()
     {
-        if (current_user_can('manage_options')
+        if (
+            SucuriScanPermissions::canManagePlugin()
             && SucuriScanRequest::get(':lastlogin', '1')
         ) {
             $current_user = wp_get_current_user();
             $last_logins = sucuriscan_get_logins(2, 0, $current_user->ID);
 
-            if ($last_logins
+            if (
+                $last_logins
                 && isset($last_logins['entries'])
                 && isset($last_logins['entries'][1])
             ) {
                 $row = $last_logins['entries'][1];
                 $page_url = SucuriScanTemplate::getUrl('lastlogins');
                 $message = sprintf(
-                    __('Last login was at <b>%s</b> from <b>%s</b> <em>(%s)</em> <a href="%s" target="_self">view all logs</a>', 'sucuri-scanner'),
+                    /* translators: %1$s: date and time, %2$s: IP address, %3$s: hostname, %4$s: page url */
+                    __('Last login was at <b>%1$s</b> from <b>%2$s</b> <em>(%3$s)</em> <a href="%4$s" target="_self">view all logs</a>', 'sucuri-scanner'),
                     SucuriScan::datetime($row['user_lastlogin_timestamp']),
                     SucuriScan::escape($row['user_remoteaddr']),
                     SucuriScan::escape($row['user_hostname']),

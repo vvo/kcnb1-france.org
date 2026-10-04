@@ -154,10 +154,10 @@ class SucuriScanCache extends SucuriScan
         $directory = dirname($filename); /* create directory if necessary */
 
         if (!file_exists($directory)) {
-            @mkdir($directory, 0755, true);
+            @mkdir($directory, 0755, true); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
         }
 
-        if (!file_exists($filename) && is_writable($directory) && $auto_create) {
+        if (!file_exists($filename) && is_writable($directory) && $auto_create) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable
             @file_put_contents($filename, $this->datastoreInfo());
         }
 
@@ -237,31 +237,40 @@ class SucuriScanCache extends SucuriScan
         $object = array();
         $object['info'] = array();
         $object['entries'] = array();
-        $lines = SucuriScanFileInfo::fileLines($this->datastore_path);
 
-        if (is_array($lines) && !empty($lines)) {
-            foreach ($lines as $line) {
-                if (strpos($line, "//\x20") === 0
-                    && strpos($line, '=') !== false
-                    && $line[strlen($line) - 1] === ';'
-                ) {
-                    $section = substr($line, 3, strlen($line) - 4);
-                    list($header, $value) = explode('=', $section, 2);
-                    $object['info'][$header] = $value;
-                    continue;
-                }
+        if (($fh = @fopen($this->datastore_path, 'r')) === false) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
+            return $object;
+        }
 
-                /* skip content */
-                if ($onlyInfo) {
-                    continue;
-                }
+        while (($line = fgets($fh)) !== false) {
+            $line = trim($line);
 
-                if (strpos($line, ':') !== false) {
-                    list($keyname, $value) = explode(':', $line, 2);
-                    $object['entries'][$keyname] = @json_decode($value, $assoc);
-                }
+            if (!$line) {
+                continue;
+            }
+
+            if (strpos($line, "//\x20") === 0
+                && strpos($line, '=') !== false
+                && $line[strlen($line) - 1] === ';'
+            ) {
+                $section = substr($line, 3, -1);
+                list($header, $value) = explode('=', $section, 2);
+                $object['info'][$header] = $value;
+                continue;
+            }
+
+            // skip content
+            if ($onlyInfo) {
+                continue;
+            }
+
+            if (strpos($line, ':') !== false) {
+                list($keyname, $value) = explode(':', $line, 2);
+                $object['entries'][$keyname] = @json_decode($value, $assoc);
             }
         }
+
+        fclose($fh); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 
         return $object;
     }
@@ -393,6 +402,9 @@ class SucuriScanCache extends SucuriScan
         }
 
         $finfo = $this->getDatastoreInfo();
+        if (empty($finfo['fpath'])) {
+            return false;
+        }
         $line = sprintf("%s:%s\n", $key, json_encode($data));
 
         return (bool) @file_put_contents($finfo['fpath'], $line, FILE_APPEND);

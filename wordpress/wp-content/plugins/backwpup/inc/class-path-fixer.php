@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Fix paths so they don't trigger an error on Windows.
+ *
+ * This class is meant to be a workaround for PHP bug #43817.
+ *
+ * On Windows IIS, if the parent directory is not readable, then the given directory will give access denied.
+ *
+ * @since 3.4.0
+ */
+class BackWPup_Path_Fixer {
+
+	/**
+	 * Fix the path if necessary.
+	 *
+	 * @param string $path
+	 *
+	 * @return string the fixed path
+	 */
+	public static function fix_path( string $path ): string {
+		if ( get_site_option( 'backwpup_cfg_windows' ) ) {
+			$path = trailingslashit( $path );
+
+			if ( is_dir( $path . 'wp-content' ) ) {
+				return $path . 'wp-content/..';
+			}
+		}
+
+		return $path;
+	}
+
+	/**
+	 * Normalize path separators to forward slashes on Windows.
+	 *
+	 * @param string|null $path The path to normalize.
+	 *
+	 * @return string The normalized path.
+	 */
+	public static function slashify( ?string $path ): string {
+		if ( ! $path ) {
+			return '';
+		}
+
+		if ( '\\' === DIRECTORY_SEPARATOR ) {
+			return str_replace( '\\', '/', $path );
+		}
+		return $path;
+	}
+}

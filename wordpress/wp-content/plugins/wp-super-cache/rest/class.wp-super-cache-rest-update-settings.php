@@ -1,6 +1,6 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/class.wp-super-cache-settings-map.php' );
+require_once __DIR__ . '/class.wp-super-cache-settings-map.php';
 
 class WP_Super_Cache_Rest_Update_Settings extends WP_REST_Controller {
 
@@ -132,7 +132,6 @@ class WP_Super_Cache_Rest_Update_Settings extends WP_REST_Controller {
 		}
 
 		wp_cache_setting( $global_name, (int)$value );
-
 	}
 
 	/**
@@ -217,7 +216,6 @@ class WP_Super_Cache_Rest_Update_Settings extends WP_REST_Controller {
 				add_mod_rewrite_rules();
 
 			} elseif( $value == 2 ) { // PHP
-				$wp_cache_mod_rewrite = 0;
 				remove_mod_rewrite_rules();
 
 			}
@@ -604,7 +602,7 @@ class WP_Super_Cache_Rest_Update_Settings extends WP_REST_Controller {
 
 		if ( file_exists( $wp_cache_config_file_sample ) ) {
 			copy( $wp_cache_config_file_sample, $wp_cache_config_file );
-			$cache_page_secret = md5( date( 'H:i:s' ) . mt_rand() );
+			$cache_page_secret = md5( gmdate( 'H:i:s' ) . wp_rand() );
 			wp_cache_setting( 'cache_page_secret', $cache_page_secret );
 
 			if ( function_exists( "opcache_invalidate" ) ) {
@@ -612,7 +610,6 @@ class WP_Super_Cache_Rest_Update_Settings extends WP_REST_Controller {
 			}
 		}
 		wpsc_set_default_gc( true );
-
 	}
 
 	/**

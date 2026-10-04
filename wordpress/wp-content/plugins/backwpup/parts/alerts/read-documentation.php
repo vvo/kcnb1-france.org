@@ -1,0 +1,20 @@
+<?php
+use BackWPup\Utils\BackWPupHelpers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+?>
+<p>
+  <?php
+  BackWPupHelpers::component("navigation/link", [
+    "url" => "#",
+    "newtab" => true,
+    "font" => "small",
+    "content" => __("Read our documentation", 'backwpup'),
+    "icon_name" => "arrow-right",
+    "icon_position" => "after",
+  ]);
+  ?>
+</p>

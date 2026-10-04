@@ -1,0 +1,48 @@
+<?php
+use BackWPup\Utils\BackWPupHelpers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * @var string  $gap_size   The gap size. Values: "small", "medium". Default: "medium".
+ * @var string $method     The form method. Default: "post".
+ * @var string $page     The form action. Default: "backwpup"
+ * @var string $action     The form action. Default: "backwpup"
+ * @var bool  $scrollable Whether the container is scrollable. Default: true.
+ * @var string $identifier The identifier for the form. Default: ""
+ * @var string  $class        Optional. Custom class to add to the container. Default: "".
+ */
+
+# Defaults
+$class = isset($class) ? " " . $class : "";
+
+# Padding
+$gap_sizes = [
+	'small' => 'gap-2',
+	'medium' => 'gap-4',
+];
+$gap_size = $gap_size ?? 'medium';
+$identifier = $identifier ?? '';
+$scrollable = $scrollable ?? true;
+$gap = array_key_exists($gap_size, $gap_sizes) ? $gap_sizes[$gap_size] : $gap_sizes['medium'];
+$method = $method ?? 'post';
+$page = $page ?? 'backwpup';
+$action = $action ?? 'backwpup';
+$overflow = $scrollable ?? true ? 'overflow-y-auto' : '';
+$absolute = $scrollable ?? true ? 'absolute' : '';
+$idForm = $identifier ? $identifier : '';
+?>
+<div class="<?php echo esc_attr( BackWPupHelpers::clsx( "relative flex-auto", $overflow ) ); ?>">
+	<form
+		class="<?php echo esc_attr( BackWPupHelpers::clsx( "w-full flex flex-col", $absolute, $gap, $class ) ); ?>"
+		action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+		method="<?php echo esc_attr($method); ?>"
+    <?php echo $idForm ? ' id="' . esc_attr( $idForm ) . '"' : ''; ?>
+	>
+  <input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( $page . '_page' ) ); ?>" />
+  <?php wp_referer_field(); ?>
+  <input type="hidden" name="backwpupajaxnonce" value="<?php echo esc_attr( wp_create_nonce( 'backwpup_ajax_nonce' ) ); ?>" />
+  <input type="hidden" name="page" value="<?php echo esc_attr($page);?>"/>
+  <input type="hidden" name="action" value="<?php echo esc_attr($action);?>"/>

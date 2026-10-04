@@ -1,27 +1,66 @@
 === Sucuri Security - Auditing, Malware Scanner and Security Hardening ===
-Contributors: dd@sucuri.net
+Contributors: wordpress@sucuri.net
 Donate Link: https://sucuri.net/
-Tags: malware, security, firewall, scan, spam, virus, sucuri, protection, blacklist, detection, hardening, file integrity
-Requires at least: 3.6
-Tested up to: 5.2
-Stable tag: 1.8.21
+Tags: malware, security, firewall, scan, spam, virus, sucuri, protection, blocklist, detection, hardening, file integrity
+Requires at least: 6.0
+Tested up to: 7.1
+Requires PHP: 7.4
+Stable tag: 2.8
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 The Sucuri WordPress Security plugin is a security toolset for security integrity monitoring, malware detection and security hardening.
 
 == Description ==
 
-Sucuri Inc. is a globally recognized authority in all matters related to website security, with specialization in WordPress Security.
+At Sucuri, we are dedicated to keeping your website safe and secure. With a focus on protection and monitoring, we offer solutions that help you stay ahead of potential threats for your WordPress site.
 
-The Sucuri Security WordPress plugin is free to all WordPress users. It is a security suite meant to complement your existing security posture. It offers its users a set of security features for their website, each designed to have a positive effect on their security posture:
+Our services include everything from malware detection to performance optimization, all designed to give you peace of mind.
 
-* Security Activity Auditing
-* File Integrity Monitoring
-* Remote Malware Scanning
-* Blacklist Monitoring
-* Effective Security Hardening
-* Post-Hack Security Actions
-* Security Notifications
-* Website Firewall (premium)
+We understand the importance of your online presence and are here to support you every step of the way. Join us, and let's work together to ensure your website remains secure and resilient.
+
+The Sucuri Security Monitoring Plugin is designed to safeguard your WordPress site with ease and reliability. Our plugin offers a range of essential security features, including:
+
+* <strong>Security Activity Auditing:</strong> Keep track of every security-related event within your WordPress environment.
+* <strong>File Integrity Monitoring:</strong> Detect unauthorized changes to your files and protect your site from potential vulnerabilities.
+* <strong>Remote Malware Scanning:</strong> Regularly scan your site for malware with our remote scanner to ensure it's clean and secure.
+* <strong>Blocklist Monitoring:</strong> Receive alerts if your site is blocklisted by any major services, allowing for quick resolution.
+* <strong>Security Hardening:</strong> Implement recommended security practices to fortify your site against threats.
+* <strong>Post-Hack Security Actions:</strong> If the worst happens, our plugin helps you recover your site easily.
+
+With Sucuri, you can focus on what matters most—growing your website—while we handle the security. Our feature set provides a clear view of your site's status, making it easy to manage, monitor and take action.
+
+== Contributors & Maintenance Notice ==
+
+Our dedicated team of engineers and security analysts is continually working to enhance the Sucuri Security Monitoring Plugin.
+
+We provide regular updates, address bugs, and actively incorporate [user feedback](https://sucuri.typeform.com/to/qNe18eDf) to ensure your WordPress site maintains its highest security stance. Our growth roadmap underscores our commitment to keeping you protected against emerging threats.
+
+To support you further, we offer a variety of resources, including prompt responses for the forum, our website's various content types, and an extensive [knowledge base](https://docs.sucuri.net/).
+
+Our content is designed to help you maximize your plugin feature usage and benefits with the support you need.
+
+If you want to be ahead of possible threats and keep up-to-date with Plugin updates, subscribe to our content [here](https://info.sucuri.net/subscribe-to-security).
+
+== Introducing the Sucuri Firewall + WordPress Security Plugin ==
+
+We're excited to introduce the Sucuri Firewall + WordPress Security Plugin, designed for those who seek advanced protection for their WordPress sites.
+
+Building upon our trusted free plugin, this premium offering provides a robust suite of features to ensure comprehensive security and peace of mind.
+
+Key features include:
+* <strong>Web Application Firewall (WAF):</strong> Protect your site from malicious traffic with our powerful firewall solution.
+* <strong>Brute Force Protection:</strong> Safeguard your site against unauthorized login attempts.
+* <strong>Brute Force Audit & Reporting:</strong> Gain insights into login attempts with detailed auditing and reporting.
+* <strong>DDoS Mitigation: Maintain site</strong> availability even during targeted attacks.
+* <strong>Core Vulnerabilities Scanning:</strong> Identify and address security weaknesses in WordPress core files.
+* <strong>Plugins Vulnerability Scanning:</strong> Ensure your installed plugins are secure and up to date.
+* <strong>Themes Vulnerability Scanning:</strong> Protect your site by scanning for vulnerabilities in installed themes.
+* <strong>PHP Vulnerability Scanning:</strong> Detect and address potential security issues in your PHP environment.
+
+With the [Sucuri Firewall + WordPress Security Plugin](https://sucuri.net/website-firewall/), you benefit from the expertise and dedication of our team, committed to keeping your digital assets secure.
+
+Experience the next level of protection and support, and enjoy the peace of mind that comes with knowing your site is in good hands.
 
 == Installation  ==
 
@@ -40,31 +79,33 @@ Visit the [Support Forum](https://wordpress.org/support/plugin/sucuri-scanner) t
 
 == Frequently Asked Questions ==
 
-More information on the Sucuri Security WordPress plugin can be found in our [Knowledge Base](https://kb.sucuri.net/plugins/WordPress+Plugin).
+More information on the Sucuri Security WordPress plugin can be found in our [Knowledge Base](https://docs.sucuri.net/plugins/).
 
 = What is the security activity auditing? =
 
-This is perhaps the most underutilized security function. It’s the act of monitoring all security related events within your WordPress install. The challenge is, what makes up a security event. In the eyes of Sucuri, any change that occurs within the application could be categorized as a security event, and as such we try to record it.
+One of the standout features of our WordPress plugin is the comprehensive audit logging system. At Sucuri, we recognize that every change within your application can be a potential security event. From user logins to content modifications, our audit logs are designed to capture all security-related activities on your site.
 
-This is important because it gives you, the website owner, the ability to keep a good eye on the various changes occurring within your environment. Who is logging in? What changes are being made?
+These logs provide you with crucial visibility into your website's operations, answering key questions such as:
+* <strong>Who logged in?</strong> Understanding who accesses your site is fundamental to ensuring that only authorized users are logging in. This helps in identifying any unauthorized access attempts, allowing you to respond swiftly to potential security breaches.
+* <strong>What changes were made?</strong> Essential for maintaining its integrity and security. By knowing what modifications have been made, you can quickly pinpoint any suspicious activities or errors that need attention.
 
-This feature is logging all activity to the Sucuri cloud, for safe keeping. This ensures that an attacker is not able to wipe your forensic data and prevent further security analysis after a compromise. If an attacker is able to bypass your security controls, your security logs will be kept safe within the Sucuri Security Operations Center (SOC).
-
-This feature is particularly important to website / system administrators and security experts looking to understand what is going on with their website and when it’s happening.
+With the release of version 1.9.6, we've enhanced this feature, allowing you to filter audit logs by event types and dates. This improvement offers you even greater insight into your site's activities, enabling proactive security management.
 
 = What is the file integrity monitoring =
 
-Security File Integrity Monitoring has been fundamental to the world of security. It’s the act of comparing a known good with the current state. If the current state differs from the known good, you know you have a problem. This is the basis of a lot of host intrusion detection systems. It’s what we have built into the plugin.
+Security File Integrity Monitoring has been fundamental to the world of security. It's the act of comparing a known good with the current state. If the current state differs from the known good, you know you have a problem. This is the basis of a lot of host intrusion detection systems. We have built that into this plugin.
 
-It will create a known good the minute the plugin is installed. This will be of all the directories at the root of the install, this includes plugins, themes and core files.
+It will create a known good the minute the plugin is installed. This will be of all the directories at the root of the install, including plugins, themes and core files.
 
-= What is the remote malware scanning? =
+= What is remote malware scanning? =
 
-This feature is powered by our scanning engine, found on our free security scanner - [SiteCheck](https://sitecheck.sucuri.net/). It’s important to take some time to [understand how this scanner works](https://blog.sucuri.net/2012/10/ask-sucuri-how-does-sitecheck-work.html). There are limitations with the way this scanner works, you can find more information in the FAQ section.
+Once this plugin is installed and activated, we automatically scan your site searching for known malware, viruses, blacklisting status, website errors, out-of-date software, and malicious code.
 
-= What is the blacklist monitoring? =
+We access your site just like a regular visitor would as this helps us catch threats that try to stay hidden from bots or search engines. This feature is powered by our free website security scanner – SiteCheck.
 
-Another very interesting feature of the Security Malware Scanner is that it checks various blacklist engines, including the following:
+= What is the blocklist monitoring? =
+
+Another very interesting feature of the website Security Malware Scanner is that it checks various blocklist engines, including the following:
 
 * Sucuri Labs
 * Google Safe Browsing
@@ -77,84 +118,92 @@ Another very interesting feature of the Security Malware Scanner is that it chec
 * SpamHaus
 * Bitdefender
 
-These are some of the largest blacklisting entities, each having the ability to directly impact your brand's online reputation. By synchronizing with their environments we’re able to tell you, upon scan, whether any of them are negatively flagging your website with a security related issue. If they do, then via our website security product, we’re able to help you get off of the security blacklist.
+These are some of the largest blocklisting entities, each having the ability to directly impact your brand's online reputation. By synchronizing with their environments we're able to tell you whether any of them are negatively flagging your website with a security related issue. If they do, then via our website security product, we're able to help you get off of the security blocklist.
 
-= What is effective security hardening =
+= What is effective security hardening? =
 
-It’s easy to get lost in the world of security hardening. At Sucuri we clean hundreds of websites a day, many with the various security hardening configurations you find in various WordPress Security presentations. In this section, we add those that we feel to be most effective, and that complement the entire Sucuri suite of products.
+Our team cleans thousands of websites every day, giving us deep insight into the most effective ways to protect WordPress sites.
 
-= What are the post-hack security actions =
+We've used that experience to create a list of actionable recommendations available in the Hardening & Prevention section of this plugin.
 
-Regardless of how good your security posture is, sometimes it’s impossible to prevent the inevitable. When this happens, we’ve included a section to help you walk through the three key things you should do after a compromise.
+To name a few (note that this will depend on your environment), these actions are:
 
-= What are the security notifications =
+* Enable Website Firewall Protection
+* Remove WordPress Version
+* Block PHP Files in Uploads, wp-content and wp-includes directories.
+* Verify default admin account.
+* Disable Plugin and Theme Editor.
+* Automatic Secret Keys Updater.
 
-Having all these security features would be useless unless you were notified of the issues. This is why we have made available security alerts. We have also expanded the various security related events, to provide website owners more flexibility in regards to what they want to know about. As a website owner, you have the option to make these security alerts as quiet or noisy as you would like.
+= What are the post-hack security actions? =
 
-= What is the website firewall (premium) =
+Even with the strongest security measures, no site is 100% safe from hacking. When a compromise occurs, the Post-Hack section of our plugin guides you through four critical steps to help you regain control of your site:
 
-This is by far the coolest security feature Sucuri has to offer everyday website owners. It’s an enterprise grade Website Firewall designed to give you the best security protection any website can hope for. It protects your website from a variety of website attacks, including:
+* Update Secret Keys.
+* Reset User Passwords.
+* Reset Installed Plugins.
+* Update Plugin and Themes.
 
-* Denial of Service (DOS / DDOS) Attacks
-* Exploitation of Software Vulnerabilities
-* Zero Day Disclosure Patches
-* Brute Force Attacks against your Access Control Mechanisms
+These steps are designed to help you recover faster after a security incident.
+
+= What are the security notifications? =
+
+Security features only matter if you know when something's wrong, that's why we included a set of customizable security alerts inside our Settings > Alerts section. You can also customize how frequently you want to be alerted of security related events.
+
+= What is the website firewall (premium)? =
+
+This is by far the coolest security feature Sucuri has to offer everyday website owners. It's an enterprise grade Website Firewall designed to give you the best security protection any website can hope for. It protects your website from a variety of website attacks, including:
+
+* Denial of Service (DOS / DDOS) Attacks.
+* Exploitation of Software Vulnerabilities.
+* Zero Day Disclosure Patches.
+* Brute Force Attacks against your Access Control Mechanisms.
 
 This is coupled with a number of features like:
 
-* Performance Optimization
-* Advanced Access Control Features
-* Failover and Redundancy
+* Performance Optimization.
+* Advanced Access Control Features.
+* Failover and Redundancy.
 
-This is **not included as a free** option of the plugin, but is integrated so that if purchased you are able to activate.  If you prefer to leverage the Sucuri Firewall product by itself, you have the option to operate the [Website Firewall WordPress Security](https://wordpress.org/plugins/sucuri-cloudproxy-waf/) plugin in standalone mode.
+This is not included as a free option of the plugin, but is integrated so that if purchased you are able to activate. If you prefer to leverage the Sucuri Firewall product by itself, you have the option to operate the Website Firewall WordPress Security plugin in standalone mode.
 
-The Sucuri WordPress Security plugin is built by the team that is known for their proactive approach to security. It is built using intelligence gathered from thousands upon thousands of remediation cases, millions of unique domain scans and 10’s of millions of website security attack blocks.
+The Sucuri WordPress Security plugin is built by the team that is known for their proactive approach to security. It is built using intelligence gathered from thousands upon thousands of remediation cases, millions of unique domain scans and 10's of millions of website security attack blocks.
 
 = What does this plugin do that other security plugins don't do? =
 
-A few other security plugins provide activity monitoring features, but few do them well. The activity monitoring in this plugin is second to none, tying the activity into the Sucuri Security Operations Center (SOC) ensuring its safe keeping.
+Our expertise has given us deep insight into what truly helps prevent security incidents, and we've cooked that knowledge directly into this plugin.
 
-This security plugin also takes a different approach to security plugins, stripping it of what we categorize as unnecessary features for a basic website end-user. We've narrowed the key features we felt were most pertinent to any website owner and integrated them into this plugin.
+To give you a sense of what this security plugin offers, here are some of its most powerful features:
+
+* WordPress core, PHP, plugins and themes vulnerability scanners.
+* Firewall Management.
+* Events Reporting (auditlogs).
+* Headers Management.
+* Hardening & Prevention.
+* Post-Hack Actions.
+* Last Logins.
+* And there's more!
+
+And while other security plugins may offer similar features, few deliver them as effectively as we do. Ask around! :)
 
 = If I install the Sucuri Security plugin do I get a Sucuri account? =
 
 No, this is a free plugin that we offer at no charge. It does not mean you get a free account.
 
 = If I have the premium plugin, do I need the free plugin? =
+Both the premium and the free version share the same codebase, however, this plugin has a few extra features that are only unlocked when you have a WAF account, some of these features include:
 
-The premium plugin was deprecated back in 2014. All the major features were merged into the free plugin. If you are still using the (old) premium plugin please consider deleting it and installing the (new) free plugin from the WordPress plugin market. Notice that you will need to generate a new API key as the new API service does not supports the old one.
+* WordPress Core vulnerability scanning.
+* PHP vulnerability scanning.
+* Plugin vulnerability scanning.
+* Themes vulnerability scanning.
+* A beautiful dark theme!
 
-= Do I still need Sucuri’s products if I have this plugin? =
+To unlock these features you must go to Firewall Management and input a correct Sucuri Firewall API Key — In the Sucuri Dashboard you can find this key by going to the Sucuri WAF dashboard > API > API Key (for plugin).
+
+= Do I still need Sucuri's products if I have this plugin? =
 
 Yes. This plugin compliments your existing security toolsets. It is not designed to replace the Sucuri Website Security or Firewall products.
-
-= Where do I get support for this plugin? =
-
-The best place is to engage us via the [Support Forum](https://wordpress.org/support/plugin/sucuri-scanner). If you are a client, you can submit a ticket [here](https://support.sucuri.net/support/?new).
-
-= Does your plugin conflict with WordFence? =
-
-The plugin does not, but there might be issues with our scanners. If you get an “Unable to Properly Scan Your Site” error, it’s likely because the WordFence plugin is blocking our scanner as an invalid crawler. You would have to white list our IP address on the WordFence dashboard.
-
-= What are the Remote Malware Scanner limitations? =
-
-Because the security malware scanner is remote, it is unable to see things that are on the server but that are not displaying on the browser. If you are interested in this, we encourage you to subscribe to our website security product. This issues includes things like Phishing pages, Backdoors, Mailer Scripts, etc.
-
-= Your plugin didn’t detect this malware? =
-
-This happens, reference the remote scanner limitations above. This should not be confused with our website security product. If you have malware, and you are a client, submit a ticket so that [we can help you get clean](https://support.sucuri.net/support/?new&mremoval).
-
-If you are not a client, and you want to share what you have found please send it to [labs@sucuri.net](mailto:labs@sucuri.net).
-
-The plugin is not performing application level malware / security scanning so this is not uncommon.
-
-= Is it free to enable the Website Firewall option? =
-
-No, it is not. To enable you must subscribe to the [Website Firewall](https://sucuri.net/website-firewall-signup) service.
-
-= Will this plugin impact the performance of my website? =
-
-We improve the performance of the code with every release. However, due to differences between hosting providers there are cases where the plugin may affect the responsiveness of the website upon installation. Things like HTTP requests, SSL certificate verifications and DNS lookups are among the few things that, depending on how your web server is configured, will slow down your website.
 
 = Do the logs get stored to my database? =
 
@@ -166,29 +215,255 @@ Not that we are aware of.
 
 = Do I need this plugin to use the Website Firewall service? =
 
-No, it is not required. The Website Firewall runs in the cloud without the need of anything installed. This plugin only helps see and manage the service from the WordPress dashboard.
+No, it is not required. The Website Firewall runs in the cloud without the need of anything installed. We recommend installing this plugin to see your firewall configuration and manage it from your WordPress dashboard.
 
 = What information does Sucuri collect? =
 
-We take your privacy seriously. For free plugin users without an API key, no information is collected by Sucuri. After activating an API key, Sucuri will store some information, such as logs. Please see our [Terms of Service](https://sucuri.net/terms) and [Privacy Policy](https://sucuri.net/privacy). Please email gdpr@sucuri.net if you have other questions about your privacy.
+We take your privacy seriously. For free plugin users without an API key, no information is collected by Sucuri. After activating an API key, Sucuri will store some information, such as logs. Please see our Terms of Service and Privacy Policy. Please email gdpr@sucuri.net if you have other questions about your privacy.
+
+= How do I configure the Cache-Control header? =
+
+Go to the <strong>Headers Management</strong> page and enable Cache-Control header by selecting a mode according to your website's need and click on submit.
+
+You can also activate the Cache-Control header by updating the cache header fields in one of the page types by using the "Edit" button in the table rows.
+
+Please remember to enable site caching on your WAF to use these settings. If you are a Sucuri client and require assistance, please create a ticket and reach out to the firewall team for support.
+
+= How do I configure the CORS headers? =
+To enable CORS headers please visit the <strong>Headers Management</strong> page. For the time being, we only support "Report-Only" as these headers can break your site.
+
+= How do I configure the Content Security Policy (CSP) header? =
+To enable CSP (Content Security Policy) headers please visit the <strong>Headers Management</strong> page.
+
+= Where do I get support for this plugin? =
+
+The best place is to engage us via the [Support Forum](https://wordpress.org/support/plugin/sucuri-scanner). If you are a client, you can submit a ticket [here](https://support.sucuri.net/support/?new).
 
 == Screenshots ==
 
 1. WordPress Integrity Tool - Detects added, modified, and removed files.
 2. Integrity Diff Utility - Shows differences in the core WordPress files.
 3. Audit Logs and Malware Scanner - Reports suspicious events and malicious code.
-4. Sucuri Firewall - Settings visibility, audit logs, IP blacklisting, and cache.
+4. Sucuri Firewall - Settings visibility, audit logs, IP blocklisting, and cache.
 5. Website Hardening - Offers multiple options to increase the security of the website.
 6. Failed Logins - Shows failed login attempts, successful logins and online users.
 7. Post Hack Tools - Offers multiple tools to react after the suspiciousness of a hack.
 8. Settings - Offers multiple settings to configure the functionality of the plugin.
+9. Cache control headers - Offers multiple options to configure the cache control header.
 
 == Upgrade Notice ==
+
+= 2.8 =
+This version requires PHP 7.4 and WordPress 6.0 or later. It also adds one-time backup codes for two-factor authentication; if you already had 2FA turned on before upgrading, open your WordPress profile and generate your codes so you are not locked out if you lose your authenticator app.
+
+= 1.8.37 =
+This version removes the API communication service dependency on https://wordpress.sucuri.net/api/, because this service has been discontinued until further notice. Users who have their custom APIs to use in place of https://wordpress.sucuri.net/api/ can still use the API communication service by adding the API endpoint as SUCURISCAN_API_URL on the wp-config.php file.
 
 = 1.8.19 =
 This version adds an option to refresh the malware scan results on demand, as well as several small bug fixes and improvements.
 
 == Changelog ==
+= 2.8 =
+* Add one-time backup codes for Two-Factor Authentication. Ten codes are created when 2FA is turned on, any one of them will get you in if you lose your authenticator app, and each code stops working once it has been used. You can generate a fresh set at any time from your WordPress profile.
+* Add a search box and severity, plugin, and theme filters to the Audit Logs page, so you can find a specific event without paging through the whole history. Filtering and paging now happen instantly.
+* Add a one-click CSV download of the complete audit trail, ready for a compliance review, an incident timeline, or an archive before older records age out. Large histories export without slowing the site down.
+* Fix an issue that left the audit trail completely empty on sites that do not run in English. Events were recorded but never shown.
+* Fix audit entries being cut short or lost. Saving the WordPress Writing settings discarded the record of every other option changed in that same save, and a less-than sign in a site title or option value truncated the entry from that point on.
+* Fix plugin and theme names that contain an ampersand being shown with an HTML escape code in place of the character itself, both on the page and in the export, which also stopped them from being found by search.
+* Mask API keys, tokens, and salts in the audit trail. They were previously stored in plain text, and are now masked both as new events are recorded and as existing records are read back.
+* Fix a case where markup returned by the Sucuri API could reach the dashboard without being escaped.
+* Fix removing a file from the Hardening allowlist when its path contains characters that have a special meaning in a regular expression.
+* Require PHP 7.4 and WordPress 6.0 or later, and correct the places in the plugin that still advertised PHP 5 support.
+
+= 2.7.4 =
+* Improve the Two-Factor Authentication page to load the users list in pages, so it stays fast and reliable on sites with hundreds or thousands of users (for example, WooCommerce stores).
+* Add a search box to the Two-Factor Authentication page to quickly find users by username, email, or display name.
+* Strengthen input validation, access checks, and output escaping.
+* Add a one-click "Disable XML-RPC" option to the Hardening page to close a common brute-force and pingback-based DDoS attack vector, with a warning if an active plugin (e.g. Jetpack) depends on XML-RPC.
+* Fix a fatal error on PHP 8 when the API returns the "messages" field as a string instead of an array.
+
+= 2.7.3 =
+* Refactor AJAX handler to an explicit dispatch map for improved security and efficiency.
+* Improve 2FA section with more UI clarity.
+* Make light-mode default when no preference is defined. Correct inverted dark/light mode icons.
+* Fix i18n regression in 2FA status and setup templates.
+* Fix duplicate CSS property declarations.
+
+= 2.7.2 =
+* Fix salt bug in the wp-config file.
+
+= 2.7.1 =
+* Update on the encryption process for the WAF API key due to problems reported on some users.
+
+
+= 2.7 =
+* Fixes a lot of readiness warning/errors from PCP.
+* Updates how the plugin stores WAF API key.
+
+= 2.6 =
+* Create new permissions library.
+* Fix error causing deletion of WAF API key on clearing cache.
+
+= 2.5 =
+* Add support for two-factor authentication.
+
+This plugin bundles qrcode-generator (MIT) by Kazuhiko Arase.
+Vendored copy due to npm package-injection concerns. We'll switch back to npm when feasible.
+Source: https://github.com/kazuhikoarase/qrcode-generator
+
+= 2.4 =
+* Update list of files to ignore in integrity check.
+
+= 2.3 =
+* Add theme toggle switch.
+* Remove an unnecessary section for users without WAF key.
+
+= 2.2 =
+* Update integrity section.
+* Add a warning when the configured WAF domain does not match site's domain.
+
+= 2.1 =
+* Fix dark theme conflicting with Woo styles.
+
+= 2.0 =
+* Added support for WordPress Core vulnerability scanner.
+* Added support for PHP vulnerability scanner.
+* Added support for plugin's vulnerability scanner.
+* Added support for theme's vulnerability scanner.
+* Added support for dark theme!
+
+= 1.9.10 =
+* Fix bug deleting failed logins.
+* Fix bug causing WAF blocks due user-agent containing domain names with specific words.
+
+= 1.9.9 =
+* Fix secret key updater bug: Sometimes API return last character to be "\" breaking configuration file
+* Fix Undefined array key “woocommerce_category” PHP warning
+* Fix ErrorException caused by stripping all "/" characters from path to htaccess file
+* Fix warning caused from malformed path to htaccess file
+
+= 1.9.8 =
+* Add support for configuration of CORS header
+
+= 1.9.7 =
+* Add support for configuration of CSP header (report only)
+
+= 1.9.6 =
+* Added support for filters in the audit logs
+* Updated messaging for infected sites
+
+= 1.9.5 =
+* Updated how the allow PHP files are handled in the integrity tool
+
+= 1.9.4 =
+* Fixed warning in php 8
+
+= 1.9.3 =
+* Fixed email notifications error handling
+
+= 1.9.2 =
+* Improve how the WordPress integrity tool displays added, modified, and removed files
+
+= 1.9.1 =
+* Add support for configuration of Cache-Control header
+
+= 1.8.44 =
+* Update Firewall settings page to improve privacy and offer new options to handle API keys
+
+= 1.8.43 =
+* Update readme and main plugin file to specify license
+* Update plugin's transient name to address to best practices
+
+= 1.8.42 =
+* Update malware cleanup notification
+
+= 1.8.41 =
+* Updates navigation to include "More" dropdown
+* Add further validation when trying to write HTACCESS
+* Update WordPress.org links (redirected from codex)
+
+= 1.8.40 =
+* Update list of Sucuri cleanup files
+* Update successful login screen to show date time
+
+= 1.8.39 =
+* Fixed API service messaging
+
+= 1.8.38 =
+* Fixed API service handling when the SUCURISCAN_API_URL config value is not defined
+* Fixed API service UI messaging
+
+= 1.8.37 =
+* Fixed plugin image assets and screenshots to match new branding
+* Fixed password reset email link protocol
+* Fixed remote fonts usage
+* Removed wordpress.sucuri.net API dependency
+* Updated screenshots
+
+= 1.8.36 =
+* Changed Branding fonts, colors and images to match the current Sucuri brand
+
+= 1.8.35 =
+* Fixed "Early referer checks on admin hooks"
+
+= 1.8.34 =
+* Added referer check on admin hooks
+
+= 1.8.33 =
+* Fixed "Added option to clear cache by path"
+
+= 1.8.32 =
+* Fixed "Empty wp-config file after automatic secret key updates"
+
+= 1.8.31 =
+* Fixed "Path cannot be empty" error
+
+= 1.8.30 =
+* Bump version
+
+= 1.8.29 =
+* Changed ownership
+
+= 1.8.28 =
+* Silence fopen warning
+
+= 1.8.27 =
+* Add support for PHP 8
+* Reduce memory requirements when reading a log file
+* Fix DISALLOW_FILE_EDIT related notice
+
+= 1.8.26 =
+* Replace the word "blacklist" with "blocklist" in the codebase
+* Replace the word "whitelist" with "allowlist" in the codebase
+
+= 1.8.25 =
+* Fix notice about MONTH_IN_SECONDS in WP < 4.4
+* Update reset password workflow
+
+= 1.8.24 =
+* Fix warning caused by humanTime function
+* Fix fatal error caused by cron jobs with nested arguments
+
+= 1.8.23 =
+* Add Automatic Secret Keys Updater
+* Improve button's and link's messaging on Last Logins sections
+* Improve messaging on Hardening page
+* Improve messaging on IP Access page
+
+= 1.8.22 =
+* Add "SSL existence check" to WordPress Security Recommendations
+* Add "Salt & Security Keys existence check" to WordPress Security Recommendations
+* Add "Salt & Security Keys age check" to WordPress Security Recommendations
+* Add "Admin account check" to WordPress Security Recommendations
+* Add "Single super-admin check" to WordPress Security Recommendations
+* Add "Too many plugins check" to WordPress Security Recommendations
+* Add "File editing check" to WordPress Security Recommendations
+* Add "WordPress debug check" to WordPress Security Recommendations
+* Add "Basic hardening check" to WordPress Security Recommendations
+* Add a delete button on Last Logins sections
+* Add register of logs removal on Audit Logs
+* Fix display of Access File Integrity on NGINX/IIS servers
+* Remove PHP version check from hardening page
 
 = 1.8.21 =
 * Add WordPress Security Recommendations section in the dashboard
@@ -202,7 +477,7 @@ This version adds an option to refresh the malware scan results on demand, as we
 * Remove block button from failed logins page
 
 = 1.8.20 =
-* Add dynamic core directories in the hardening whitelist options
+* Add dynamic core directories in the hardening allowlist options
 * Modify scheduled tasks panel to load the table via Ajax
 * Allow hosting details display to be filterable
 * Preparation for translations
@@ -295,7 +570,7 @@ This version adds an option to refresh the malware scan results on demand, as we
 * Modify timing for the dashboard alerts after an update
 * Modify firewall clear cache button to execute via Ajax
 * Modify firewall settings page to load data via Ajax
-* Add option to blacklist IP addresses with the Firewall API
+* Add option to blocklist IP addresses with the Firewall API
 * Fix order of the audit logs when the queue is merged
 * Add more directories to ignore during the scans
 * Add option to customize the URL for the malware scans
@@ -427,7 +702,7 @@ This version adds an option to refresh the malware scan results on demand, as we
 * Fixed core files marked as broken in a Windows server
 * Fixed pagination links in last and failed logins page
 * Fixed password with ampersands in email alert
-* Fixed whitelist hardening using the authz_core module
+* Fixed allowlist hardening using the authz_core module
 * Removed unnecessary emails to reduce spam
 * Added constant to stop execution of admin init hooks
 * Added explanation for invalid emails and no MX records

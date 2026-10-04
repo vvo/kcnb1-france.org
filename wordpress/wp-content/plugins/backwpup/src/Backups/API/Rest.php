@@ -1,0 +1,568 @@
+<?php
+
+namespace WPMedia\BackWPup\Backups\API;
+
+use WPMedia\BackWPup\Adapters\BackWPupAdapter;
+use WPMedia\BackWPup\Adapters\OptionAdapter;
+use WPMedia\BackWPup\Adapters\JobAdapter;
+use WPMedia\BackWPup\Adapters\FileAdapter;
+use WPMedia\BackWPup\Adapters\JobTypesAdapter;
+use WPMedia\BackWPup\Backup\Database as BackupDatabase;
+use WP_HTTP_Response;
+use WP_REST_Request;
+use WP_REST_Response;
+use Exception;
+use WPMedia\BackWPup\API\Rest as RestInterface;
+use WPMedia\BackWPup\API\Capability;
+
+
+class Rest implements RestInterface {
+	/**
+	 * BackWPupAdapter instance.
+	 *
+	 * @var BackWPupAdapter
+	 */
+	private $backwpup_adapter;
+
+	/**
+	 * Option adapter instance.
+	 *
+	 * @var OptionAdapter
+	 */
+	private $option_adapter;
+
+	/**
+	 * JobAdapter instance.
+	 *
+	 * @var JobAdapter
+	 */
+	private $job_adapter;
+
+	/**
+	 * FileAdapter instance.
+	 *
+	 * @var FileAdapter
+	 */
+	private $file_adapter;
+
+	/**
+	 * JobTypesAdapter instance.
+	 *
+	 * @var JobTypesAdapter
+	 */
+	private $job_types_adapter;
+
+	/**
+	 * Backup database instance.
+	 *
+	 * @var BackupDatabase
+	 */
+	private $backup_database;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param BackWPupAdapter $backups_adapter
+	 * @param OptionAdapter   $option_adapter
+	 * @param JobAdapter      $job_adapter
+	 * @param FileAdapter     $file_adapter
+	 * @param JobTypesAdapter $job_types_adapter
+	 * @param BackupDatabase  $backup_database
+	 */
+	public function __construct(
+		BackWPupAdapter $backups_adapter,
+		OptionAdapter $option_adapter,
+		JobAdapter $job_adapter,
+		FileAdapter $file_adapter,
+		JobTypesAdapter $job_types_adapter,
+		BackupDatabase $backup_database
+	) {
+		$this->backwpup_adapter  = $backups_adapter;
+		$this->option_adapter    = $option_adapter;
+		$this->job_adapter       = $job_adapter;
+		$this->file_adapter      = $file_adapter;
+		$this->job_types_adapter = $job_types_adapter;
+		$this->backup_database   = $backup_database;
+	}
+
+	/**
+	 * Checks if the current user has the necessary permissions to perform the action.
+	 *
+	 * @return bool True if the user has permission, false otherwise.
+	 */
+	public function has_permission(): bool {
+		return current_user_can( 'backwpup' );
+	}
+
+	/**
+	 * Registers the REST API routes for the Backups API.
+	 *
+	 * This method is responsible for defining the endpoints and their
+	 * corresponding callbacks for the Backups API within the BackWPup Pro plugin.
+	 *
+	 * @return void
+	 */
+	public function register_routes(): void {
+		register_rest_route(
+			'backwpup/v1',
+			'/job-abort-status',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'get_job_abort_status' ],
+				'permission_callback' => [ $this, 'has_permission' ],
+				'args'                => [
+					'job_id' => [
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return is_numeric( $param ) && $param > 0;
+						},
+						'sanitize_callback' => 'absint',
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			'backwpup/v1',
+			'/startbackup',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'start_backup' ],
+				'permission_callback' => function () {
+					return current_user_can( Capability::JOBS_START );
+				},
+				'args'                => [
+					'job_id'       => [
+						'required'          => false,
+						'validate_callback' => function ( $param ) {
+							return is_numeric( $param ) && $param > 0;
+						},
+						'sanitize_callback' => 'absint',
+					],
+					'first_backup' => [
+						'required'          => false,
+						'validate_callback' => function ( $param ) {
+							return filter_var( $param, FILTER_VALIDATE_BOOLEAN );
+						},
+						'sanitize_callback' => function ( $param ) {
+							return filter_var( $param, FILTER_VALIDATE_BOOLEAN );
+						},
+					],
+				],
+			]
+		);
+
+		register_rest_route(
+			'backwpup/v1',
+			'/process_bulk_actions',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ $this, 'process_bulk_actions' ],
+				'permission_callback' => function () {
+					return current_user_can( Capability::BACKUPS_DELETE );
+				},
+				'args'                => [
+					'action'  => [
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return in_array( $param, [ 'delete' ], true );
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'backups' => [
+						'required'          => true,
+						'validate_callback' => function ( $param ) {
+							return is_array( $param ) && ! empty( $param );
+						},
+					],
+				],
+			]
+		);
+	}
+
+	/**
+	 * Starts the backup process.
+	 *
+	 * This function is triggered by a WP REST API request to initiate a backup.
+	 * If a job ID is provided, it will start the backup for that job. Otherwise, it will start the backup for the file job.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return WP_REST_Response|WP_Error|WP_HTTP_Response The response object on success, or WP_Error on failure.
+	 */
+	public function start_backup( WP_REST_Request $request ) {
+		$params = $request->get_params();
+
+		if ( ! empty( $params['first_backup'] ) ) {
+			if ( false === get_site_transient( 'backwpup_first_backup' ) ) {
+				set_site_transient( 'backwpup_first_backup', true, HOUR_IN_SECONDS );
+			} else {
+				return new WP_REST_Response(
+					[
+						'status' => 301,
+						'url'    => network_admin_url( 'admin.php?page=backwpup' ),
+					],
+					200,
+					[ 'Content-Type' => 'text/json' ]
+				);
+			}
+		}
+
+		$create_backup_now_job = true;
+		$jobs                  = $this->job_adapter->get_jobs();
+		foreach ( $jobs as $job ) {
+			if (
+				isset( $job['backup_now'] ) && true === $job['backup_now']
+				&& ! empty( $job['activetype'] )
+			) {
+				$create_backup_now_job = false;
+			}
+		}
+
+		$jobid = $params['job_id'] ?? false;
+		if ( $create_backup_now_job && false === $jobid ) {
+			$jobid = $this->get_job_id_when_no_available_job();
+		}
+
+		// check temp folder.
+		$temp_folder_message = $this->file_adapter->check_folder( $this->backwpup_adapter->get_plugin_data( 'TEMP' ), true );
+		if ( ! empty( $temp_folder_message ) ) {
+			return new WP_HTTP_Response(
+				[
+					'status'  => 500,
+					'message' => $temp_folder_message,
+				],
+				200,
+				[ 'Content-Type' => 'text/json' ]
+			);
+		}
+
+		// check log folder.
+		$log_folder         = get_site_option( 'backwpup_cfg_logfolder' );
+		$log_folder         = $this->file_adapter->get_absolute_path( $log_folder );
+		$log_folder_message = $this->file_adapter->check_folder( $log_folder );
+		if ( ! empty( $log_folder_message ) ) {
+			return new WP_HTTP_Response(
+				[
+					'status'  => 500,
+					'message' => $log_folder_message,
+				],
+				200,
+				[ 'Content-Type' => 'text/json' ]
+			);
+		}
+
+		// check backup destinations.
+		$job_types    = $this->backwpup_adapter->get_job_types();
+		$job_data     = $this->option_adapter->get_job( $jobid );
+		$creates_file = false;
+		foreach ( $job_types as $id => $job_type_class ) {
+			if ( in_array( $id, $job_data['type'], true ) && $job_type_class->creates_file() ) {
+				$creates_file = true;
+				break;
+			}
+		}
+		if ( $creates_file ) {
+			$destinations = 0;
+			foreach ( $job_data['destinations'] as $dest_key ) {
+				$dest = $this->backwpup_adapter->get_destination( $dest_key );
+				if ( ! $dest || ! $dest->can_run( $job_data, false ) ) {
+					continue;
+				}
+				++$destinations;
+			}
+
+			if ( ! $destinations ) {
+				return new WP_HTTP_Response(
+					[
+						'status'  => 500,
+						// translators: %s: Job name.
+						'message' => sprintf( __( 'No backup destination available for "%s" or properly configured!', 'backwpup' ), esc_attr( $job_data['name'] ) ),
+					],
+					200,
+					[ 'Content-Type' => 'text/json' ]
+				);
+			}
+		}
+
+		// check if wp cron is working.
+		$current_time    = time() - HOUR_IN_SECONDS;
+		$next_cron_times = array_keys( _get_cron_array() );
+		sort( $next_cron_times );
+		if ( isset( $next_cron_times[0] ) && $next_cron_times[0] < $current_time ) {
+			\BackWPup_Admin::message( __( 'WP-Cron does not seem to be working properly, because it has not run in the last hour. Please check your server settings.', 'backwpup' ), true );
+		}
+
+		$this->job_adapter->get_jobrun_url( 'runnow', $jobid );
+
+		sleep( 1 ); // Wait for the job to start.
+		$start_file_name = trailingslashit( $this->backwpup_adapter->get_plugin_data( 'TEMP' ) ) . '.backwpup_job_started';
+		if ( file_exists( $start_file_name ) ) {
+			wp_delete_file( $start_file_name );
+		} else {
+			return new WP_HTTP_Response(
+				[
+					'status'  => 500,
+					'message' => __( 'The backup process could not be started! Please try to contact our support.', 'backwpup' ),
+				],
+				200,
+				[ 'Content-Type' => 'text/json' ]
+			);
+		}
+
+		if ( file_exists( $this->backwpup_adapter->get_plugin_data( 'running_file' ) ) ) {
+			return new WP_HTTP_Response(
+				[
+					'status'  => 200,
+					// translators: %s: Job name.
+					'message' => sprintf( __( 'Job "%s" started.', 'backwpup' ), esc_attr( $job_data['name'] ) ),
+				],
+				200,
+				[ 'Content-Type' => 'text/json' ]
+			);
+		}
+
+		return new WP_HTTP_Response(
+			[
+				'status'  => 201,
+				// translators: %s: Job name.
+				'message' => sprintf( __( 'Job "%s" executed.', 'backwpup' ), esc_attr( $job_data['name'] ) ),
+			],
+			200,
+			[ 'Content-Type' => 'text/json' ]
+		);
+	}
+
+	/**
+	 * Start backup process for when jobs are deleted
+	 *
+	 * @return int
+	 */
+	private function get_job_id_when_no_available_job(): int {
+		$job_id = get_site_option( 'backwpup_backup_now_job_id', 0 );
+		if ( $job_id < 1 ) {
+			$job_id = $this->option_adapter->next_job_id();
+			update_site_option( 'backwpup_backup_now_job_id', $job_id );
+			$this->option_adapter->update( $job_id, 'type', $this->job_types_adapter->get_type_job_both() );
+		}
+
+		$this->backup_now_default_values( $job_id, true );
+
+		return $job_id;
+	}
+
+	/**
+	 * Generate backup default values
+	 *
+	 * @param int  $next_job_id The next job id.
+	 * @param bool $backup_now Check if it's a temp job or back up now.
+	 *
+	 * @return void
+	 */
+	private function backup_now_default_values( int $next_job_id, bool $backup_now = false ): void {
+		$backup_now_job_values = [
+			'jobid'              => $next_job_id,
+			'name'               => 'Backup Now',
+			'destinations'       => [ 'FOLDER' ],
+			'activetype'         => '',
+			'backupsyncnodelete' => false,
+			'tempjob'            => true,
+		];
+
+		if ( $backup_now ) {
+			$backup_now_job_values['tempjob']    = false;
+			$backup_now_job_values['backup_now'] = true;
+		}
+
+		$default_values                    = $this->option_adapter->defaults_job();
+		$default_destination_folder_values = $this->backwpup_adapter->get_destination( 'FOLDER' )->option_defaults();
+
+		$bwp_job_values = array_merge( $default_values, $default_destination_folder_values, $backup_now_job_values );
+
+		foreach ( $bwp_job_values as $key => $value ) {
+			$this->option_adapter->update( $next_job_id, $key, $value );
+		}
+	}
+
+	/**
+	 * Process bulk actions.
+	 *
+	 * @param WP_REST_Request $request The REST request object containing the parameters.
+	 *
+	 * @return WP_REST_Response The response object containing the status and message.
+	 *
+	 * @throws Exception If an error occurs during the process.
+	 */
+	public function process_bulk_actions( WP_REST_Request $request ): \WP_REST_Response {
+		$params   = $request->get_params();
+		$response = [
+			'success' => [],
+			'errors'  => [],
+		];
+		$action   = $params['action'];
+		switch ( $action ) {
+			case 'delete':
+				$backups = $params['backups'];
+				foreach ( $backups as $backup ) {
+					try {
+						$backup_id = 0;
+						if ( ! empty( $backup['dataset'] ) && is_array( $backup['dataset'] ) && ! empty( $backup['dataset']['backup_id'] ) ) {
+							$backup_id = (int) $backup['dataset']['backup_id'];
+						}
+						if ( $backup_id > 0 ) {
+							$this->delete_failed_backup_entry( $backup_id );
+						} else {
+							$this->delete_backup( $backup );
+						}
+						$response['success'][] = $backup;
+					} catch ( Exception $e ) {
+						$response['errors'][] = [
+							'backup' => $backup,
+							'error'  => $e->getMessage(),
+						];
+					}
+				}
+				$response['message'] = __( 'Bulk action processed.', 'backwpup' );
+				break;
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * Delete a single backup.
+	 *
+	 * @param array $backup The backup data.
+	 *
+	 * @throws Exception If an error occurs during deletion.
+	 */
+	private function delete_backup( $backup ) {
+		if ( empty( $backup['dataset']['data-url'] ) ) {
+			throw new Exception( __( 'Invalid backup data.', 'backwpup' ) ); // @phpcs:ignore
+		}
+
+		// Parse the dataset URL.
+		$query = wp_parse_url( $backup['dataset']['data-url'], PHP_URL_QUERY );
+		parse_str( $query, $params );
+
+		// Validate required params.
+		if ( empty( $params['jobdest-top'] ) || empty( $params['backupfiles'] ) ) {
+			throw new Exception( __( 'Missing required parameters.', 'backwpup' ) ); // @phpcs:ignore
+		}
+
+		$jobdest = sanitize_text_field( $params['jobdest-top'] );
+		$file    = esc_attr( $params['backupfiles'][0] ); // Handle array format.
+
+		[$jobid, $dest] = explode( '_', $jobdest );
+		$dest_class     = $this->backwpup_adapter->get_destination( $dest );
+
+		if ( ! $dest_class ) {
+			throw new Exception( __( 'Invalid destination class.', 'backwpup' ) ); // @phpcs:ignore
+		}
+
+		// Perform the deletion.
+		$dest_class->file_delete( $jobdest, $file );
+
+		/**
+		 * Fires after deleting backups.
+		 *
+		 * @param array $params['backupfiles'] Backup file deleted.
+		 * @param string $dest Destination.
+		 */
+		do_action( 'backwpup_after_delete_backups', $params['backupfiles'], $dest );
+	}
+
+	/**
+	 * Get the abort status of a running or recently-aborted backup job.
+	 *
+	 * Polls the database to determine whether the background PHP process has
+	 * finished its cleanup after the user triggered an abort. The JS abort
+	 * handler calls this endpoint repeatedly until `is_done` is true before
+	 * redirecting or reloading the page, ensuring the DB row status is already
+	 * updated from `created` to `aborted` when the history table is rendered.
+	 *
+	 * @param WP_REST_Request $request The REST request containing `job_id`.
+	 *
+	 * @return WP_REST_Response Response with `is_done` boolean flag.
+	 */
+	public function get_job_abort_status( WP_REST_Request $request ): WP_REST_Response {
+		$job_id = (int) $request->get_param( 'job_id' );
+		return rest_ensure_response( [ 'is_done' => $this->backup_database->is_abort_complete( $job_id ) ] );
+	}
+
+	/**
+	 * Delete a failed backup entry from the database.
+	 *
+	 * @param int $backup_id Backup entry ID.
+	 *
+	 * @throws Exception When deletion fails.
+	 */
+	private function delete_failed_backup_entry( int $backup_id ): void {
+		if ( $backup_id <= 0 ) {
+			throw new Exception( __( 'Invalid failed backup entry.', 'backwpup' ) ); // @phpcs:ignore
+		}
+
+		$row = $this->backup_database->get_backup_row_by_id( $backup_id );
+
+		if ( ! $this->backup_database->delete_failed_backup( $backup_id ) ) {
+			throw new Exception( __( 'Failed to delete backup entry.', 'backwpup' ) ); // @phpcs:ignore
+		}
+
+		// For aborted backups, physically delete any partial file from the destination
+		// so it cannot re-appear as a "completed" backup after the DB row is removed.
+		if (
+			$row
+			&& 'aborted' === ( $row->status ?? '' )
+			&& ! empty( $row->filename )
+			&& ! empty( $row->destination )
+		) {
+			$destination = (string) $row->destination;
+			$filename    = (string) $row->filename;
+			$job_id      = isset( $row->job_id ) ? (int) $row->job_id : 0;
+			$dest_class  = $this->backwpup_adapter->get_destination( $destination );
+			if ( $dest_class && $job_id > 0 ) {
+				$jobdest   = $job_id . '_' . $destination;
+				$file_path = $this->find_remote_file_path( $dest_class, $jobdest, $filename );
+				if ( '' !== $file_path ) {
+					try {
+						$dest_class->file_delete( $jobdest, $file_path );
+					} catch ( \Throwable $e ) {
+						// Remote file deletion is best-effort; the DB row is already removed.
+						// Log so operators can identify orphaned partial files.
+						error_log( sprintf( '[BackWPup] Failed to delete partial aborted file "%s": %s', $filename, $e->getMessage() ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Find the destination-specific file path or ID for a given base filename.
+	 *
+	 * Different destinations store files with different keys in their file lists:
+	 * FTP stores full remote paths, Google Drive stores file IDs, Azure stores blob names.
+	 * This method looks up the entry matching the base filename and returns the value
+	 * expected by file_delete(). If the file is not found (e.g. early abort with no
+	 * upload), an empty string is returned so deletion can be skipped entirely, avoiding
+	 * spurious admin error notices.
+	 *
+	 * @param \BackWPup_Destinations $dest_class Destination handler instance.
+	 * @param string                 $jobdest    Job-destination key (e.g. '123_FTP').
+	 * @param string                 $filename   Base archive filename to look for.
+	 *
+	 * @return string The file path or ID to pass to file_delete(), or '' if not found.
+	 */
+	private function find_remote_file_path( $dest_class, string $jobdest, string $filename ): string {
+		$file_list = $dest_class->file_get_list( $jobdest );
+		foreach ( $file_list as $file ) {
+			if ( ! is_array( $file ) ) {
+				continue;
+			}
+			$file_key  = (string) ( $file['file'] ?? '' );
+			$file_name = (string) ( $file['filename'] ?? basename( $file_key ) );
+			if ( $file_name === $filename || $file_key === $filename ) {
+				return $file_key;
+			}
+		}
+		return '';
+	}
+}

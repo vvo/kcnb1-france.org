@@ -1,0 +1,427 @@
+<?php
+use WPMedia\BackWPup\Plugin\Plugin;
+/**
+ * Class for upgrade / deactivation / uninstall.
+ */
+class BackWPup_Install {
+
+	/**
+	 * Update archive format during plugin upgrade.
+	 */
+	private function update_archive_format() {
+		if ( get_site_option( 'backwpup_archiveformat', false ) === false ) {
+			// Check for the default job files archive format.
+			$jobid          = get_site_option( Plugin::FILES_JOB_ID, false );
+			$archive_format = BackWPup_Option::get( $jobid, 'archiveformat', '.tar' );
+			if ( $archive_format ) {
+				add_site_option( 'backwpup_archiveformat', $archive_format );
+
+				return;
+			}
+
+			add_site_option( 'backwpup_archiveformat', '.tar' );
+		}
+	}
+
+	/**
+	 * Creates DB und updates settings.
+	 */
+	public static function activate() {
+		$version_db = get_site_option( 'backwpup_version' );
+
+		// Changes for version before 3.0.0.
+		if ( ! $version_db && get_option( 'backwpup' ) && get_option( 'backwpup_jobs' ) ) {
+			self::upgrade_from_version_two();
+		}
+
+		// Changes for version before 3.0.14.
+		if ( version_compare( '3.0.13', $version_db, '>' ) && version_compare( '3.0', $version_db, '<' ) ) {
+			$upload_dir = wp_upload_dir( null, false, true );
+			$logfolder  = get_site_option( 'backwpup_cfg_logfolder' );
+			if ( empty( $logfolder ) ) {
+				$old_log_folder = trailingslashit( str_replace( '\\', '/', $upload_dir['basedir'] ) ) . 'backwpup-' . substr( md5( md5( (string) SECURE_AUTH_KEY ) ), 9, 5 ) . '-logs/';
+				update_site_option( 'backwpup_cfg_logfolder', $old_log_folder );
+			}
+		}
+
+		// Migration for the new UI.
+		BackWPup_Migrate::migrate();
+
+		// Define the default archive format if not set.
+		( new self() )->update_archive_format();
+
+		// Changes for 3.2.
+		$no_translation = get_site_option( 'backwpup_cfg_jobnotranslate' );
+		if ( $no_translation ) {
+			update_site_option( 'backwpup_cfg_loglevel', 'normal' );
+			delete_site_option( 'backwpup_cfg_jobnotranslate' );
+		}
+
+		delete_site_option( 'backwpup_cfg_jobziparchivemethod' );
+
+		// Create new options.
+		if ( is_multisite() ) {
+			add_site_option( 'backwpup_jobs', [] );
+		} else {
+			add_option( 'backwpup_jobs', [], '', 'no' );
+		}
+
+		// Remove old schedule.
+		wp_clear_scheduled_hook( 'backwpup_cron' );
+		// Make new schedule.
+		$activejobs = BackWPup_Option::get_job_ids( 'activetype', 'wpcron' );
+		if ( ! empty( $activejobs ) ) {
+			foreach ( $activejobs as $id ) {
+				wp_clear_scheduled_hook( 'backwpup_cron', [ 'arg' => $id ] );
+				$cron_next = BackWPup_Cron::cron_next( BackWPup_Option::get( $id, 'cron' ) );
+				wp_schedule_single_event( $cron_next, 'backwpup_cron', [ 'arg' => $id ] );
+			}
+		}
+
+		// Add cleanup schedule.
+		if ( ! wp_next_scheduled( 'backwpup_check_cleanup' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'backwpup_check_cleanup' );
+		}
+
+		// Add capabilities to an administrator role on a single site.
+		if ( ! is_multisite() ) {
+			$role = get_role( 'administrator' );
+			if ( is_object( $role ) && method_exists( $role, 'add_cap' ) ) {
+				$role->add_cap( 'backwpup' );
+				$role->add_cap( 'backwpup_jobs' );
+				$role->add_cap( 'backwpup_jobs_edit' );
+				$role->add_cap( 'backwpup_jobs_start' );
+				$role->add_cap( 'backwpup_backups' );
+				$role->add_cap( 'backwpup_backups_download' );
+				$role->add_cap( 'backwpup_backups_delete' );
+				$role->add_cap( 'backwpup_logs' );
+				$role->add_cap( 'backwpup_logs_delete' );
+				$role->add_cap( 'backwpup_settings' );
+				$role->add_cap( 'backwpup_restore' );
+			}
+		} else {
+			// A super admin has all capabilities. Must be removed from an administrator role.
+			// Delete them because they are maybe applied from an old version.
+			switch_to_blog( get_main_site_id() );
+			$role = get_role( 'administrator' );
+			if ( is_object( $role ) && method_exists( $role, 'remove_cap' ) ) {
+				$role->remove_cap( 'backwpup' );
+				$role->remove_cap( 'backwpup_jobs' );
+				$role->remove_cap( 'backwpup_jobs_edit' );
+				$role->remove_cap( 'backwpup_jobs_start' );
+				$role->remove_cap( 'backwpup_backups' );
+				$role->remove_cap( 'backwpup_backups_download' );
+				$role->remove_cap( 'backwpup_backups_delete' );
+				$role->remove_cap( 'backwpup_logs' );
+				$role->remove_cap( 'backwpup_logs_delete' );
+				$role->remove_cap( 'backwpup_settings' );
+				$role->remove_cap( 'backwpup_restore' );
+			}
+			restore_current_blog();
+		}
+
+		// Add/overwrite roles.
+		add_role(
+			'backwpup_admin',
+			__( 'BackWPup Admin', 'backwpup' ),
+			[
+				'read'                      => true,                         // make it usable for single user.
+				'backwpup'                  => true,           // BackWPup general accesses (like Dashboard).
+				'backwpup_jobs'             => true,        // accesses for job page.
+				'backwpup_jobs_edit'        => true,     // user can edit/delete/copy/export jobs.
+				'backwpup_jobs_start'       => true,        // user can start jobs.
+				'backwpup_backups'          => true,         // accesses for backups page.
+				'backwpup_backups_download' => true,  // user can download backup files.
+				'backwpup_backups_delete'   => true,      // user can delete backup files.
+				'backwpup_logs'             => true,        // accesses for logs page.
+				'backwpup_logs_delete'      => true,       // user can delete log files.
+				'backwpup_settings'         => true,      // accesses for settings page.
+				'backwpup_restore'          => true,       // accesses for restore page.
+			]
+			);
+
+		add_role(
+			'backwpup_check',
+			__( 'BackWPup jobs checker', 'backwpup' ),
+			[
+				'read'                      => true,
+				'backwpup'                  => true,
+				'backwpup_jobs'             => true,
+				'backwpup_jobs_edit'        => false,
+				'backwpup_jobs_start'       => false,
+				'backwpup_backups'          => true,
+				'backwpup_backups_download' => false,
+				'backwpup_backups_delete'   => false,
+				'backwpup_logs'             => true,
+				'backwpup_logs_delete'      => false,
+				'backwpup_settings'         => false,
+				'backwpup_restore'          => false,
+			]
+			);
+
+		add_role(
+			'backwpup_helper',
+			__( 'BackWPup jobs functions', 'backwpup' ),
+			[
+				'read'                      => true,
+				'backwpup'                  => true,
+				'backwpup_jobs'             => true,
+				'backwpup_jobs_edit'        => false,
+				'backwpup_jobs_start'       => true,
+				'backwpup_backups'          => true,
+				'backwpup_backups_download' => true,
+				'backwpup_backups_delete'   => true,
+				'backwpup_logs'             => true,
+				'backwpup_logs_delete'      => true,
+				'backwpup_settings'         => false,
+				'backwpup_restore'          => false,
+			]
+			);
+
+		// Add default options.
+		BackWPup_Option::default_site_options();
+
+		// Manage the first backup job and remove old default jobs ids.
+		$first_job_id        = get_site_option( Plugin::FILES_JOB_ID, false );
+		$second_job_id       = get_site_option( Plugin::DATABASE_JOB_ID, false );
+		$first_backup_job_id = get_site_option( Plugin::FIRST_JOB_ID, false );
+
+		if ( ! $first_backup_job_id || ! BackWPup_Option::get_job( $first_backup_job_id ) ) {
+			$first_backup_job_id = BackWPup_Option::create_default_jobs( 'First backup', BackWPup_JobTypes::$type_job_both );
+			BackWPup_Option::update( $first_backup_job_id, 'tempjob', true );
+			update_site_option( Plugin::FIRST_JOB_ID, $first_backup_job_id );
+		}
+		if ( $first_job_id ) {
+			delete_site_option( Plugin::FILES_JOB_ID );
+		}
+		if ( $second_job_id ) {
+			delete_site_option( Plugin::DATABASE_JOB_ID );
+		}
+
+		// Update version.
+		update_site_option( 'backwpup_previous_version', get_site_option( 'backwpup_version', BackWPup::get_plugin_data( 'Version' ) ) );
+		update_site_option( 'backwpup_version', BackWPup::get_plugin_data( 'Version' ) );
+
+		if ( get_site_option( 'backwpup_onboarding', false ) && ! ( defined( \WP_CLI::class ) && WP_CLI ) ) {
+			wp_safe_redirect( network_admin_url( 'admin.php' ) . '?page=backwpuponboarding' );
+
+			exit();
+		}
+	}
+
+	/**
+	 * Upgrade options from version 2.
+	 *
+	 * @return void
+	 */
+	private static function upgrade_from_version_two() {
+		// Load options.
+		$cfg  = get_option( 'backwpup' ); // Only exists in Version 2.
+		$jobs = get_option( 'backwpup_jobs' );
+
+		// Delete old options.
+		delete_option( 'backwpup' );
+		delete_option( 'backwpup_jobs' );
+
+		// Add new option default structure and without auto load cache.
+		if ( ! is_multisite() ) {
+			add_option( 'backwpup_jobs', [], '', 'no' );
+		}
+
+		// Upgrade cfg.
+		// If old value switch it to new.
+		if ( ! empty( $cfg['dirlogs'] ) ) {
+			$cfg['logfolder'] = $cfg['dirlogs'];
+		}
+		if ( ! empty( $cfg['httpauthpassword'] ) ) {
+			if ( preg_match( '%^[a-zA-Z0-9/+]*={0,2}$%', (string) $cfg['httpauthpassword'] ) ) {
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Legacy option stored as base64 in v2.
+				$cfg['httpauthpassword'] = base64_decode( $cfg['httpauthpassword'] );
+			}
+			$cfg['httpauthpassword'] = BackWPup_Encryption::encrypt( $cfg['httpauthpassword'] );
+		}
+		// Delete old not needed vars.
+		unset( $cfg['dirtemp'], $cfg['dirlogs'], $cfg['logfilelist'], $cfg['jobscriptruntime'], $cfg['jobscriptruntimelong'], $cfg['last_activate'], $cfg['disablewpcron'], $cfg['phpzip'], $cfg['apicronservice'], $cfg['mailsndemail'], $cfg['mailsndname'], $cfg['mailmethod'], $cfg['mailsendmail'], $cfg['mailhost'], $cfg['mailpass'], $cfg['mailhostport'], $cfg['mailsecure'], $cfg['mailuser'] );
+		// Save in options.
+		foreach ( $cfg as $cfgname => $cfgvalue ) {
+			update_site_option( 'backwpup_cfg_' . $cfgname, $cfgvalue );
+		}
+
+		// Put old jobs to new if exists.
+		foreach ( $jobs as $jobid => $jobvalue ) {
+			// Convert general settings.
+			if ( empty( $jobvalue['jobid'] ) ) {
+				$jobvalue['jobid'] = $jobid;
+			}
+			if ( empty( $jobvalue['activated'] ) ) {
+				$jobvalue['activetype'] = '';
+			} else {
+				$jobvalue['activetype'] = 'wpcron';
+			}
+			if ( ! isset( $jobvalue['cronselect'] ) && ! isset( $jobvalue['cron'] ) ) {
+				$jobvalue['cronselect'] = 'basic';
+			} elseif ( ! isset( $jobvalue['cronselect'] ) && isset( $jobvalue['cron'] ) ) {
+				$jobvalue['cronselect'] = 'advanced';
+			}
+			$jobvalue['backuptype'] = 'archive';
+			$jobvalue['type']       = explode( '+', (string) $jobvalue['type'] ); // Save as array.
+
+			foreach ( $jobvalue['type'] as $key => $type ) {
+				if ( 'DB' === $type ) {
+					$jobvalue['type'][ $key ] = 'DBDUMP';
+				}
+				if ( 'OPTIMIZE' === $type ) {
+					unset( $jobvalue['type'][ $key ] );
+				}
+				if ( 'CHECK' === $type ) {
+					$jobvalue['type'][ $key ] = 'DBCHECK';
+				}
+				if ( 'MAIL' === $type ) {
+					$jobvalue['type'][ $key ] = 'EMAIL';
+				}
+			}
+			$jobvalue['archivename']   = $jobvalue['fileprefix'] . '%Y-%m-%d_%H-%i-%s';
+			$jobvalue['archiveformat'] = $jobvalue['fileformart'];
+			// Convert active destinations.
+			$jobvalue['destinations'] = [];
+			if ( ! empty( $jobvalue['backupdir'] ) && '/' !== $jobvalue['backupdir'] ) {
+				$jobvalue['destinations'][] = 'FOLDER';
+			}
+			if ( ! empty( $jobvalue['mailaddress'] ) ) {
+				$jobvalue['destinations'][] = 'MAIL';
+			}
+			if ( ! empty( $jobvalue['ftphost'] ) && ! empty( $jobvalue['ftpuser'] ) && ! empty( $jobvalue['ftppass'] ) ) {
+				$jobvalue['destinations'][] = 'FTP';
+			}
+			if ( ! empty( $jobvalue['dropetoken'] ) && ! empty( $jobvalue['dropesecret'] ) ) {
+				$jobvalue['destinations'][] = 'DROPBOX';
+			}
+			if ( ! empty( $jobvalue['sugarrefreshtoken'] ) && ! empty( $jobvalue['sugarroot'] ) ) {
+				$jobvalue['destinations'][] = 'SUGARSYNC';
+			}
+			if ( ! empty( $jobvalue['awsAccessKey'] ) && ! empty( $jobvalue['awsSecretKey'] ) && ! empty( $jobvalue['awsBucket'] ) ) {
+				$jobvalue['destinations'][] = 'S3';
+			}
+			if ( ! empty( $jobvalue['GStorageAccessKey'] )
+				&& ! empty( $jobvalue['GStorageSecret'] )
+				&& ! empty( $jobvalue['GStorageBucket'] )
+				&& ! in_array( 'S3', $jobvalue['destinations'], true )
+			) {
+				$jobvalue['destinations'][] = 'S3';
+			}
+			if ( ! empty( $jobvalue['rscUsername'] ) && ! empty( $jobvalue['rscAPIKey'] ) && ! empty( $jobvalue['rscContainer'] ) ) {
+				$jobvalue['destinations'][] = 'RSC';
+			}
+			if ( ! empty( $jobvalue['msazureHost'] ) && ! empty( $jobvalue['msazureAccName'] ) && ! empty( $jobvalue['msazureKey'] ) && ! empty( $jobvalue['msazureContainer'] ) ) {
+				$jobvalue['destinations'][] = 'MSAZURE';
+			}
+			// Convert dropbox.
+			$jobvalue['dropboxtoken']      = ''; // New app key are set must reauth.
+			$jobvalue['dropboxsecret']     = '';
+			$jobvalue['dropboxroot']       = 'dropbox';
+			$jobvalue['dropboxmaxbackups'] = $jobvalue['dropemaxbackups'];
+			$jobvalue['dropboxdir']        = $jobvalue['dropedir'];
+			unset( $jobvalue['dropetoken'], $jobvalue['dropesecret'], $jobvalue['droperoot'], $jobvalue['dropemaxbackups'], $jobvalue['dropedir'] );
+			// Convert amazon S3.
+			$jobvalue['s3accesskey'] = $jobvalue['awsAccessKey'];
+			$jobvalue['s3secretkey'] = BackWPup_Encryption::encrypt( $jobvalue['awsSecretKey'] );
+			$jobvalue['s3bucket']    = $jobvalue['awsBucket'];
+			// Get aws region.
+			$jobvalue['s3region']       = 'us-east-1';
+			$jobvalue['s3storageclass'] = ! empty( $jobvalue['awsrrs'] ) ? 'REDUCED_REDUNDANCY' : '';
+			$jobvalue['s3dir']          = $jobvalue['awsdir'];
+			$jobvalue['s3maxbackups']   = $jobvalue['awsmaxbackups'];
+			unset( $jobvalue['awsAccessKey'], $jobvalue['awsSecretKey'], $jobvalue['awsBucket'], $jobvalue['awsrrs'], $jobvalue['awsdir'], $jobvalue['awsmaxbackups'] );
+			// Convert google storage.
+			$jobvalue['s3accesskey']  = $jobvalue['GStorageAccessKey'];
+			$jobvalue['s3secretkey']  = BackWPup_Encryption::encrypt( $jobvalue['GStorageSecret'] );
+			$jobvalue['s3bucket']     = $jobvalue['GStorageBucket'];
+			$jobvalue['s3region']     = 'google-storage';
+			$jobvalue['s3ssencrypt']  = '';
+			$jobvalue['s3dir']        = $jobvalue['GStoragedir'];
+			$jobvalue['s3maxbackups'] = $jobvalue['GStoragemaxbackups'];
+			unset( $jobvalue['GStorageAccessKey'], $jobvalue['GStorageSecret'], $jobvalue['GStorageBucket'], $jobvalue['GStoragedir'], $jobvalue['GStoragemaxbackups'] );
+			// Convert MS Azure storage.
+			$jobvalue['msazureaccname']   = $jobvalue['msazureAccName'];
+			$jobvalue['msazurekey']       = BackWPup_Encryption::encrypt( $jobvalue['msazureKey'] );
+			$jobvalue['msazurecontainer'] = $jobvalue['msazureContainer'];
+			unset( $jobvalue['msazureHost'], $jobvalue['msazureAccName'], $jobvalue['msazureKey'], $jobvalue['msazureContainer'] );
+			// Convert FTP.
+			if ( preg_match( '%^[a-zA-Z0-9/+]*={0,2}$%', (string) $jobvalue['ftppass'] ) ) {
+				// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Legacy option stored as base64 in v2.
+				$jobvalue['ftppass'] = base64_decode( $jobvalue['ftppass'] );
+			}
+			$jobvalue['ftppass'] = BackWPup_Encryption::encrypt( $jobvalue['ftppass'] );
+			if ( ! empty( $jobvalue['ftphost'] ) && strstr( (string) $jobvalue['ftphost'], ':' ) ) {
+				[$jobvalue['ftphost'], $jobvalue['ftphostport']] = explode( ':', (string) $jobvalue['ftphost'], 2 );
+			}
+			// Convert Sugarsync.
+			// Convert Mail.
+			$jobvalue['emailaddress']   = $jobvalue['mailaddress'];
+			$jobvalue['emailefilesize'] = $jobvalue['mailefilesize'];
+			unset( $jobvalue['mailaddress'], $jobvalue['mailefilesize'] );
+			// Convert RSC.
+			$jobvalue['rscusername']  = $jobvalue['rscUsername'];
+			$jobvalue['rscapikey']    = $jobvalue['rscAPIKey'];
+			$jobvalue['rsccontainer'] = $jobvalue['rscContainer'];
+			// Convert jobtype DB Dump.
+			$jobvalue['dbdumpexclude'] = $jobvalue['dbexclude'];
+			unset( $jobvalue['dbexclude'], $jobvalue['dbshortinsert'] );
+			// Convert jobtype DBDUMP, DBCHECK.
+			$jobvalue['dbcheckrepair'] = true;
+			unset( $jobvalue['maintenance'] );
+			// Convert jobtype wpexport.
+			// Convert jobtype file.
+			$excludes = [];
+
+			foreach ( $jobvalue['backuprootexcludedirs'] as $folder ) {
+				$excludes[] = basename( (string) $folder );
+			}
+			$jobvalue['backuprootexcludedirs'] = $excludes;
+			$excludes                          = [];
+
+			foreach ( $jobvalue['backupcontentexcludedirs'] as $folder ) {
+				$excludes[] = basename( (string) $folder );
+			}
+			$jobvalue['backupcontentexcludedirs'] = $excludes;
+			$excludes                             = [];
+
+			foreach ( $jobvalue['backuppluginsexcludedirs'] as $folder ) {
+				$excludes[] = basename( (string) $folder );
+			}
+			$jobvalue['backuppluginsexcludedirs'] = $excludes;
+			$excludes                             = [];
+
+			foreach ( $jobvalue['backupthemesexcludedirs'] as $folder ) {
+				$excludes[] = basename( (string) $folder );
+			}
+			$jobvalue['backupthemesexcludedirs'] = $excludes;
+			$excludes                            = [];
+
+			foreach ( $jobvalue['backupuploadsexcludedirs'] as $folder ) {
+				$excludes[] = basename( (string) $folder );
+			}
+			$jobvalue['backupuploadsexcludedirs'] = $excludes;
+			// Delete no longer needed.
+			unset( $jobvalue['cronnextrun'], $jobvalue['fileprefix'], $jobvalue['fileformart'], $jobvalue['scheduleintervaltype'], $jobvalue['scheduleintervalteimes'], $jobvalue['scheduleinterval'], $jobvalue['dropemail'], $jobvalue['dropepass'], $jobvalue['dropesignmethod'] );
+			// Save in options.
+			foreach ( $jobvalue as $jobvaluename => $jobvaluevalue ) {
+				BackWPup_Option::update( $jobvalue['jobid'], $jobvaluename, $jobvaluevalue );
+			}
+		}
+	}
+
+	/**
+	 * Cleanup on Plugin deactivation.
+	 */
+	public static function deactivate() {
+		wp_clear_scheduled_hook( 'backwpup_cron' );
+		$activejobs = BackWPup_Option::get_job_ids( 'activetype', 'wpcron' );
+		if ( ! empty( $activejobs ) ) {
+			foreach ( $activejobs as $id ) {
+				wp_clear_scheduled_hook( 'backwpup_cron', [ 'arg' => $id ] );
+			}
+		}
+		wp_clear_scheduled_hook( 'backwpup_check_cleanup' );
+	}
+}

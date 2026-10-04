@@ -1,0 +1,47 @@
+<?php
+use BackWPup\Utils\BackWPupHelpers;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * @var string $job_id Optional. The main plugin file. Default: null.
+ *
+ */
+if ( ! isset($job_id) ) {
+	return;
+}
+
+$excludedFiles = BackWPup_Directory::get_folder_list_to_exclude('themes',get_theme_root(), $job_id, false);
+
+BackWPupHelpers::component("closable-heading", [
+  'title' => __("Themes", 'backwpup') . " - " . __("Exclusion Settings", 'backwpup'),
+  'type' => 'modal'
+]);
+?>
+
+<div class="flex-auto overflow-y-auto flex flex-col gap-2 h-[312px]">
+    <?php
+    foreach ($excludedFiles as $file) {
+        BackWPupHelpers::component("file-line", [
+            "value" => $file['name'],
+            "label" => $file['name'],
+            "name" => "backupthemesexcludedirs[]",
+            "icon" => "folder",
+            "included" => !$file['excluded'],
+        ]);
+    }
+    ?>
+</div>
+
+<footer>
+  <?php
+  BackWPupHelpers::component("form/button", [
+    "type" => "primary",
+    "label" => __("Save", 'backwpup'),
+    "full_width" => true,
+    "trigger" => "close-modal",
+  ]);
+  ?>
+</footer>

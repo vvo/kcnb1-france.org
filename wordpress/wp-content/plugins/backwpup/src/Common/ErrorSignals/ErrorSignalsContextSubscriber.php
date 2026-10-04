@@ -1,0 +1,47 @@
+<?php
+declare(strict_types=1);
+
+namespace WPMedia\BackWPup\Common\ErrorSignals;
+
+use BackWPup_Job;
+use WPMedia\BackWPup\EventManagement\SubscriberInterface;
+
+class ErrorSignalsContextSubscriber implements SubscriberInterface {
+	/**
+	 * ErrorSignalsContextStore instance.
+	 *
+	 * @var ErrorSignalsContextStore
+	 */
+	private ErrorSignalsContextStore $store;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param ErrorSignalsContextStore $store Context store instance.
+	 */
+	public function __construct( ErrorSignalsContextStore $store ) {
+		$this->store = $store;
+	}
+
+	/**
+	 * Subscribed events.
+	 *
+	 * @return array[]
+	 */
+	public static function get_subscribed_events(): array {
+		return [
+			'backwpup_job_error_signal' => [ [ 'on_error_signal', 10, 2 ] ],
+		];
+	}
+
+	/**
+	 * Store error context data.
+	 *
+	 * @param array             $signal Errors data.
+	 * @param BackWPup_Job|null $job The Job instance.
+	 * @return void
+	 */
+	public function on_error_signal( array $signal, ?BackWPup_Job $job = null ): void {
+		$this->store->store( $signal );
+	}
+}
