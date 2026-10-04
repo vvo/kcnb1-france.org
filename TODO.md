@@ -13,10 +13,14 @@ Kept up to date by whoever works on the site (humans and agents). Remove items o
 - [ ] Optional: rotate the `site@kcnb1-france.org` password (it was shared in a chat), then update
       `OVH_SMTP_PASSWORD` in prod's `wp-config.php`.
 - [ ] Paste the cleaned DNS zone (without `ftp`, `1|www...`, `3|welcome`, `l|fr`) and check the site and MX still resolve.
-- [ ] Switch prod PHP from 8.3 (security fixes until end of 2027) to 8.4 (until end of 2028) in
-      OVH > Hébergement > Informations générales > Configuration. Local already runs 8.4 clean.
-      Do it together with the WordPress 7.1 test below. Not 8.5 yet (too new for the 2019 theme vendor).
-- [ ] Upgrade WordPress from 6.8.x to 7.1.x: test locally first (theme is old Sage 9, check front + wp-admin
-      + ACF + Wordfence), then update on prod from wp-admin right after a fresh BackWPup backup.
-      6.8.x keeps getting security fixes through automatic minor updates meanwhile.
+- [ ] 2026-10-05 morning: PHP 8.4 + WordPress 7.1.2 on prod. Validated locally on 2026-10-05
+      (PHP 8.4, MySQL 8.4, WP 7.1.2, prod DB): 44 public pages identical text to prod, wp-admin pages,
+      post edit/save, media upload, ACF, Wordfence, BackWPup all fine, empty debug.log.
+      1. wp-admin > BackWPup > run the job now ("Exécuter maintenant"), wait until it reaches Dropbox.
+      2. OVH > new hosting > Informations générales > Configuration > PHP 8.4, keep the rest. Validate.
+         Agent: wait ~5 min, check `php -v` over SSH and that the site answers 200.
+      3. wp-admin > Mises à jour > "Mettre à jour vers la version 7.1.2". Then also update translations.
+         Agent: crawl all pages, check wp-admin, send a test mail, check prod debug log is empty.
+      Rollback: PHP back to 8.3 in OVH (one click); WordPress from the BackWPup archive of step 1.
+      Not PHP 8.5 yet (too new for the 2019 theme vendor).
 - [ ] Remove `~/removed-plugins/health-check` on prod once the site has run fine for a few weeks.

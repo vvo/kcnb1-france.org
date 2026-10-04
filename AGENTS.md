@@ -50,7 +50,7 @@ Local URL: **https://kcnb1-france.localhost**. It proxies to nginx on host port 
 
 - **Theme build needs Node 14.18.0** (`.nvmrc`), Sage 9 / webpack 3. Use
   `fnm exec --using=14.18.0 npm run build` (or `npm start` to watch).
-- **Local PHP is 8.4**, prod 8.3. The theme runs clean on both thanks to the vendor patch in
+- **Local PHP is 8.4 and MySQL 8.4** (Docker), prod PHP 8.3. The theme runs clean on both thanks to the vendor patch in
   `wp-content/themes/kcnb1/patches/` (already applied on prod). Do not `composer update` the
   theme: its 2019 dependencies no longer resolve. If `vendor/` is ever reinstalled, reapply the patch.
 - **Local WP core must match prod's version** (prod auto-updates, 6.8.10 on 2026-10-04). A
