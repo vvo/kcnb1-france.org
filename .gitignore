@@ -17,3 +17,4 @@ node_modules
 .deploy-backups/
 wordpress/wp-content/wflogs/
 wordpress/wp-content/autoptimize_404_handler.php
+db-mysql57-backup/
