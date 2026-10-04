@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # --- Production (READ ONLY, never deploy) ---
-PROD_SSH="kcnbfrh@sshcloud.cluster024.hosting.ovh.net"
+PROD_SSH="ftgqcup@ssh.cluster131.hosting.ovh.net"   # OVH Pro, since 2026-10-04
 PROD_WWW="www"                       # path to the WordPress root on prod, relative to $HOME
 PROD_URL="https://kcnb1-france.org"  # live URL, rewritten to LOCAL_URL on import
 

@@ -12,6 +12,10 @@
 > prod): `ssh` + `mysqldump` piped to your machine, downloading uploads. Pushing anything
 > *up* is off limits.
 
+Site of the Association KCNB1 France, a WordPress (Sage 9 theme) hosted on an OVH Pro shared
+hosting (cluster131, PHP 8.3, MySQL 8.4). How production runs and how to work on it safely is in
+[`AGENTS.md`](AGENTS.md). Pending work is in [`TODO.md`](TODO.md).
+
 The site runs locally in Docker, behind [portless](https://www.npmjs.com/package/portless)
 which gives it a stable HTTPS URL with no port number:
 
@@ -49,7 +53,7 @@ scripts/sync-from-prod.sh --db       # database only
 scripts/sync-from-prod.sh --uploads  # media only
 ```
 
-The local WordPress core must match production's version (currently 6.8.5) or the DB will
+The local WordPress core must match production's version (prod auto-updates, see `AGENTS.md`) or the DB will
 404 every page. If you bump prod, update the local core the same way: download that version
 from wordpress.org and replace `wp-admin/`, `wp-includes/`, and the root `wp-*.php` files,
 leaving `wp-content/` and `wp-config.php` alone.
@@ -78,4 +82,4 @@ scripts/deploy-file.sh wordpress/wp-content/themes/kcnb1/resources/views/partial
 It shows a diff against the current prod copy, asks before writing, uploads with `scp` at
 644 (never `chmod`), and saves a rollback copy under `.deploy-backups/`. Pass several files
 to ship a small set (e.g. a template plus its image). Theme templates render live; no build
-runs on prod. Remember the prod gotchas in `CLAUDE.md` (old compiled CSS, WP Super Cache).
+runs on prod. Remember the prod gotchas in `AGENTS.md` (old compiled CSS, WP Super Cache).
