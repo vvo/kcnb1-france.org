@@ -88,6 +88,8 @@ final class WP_Customize_Nav_Menus {
 	 * Ajax handler for loading available menu items.
 	 *
 	 * @since 4.3.0
+	 *
+	 * @return never
 	 */
 	public function ajax_load_available_items() {
 		check_ajax_referer( 'customize-menus', 'customize-menus-nonce' );
@@ -313,6 +315,8 @@ final class WP_Customize_Nav_Menus {
 	 * Ajax handler for searching available menu items.
 	 *
 	 * @since 4.3.0
+	 *
+	 * @return never
 	 */
 	public function ajax_search_available_items() {
 		check_ajax_referer( 'customize-menus', 'customize-menus-nonce' );
@@ -551,7 +555,7 @@ final class WP_Customize_Nav_Menus {
 			'locationSlugMappedToName' => get_registered_nav_menus(),
 		);
 
-		$data = sprintf( 'var _wpCustomizeNavMenusSettings = %s;', wp_json_encode( $settings ) );
+		$data = sprintf( 'var _wpCustomizeNavMenusSettings = %s;', wp_json_encode( $settings, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) );
 		wp_scripts()->add_data( 'customize-nav-menus', 'data', $data );
 
 		// This is copied from nav-menus.php, and it has an unfortunate object name of `menus`.
@@ -995,6 +999,8 @@ final class WP_Customize_Nav_Menus {
 	 * Ajax handler for adding a new auto-draft post.
 	 *
 	 * @since 4.7.0
+	 *
+	 * @return never
 	 */
 	public function ajax_insert_auto_draft_post() {
 		if ( ! check_ajax_referer( 'customize-menus', 'customize-menus-nonce', false ) ) {
@@ -1243,13 +1249,15 @@ final class WP_Customize_Nav_Menus {
 						<div class="new-content-item-wrapper">
 							<label for="<?php echo esc_attr( 'create-item-input-' . $available_item_type['object'] ); ?>"><?php echo esc_html( $post_type_obj->labels->add_new_item ); ?></label>
 							<div class="new-content-item">
-								<input type="text" id="<?php echo esc_attr( 'create-item-input-' . $available_item_type['object'] ); ?>" class="create-item-input">
+								<input type="text" id="<?php echo esc_attr( 'create-item-input-' . $available_item_type['object'] ); ?>" class="create-item-input form-required">
 								<button type="button" class="button add-content"><?php _e( 'Add' ); ?></button>
 							</div>
+							<span id="create-input-<?php echo esc_attr( $available_item_type['object'] ); ?>-error" class="create-item-error error-message" style="display: none;"><?php _e( 'Please enter an item title' ); ?></span>
+
 						</div>
 					<?php endif; ?>
 				<?php endif; ?>
-				<ul class="available-menu-items-list" data-type="<?php echo esc_attr( $available_item_type['type'] ); ?>" data-object="<?php echo esc_attr( $available_item_type['object'] ); ?>" data-type_label="<?php echo esc_attr( isset( $available_item_type['type_label'] ) ? $available_item_type['type_label'] : $available_item_type['type'] ); ?>"></ul>
+				<ul class="available-menu-items-list" data-type="<?php echo esc_attr( $available_item_type['type'] ); ?>" data-object="<?php echo esc_attr( $available_item_type['object'] ); ?>" data-type_label="<?php echo esc_attr( $available_item_type['type_label'] ?? $available_item_type['type'] ); ?>"></ul>
 			</div>
 		</div>
 		<?php
@@ -1554,7 +1562,7 @@ final class WP_Customize_Nav_Menus {
 		$exports = array(
 			'navMenuInstanceArgs' => $this->preview_nav_menu_instance_args,
 		);
-		wp_print_inline_script_tag( sprintf( 'var _wpCustomizePreviewNavMenusExports = %s;', wp_json_encode( $exports ) ) );
+		wp_print_inline_script_tag( sprintf( 'var _wpCustomizePreviewNavMenusExports = %s;', wp_json_encode( $exports, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ) ) . "\n//# sourceURL=" . rawurlencode( __METHOD__ ) );
 	}
 
 	/**
