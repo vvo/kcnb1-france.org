@@ -2,7 +2,7 @@
 #
 # The ONLY sanctioned way to push to production: one (or a few) explicit files,
 # each backed up first, uploaded with scp. No rsync, no recursion, no --delete,
-# no chmod. See the caution history in README / CLAUDE.md.
+# no chmod. See the caution history in README / AGENTS.md.
 #
 # Usage:
 #   scripts/deploy-file.sh <path> [<path> ...]
@@ -65,7 +65,7 @@ for f in "$@"; do
 done
 
 echo
-echo "==> prod homepage health: $(curl -s -o /dev/null -w '%{http_code}' "$PROD_URL/")"
+echo "==> prod homepage health: $(curl -s -A 'Mozilla/5.0 (Macintosh) Chrome/128' -o /dev/null -w '%{http_code}' "$PROD_URL/?nocache=$RANDOM") (run scripts/check-prod.sh for the full check)"
 echo "Done. Backups in .deploy-backups/${ts}/"
 echo "Rollback a file with:"
 echo "  scp .deploy-backups/${ts}/<path-under-wordpress> ${PROD_SSH}:${PROD_WWW}/<path-under-wordpress>"

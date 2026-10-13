@@ -30,16 +30,61 @@ Keep `TODO.md` up to date: tick what you finish, add what you discover. Remove i
 
 - **Never bulk-deploy.** No `rsync` of directories, no `--delete`, no DB import to prod,
   no `chmod`. A past bulk rsync wiped the live site and left files at `777`, which got it hacked.
-- **The only way to push to prod is `scripts/deploy-file.sh <file>`**: a few explicit files,
-  backed up first, uploaded with `scp` at 644. Ask the user before running it.
+- **The only way to push files to prod is `scripts/deploy-file.sh <file>`**: a few explicit files,
+  backed up first, uploaded with `scp` at 644.
 - **Pulling down from prod is fine** (read-only there): `scripts/sync-from-prod.sh`.
-- After any prod change, check the homepage still answers 200.
+- Ask the user before any write to prod (files, DB, `~/.ovhconfig`, OVH panel). Reading is always fine.
 - **Outgoing email goes through OVH authenticated SMTP** via the `ovh-smtp` mu-plugin. It reads
   `OVH_SMTP_USER` (`site@kcnb1-france.org`) and `OVH_SMTP_PASSWORD` from prod's `wp-config.php`;
   without them it does nothing, so local dev is unaffected. Every `wp_mail()` is forced to that From.
   Keep both constants if `wp-config.php` is ever rebuilt.
 - Prod has `WP_DEBUG` off: the debug.log used to bloat backups by 270 MB.
 - `.user.ini` (Wordfence WAF) hardcodes the absolute path `/home/ftgqcup/www/wordfence-waf.php`.
+
+## How to change production
+
+Every prod change, however small, follows these steps:
+
+1. `scripts/check-prod.sh`: every sitemap URL plus key endpoints must answer 200 with no PHP error.
+   If it already fails, stop and report before changing anything.
+2. `scripts/snapshot-prod.sh`: DB + all code into `.prod-snapshots/<timestamp>/` on this machine.
+   That is the rollback point. The weekly Dropbox backup is the second one.
+3. Test the same change locally first when it touches code, PHP or WordPress versions (local runs the
+   same PHP/MySQL/WP; refresh it with `scripts/sync-from-prod.sh --db`).
+4. Make the change.
+5. `scripts/check-prod.sh` again. For deeper checks (PHP notices, mail), drop a PHP file named with a
+   random 32-hex token in `~/www`, `curl` it with a browser User-Agent, then delete it right away.
+6. Update `AGENTS.md` (versions, facts) and `TODO.md`, commit.
+
+Recipes:
+
+- **PHP version**: edit `app.engine.version` in `~/.ovhconfig` (the OVH panel writes the same file).
+  Check with a token file printing `PHP_VERSION`. Stay one version behind the newest: the 2019
+  theme vendor is patched by hand (`themes/kcnb1/patches/`), test a new PHP locally first.
+- **WordPress core (major)**: SSH can't download. Download the `fr_FR` zip locally, check its `.sha1`,
+  `scp` it, then `cd ~/www && php ~/wp-cli.phar core update ~/wordpress.zip --locale=fr_FR`,
+  `core update-db`, `core verify-checksums --locale=fr_FR`, delete the zip. Minor versions install
+  themselves; expect ~1 min of "maintenance" 503 right after a core change. Then bump the local core.
+- **Plugins**: update from wp-admin (web PHP can download), one at a time, `check-prod.sh` after each.
+- **Restore**: code from `code.tgz` (single files with `scp`), DB by importing `db.sql.gz` with the
+  creds from prod's `wp-config.php`. Ask the user first, a DB import overwrites everything.
+
+## Security
+
+The site was hacked before (files left at `777`, then used to host spam pages). Assume it is a target.
+
+- In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout),
+  Sucuri, OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
+- Audit baseline (2026-10-13): core verifies against checksums, every wordpress.org plugin matches the
+  official zip of its version, theme and mu-plugins match this repo, no PHP outside expected places in
+  uploads (only Blade cache in `uploads/cache/` and Sucuri data files), no spam or foreign content in
+  the DB, no world-writable file. Admins: only `vvoyer`. Editors: `mcassard`, `Juliette`, `Laetitia`, `Lilya`.
+- To re-audit: `wp core verify-checksums`, diff `wp-content/plugins/<p>` against
+  `downloads.wordpress.org/plugin/<p>.<version>.zip` (fetched locally, SSH can't download), list
+  `find wp-content/uploads -name "*.php*"`, list admins and users, grep posts for spam/CJK and
+  `wp_options` for `<script`/`eval(`, check Wordfence `wp_wfissues` for `status='new'`.
+- Never commit secrets: `wp-config.php` is gitignored, passwords live in prod's `wp-config.php` and
+  the owner's password manager. The repo is public. A gitleaks hook runs on commit.
 
 ## Local development
 
