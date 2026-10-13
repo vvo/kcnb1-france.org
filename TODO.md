@@ -19,8 +19,14 @@ Kept up to date by whoever works on the site (humans and agents). Remove items o
 For the owner (in wp-admin / OVH):
 - [ ] Turn on Wordfence two-factor login for `vvoyer` (Wordfence > Login Security). No user has 2FA today,
       and the site gets ~1000 failed logins per month.
-- [ ] Optional: in Wordfence > All options, lower "lock out after" from 20 failed logins to 5.
 - [ ] Confirm the three editors created on 2025-09-11 (`Juliette`, `Laetitia`, `Lilya`) are expected.
 - [ ] Change the SSH/FTP password of `ftgqcup` (OVH > Hébergement > FTP-SSH), the DB password, and the
       `site@` mailbox password: all three were pasted in a chat. SSH keeps working with the key.
       Send the new DB / mailbox passwords so `wp-config.php` gets updated.
+
+Proposed next (owner to decide):
+- [ ] Add `define('DISALLOW_FILE_EDIT', true);` to prod `wp-config.php` (no PHP editor in wp-admin).
+- [ ] Remove unused plugins to shrink the attack surface: Sucuri (duplicates Wordfence), Akismet
+      (comments closed, 0 comments), Advanced Database Cleaner, Regenerate Thumbnails; maybe AMP.
+- [ ] Free uptime + defacement monitor (UptimeRobot or Better Stack) on the home page with a keyword check.
+- [ ] Google Search Console: make sure the owner gets its emails (hacked content / spam alerts).

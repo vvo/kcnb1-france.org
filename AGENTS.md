@@ -73,8 +73,9 @@ Recipes:
 
 The site was hacked before (files left at `777`, then used to host spam pages). Assume it is a target.
 
-- In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout, alerts to
+- In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout after 5 failures, alerts to
   `wouaren@gmail.com`), Sucuri, OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
+- Every plugin has WordPress auto-updates on.
 - Root `.htaccess` starts with a `# BEGIN kcnb1 hardening` block: no directory listing, `xmlrpc.php`
   denied, theme dev files denied (`composer.*`, `package*.json`, `installed.json`, `*.md`, `*.blade.php`,
   `theme.json`...), security headers, no `X-Powered-By`. Keep it above the plugin blocks.
