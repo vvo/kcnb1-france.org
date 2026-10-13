@@ -19,8 +19,8 @@ Keep `TODO.md` up to date: tick what you finish, add what you discover. Remove i
   - SSL: OVH Let's Encrypt, renews itself.
   - Outbound connections are blocked from the SSH shell (SMTP, HTTP): WP-CLI cannot download
     updates, upload the zip and run `wp core update ~/wordpress-x.zip`. PHP served over the web can reach out. To test mail, drop a token-named PHP file in `~/www`, curl it, delete it.
-- The old Cloud Web (`kcnbfrh@sshcloud.cluster024.hosting.ovh.net`) still exists as a fallback
-  until it is cancelled. It has `DISABLE_WP_CRON` set so it no longer runs backups. Do not edit it.
+- The old Cloud Web (`kcnbfrh@sshcloud.cluster024.hosting.ovh.net`) is cancelled and stops end of
+  November 2026. It is closed: `Require all denied` in its `.htaccess`, `DISABLE_WP_CRON` in its config.
 - DNS zone at OVH (ns106/dns106). MX, SPF, DKIM point to OVH mail and must not change.
 - Email accounts (`contact@`, `vincent@`, `site@`, redirect `postmaster@`) are a standalone
   MX Plan (MX FULL), independent of the hosting.
@@ -73,12 +73,16 @@ Recipes:
 
 The site was hacked before (files left at `777`, then used to host spam pages). Assume it is a target.
 
-- In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout),
-  Sucuri, OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
+- In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout, alerts to
+  `wouaren@gmail.com`), Sucuri, OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
+- Root `.htaccess` starts with a `# BEGIN kcnb1 hardening` block: no directory listing, `xmlrpc.php`
+  denied, theme dev files denied (`composer.*`, `package*.json`, `installed.json`, `*.md`, `*.blade.php`,
+  `theme.json`...), security headers, no `X-Powered-By`. Keep it above the plugin blocks.
 - Audit baseline (2026-10-13): core verifies against checksums, every wordpress.org plugin matches the
   official zip of its version, theme and mu-plugins match this repo, no PHP outside expected places in
   uploads (only Blade cache in `uploads/cache/` and Sucuri data files), no spam or foreign content in
-  the DB, no world-writable file. Admins: only `vvoyer`. Editors: `mcassard`, `Juliette`, `Laetitia`, `Lilya`.
+  the DB, no world-writable file. Cleaned the same day: an orphan admin capability (user_id 9999, a
+  leftover of the old hack) and options/cron of removed plugins (Malcure WPMR, Rank Math). Admins: only `vvoyer`. Editors: `mcassard`, `Juliette`, `Laetitia`, `Lilya`.
 - To re-audit: `wp core verify-checksums`, diff `wp-content/plugins/<p>` against
   `downloads.wordpress.org/plugin/<p>.<version>.zip` (fetched locally, SSH can't download), list
   `find wp-content/uploads -name "*.php*"`, list admins and users, grep posts for spam/CJK and
