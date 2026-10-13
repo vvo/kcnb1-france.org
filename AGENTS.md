@@ -74,14 +74,18 @@ Recipes:
 The site was hacked before (files left at `777`, then used to host spam pages). Assume it is a target.
 
 - In place: Wordfence (WAF loaded via `.user.ini`, scheduled scans, login captcha, lockout after 5 failures, alerts to
-  `wouaren@gmail.com`), Sucuri, OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
-- Every plugin has WordPress auto-updates on.
+  `wouaren@gmail.com`), OVH firewall, PHP blocked in `wp-content/uploads/` by `uploads/.htaccess`.
+- Every plugin has WordPress auto-updates on. Keep the plugin list short: each plugin is attack surface.
+  Active (2026-10-13): ACF Pro, AddToAny, AMP (AMP pages are live and advertised to Google, keep it),
+  Autoptimize, BackWPup, Duplicate Post, Favicon, Wordfence, WP Super Cache. Fathom installed but inactive.
+- `DISALLOW_FILE_EDIT` is set in prod `wp-config.php`: no theme/plugin PHP editor in wp-admin.
+  Page and post content (including the HTML/code view of the editor) is unaffected.
 - Root `.htaccess` starts with a `# BEGIN kcnb1 hardening` block: no directory listing, `xmlrpc.php`
   denied, theme dev files denied (`composer.*`, `package*.json`, `installed.json`, `*.md`, `*.blade.php`,
   `theme.json`...), security headers, no `X-Powered-By`. Keep it above the plugin blocks.
 - Audit baseline (2026-10-13): core verifies against checksums, every wordpress.org plugin matches the
   official zip of its version, theme and mu-plugins match this repo, no PHP outside expected places in
-  uploads (only Blade cache in `uploads/cache/` and Sucuri data files), no spam or foreign content in
+  uploads (only Blade cache in `uploads/cache/`), no spam or foreign content in
   the DB, no world-writable file. Cleaned the same day: an orphan admin capability (user_id 9999, a
   leftover of the old hack) and options/cron of removed plugins (Malcure WPMR, Rank Math). Admins: only `vvoyer`. Editors: `mcassard`, `Juliette`, `Laetitia`, `Lilya`.
 - To re-audit: `wp core verify-checksums`, diff `wp-content/plugins/<p>` against

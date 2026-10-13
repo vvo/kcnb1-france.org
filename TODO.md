@@ -24,9 +24,6 @@ For the owner (in wp-admin / OVH):
       `site@` mailbox password: all three were pasted in a chat. SSH keeps working with the key.
       Send the new DB / mailbox passwords so `wp-config.php` gets updated.
 
-Proposed next (owner to decide):
-- [ ] Add `define('DISALLOW_FILE_EDIT', true);` to prod `wp-config.php` (no PHP editor in wp-admin).
-- [ ] Remove unused plugins to shrink the attack surface: Sucuri (duplicates Wordfence), Akismet
-      (comments closed, 0 comments), Advanced Database Cleaner, Regenerate Thumbnails; maybe AMP.
+For the owner, to stay warned:
 - [ ] Free uptime + defacement monitor (UptimeRobot or Better Stack) on the home page with a keyword check.
 - [ ] Google Search Console: make sure the owner gets its emails (hacked content / spam alerts).

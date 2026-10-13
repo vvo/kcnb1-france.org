@@ -1,1 +1,0 @@
-<div id="login_error">%%SUCURI.Error%%</div>
