@@ -16,7 +16,6 @@ Kept up to date by whoever works on the site (humans and agents). Remove items o
 
 ## Security (audit 2026-10-13)
 
-
 For the owner (in wp-admin / OVH):
 - [ ] Turn on Wordfence two-factor login for `vvoyer` (Wordfence > Login Security). No user has 2FA today,
       and the site gets ~1000 failed logins per month.
