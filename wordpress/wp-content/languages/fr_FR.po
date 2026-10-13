@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WordPress - 7.1.x - Development package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-20 16:12:44+0000\n"
+"PO-Revision-Date: 2026-10-08 09:40:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,7 +26,7 @@ msgstr "Noto Serif : 400,400i,700,700i"
 #, gp-priority: high
 msgctxt "Comment number declension: on or off"
 msgid "off"
-msgstr "off"
+msgstr "inactif"
 
 #. translators: Translate this to the correct language tag for your locale, see
 #. https://www.w3.org/International/articles/language-tags/ for reference. Do
@@ -42,7 +42,7 @@ msgstr "fr-FR"
 #, gp-priority: high
 msgctxt "decline months names: on or off"
 msgid "off"
-msgstr "off"
+msgstr "inactif"
 
 #. translators: If your word count is based on single characters (e.g. East
 #. Asian characters), enter 'characters_excluding_spaces' or
@@ -285,6 +285,24 @@ msgstr "janvier"
 #, gp-priority: high
 msgid "Uncategorized"
 msgstr "Non classé"
+
+#: wp-includes/class-wp-xmlrpc-server.php:1489
+msgid "Sorry, this post type is not supported over XML-RPC."
+msgstr "Désolé, ce type de publication n’est pas pris en charge via XML-RPC."
+
+#: wp-includes/build/pages/font-library/page.php:324
+#: wp-includes/build/pages/options-connectors/page.php:324
+#: wp-admin/includes/menu.php:384 wp-admin/my-sites.php:17
+#: wp-admin/network/index.php:17 wp-admin/network/settings.php:17
+#: wp-admin/network/site-info.php:32 wp-admin/network/site-settings.php:32
+#: wp-admin/network/site-themes.php:57 wp-admin/network/site-users.php:50
+#: wp-admin/network/sites.php:14 wp-admin/network/sites.php:162
+#: wp-admin/network/upgrade.php:44 wp-admin/network/user-new.php:37
+#: wp-admin/network/users.php:14 wp-admin/network/users.php:24
+#: wp-admin/network/users.php:51 wp-admin/network/users.php:66
+#: wp-admin/network/users.php:189
+msgid "Sorry, you are not allowed to access this page."
+msgstr "Désolé, vous n’avez pas l’autorisation d’accéder à cette page."
 
 #: wp-includes/theme.json
 msgctxt "Dimension size name"
@@ -712,7 +730,7 @@ msgstr "Informations de connexion de %s"
 #. translators: %s: PHP constant name.
 #: wp-includes/connectors.php:561
 msgid "The %s constant must contain application password credentials in \"username:password\" format."
-msgstr "La constante %s doit contenir les informations de connexion et le mot de passe de l‘application au format « nom du compte:mot de passe »."
+msgstr "La constante %s doit contenir les informations de connexion et le mot de passe de l’application au format « nom du compte:mot de passe »."
 
 #. translators: %s: Environment variable name.
 #: wp-includes/connectors.php:538
@@ -746,7 +764,7 @@ msgstr "Données du fichier invalides."
 #: wp-includes/class-wp-view-config-data.php:529
 #: wp-includes/class-wp-view-config-data.php:559
 msgid "A view configuration patch value must match the shape of the value it patches: a list merges into a list, and an associative array into an associative array."
-msgstr "La valeur d‘un correctif d’une configuration de vue doit correspondre à la forme de la valeur qu‘elle corrige : une liste fusionne en une liste, et un tableau en un tableau."
+msgstr "La valeur d’un correctif d’une configuration de vue doit correspondre à la forme de la valeur qu’elle corrige : une liste fusionne en une liste, et un tableau en un tableau."
 
 #. translators: %s: the configuration key.
 #: wp-includes/class-wp-view-config-data.php:283
@@ -760,7 +778,7 @@ msgid "A view configuration patch must declare a supported schema version."
 msgstr "Un correctif de configuration de vue doit déclarer une version de schéma prise en charge."
 
 #. translators: 1: oembed_providers, 2: The oEmbed provider URL pattern.
-#: wp-includes/class-wp-oembed.php:237
+#: wp-includes/class-wp-oembed.php:236
 msgid "The oEmbed provider data returned by the %1$s filter at key %2$s is malformed. The providers array must be a mapping of provider URL patterns to a tuple array consisting of a provider endpoint URL string at index 0 and an optional boolean regex flag at index 1."
 msgstr "Les données du fournisseur oEmbed retournées par le filtre %1$s à la clé %2$s ne sont pas bien formées. Le tableau du fournisseur doit correspondre à un motif d’URL du fournisseur dans un tableau contenant un point de terminaison d’URL à l’index 0 et un booléen optionnel de regex à l’index 1."
 
@@ -864,7 +882,7 @@ msgstr "%1$s sur %2$s"
 #: wp-includes/js/dist/block-library.js:54975
 #: wp-includes/js/dist/block-library.js:55075
 msgid "Seek"
-msgstr "Rechercher"
+msgstr "Position de lecture"
 
 #. translators: Visually hidden label for the track duration (screen reader
 #. text).
@@ -942,7 +960,7 @@ msgstr "Prénom"
 
 #: wp-includes/abilities.php:177
 msgid "Locale code for the user, such as en_US."
-msgstr "La chaine locale du compte, comme par exemple « fr_FR »."
+msgstr "Le code de la locale du compte, comme par exemple « fr_FR »."
 
 #: wp-includes/abilities.php:169
 msgid "Roles assigned to the user, such as administrator, editor, author, contributor, or subscriber."
@@ -1449,19 +1467,19 @@ msgstr "Image agrandie %1$s sur %2$s"
 #. translators: %s: Post title.
 #: wp-includes/blocks/comments-title.php:70
 msgid "Responses to &#8220;%s&#8221;"
-msgstr "Réponses à  « %s »"
+msgstr "Réponses à « %s »"
 
 #. translators: %s: Post title.
 #: wp-includes/blocks/comments-title.php:67
 msgid "Response to &#8220;%s&#8221;"
-msgstr "Réponse à  « %s »"
+msgstr "Réponse à « %s »"
 
 #. translators: 1: Number of comments, 2: Post title.
 #: wp-includes/blocks/comments-title.php:46
 msgid "%1$s response to &#8220;%2$s&#8221;"
 msgid_plural "%1$s responses to &#8220;%2$s&#8221;"
-msgstr[0] "%1$s réponse à  « %2$s »"
-msgstr[1] "%1$s réponses à  « %2$s »"
+msgstr[0] "%1$s réponse à « %2$s »"
+msgstr[1] "%1$s réponses à « %2$s »"
 
 #. translators: %s: Post title.
 #: wp-includes/blocks/comments-title.php:42
@@ -2311,11 +2329,11 @@ msgstr "Retourner"
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php:2105
 msgid "Limit result set to attachments of a particular MIME type or MIME types."
-msgstr "Limite le jeu de résultats aux fichiers joints d‘un type de MIME particulier ou de types de MIME particuliers."
+msgstr "Limite le jeu de résultats aux fichiers joints d’un ou plusieurs types MIME particuliers."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php:2095
 msgid "Limit result set to attachments of a particular media type or media types."
-msgstr "Limite le jeu de résultats aux fichiers joints d‘un type de média particulier ou de types de médias particuliers."
+msgstr "Limite le jeu de résultats aux fichiers joints d’un ou plusieurs types de médias particuliers."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php:1203
 msgid "Unable to flip this image."
@@ -3118,7 +3136,7 @@ msgstr "Ignorer les publications épinglées ou non."
 #: wp-includes/script-loader.php:1042 wp-includes/js/dist/upload-media.js:3089
 #: wp-includes/js/dist/upload-media.js:3145
 msgid "The web server cannot generate responsive image sizes for this image. Convert it to JPEG or PNG before uploading."
-msgstr "Le serveur web ne peut pas générer de tailles d‘image responsive pour cette image. Convertissez-la en JPEG ou PNG avant de la téléverser."
+msgstr "Le serveur web ne peut pas générer de tailles d’image responsive pour cette image. Convertissez-la en JPEG ou PNG avant de la téléverser."
 
 #: wp-includes/rest-api.php:466
 msgid "The REST route parameter must be a string."
@@ -3167,7 +3185,7 @@ msgstr "L’élément de contexte ne peut pas être un élément vide, « %s �
 
 #: wp-includes/html-api/class-wp-html-processor.php:488
 msgid "The context element must be a start tag."
-msgstr "L‘élément de contexte doit être une balise de début."
+msgstr "L’élément de contexte doit être une balise de début."
 
 #: wp-includes/html-api/class-wp-html-processor.php:329
 msgid "No valid context element was detected."
@@ -3198,7 +3216,7 @@ msgstr "Une erreur s’est produite lors du traitement de votre commentaire. Veu
 #. translators: %s: context string
 #: wp-includes/class-wp-url-pattern-prefixer.php:72
 msgid "Invalid URL pattern context %s."
-msgstr "Contexte de composition d‘URL invalide : « %s »."
+msgstr "Contexte de composition d’URL invalide : « %s »."
 
 #: wp-includes/class-wp-taxonomy.php:627 wp-includes/taxonomy.php:236
 #: wp-includes/js/dist/editor.js:87120 wp-includes/js/dist/editor.js:87125
@@ -3295,7 +3313,7 @@ msgstr "Erreur de signature : "
 #. translators: There is a space after the colon.
 #: wp-includes/class-wp-phpmailer.php:75
 msgid "SMTP Error: The following recipients failed: "
-msgstr "Erreur SMTP : échec de l‘envoi aux destinataires suivants : "
+msgstr "Erreur SMTP : échec de l’envoi aux destinataires suivants : "
 
 #: wp-includes/class-wp-phpmailer.php:73
 msgid "You must provide at least one recipient email address."
@@ -3318,7 +3336,7 @@ msgstr "Hôte invalide : "
 
 #: wp-includes/class-wp-phpmailer.php:66
 msgid "Invalid header name or value"
-msgstr "Nom ou valeur de l‘entête invalide"
+msgstr "Nom ou valeur de l’entête invalide"
 
 #. translators: There is a space after the colon.
 #: wp-includes/class-wp-phpmailer.php:65
@@ -3327,17 +3345,17 @@ msgstr "Adresse invalide : "
 
 #: wp-includes/class-wp-phpmailer.php:63
 msgid "Could not instantiate mail function."
-msgstr "Impossible d‘instancier la fonction mail."
+msgstr "Impossible d’instancier la fonction mail."
 
 #. translators: There is a space after the colon.
 #: wp-includes/class-wp-phpmailer.php:62
 msgid "The following From address failed: "
-msgstr "L‘adresse d‘expédition suivante a échoué : "
+msgstr "L’adresse d’expédition suivante a échoué : "
 
 #. translators: There is a space after the colon.
 #: wp-includes/class-wp-phpmailer.php:60
 msgid "File Error: Could not open file: "
-msgstr "Erreur de fichier : impossible d‘ouvrir le fichier : "
+msgstr "Erreur de fichier : impossible d’ouvrir le fichier : "
 
 #. translators: There is a space after the colon.
 #: wp-includes/class-wp-phpmailer.php:58
@@ -3374,7 +3392,7 @@ msgstr "Erreur SMTP : impossible de se connecter à l’hôte SMTP."
 #. translators: 1: mail.add_x_header. 2: php.ini
 #: wp-includes/class-wp-phpmailer.php:44
 msgid "Your version of PHP is affected by a bug that may result in corrupted messages. To fix it, switch to sending using SMTP, disable the %1$s option in your %2$s, or switch to MacOS or Linux, or upgrade your PHP version."
-msgstr "Votre version de PHP est touchée par un bogue qui peut entrainer des messages corrompus. Pour le corriger, passez à l‘envoi via SMTP, désactivez l‘option %1$s dans votre %2$s, ou passez sous MacOS ou Linux, ou mettez à niveau votre version de PHP."
+msgstr "Votre version de PHP est touchée par un bogue qui peut entrainer des messages corrompus. Pour le corriger, passez à l’envoi via SMTP, désactivez l’option %1$s dans votre %2$s, ou passez sous MacOS ou Linux, ou mettez à niveau votre version de PHP."
 
 #: wp-includes/class-wp-phpmailer.php:41
 msgid "SMTP Error: Could not authenticate."
@@ -3400,7 +3418,7 @@ msgstr "Une erreur s’est produite lors de la personnalisation. Veuillez rafra�
 
 #: wp-includes/class-wp-block-metadata-registry.php:204
 msgid "No registered block metadata collection was found for the provided path."
-msgstr "Aucune collection de métadonnées de bloc enregistrée n‘a été trouvée pour le chemin fourni."
+msgstr "Aucune collection de métadonnées de bloc enregistrée n’a été trouvée pour le chemin fourni."
 
 #. translators: %d: number of results.
 #: wp-includes/blocks/query-total.php:66
@@ -3882,7 +3900,7 @@ msgctxt "block description"
 msgid "Reuse this design across your site."
 msgstr "Réutilisez ce design sur votre site."
 
-#: wp-includes/js/dist/editor.js:101469 wp-admin/about.php:198
+#: wp-includes/js/dist/editor.js:101469 wp-admin/about.php:223
 msgid "Accessibility"
 msgstr "Accessibilité"
 
@@ -5313,11 +5331,11 @@ msgstr "Veuillez vérifier que l’extension PHP %s est installée et activée."
 #. translators: 1: CUSTOM_TAGS, 2: Global variable names.
 #: wp-includes/kses.php:928
 msgid "When using the %1$s constant, make sure to set these globals to an array: %2$s."
-msgstr "À l‘utilisation de la constante %1$s, s‘assurer de définir ces valeurs globales dans un tableau : %2$s."
+msgstr "À l’utilisation de la constante %1$s, s’assurer de définir ces valeurs globales dans un tableau : %2$s."
 
 #: wp-includes/html-api/class-wp-html-tag-processor.php:5004
 msgid "The query argument must be an array or a tag name."
-msgstr "L‘argument de la requête doit être un tableau ou une balise."
+msgstr "L’argument de la requête doit être un tableau ou une balise."
 
 #: wp-includes/html-api/class-wp-html-tag-processor.php:4621
 msgid "Invalid attribute name."
@@ -5484,7 +5502,7 @@ msgstr "Les requêtes sur les comptes ne devraient pas être lancées avant le c
 #. translators: %s: The '$value' argument.
 #: wp-includes/class-wp-block-type.php:439
 msgid "The %s argument must be a string or a string array."
-msgstr "L‘argument %s doit être une chaine ou un tableau."
+msgstr "L’argument %s doit être une chaine ou un tableau."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-terms-controller.php:215
 msgid "Sorry, you are not allowed to view terms for this post."
@@ -5598,7 +5616,7 @@ msgstr "Le slug du modèle doit récupérer l’alternative pour"
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-post-types-controller.php:424
 msgid "The icon for the post type."
-msgstr "L‘icône du type de publication."
+msgstr "L’icône du type de publication."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-post-types-controller.php:381
 msgid "If the value is a string, the value will be used as the archive slug. If the value is false the post type has no archive."
@@ -5816,7 +5834,7 @@ msgstr "Lien Lire la suite"
 #: wp-includes/blocks/query-no-results/block.json
 msgctxt "block description"
 msgid "Contains the block elements used to render content when no query results are found."
-msgstr "Contient les éléments de bloc utilisés pour afficher le contenu lorsqu‘aucun résultat de requête n‘est trouvé."
+msgstr "Contient les éléments de bloc utilisés pour afficher le contenu lorsqu’aucun résultat de requête n’est trouvé."
 
 #: wp-includes/blocks/query-no-results/block.json
 msgctxt "block title"
@@ -5861,7 +5879,7 @@ msgstr "Titre des commentaires"
 #: wp-includes/blocks/comments/block.json
 msgctxt "block description"
 msgid "An advanced block that allows displaying post comments using different visual configurations."
-msgstr "Un bloc avancé qui permet d‘afficher les commentaires des publications en utilisant différentes configurations visuelles."
+msgstr "Un bloc avancé qui permet d’afficher les commentaires des publications en utilisant différentes configurations visuelles."
 
 #: wp-includes/blocks/comments-pagination/block.json
 msgctxt "block description"
@@ -5931,7 +5949,7 @@ msgstr "Affiche le contenu d’un commentaire."
 #: wp-includes/blocks/comment-author-name/block.json
 msgctxt "block description"
 msgid "Displays the name of the author of the comment."
-msgstr "Affiche le nom de l‘auteur/autrice du commentaire."
+msgstr "Affiche le nom de l’auteur/autrice du commentaire."
 
 #: wp-includes/blocks/comment-author-name/block.json
 msgctxt "block title"
@@ -6042,7 +6060,7 @@ msgstr "L’URL du compte ne doit pas faire plus de 100 caractères."
 #: wp-includes/user.php:1483 wp-includes/user.php:1507
 #: wp-includes/user.php:1540 wp-includes/user.php:1588
 msgid "Unable to pass %s if not using multisite."
-msgstr "Impossible de passer %s si vous n‘utilisez pas multisite."
+msgstr "Impossible de passer %s si votre site n’est pas un multisite."
 
 #: wp-includes/deprecated.php:5587
 msgid "Webfont font weight must be a properly formatted string or integer."
@@ -6098,7 +6116,7 @@ msgstr "Le nom de la composition."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-block-patterns-controller.php:90
 msgid "Sorry, you are not allowed to view the registered block patterns."
-msgstr "Désolé, vous n’avez pas l‘autorisation pour voir les compositions de blocs enregistrées."
+msgstr "Désolé, vous n’avez pas l’autorisation de voir les compositions de blocs enregistrées."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-block-pattern-categories-controller.php:149
 msgid "The category label, in human readable format."
@@ -6110,7 +6128,7 @@ msgstr "Le nom de la catégorie."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-block-pattern-categories-controller.php:70
 msgid "Sorry, you are not allowed to view the registered block pattern categories."
-msgstr "Désolé, vous n’avez pas l‘autorisation pour voir les catégories de compositions de blocs enregistrées."
+msgstr "Désolé, vous n’avez pas l’autorisation de voir les catégories de compositions de blocs enregistrées."
 
 #: wp-includes/media.php:5184 wp-admin/edit.php:181 wp-admin/post.php:334
 #: wp-admin/upload.php:337
@@ -6177,7 +6195,7 @@ msgstr "<strong>Erreur :</strong> le répertoire des thèmes est soit vide, ou 
 #: wp-includes/class-wp-image-editor-imagick.php:160
 #: wp-includes/class-wp-image-editor-imagick.php:256
 msgid "File does not exist?"
-msgstr "Le fichier n‘existe pas ?"
+msgstr "Le fichier n’existe pas ?"
 
 #: wp-includes/blocks/rss.php:19
 msgid "Adding an RSS feed to this site’s homepage is not supported, as it could lead to a loop that slows down your site. Try using another block, like the <strong>Latest Posts</strong> block, to list posts from the site."
@@ -6489,7 +6507,7 @@ msgstr "Limiter le jeu de résultats aux comptes correspondant à au moins une c
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-users-controller.php:215
 msgid "Sorry, you are not allowed to filter users by capability."
-msgstr "Désolé, vous n’avez pas l‘autorisation de filtrer les comptes par rôle."
+msgstr "Désolé, vous n’avez pas l’autorisation de filtrer les comptes par rôle."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:270
 msgid "Unable to retrieve body from response at this URL."
@@ -6510,12 +6528,12 @@ msgstr "URL non valide"
 #. translators: 1: HTML meta tag, 2: HTML meta tag.
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:111
 msgid "The Open Graph image link of the %1$s or %2$s element from the URL."
-msgstr "Le lien de l‘image Open Graph de l‘élément %1$s ou %2$s à partir de l‘URL."
+msgstr "Le lien de l’image Open Graph de l’élément %1$s ou %2$s à partir de l’URL."
 
 #. translators: %s: HTML meta tag.
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:101
 msgid "The content of the %s element from the URL."
-msgstr "Le contenu de l’élément %s à partir de l‘URL."
+msgstr "Le contenu de l’élément %s à partir de l’URL."
 
 #. translators: %s: HTML link tag.
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:90
@@ -6525,7 +6543,7 @@ msgstr "Le lien vers l’image de favicon de l’élément %s à partir de l’U
 #. translators: %s: HTML title tag.
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:80
 msgid "The contents of the %s element from the URL."
-msgstr "Le contenu de l’élément %s à partir de l‘URL."
+msgstr "Le contenu de l’élément %s à partir de l’URL."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-url-details-controller.php:46
 msgid "The URL to process."
@@ -6636,7 +6654,7 @@ msgstr "Emplacement du menu non valide."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-menu-locations-controller.php:162
 msgid "Sorry, you are not allowed to view menu locations."
-msgstr "Désolé, vous n‘avez pas l‘autorisation pour voir ces emplacements de menu."
+msgstr "Désolé, vous n’avez pas l’autorisation de voir ces emplacements de menu."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-menu-locations-controller.php:57
 msgid "An alphanumeric identifier for the menu location."
@@ -6769,11 +6787,11 @@ msgstr "Désolé, vous n’avez pas l’autorisation de modifier le style global
 #: wp-includes/rest-api/endpoints/class-wp-rest-global-styles-controller.php:49
 #: wp-includes/rest-api/endpoints/class-wp-rest-global-styles-controller.php:78
 msgid "The theme identifier"
-msgstr "L‘identifiant du thème"
+msgstr "L’identifiant du thème"
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-edit-site-export-controller.php:62
 msgid "Sorry, you are not allowed to export templates and template parts."
-msgstr "Désolé, vous n’avez pas l‘autorisation pour exporter des modèles et des éléments de modèle."
+msgstr "Désolé, vous n’avez pas l’autorisation d’exporter des modèles et des éléments de modèle."
 
 #: wp-includes/rest-api/endpoints/class-wp-rest-block-types-controller.php:621
 msgid "Public facing and editor style handles."
@@ -6999,12 +7017,12 @@ msgstr "Impossible de sanitiser l’option %1$s. Code d’erreur : %2$s"
 #: wp-includes/customize/class-wp-customize-theme-control.php:271
 #: wp-admin/includes/theme.php:1041
 msgid "However, you can still <a href=\"%s\">activate this theme</a>, and use the Site Editor to customize it."
-msgstr "Cependant, vous pouvez toujours <a href=\"%s\">activer ce thème</a>, et utiliser l‘éditeur de site pour le personnaliser."
+msgstr "Cependant, vous pouvez toujours <a href=\"%s\">activer ce thème</a>, et utiliser l’éditeur de site pour le personnaliser."
 
 #: wp-includes/customize/class-wp-customize-theme-control.php:266
 #: wp-admin/includes/theme.php:1035
 msgid "This theme doesn't support Customizer."
-msgstr "Ce thème ne prend pas en charge l‘outil de personnalisation."
+msgstr "Ce thème ne prend pas en charge l’outil de personnalisation."
 
 #: wp-includes/comment.php:4109
 msgid "<strong>Error:</strong> Please fill the required fields."
@@ -12024,7 +12042,7 @@ msgstr "Le type de bloc « %s » n’est pas enregistré."
 #. translators: %s: Block name.
 #: wp-includes/class-wp-block-type-registry.php:90
 msgid "Block type \"%s\" is already registered."
-msgstr "Le type de de bloc \"%s\" est déjà enregistré."
+msgstr "Le type de bloc « %s » est déjà enregistré."
 
 #. translators: %s: Block name.
 #: wp-includes/class-wp-block-type-registry.php:80
@@ -13908,7 +13926,7 @@ msgstr "Désolé, les commentaires ne sont pas autorisés pour cet élément."
 
 #: wp-includes/class-wp-oembed-controller.php:150
 msgid "Sorry, you are not allowed to make proxied oEmbed requests."
-msgstr "Désolé, vous n’avez pas l‘autorisation pour faire des requêtes oEmbed passant par proxy."
+msgstr "Désolé, vous n’avez pas l’autorisation de faire des requêtes oEmbed passant par proxy."
 
 #: wp-includes/class-wp-oembed-controller.php:99
 msgid "Whether to perform an oEmbed discovery request for unsanctioned providers."
@@ -16975,7 +16993,7 @@ msgstr "Retirer l’élément du menu : %1$s (%2$s)"
 #: wp-admin/user-edit.php:709 wp-admin/user-new.php:606
 #: wp-admin/js/password-toggle.js:26 wp-admin/js/user-profile.js:89
 msgid "Hide password"
-msgstr "Cacher le mot de passe"
+msgstr "Masquer le mot de passe"
 
 #: wp-login.php:1524 wp-includes/js/dist/block-editor.js:90295
 #: wp-includes/js/dist/edit-site.js:36662 wp-includes/js/dist/editor.js:44851
@@ -18165,10 +18183,6 @@ msgstr "Mode de débit"
 msgid "Bitrate"
 msgstr "Débit"
 
-#: wp-includes/media-template.php:580
-msgid "Edit more details"
-msgstr " Indiquer plus de détails"
-
 #: wp-includes/media-template.php:572
 msgid "View attachment page"
 msgstr "Voir la page du fichier joint"
@@ -18185,7 +18199,7 @@ msgstr "Téléversé par :"
 
 #: wp-includes/media-template.php:500 wp-admin/includes/media.php:3445
 msgid "Bitrate:"
-msgstr "Débit binaire"
+msgstr "Débit binaire :"
 
 #: wp-includes/media-template.php:475 wp-admin/includes/media.php:1726
 #: wp-admin/includes/media.php:3529
@@ -18597,7 +18611,7 @@ msgstr "Nom"
 #: wp-includes/class-wp-editor.php:1202
 msgctxt "list style"
 msgid "Lower Roman"
-msgstr "Chiffres romains minuscules "
+msgstr "Chiffres romains minuscules"
 
 #: wp-includes/class-wp-editor.php:1201
 msgctxt "list style"
@@ -19236,7 +19250,7 @@ msgstr "Lever du soleil"
 
 #: wp-includes/class-wp-image-editor.php:305
 msgid "Attempted to set image quality outside of the range [1,100]."
-msgstr "Tentative de mise en place d’une qualité d’image en dehors de l’intervalle [1100]."
+msgstr "Tentative de mise en place d’une qualité d’image en dehors de l’intervalle [1,100]."
 
 #: wp-includes/widgets/class-wp-widget-tag-cloud.php:26
 msgid "A cloud of your most used tags."
@@ -19496,7 +19510,7 @@ msgstr "Avez-vous correctement saisi votre adresse e-mail ? Vous aviez saisi %s
 
 #: wp-includes/functions.php:7637
 msgid "The login page will open in a new tab. After logging in you can close it and return to this page."
-msgstr "La page de connexion s’ouvrira dans une nouvelle fenêtre. Après connexion, vous pourrez la fermer et revenir à cette page."
+msgstr "La page de connexion s’ouvrira dans un nouvel onglet. Après connexion, vous pourrez la fermer et revenir à cette page."
 
 #. translators: %s: Comment author link.
 #: wp-includes/class-walker-comment.php:336
@@ -21010,7 +21024,7 @@ msgstr "Quelqu’un a demandé la réinitialisation du mot de passe pour le comp
 
 #: wp-includes/post-formats.php:74 wp-includes/revision.php:720
 msgid "Invalid post."
-msgstr "Article non valide"
+msgstr "Publication invalide."
 
 #: wp-includes/admin-bar.php:438
 msgid "Manage Site"
@@ -22846,7 +22860,7 @@ msgid "Sun"
 msgstr "dim"
 
 #: wp-includes/class-wp-http-curl.php:257
-#: wp-includes/class-wp-http-curl.php:324 wp-includes/class-wp-http.php:1070
+#: wp-includes/class-wp-http-curl.php:324 wp-includes/class-wp-http.php:1073
 msgid "Too many redirects."
 msgstr "Trop de redirections."
 
@@ -23007,7 +23021,7 @@ msgstr "Voulez-vous réellement <a href=\"%s\">vous déconnecter</a> ?"
 #. translators: %s: Site title.
 #: wp-includes/functions.php:3735
 msgid "You are attempting to log out of %s"
-msgstr "Vous êtes en train de vous déconnecter de %s."
+msgstr "Vous êtes en train de vous déconnecter de %s"
 
 #. translators: %s: File name.
 #: wp-includes/functions.php:2989

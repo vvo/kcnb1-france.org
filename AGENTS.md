@@ -10,13 +10,15 @@ Keep `TODO.md` up to date: tick what you finish, add what you discover. Remove i
 
 - OVH **Pro** shared hosting since 2026-10-04, cluster131.
   - SSH: `ftgqcup@ssh.cluster131.hosting.ovh.net` (key auth), WordPress root `~/www`.
-  - PHP 8.3 (`/usr/local/php8.3/bin/php`, also `php` on PATH), set by `~/.ovhconfig`.
+  - PHP 8.4 for the web since 2026-10-13, set by `app.engine.version` in `~/.ovhconfig` (takes effect in
+    seconds). The SSH `php` CLI is 8.3. WP-CLI is at `~/wp-cli.phar` (`cd ~/www && php ~/wp-cli.phar ...`).
+  - WordPress 7.1.x, minor/security versions auto-update.
   - MySQL 8.4, host `ftgqcupkcnb1new.mysql.db`. Creds live only in prod's `wp-config.php`.
   - IPs: `146.59.209.152` / `2001:41d0:301::31`. No CDN. OVH firewall on: it answers 403
     to requests without a browser User-Agent, so pass `-A "Mozilla/5.0 ..."` to `curl`.
   - SSL: OVH Let's Encrypt, renews itself.
-  - Outbound connections are blocked from the SSH shell (SMTP, HTTP). PHP served over the
-    web can reach out. To test mail, drop a token-named PHP file in `~/www`, curl it, delete it.
+  - Outbound connections are blocked from the SSH shell (SMTP, HTTP): WP-CLI cannot download
+    updates, upload the zip and run `wp core update ~/wordpress-x.zip`. PHP served over the web can reach out. To test mail, drop a token-named PHP file in `~/www`, curl it, delete it.
 - The old Cloud Web (`kcnbfrh@sshcloud.cluster024.hosting.ovh.net`) still exists as a fallback
   until it is cancelled. It has `DISABLE_WP_CRON` set so it no longer runs backups. Do not edit it.
 - DNS zone at OVH (ns106/dns106). MX, SPF, DKIM point to OVH mail and must not change.
@@ -50,10 +52,10 @@ Local URL: **https://kcnb1-france.localhost**. It proxies to nginx on host port 
 
 - **Theme build needs Node 14.18.0** (`.nvmrc`), Sage 9 / webpack 3. Use
   `fnm exec --using=14.18.0 npm run build` (or `npm start` to watch).
-- **Local PHP is 8.4 and MySQL 8.4** (Docker), prod PHP 8.3. The theme runs clean on both thanks to the vendor patch in
+- **Local PHP is 8.4 and MySQL 8.4** (Docker), prod PHP 8.4. The theme runs clean on both thanks to the vendor patch in
   `wp-content/themes/kcnb1/patches/` (already applied on prod). Do not `composer update` the
   theme: its 2019 dependencies no longer resolve. If `vendor/` is ever reinstalled, reapply the patch.
-- **Local WP core must match prod's version** (prod auto-updates, 6.8.10 on 2026-10-04). A
+- **Local WP core must match prod's version** (prod auto-updates minor versions, 7.1.3 on 2026-10-13). A
   mismatched core makes every page 404. To bump: download that version from wordpress.org, replace
   `wp-admin/`, `wp-includes/`, and root `wp-*.php`, leave `wp-content/` and `wp-config.php` alone.
 - Prod-only, caching and security plugins are off locally via `DEV_DISABLED_PLUGINS` in

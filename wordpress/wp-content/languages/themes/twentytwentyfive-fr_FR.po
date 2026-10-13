@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - Twenty Twenty-Five package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-24 07:03:47+0000\n"
+"PO-Revision-Date: 2026-09-28 09:29:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -976,10 +976,6 @@ msgctxt "Alt text for testimonial image."
 msgid "Picture of a person"
 msgstr "Photo d’une personne"
 
-#: patterns/banner-about-book.php:34
-msgid "Image of a book"
-msgstr "Image d‘un livre"
-
 #: patterns/banner-cover-big-heading.php:20
 #: patterns/media-instagram-grid.php:36 patterns/page-coming-soon.php:19
 msgid "Photo of a field full of flowers, a blue sky and a tree."
@@ -1372,10 +1368,6 @@ msgstr "Rejoignez nos forums."
 #: patterns/pricing-3-col.php:41
 msgid "Get access to our free articles and weekly newsletter."
 msgstr "Obtenez l’accès à nos articles gratuits et à notre newsletter hebdomadaire."
-
-#: patterns/pricing-3-col.php:77
-msgid "Get access to our paid newsletter and a limited pass for one event."
-msgstr "Obtenez l’accès à notre newsletter payante et un pass limité pour un événement."
 
 #: patterns/pricing-3-col.php:117
 msgid "Get access to our paid newsletter and an unlimited pass."
@@ -2213,11 +2205,6 @@ msgctxt "Pattern description"
 msgid "A full-width cover section with a large background image and an oversized heading."
 msgstr "Une section de bannière pleine largeur avec une grande image d’arrière-plan et un titre surdimensionné."
 
-#: patterns/heading-and-paragraph-with-image.php:27
-msgctxt "Event Overview Text."
-msgid "Held over a weekend, the event is structured around a series of exhibitions, workshops, and panel discussions. The exhibitions showcase a curated selection of photographs that tell compelling stories from various corners of the globe, each image accompanied by detailed narratives that provide context and deeper insight into the historical significance of the scenes depicted. These photographs are drawn from the archives of renowned photographers, as well as emerging talents, ensuring a blend of both classical and contemporary perspectives."
-msgstr "Organisé sur un week-end, l’événement est structuré autour d’une série d’expositions, d’ateliers et de tables rondes. Les expositions présentent une sélection de photographies mettant en scène des histoires fascinantes de divers endroits du globe, chaque image étant accompagnée de récits détaillés fournissant un contexte et le détail de la signification historique des scènes représentées. Ces photographies sont tirées des archives de photographes de renom, ainsi que de talents émergents, assurant un mélange de perspectives à la fois classiques et contemporaines."
-
 #: patterns/template-single-offset.php
 msgctxt "Pattern title"
 msgid "Offset post without featured image"
@@ -2231,6 +2218,11 @@ msgstr "Un ajout élégant à la collection de décoration intérieure."
 #: patterns/services-team-photos.php:21
 msgid "Our small team is a group of driven, detail-oriented people who are passionate about their customers."
 msgstr "Notre petite équipe est composée de personnes motivées et soucieuses du détail, qui ont à cœur la satisfaction de notre clientèle."
+
+#: patterns/heading-and-paragraph-with-image.php:27
+msgctxt "Event Overview Text."
+msgid "Held over a weekend, the event is structured around a series of exhibitions, workshops, and panel discussions. The exhibitions showcase a curated selection of photographs that tell compelling stories from various corners of the globe, each image accompanied by detailed narratives that provide context and deeper insight into the historical significance of the scenes depicted. These photographs are drawn from the archives of renowned photographers, as well as emerging talents, ensuring a blend of both classical and contemporary perspectives."
+msgstr "Organisé sur un week-end, l’événement est structuré autour d’une série d’expositions, d’ateliers et de tables rondes. Les expositions présentent une sélection de photographies mettant en scène des histoires fascinantes de divers endroits du globe, chaque image étant accompagnée de récits détaillés fournissant un contexte et le détail de la signification historique des scènes représentées. Ces photographies sont tirées des archives de photographes de renom, ainsi que de talents émergents, assurant un mélange de perspectives à la fois classiques et contemporaines."
 
 #: patterns/services-subscriber-only-section.php
 msgctxt "Pattern title"
@@ -2289,6 +2281,11 @@ msgctxt "Pattern description"
 msgid "A link in bio landing page with social links, a profile photo and a brief description."
 msgstr "Un lien dans la page d’atterrissage biographique avec des liens sociaux, une photo de profil et une brève description."
 
+#: patterns/banner-about-book.php:26
+msgctxt "Pattern placeholder text."
+msgid "This exquisite compilation showcases a diverse array of photographs that capture the essence of different eras and cultures, reflecting the unique styles and perspectives of each artist. Fleckenstein’s evocative imagery, Strand’s groundbreaking modernist approach, and Kōno’s meticulous documentation of Japanese life come together in a harmonious blend that celebrates the art of photography. Each image in “The Stories Book” is accompanied by insightful commentary, providing historical context and revealing the stories behind the photographs. This collection is not only a visual feast but also a tribute to the power of photography to preserve and narrate the multifaceted experiences of humanity."
+msgstr "Cette compilation exquise présente un éventail diversifié de photographies qui capturent l’essence de différentes époques et cultures, reflétant les styles et perspectives uniques de chaque artiste. L’imagerie évocatrice de Fleckenstein, l’approche moderniste novatrice de Strand et la documentation méticuleuse de la vie japonaise par Kōno s’entrelacent dans un mélange harmonieux qui célèbre l’art de la photographie. Chaque image du livre « Histoires » est accompagnée de commentaires éclairants, fournissant un contexte historique et révélant les récits derrière les photographies. Cette collection est non seulement un festin visuel, mais aussi un hommage au pouvoir de la photographie pour préserver et narrer les expériences multiformes de l’humanité."
+
 #: patterns/text-faqs.php:67
 msgctxt "Question in the FAQs pattern."
 msgid "When will The Stories Book be released?"
@@ -2311,11 +2308,6 @@ msgstr "Combien le livre « Histoires » coûtera-t-il ?"
 #: patterns/format-link.php:17
 msgid "The Stories Book, a fine collection of moments in time featuring photographs from Louis Fleckenstein, Paul Strand and Asahachi Kōno, is available for pre-order"
 msgstr "Le livre « Histoires », belle collection de moments figés dans le temps mettant en avant des photographies de Louis Fleckenstein, Paul Strand et Asahachi Kōno, est disponible en précommande"
-
-#: patterns/banner-about-book.php:26
-msgctxt "Pattern placeholder text."
-msgid "This exquisite compilation showcases a diverse array of photographs that capture the essence of different eras and cultures, reflecting the unique styles and perspectives of each artist. Fleckenstein’s evocative imagery, Strand’s groundbreaking modernist approach, and Kōno’s meticulous documentation of Japanese life come together in a harmonious blend that celebrates the art of photography. Each image in “The Stories Book” is accompanied by insightful commentary, providing historical context and revealing the stories behind the photographs. This collection is not only a visual feast but also a tribute to the power of photography to preserve and narrate the multifaceted experiences of humanity."
-msgstr "Cette compilation exquise présente un éventail diversifié de photographies qui capturent l’essence de différentes époques et cultures, reflétant les styles et perspectives uniques de chaque artiste. L’imagerie évocatrice de Fleckenstein, l’approche moderniste novatrice de Strand et la documentation méticuleuse de la vie japonaise par Kōno s’entrelacent dans un mélange harmonieux qui célèbre l’art de la photographie. Chaque image du livre « Histoires » est accompagnée de commentaires éclairants, fournissant un contexte historique et révélant les récits derrière les photographies. Cette collection est non seulement un festin visuel, mais aussi un hommage au pouvoir de la photographie pour préserver et narrer les expériences multiformes de l’humanité."
 
 #: patterns/logos.php:17
 msgid "The Stories Podcast is sponsored by"
@@ -2419,6 +2411,14 @@ msgstr "Réponse à l’évènement"
 msgctxt "Template part name"
 msgid "Header"
 msgstr "Entête"
+
+#: patterns/banner-about-book.php:34
+msgid "Image of a book"
+msgstr "Image d’un livre"
+
+#: patterns/pricing-3-col.php:77
+msgid "Get access to our paid newsletter and a limited pass for one event."
+msgstr "Obtenez l’accès à notre newsletter payante et un pass limité pour un évènement."
 
 #. Author of the theme
 #: style.css

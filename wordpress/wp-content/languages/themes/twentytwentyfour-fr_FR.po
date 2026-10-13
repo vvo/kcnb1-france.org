@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Themes - Twenty Twenty-Four package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-09-25 07:20:49+0000\n"
+"PO-Revision-Date: 2026-09-26 13:48:33+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,6 +22,201 @@ msgstr "Twenty Twenty-Four"
 #, gp-priority: high
 msgid "Twenty Twenty-Four is designed to be flexible, versatile and applicable to any website. Its collection of templates and patterns tailor to different needs, such as presenting a business, blogging and writing or showcasing work. A multitude of possibilities open up with just a few adjustments to color and typography. Twenty Twenty-Four comes with style variations and full page designs to help speed up the site building process, is fully compatible with the site editor, and takes advantage of new design tools introduced in WordPress 6.4."
 msgstr "Twenty Twenty-Four est conçu pour être flexible, polyvalent et applicable à n’importe quel type de site. Sa collection de modèles et de compositions s’adapte à différents besoins, tels que la présentation d’une entreprise, la création d’un blog et la rédaction ou la présentation d’un projet. Une multitude de possibilités s’ouvrent avec juste quelques ajustements de couleur et de typographie. Twenty Twenty-Four est livré avec des variations de style et des conceptions de page complètes pour accélérer le processus de création de site. Le thème est entièrement compatible avec l’éditeur de site et tire parti des nouveaux outils de conception introduits dans WordPress 6.4."
+
+#: patterns/text-centered-statement.php
+msgctxt "Pattern description"
+msgid "A centered text statement with a large amount of padding on all sides."
+msgstr "Un texte centré avec d’importantes marges internes de tous les côtés."
+
+#: patterns/hidden-posts-heading.php
+msgctxt "Pattern title"
+msgid "Posts heading"
+msgstr "Titre des articles"
+
+#: patterns/text-title-left-image-right.php
+msgctxt "Pattern description"
+msgid "A title, a paragraph and a CTA button on the left with an image on the right."
+msgstr "Un titre, un paragraphe et un bouton d’appel à l’action à gauche, avec une image à droite."
+
+#: patterns/text-project-details.php
+msgctxt "Pattern description"
+msgid "A text-only section for project details."
+msgstr "Une section contenant uniquement du texte pour les détails du projet."
+
+#: patterns/text-feature-grid-3-col.php
+msgctxt "Pattern description"
+msgid "A feature grid of 2 rows and 3 columns with headings and text."
+msgstr "Une grille de fonctionnalités composée de 2 lignes et de 3 colonnes avec des titres et du texte."
+
+#: patterns/text-faq.php:40
+msgctxt "Question in the FAQ pattern"
+msgid "Who is behind Études?"
+msgstr "Qui est à l’origine d’Études ?"
+
+#: patterns/text-faq.php
+msgctxt "Pattern description"
+msgid "A FAQ section with a large FAQ heading and a group of questions and answers."
+msgstr "Une section FAQ avec un grand titre « FAQ » et un groupe de questions et de réponses."
+
+#: patterns/text-centered-statement-small.php
+msgctxt "Pattern description"
+msgid "A centered italic text statement with compact padding."
+msgstr "Un texte centré en italique avec des marges internes réduites."
+
+#: patterns/text-alternating-images.php
+msgctxt "Pattern description"
+msgid "A text section, then a two-column section with text in one column and an image in the other."
+msgstr "Une section de texte, puis une section à deux colonnes avec du texte dans l’une et une image dans l’autre."
+
+#: patterns/testimonial-centered.php
+msgctxt "Pattern description"
+msgid "A centered testimonial section with an avatar, name, and job title."
+msgstr "Une section de témoignage centrée avec un avatar, un nom et une fonction."
+
+#: patterns/team-4-col.php
+msgctxt "Pattern description"
+msgid "A team section, with a heading, a paragraph, and 4 columns for team members."
+msgstr "Une section consacrée à l’équipe, avec un titre, un paragraphe et 4 colonnes pour les membres de l’équipe."
+
+#: patterns/posts-list.php
+msgctxt "Pattern description"
+msgid "A list of posts without images, 1 column."
+msgstr "Une liste d’articles sans images sur 1 colonne."
+
+#: patterns/posts-images-only-offset-4-col.php
+msgctxt "Pattern description"
+msgid "A list of posts with featured images only, 4 columns."
+msgstr "Une liste d’articles avec uniquement des images mises en avant, sur 4 colonnes."
+
+#: patterns/posts-images-only-3-col.php
+msgctxt "Pattern description"
+msgid "A list of posts with featured images only, 3 columns."
+msgstr "Une liste d’articles avec uniquement des images mises en avant, sur 3 colonnes."
+
+#: patterns/posts-grid-2-col.php
+msgctxt "Pattern description"
+msgid "A grid of posts featuring the first post, 2 columns."
+msgstr "Une grille d’articles mettant en avant le premier article, sur 2 colonnes."
+
+#: patterns/posts-3-col.php
+msgctxt "Pattern description"
+msgid "A list of posts, 3 columns."
+msgstr "Une liste d’articles sur 3 colonnes."
+
+#: patterns/footer-centered-logo-nav.php
+msgctxt "Pattern description"
+msgid "A footer section with a centered logo, navigation, and WordPress credits."
+msgstr "Une section de pied de page avec un logo centré, une navigation et les crédits WordPress."
+
+#: patterns/cta-subscribe-centered.php
+msgctxt "Pattern description"
+msgid "Subscribers CTA section with a title, a paragraph and a CTA button."
+msgstr "Une section d’appel à l’action destinée aux abonnés et abonnées, avec un titre, un paragraphe et un bouton d’appel à l’action."
+
+#: patterns/cta-services-image-left.php
+msgctxt "Pattern description"
+msgid "An image, title, paragraph and a CTA button to describe services."
+msgstr "Une image, un titre, un paragraphe et un bouton d’appel à l’action pour décrire les services."
+
+#: patterns/cta-rsvp.php patterns/page-rsvp-landing.php
+msgctxt "Pattern description"
+msgid "A large RSVP heading sideways, a description, and a CTA button."
+msgstr "Un grand titre de réservation sur le côté, une description et un bouton d’appel à l’action."
+
+#: patterns/cta-pricing.php
+msgctxt "Pattern description"
+msgid "A pricing section with a title, a paragraph and three pricing levels."
+msgstr "Une section de tarification avec un titre, un paragraphe et trois niveaux de tarification."
+
+#: patterns/cta-content-image-on-right.php
+msgctxt "Pattern description"
+msgid "A title, paragraph, two CTA buttons, and an image for a general CTA section."
+msgstr "Un titre, un paragraphe, deux boutons d’appel à l’action et une image pour une section générale d’appel à l’action."
+
+#: patterns/banner-project-description.php
+msgctxt "Pattern description"
+msgid "Project description section with title, paragraph, and an image."
+msgstr "Une section de description du projet avec un titre, un paragraphe et une image."
+
+#: patterns/banner-hero.php
+msgctxt "Pattern description"
+msgid "A hero section with a title, a paragraph, a CTA button, and an image."
+msgstr "Une bannière d’accroche avec un titre, un paragraphe, un bouton d’appel à l’action et une image."
+
+#: patterns/posts-1-col.php
+msgctxt "Pattern description"
+msgid "A list of posts, 1 column."
+msgstr "Une liste d’articles sur 1 colonne."
+
+#: patterns/page-portfolio-overview.php
+msgctxt "Pattern description"
+msgid "A full portfolio page with a section for project description, project details, a full screen image, and a gallery section with two images."
+msgstr "Une page de portfolio complète avec une section comprenant la description et les détails du projet, une image en plein écran et une galerie contenant deux images."
+
+#: patterns/page-newsletter-landing.php
+msgctxt "Pattern description"
+msgid "A block with a newsletter subscription CTA for a landing page."
+msgstr "Un bloc avec un appel à l’action pour s’abonner à la newsletter sur une page d’atterrissage."
+
+#: patterns/page-home-portfolio.php
+msgctxt "Pattern description"
+msgid "A portfolio home page with a description and a 4-column post section with only feature images."
+msgstr "Une page d’accueil de portfolio avec une description et une section d’articles sur 4 colonnes contenant uniquement des images mises en avant."
+
+#: patterns/page-home-portfolio-gallery.php
+msgctxt "Pattern description"
+msgid "A portfolio home page that features a gallery."
+msgstr "Une page d’accueil de portfolio mettant en avant une galerie."
+
+#: patterns/page-home-business.php
+msgctxt "Pattern description"
+msgid "A business home page with a hero section, a text section, a services section, a team section, a clients section, a FAQ section, and a CTA section."
+msgstr "Une page d’accueil d’entreprise avec une bannière d’accroche, une section de texte, une section de services, une section consacrée à l’équipe, une section consacrée aux clients, une section FAQ et une section d’appel à l’action."
+
+#: patterns/page-home-blogging.php
+msgctxt "Pattern description"
+msgid "A blogging home page with a hero section, a text section, a blog section, and a CTA section."
+msgstr "Une page d’accueil de blog avec une bannière d’accroche, une section de texte, une section de blog et une section d’appel à l’action."
+
+#: patterns/page-about-business.php
+msgctxt "Pattern description"
+msgid "A business about page with a hero section, a text section, a services section, a team section, a clients section, a FAQ section, and a CTA section."
+msgstr "Une page « À propos » pour une entreprise avec une bannière d’accroche, une section de texte, une section de services, une section consacrée à l’équipe, une section consacrée aux clients, une section FAQ et une section d’appel à l’action."
+
+#: patterns/gallery-project-layout.php
+msgctxt "Pattern description"
+msgid "A gallery section with a project layout with 2 images."
+msgstr "Une section de galerie avec une mise en page de projet comprenant 2 images."
+
+#: patterns/gallery-offset-images-grid-4-col.php
+msgctxt "Pattern description"
+msgid "A gallery section with 4 columns and offset images."
+msgstr "Une section de galerie sur 4 colonnes avec des images décalées."
+
+#: patterns/gallery-offset-images-grid-3-col.php
+msgctxt "Pattern description"
+msgid "A gallery section with 3 columns and offset images."
+msgstr "Une section de galerie sur 3 colonnes avec des images décalées."
+
+#: patterns/gallery-offset-images-grid-2-col.php
+msgctxt "Pattern description"
+msgid "A gallery section with 2 columns and offset images."
+msgstr "Une section de galerie sur 2 colonnes avec des images décalées."
+
+#: patterns/gallery-full-screen-image.php
+msgctxt "Pattern description"
+msgid "A cover image section that covers the entire width."
+msgstr "Une section avec une image de couverture sur toute la largeur."
+
+#: patterns/footer.php
+msgctxt "Pattern description"
+msgid "A footer section with a colophon and 4 columns."
+msgstr "Une section de pied de page avec un colophon et 4 colonnes."
+
+#: patterns/footer-colophon-3-col.php
+msgctxt "Pattern description"
+msgid "A footer section with a colophon and 3 columns."
+msgstr "Une section de pied de page avec un colophon et 3 colonnes."
 
 #: patterns/footer.php:101
 msgid "Twitter/X"
@@ -192,9 +387,19 @@ msgctxt "Example email in site footer"
 msgid "info@example.com"
 msgstr "info@example.com"
 
+#: theme.json
+msgctxt "Custom template name"
+msgid "Page with Wide Image"
+msgstr "Page avec image large"
+
 #: patterns/footer-colophon-3-col.php:62
 msgid "Follow"
 msgstr "Suivre"
+
+#: theme.json
+msgctxt "Custom template name"
+msgid "Page with Sidebar"
+msgstr "Page avec colonne latérale"
 
 #: patterns/footer-colophon-3-col.php:65 patterns/footer.php:100
 msgid "Instagram"
@@ -697,6 +902,11 @@ msgctxt "Pattern title"
 msgid "Feature grid, 3 columns"
 msgstr "Grille de fonctionnalités, 3 colonnes"
 
+#: patterns/text-faq.php:51
+msgctxt "Question in the FAQ pattern"
+msgid "I'd like to get to meet fellow architects, how can I do that?"
+msgstr "J’aimerais rencontrer d’autres architectes, comment puis-je faire ?"
+
 #: patterns/text-feature-grid-3-col.php:89
 msgctxt "Sample feature heading"
 msgid "Consulting"
@@ -707,6 +917,11 @@ msgctxt "Sample content"
 msgid "Experience the fusion of imagination and expertise with Études Architectural Solutions."
 msgstr "Vivez l’expérience de la fusion entre l’imagination et l’expertise avec Études Architectural Solutions."
 
+#: patterns/text-project-details.php:40 patterns/text-project-details.php:48
+msgctxt "Descriptive text for the feature area"
+msgid "The revitalized Art Gallery is set to redefine the cultural landscape of Toronto, serving as a nexus of artistic expression, community engagement, and architectural marvel. The expansion and renovation project pay homage to the Art Gallery's rich history while embracing the future, ensuring that the gallery remains a beacon of inspiration."
+msgstr "La Galerie d’Art revitalisée est sur le point de définir le paysage culturel de Toronto, servant de lien entre l’expression artistique, l’engagement communautaire et la merveille architecturale. Le projet d’agrandissement et de rénovation rend hommage à la riche histoire de la Galerie d’Art tout en s’ouvrant sur l’avenir, garantissant que la galerie reste une source d’inspiration."
+
 #: patterns/text-feature-grid-3-col.php:48
 #: patterns/text-feature-grid-3-col.php:60
 #: patterns/text-feature-grid-3-col.php:72
@@ -716,10 +931,11 @@ msgctxt "Sample feature content"
 msgid "Experience the fusion of imagination and expertise with Études Architectural Solutions."
 msgstr "Découvrez la fusion de l’imagination et de l’expertise avec Études Architectural Solutions."
 
-#: patterns/text-project-details.php:40 patterns/text-project-details.php:48
-msgctxt "Descriptive text for the feature area"
-msgid "The revitalized Art Gallery is set to redefine the cultural landscape of Toronto, serving as a nexus of artistic expression, community engagement, and architectural marvel. The expansion and renovation project pay homage to the Art Gallery's rich history while embracing the future, ensuring that the gallery remains a beacon of inspiration."
-msgstr "La Galerie d’Art revitalisée est sur le point de définir le paysage culturel de Toronto, servant de lien entre l’expression artistique, l’engagement communautaire et la merveille architecturale. Le projet d’agrandissement et de rénovation rend hommage à la riche histoire de la Galerie d’Art tout en s’ouvrant sur l’avenir, garantissant que la galerie reste une source d’inspiration."
+#: patterns/text-faq.php:32 patterns/text-faq.php:43 patterns/text-faq.php:54
+#: patterns/text-faq.php:65
+msgctxt "Answer in the FAQ pattern"
+msgid "Études offers comprehensive consulting, management, design, and research solutions. Our vision is to be at the forefront of architectural innovation, fostering a global community of architects and enthusiasts united by a passion for creating spaces. Every architectural endeavor is an opportunity to shape the future."
+msgstr "Études propose des solutions complètes de conseil, de gestion, de conception et de recherche. Notre vision est d’être à l’avant-garde de l’innovation architecturale, en favorisant une communauté mondiale d’architectes et d’enthousiastes unis par une passion pour la création d’espaces. Chaque entreprise architecturale est une opportunité de façonner l’avenir."
 
 #: styles/maelstrom.json
 msgctxt "Style variation name"
@@ -773,6 +989,11 @@ msgstr "Annie Steiner"
 msgctxt "Name of testimonial citation group"
 msgid "Testimonial source"
 msgstr "Source du témoignage"
+
+#: patterns/testimonial-centered.php:17
+msgctxt "Name of testimonial pattern"
+msgid "Testimonial"
+msgstr "Témoignage"
 
 #: patterns/testimonial-centered.php
 msgctxt "Pattern title"
@@ -1077,6 +1298,11 @@ msgctxt "Sample feature heading"
 msgid "Continuous Support"
 msgstr "Support continu"
 
+#: patterns/text-faq.php:62
+msgctxt "Question in the FAQ pattern"
+msgid "Can I apply to be a part of the team or work as a contractor?"
+msgstr "Puis-je postuler pour faire partie de l’équipe ou travailler comme sous-traitant/sous-traitante ?"
+
 #: patterns/text-alternating-images.php
 msgctxt "Pattern title"
 msgid "Text with alternating images"
@@ -1161,6 +1387,11 @@ msgstr "Abonnez-vous à la newsletter et restez en contact avec notre communaut�
 msgctxt "Style variation name"
 msgid "Fossil"
 msgstr "Fossile"
+
+#: patterns/text-faq.php:29
+msgctxt "Question in the FAQ pattern"
+msgid "What is your process working in smaller projects?"
+msgstr "Quel est votre processus de travail sur de plus petits projets ?"
 
 #: patterns/text-feature-grid-3-col.php:68
 msgctxt "Sample feature heading"
