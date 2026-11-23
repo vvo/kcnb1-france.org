@@ -19,7 +19,7 @@ Keep `TODO.md` up to date: tick what you finish, add what you discover. Remove i
   - SSL: OVH Let's Encrypt, renews itself.
   - Outbound connections are blocked from the SSH shell (SMTP, HTTP): WP-CLI cannot download
     updates, upload the zip and run `wp core update ~/wordpress-x.zip`. PHP served over the web can reach out. To test mail, drop a token-named PHP file in `~/www`, curl it, delete it.
-- The old Cloud Web (`kcnbfrh@sshcloud.cluster024.hosting.ovh.net`) has its cancellation requested (OVH panel, 2026-11-17: hosting ends 2027-01-01, its own "Zones DNS" option 2027-09-01;
+- The old Cloud Web (`kcnbfrh@sshcloud.cluster024.hosting.ovh.net`) has its cancellation requested (OVH panel, 2026-11-17: hosting ends 2027-01-01, its own "Zones DNS" option 2027-09-01; its Shared CDN set to deleteAtExpiration on 2026-11-24 from the hosting page > Option CDN > Résilier, the billing page route errors 500;
   the OVH "renouvellement automatique" emails for it are expected, ignore them). It is closed: `Require all denied` in its `.htaccess`, `DISABLE_WP_CRON` in its config.
 - DNS zone at OVH (ns106/dns106). MX, SPF, DKIM point to OVH mail and must not change.
 - Email accounts (`contact@`, `vincent@`, `site@`, redirect `postmaster@`) are a standalone
